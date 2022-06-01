@@ -1,0 +1,148 @@
+﻿using Carcassone.Core.Cards;
+using Carcassone.Core.Players;
+using System.Collections.Generic;
+
+namespace Carcassone.Core.Calculation.Objects
+{
+    public class Road : IClosingObject, IMultipartObject
+    {
+        public bool IsFinished { get; set; }
+
+        private List<Border> OpenBorders = new List<Border>();
+
+        public List<ObjectPart> Parts { get; set; } = new List<ObjectPart>();
+
+        public List<ObjectPart> GetParts() => Parts;
+
+        public bool IsPlayerOwner(Player player)
+        {
+            return GetOwners().Select(p => p.Name).Contains(player.Name);
+        }
+
+        public int GetPoints()
+        {
+            var score = 0;
+            // если замок не завершен то за каждую часть по 1 очку.
+            foreach (RoadPart part in Parts)
+            {
+                score++;
+            }
+
+            // если замок завершен удваиваем очки
+            if (IsFinished)
+            {
+                score = score * 2;
+            }
+
+            return score;
+        }
+
+        public bool CanConnect(ObjectPart part)
+        {
+            foreach (Border border in part.Borders)
+            {
+                var sameBorder = OpenBorders.Find(border2 => Border.Equial(border, border2));
+                if (sameBorder != null)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public void AddPart(ObjectPart part)
+        {
+            Parts.Add(part);
+            OpenBorders.AddRange(part.Borders);
+
+            if (GetOwners().Count > 0)
+            {
+                foreach (var part1 in Parts)
+                    part1.IsOwned = true;
+            }
+        }
+
+        public void TryToClose()
+        {
+            var isClosed = IsClosed();
+            if (!IsFinished && isClosed)
+            {
+                IsFinished = true;
+
+                // вернуть фишки
+                foreach (var part in GetParts())
+                    part.Chip?.Owner.ReturnChipAndSetFlag(part);
+            }
+        }
+
+        /// <summary>
+        /// Зактрыто если нет открытых границ
+        /// </summary>
+        /// <returns></returns>
+        private bool IsClosed()
+        {
+            var isClosed1 = true;
+            foreach (Border border in OpenBorders)
+            {
+                var isClosed = OpenBorders.FindAll(border2 => Border.Equial(border, border2)).Count == 2;
+                if (!isClosed)
+                {
+                    isClosed1 = false;
+                }
+            }
+
+            return isClosed1;
+        }
+
+        private List<Player> GetOwners()
+        {
+            var owners = new List<Player>();
+            if (IsFinished)
+            {
+                foreach (var part in Parts)
+                {
+                    if (part.Flag != null)
+                    {
+                        owners.Add(part.Flag.Owner);
+                    }
+                }
+
+                return owners;
+            }
+
+            var ownersToChipCount = new Dictionary<Player, int>();
+            foreach (var part in Parts)
+            {
+                if (part.Chip != null)
+                {
+                    if (ownersToChipCount.ContainsKey(part.Chip.Owner))
+                    {
+                        ownersToChipCount[part.Chip.Owner] += 1;
+                    }
+                    else
+                    {
+                        ownersToChipCount[part.Chip.Owner] = 1;
+                    }
+                }
+            }
+
+            var maxChip = 0;
+            foreach (int value in ownersToChipCount.Values)
+            {
+                if (value > maxChip)
+                {
+                    maxChip = value;
+                }
+            }
+
+            foreach (var player in ownersToChipCount.Keys)
+            {
+                if (ownersToChipCount[player] == maxChip)
+                {
+                    owners.Add(player);
+                }
+            }
+
+            return owners;
+        }
+    }
+}

@@ -1,0 +1,21 @@
+﻿using Carcassone.Core.Cards;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Xunit;
+
+namespace Carcassone.Core.Tests.Cards
+{
+    public class CardTest
+    {
+        [Fact]
+        public void RotateCardTest()
+        {
+            var card = new Card("CCCC_0");
+            card.RotateCard();
+            Assert.Equal(1, card.RotationsCount);
+        }
+    }
+}
