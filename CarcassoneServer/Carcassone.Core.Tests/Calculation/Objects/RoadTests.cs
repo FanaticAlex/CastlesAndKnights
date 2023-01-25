@@ -65,6 +65,10 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             var card3 = room.GetCard("FFRR_3");
             card3.RotationsCount = 1;
 
+            var chip = new Chip();
+            chip.Owner = bob;
+            card0.Parts.First(p => p is RoadPart).Chip = chip;
+
             room.PutCardInField(card0, room.GetField($"{0}_{0}"));
             room.EndTurn();
             room.PutCardInField(card1, room.GetField($"{0}_{1}"));
@@ -76,8 +80,50 @@ namespace Carcassone.Core.Tests.Calculation.Objects
 
             var roads = room.GetRoads();
             Assert.Single(roads);
-            Assert.Equal(8, roads.Single().GetPoints());
-            Assert.True(roads.Single().IsFinished);
+            var road = roads.Single();
+            Assert.Equal(8, road.GetPoints());
+            Assert.True(road.IsFinished);
+            Assert.Single(road.Parts.Where(p => p.Flag != null));
+        }
+
+        /// <summary>
+        ///       F
+        ///   |       |
+        /// F |   o   | F
+        ///   |   |   |
+        ///       R
+        /// 
+        ///       R
+        ///   |   |   |
+        /// R |-------| R
+        ///   |       |
+        ///       F
+        /// </summary>
+        [Fact]
+        public void CalculationTest_FlatRoad()
+        {
+            var room = new GameRoom();
+            var bob = room.AddHumanPlayer("bob");
+
+            var card0 = room.GetCard("FFRF_0");
+            var card1 = room.GetCard("FRRR_0");
+            card1.RotationsCount = 2;
+
+            var chip = new Chip();
+            chip.Owner = bob;
+            card0.Parts.First(p => p is RoadPart).Chip = chip;
+
+            room.PutCardInField(card0, room.GetField($"{0}_{0}"));
+            room.EndTurn();
+            room.PutCardInField(card1, room.GetField($"{0}_{-1}"));
+            room.EndTurn();
+
+            var roads = room.GetRoads();
+            Assert.Equal(3, roads.Count);
+            var road = roads.First(r => r.IsFinished);
+            Assert.Equal(4, road.GetPoints());
+            Assert.True(road.IsFinished);
+            Assert.Single(road.Parts.Where(p => p.Flag != null));
         }
     }
 }

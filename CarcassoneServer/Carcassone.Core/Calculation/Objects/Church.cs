@@ -63,14 +63,9 @@ namespace Carcassone.Core.Calculation.Objects
         /// </summary>
         public void TryToClose()
         {
-            var isClosed = (ChurchElements.Count == 9);
-            if (!IsFinished && isClosed)
-            {
-                IsFinished = true;
-
-                // вернуть фишку
+            var IsFinished = (ChurchElements.Count == 9);
+            if (IsFinished)
                 Owner?.ReturnChipAndSetFlag(BaseChurchPart);
-            }
         }
 
         /// <summary>

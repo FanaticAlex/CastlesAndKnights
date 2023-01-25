@@ -29,7 +29,7 @@ namespace Assets.Scripts
         {
             try
             {
-                return RoomService.Instance.Client.Current2Async(RoomService.Instance.RoomId).Result;
+                return GameManager.Instance.RoomService.GetCurrentCard();
             }
             catch (AggregateException ex)
             {
@@ -47,7 +47,7 @@ namespace Assets.Scripts
         public void CreateCardsView()
         {
             var subfolderCards = "Cards/";
-            var cards = RoomService.Instance.Client.List3Async(RoomService.Instance.RoomId).Result;
+            var cards = GameManager.Instance.RoomService.GetCards();
             foreach (var card in cards)
             {
                 var prefab = (GameObject)Resources.Load(subfolderCards + card.CardName.Substring(0, card.CardName.Length - 2), typeof(GameObject));
@@ -73,7 +73,7 @@ namespace Assets.Scripts
 
         public void ShowCardMarks(string cardId)
         {
-            var parts = RoomService.Instance.Client.AvailablePartsAsync(RoomService.Instance.RoomId, cardId).Result;
+            var parts = GameManager.Instance.RoomService.GetAvailableObjectParts(cardId);
             foreach (var part in parts)
             {
                 var partGameObject = _partsController._partToGameObject[part.PartId];
@@ -102,7 +102,7 @@ namespace Assets.Scripts
         /// </summary>
         public void UpdateChipsView()
         {
-            var cards = RoomService.Instance.Client.List3Async(RoomService.Instance.RoomId).Result;
+            var cards = GameManager.Instance.RoomService.GetCards();
             foreach (var card in cards)
             {
                 foreach(var part in card.Parts)
@@ -161,7 +161,7 @@ namespace Assets.Scripts
                 var cardGameObject = item.Value;
 
                 // поворот карты в нужную позицию
-                var card = RoomService.Instance.Client.CardAsync(RoomService.Instance.RoomId, cardName).Result;
+                var card = GameManager.Instance.RoomService.GetCard(cardName);
                 cardGameObject.transform.rotation = Quaternion.Euler(0, 0, -90 * card.RotationsCount);
 
                 var fieldId = card.Field?.Id;
@@ -194,7 +194,7 @@ namespace Assets.Scripts
                 return;
 
             var currentCardGameObject = _cardsToGameObject[card.CardName];
-            var currentCard = RoomService.Instance.Client.CardAsync(RoomService.Instance.RoomId, card.CardName).Result;
+            var currentCard = GameManager.Instance.RoomService.GetCard(card.CardName);
             currentCardGameObject.transform.rotation = Quaternion.Euler(0, 0, -90 * currentCard.RotationsCount);
         }
     }

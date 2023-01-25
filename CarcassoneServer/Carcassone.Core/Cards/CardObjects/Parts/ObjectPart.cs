@@ -1,5 +1,4 @@
 ﻿using Carcassone.Core.Players;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Carcassone.Core.Cards

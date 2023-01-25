@@ -86,7 +86,7 @@ namespace Assets.Scripts
             _cardsController.UpdateCardRotationUI(_currentCard);
 
             // окончание игры
-            var isFinished = RoomService.Instance.Client.RoomGETAsync(RoomService.Instance.RoomId).Result.IsFinished;
+            var isFinished = GameManager.Instance.RoomService.GetRoom().IsFinished;
             if (isFinished)
             {
                 // дополнительное обновление
@@ -105,14 +105,13 @@ namespace Assets.Scripts
             this.enabled = false;
 
             FinalScoreUIPanelText.GetComponent<TMP_Text>().text = String.Empty;
-            var scores = RoomService.Instance.Client.GameAsync(RoomService.Instance.RoomId).Result;
+            var scores = GameManager.Instance.RoomService.GetGameScores();
             foreach (var score in scores)
             {
                 FinalScoreUIPanelText.GetComponent<TMP_Text>().text += $"{score.UserName} : {score.FinalScore} \r\n"; 
             }
 
-            RoomService.Instance.RoomId = null;
-            RoomService.Instance.User = null;
+            GameManager.Instance.RoomService.Reset();
         }
 
         public void OnEndGameBtn()

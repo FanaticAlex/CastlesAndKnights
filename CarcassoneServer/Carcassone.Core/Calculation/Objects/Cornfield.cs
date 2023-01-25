@@ -1,5 +1,6 @@
 ﻿using Carcassone.Core.Cards;
 using Carcassone.Core.Players;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -40,41 +41,42 @@ namespace Carcassone.Core.Calculation.Objects
         {
             foreach (var partBorder in part.Borders)
             {
-                // если одна из границ проверяемой части совпадает с одной из открытых границ поля
-                // то пытаемся ее присоединить
-                var adjacentCornfieldBorder = OpenBorders.Find(border2 => Border.Equial(partBorder, border2));
-                if (adjacentCornfieldBorder == null)
-                    continue;
-                
-                // части поля одной карты не могут быть смежными.
-                // если это граница от той же карты то присоединять нельзя
-                if (partBorder.Card == adjacentCornfieldBorder.Card)
-                    continue;
+                // ищем открытые границы этого поля которые совпадают с границами присоединяемой части
+                var adjacentCornfieldBorders = OpenBorders.FindAll(border2 => Border.Equial(partBorder, border2));
+                foreach (var adjacentCornfieldBorder in adjacentCornfieldBorders)
+                {
+                    // части поля одной карты не могут быть смежными.
+                    // если это граница от той же карты то присоединять нельзя
+                    if (partBorder.Card == adjacentCornfieldBorder.Card)
+                        continue;
 
-                // если сторон нет тоесть граница карты не разделена дорогой или рекой,
-                // то считаем границы смежными и соединяем
-                if (adjacentCornfieldBorder.cornfieldSide == null && partBorder.cornfieldSide == null)
-                    return true;
+                    // если сторон нет тоесть граница карты не разделена дорогой или рекой,
+                    // то считаем границы смежными и соединяем
+                    if (adjacentCornfieldBorder.cornfieldSide == null && partBorder.cornfieldSide == null)
+                        return true;
 
-                // одна граница с дорогой или рекой а другая нет, поля соеденены неверно
-                if (adjacentCornfieldBorder.cornfieldSide == null || partBorder.cornfieldSide == null)
-                    throw new Exception("поля соеденены неверно");
+                    // одна граница с дорогой или рекой а другая нет, поля соеденены неверно
+                    if (adjacentCornfieldBorder.cornfieldSide == null || partBorder.cornfieldSide == null)
+                        throw new Exception("поля соеденены неверно");
 
-                // Группа на одной стороне разделителя, карты могут быть повернуты
-                //     7  0      |      7  0
-                // 6 |      | 1  |  6 |      | 1
-                //   |      |    |    |      |
-                // 5 |      | 2  |  5 |      | 2
-                //     4  3      |      4  3
+                    // проверяем четность. 
+                    // Группа на одной стороне разделителя, карты могут быть повернуты
+                    //     7  0      |      7  0
+                    // 6 |      | 1  |  6 |      | 1
+                    //   |      |    |    |      |
+                    // 5 |      | 2  |  5 |      | 2
+                    //     4  3      |      4  3
 
-                var group1 = new List<CornfieldSide>() { CornfieldSide.side_0, CornfieldSide.side_2, CornfieldSide.side_4, CornfieldSide.side_6 };
-                var group2 = new List<CornfieldSide>() { CornfieldSide.side_1, CornfieldSide.side_3, CornfieldSide.side_5, CornfieldSide.side_7 };
+                    var group1 = new List<CornfieldSide>() { CornfieldSide.side_0, CornfieldSide.side_2, CornfieldSide.side_4, CornfieldSide.side_6 };
+                    var group2 = new List<CornfieldSide>() { CornfieldSide.side_1, CornfieldSide.side_3, CornfieldSide.side_5, CornfieldSide.side_7 };
 
-                if (group1.Contains(adjacentCornfieldBorder.cornfieldSide.Value) && group2.Contains(partBorder.cornfieldSide.Value))
-                    return true;
+                    // проверяемые части должны быть в разных группах
+                    if (group1.Contains(adjacentCornfieldBorder.cornfieldSide.Value) && group2.Contains(partBorder.cornfieldSide.Value))
+                        return true;
 
-                if (group2.Contains(adjacentCornfieldBorder.cornfieldSide.Value) && group1.Contains(partBorder.cornfieldSide.Value))
-                    return true;
+                    if (group2.Contains(adjacentCornfieldBorder.cornfieldSide.Value) && group1.Contains(partBorder.cornfieldSide.Value))
+                        return true;
+                }
             }
 
             return false;

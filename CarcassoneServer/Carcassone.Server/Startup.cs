@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Carcassone.Core;
 using Carcassone.DAL;
+using Carcassone.Server.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,7 +31,7 @@ namespace CarcassoneServer
         {
             services.AddDbContext<CarcassoneContext>(options => options.UseSqlite("Data Source=Carcassone.db"), ServiceLifetime.Transient, ServiceLifetime.Singleton);
 
-            services.AddSingleton<ICarcassoneGamesService, CarcassoneGamesService>();
+            services.AddSingleton<IGamesService, GamesService>();
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IGameScoreService, GameScoreService>();
             services.AddControllers();

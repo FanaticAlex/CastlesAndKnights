@@ -9,6 +9,7 @@ using Carcassone.Core.Cards;
 using Carcassone.Core.Fields;
 using Carcassone.Core.Players;
 using Carcassone.DAL;
+using Carcassone.Server.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -21,10 +22,10 @@ namespace CarcassoneServer.Controllers
     [Route("[controller]")]
     public class RoomController : ControllerBase
     {
-        private readonly ICarcassoneGamesService _service;
+        private readonly IGamesService _service;
         private readonly IGameScoreService _scoreService;
 
-        public RoomController(ICarcassoneGamesService service, IGameScoreService scoreService)
+        public RoomController(IGamesService service, IGameScoreService scoreService)
         {
             _service = service;
             _scoreService = scoreService;

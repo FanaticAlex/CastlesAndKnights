@@ -19,29 +19,21 @@ namespace Assets.Scripts
         /// </summary>
         public void UpdatePartsOwnersUI()
         {
-            var roads = RoomService.Instance.Client.RoadsAsync(RoomService.Instance.RoomId).Result;
+            var roads = GameManager.Instance.RoomService.GetRoads();
             foreach (var road in roads)
-            {
                 SetOwnersToRoadParts(road);
-            }
 
-            var castles = RoomService.Instance.Client.CastlesAsync(RoomService.Instance.RoomId).Result;
+            var castles = GameManager.Instance.RoomService.GetCastles();
             foreach (var castle in castles)
-            {
                 SetOwnersToCastleParts(castle);
-            }
 
-            var cornfields = RoomService.Instance.Client.CornfieldsAsync(RoomService.Instance.RoomId).Result;
+            var cornfields = GameManager.Instance.RoomService.GetCornfields();
             foreach (var cornfield in cornfields)
-            {
                 SetOwnersToCornfieldParts(cornfield);
-            }
 
-            var churches = RoomService.Instance.Client.ChurchesAsync(RoomService.Instance.RoomId).Result;
+            var churches = GameManager.Instance.RoomService.GetChurches();
             foreach (var church in churches)
-            {
                 SetOwnersToChurch(church);
-            }
         }
 
         /// <summary>
@@ -52,41 +44,8 @@ namespace Assets.Scripts
         {
             foreach (var part in road.Parts)
             {
-                if (part.Chip == null && part.Flag == null)
-                    continue;
-
-                if (part.Chip != null)
-                {
-                    if (!_ownedPartsChips.Keys.Contains(part.PartId))
-                    {
-                        var ownerName = part.Chip.Owner.Name;
-                        var chipPrefab = Constants.Chip["Thief"];
-                        var chipObject = GameObject.Instantiate(chipPrefab);
-                        chipObject.GetComponent<Renderer>().material.color = Constants.Colors[part.Chip.Owner.Color];
-                        var partGameObject = _partToGameObject[part.PartId];
-                        chipObject.transform.position = partGameObject.transform.position + new Vector3(0, 0, -1.3f);
-                        _ownedPartsChips.Add(part.PartId, chipObject);
-                    }
-
-                    continue;
-                }
-
-                if (part.Flag != null)
-                {
-                    if (!_ownedPartsFlags.Keys.Contains(part.PartId))
-                    {
-                        // заменяем на флаг
-                        if (_ownedPartsChips.Keys.Contains(part.PartId))
-                        {
-                            GameObject.Destroy(_ownedPartsChips[part.PartId]);
-                        }
-
-                        var flagPrefab = Constants.Flags[part.Flag.Owner.Color];
-                        var flagObject = GameObject.Instantiate(flagPrefab);
-                        flagObject.transform.position = _partToGameObject[part.PartId].transform.position + new Vector3(0, 0, -1.3f);
-                        _ownedPartsFlags[part.PartId] = flagObject;
-                    }
-                }
+                TryCreateChip(part, "Thief");
+                TryCreateFlag(part);
             }
         }
 
@@ -102,9 +61,7 @@ namespace Assets.Scripts
 
                 // заменяем на флаг
                 if (_ownedPartsChips.Keys.Contains(church.BaseChurchPart.PartId))
-                {
                     GameObject.Destroy(_ownedPartsChips[church.BaseChurchPart.PartId]);
-                }
 
                 var flagPrefab = Constants.Flags[church.Owner.Color];
                 var flagObject = GameObject.Instantiate(flagPrefab);
@@ -129,41 +86,8 @@ namespace Assets.Scripts
         {
             foreach (var part in castle.Parts)
             {
-                if (part.Chip == null && part.Flag == null)
-                    continue;
-
-                if (part.Chip != null)
-                {
-                    if (!_ownedPartsChips.Keys.Contains(part.PartId))
-                    {
-                        var ownerName = part.Chip.Owner.Name;
-                        var chipPrefab = Constants.Chip["Knight"];
-                        var chipObject = GameObject.Instantiate(chipPrefab);
-                        chipObject.GetComponent<Renderer>().material.color = Constants.Colors[part.Chip.Owner.Color];
-                        var partGameObject = _partToGameObject[part.PartId];
-                        chipObject.transform.position = partGameObject.transform.position + new Vector3(0, 0, -1.3f);
-                        _ownedPartsChips.Add(part.PartId, chipObject);
-                    }
-
-                    continue;
-                }
-
-                if (part.Flag != null)
-                {
-                    if (!_ownedPartsFlags.Keys.Contains(part.PartId))
-                    {
-                        // заменяем на флаг
-                        if (_ownedPartsChips.Keys.Contains(part.PartId))
-                        {
-                            GameObject.Destroy(_ownedPartsChips[part.PartId]);
-                        }
-
-                        var flagPrefab = Constants.Flags[part.Flag.Owner.Color];
-                        var flagObject = GameObject.Instantiate(flagPrefab);
-                        flagObject.transform.position = _partToGameObject[part.PartId].transform.position + new Vector3(0, 0, -1.3f);
-                        _ownedPartsFlags[part.PartId] = flagObject;
-                    }
-                }
+                TryCreateChip(part, "Knight");
+                TryCreateFlag(part);
             }
         }
 
@@ -177,23 +101,46 @@ namespace Assets.Scripts
                 partGO.SetActive(true);
                 if (part.IsOwned)
                 {
-                    partGO.GetComponent<Renderer>().material.color = Color.magenta;
+                    var color = Color.magenta;
+                    partGO.GetComponent<Renderer>().material.color = color;
                 }
 
-
-                if (part.Chip == null)
-                    continue;
-
-                if (_ownedPartsChips.Keys.Contains(part.PartId))
-                    continue;
-
-                var chipPrefab = Constants.Chip["Peasant"];
-                var chipObject = GameObject.Instantiate(chipPrefab);
-                chipObject.GetComponent<Renderer>().material.color = Constants.Colors[part.Chip.Owner.Color];
-                var partGameObject = _partToGameObject[part.PartId];
-                chipObject.transform.position = partGameObject.transform.position + new Vector3(0, 0, -1.3f);
-                _ownedPartsChips.Add(part.PartId, chipObject);
+                TryCreateChip(part, "Peasant");
             }
+        }
+
+        private void TryCreateFlag(ObjectPart part)
+        {
+            if (part.Flag == null)
+                return;
+
+            // заменяем фишку на флаг
+            if (_ownedPartsChips.Keys.Contains(part.PartId))
+                GameObject.Destroy(_ownedPartsChips[part.PartId]);
+
+            if (_ownedPartsFlags.Keys.Contains(part.PartId)) // такой флаг уже есть
+                return;
+
+            var flagPrefab = Constants.Flags[part.Flag.Owner.Color];
+            var flagObject = GameObject.Instantiate(flagPrefab);
+            flagObject.transform.position = _partToGameObject[part.PartId].transform.position + new Vector3(0, 0, -1.3f);
+            _ownedPartsFlags[part.PartId] = flagObject;
+        }
+
+        private void TryCreateChip(ObjectPart part, string type)
+        {
+            if (part.Chip == null)
+                return;
+
+            if (_ownedPartsChips.Keys.Contains(part.PartId))
+                return;
+
+            var chipPrefab = Constants.Chip[type];
+            var chipObject = GameObject.Instantiate(chipPrefab);
+            chipObject.GetComponent<Renderer>().material.color = Constants.Colors[part.Chip.Owner.Color];
+            var partGameObject = _partToGameObject[part.PartId];
+            chipObject.transform.position = partGameObject.transform.position + new Vector3(0, 0, -1.3f);
+            _ownedPartsChips.Add(part.PartId, chipObject);
         }
     }
 }

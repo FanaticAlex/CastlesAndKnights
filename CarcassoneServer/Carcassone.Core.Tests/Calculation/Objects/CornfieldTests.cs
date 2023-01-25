@@ -12,6 +12,19 @@ namespace Carcassone.Core.Tests.Calculation.Objects
 {
     public class CornfieldTests
     {
+        /// <summary>
+        ///       F
+        ///   |_______|
+        /// R | _____ | R
+        ///   |/     \|
+        ///       C
+        /// 
+        ///       C
+        ///   |\_____/|
+        /// F |       | F
+        ///   |       |
+        ///       F
+        /// </summary>
         [Fact]
         public void GetScore()
         {

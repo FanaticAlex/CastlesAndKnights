@@ -1,5 +1,6 @@
-﻿
-using Carcassone.Core.Cards;
+﻿using Carcassone.Core.Cards;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Carcassone.Core.Fields
 {

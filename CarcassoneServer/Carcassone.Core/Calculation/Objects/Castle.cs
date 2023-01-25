@@ -1,5 +1,6 @@
 ﻿using Carcassone.Core.Cards;
 using Carcassone.Core.Players;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,11 +36,9 @@ namespace Carcassone.Core.Calculation.Objects
 
         public void TryToClose()
         {
-            var isClosed = IsClosed();
-            if (!IsFinished && isClosed)
+            IsFinished = IsClosed();
+            if (IsFinished)
             {
-                IsFinished = true;
-
                 foreach (var part in GetParts())
                     part.Chip?.Owner.ReturnChipAndSetFlag(part);
             }

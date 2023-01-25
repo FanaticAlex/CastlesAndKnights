@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Carcassone.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Carcassone.DAL
+namespace Carcassone.Server.Services
 {
     public class UserService : IUserService
     {

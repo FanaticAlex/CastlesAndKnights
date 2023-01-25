@@ -3,6 +3,9 @@ using Carcassone.Core.Calculation.Objects;
 using Carcassone.Core.Cards;
 using Carcassone.Core.Fields;
 using Carcassone.Core.Players;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Carcassone.Core
 {

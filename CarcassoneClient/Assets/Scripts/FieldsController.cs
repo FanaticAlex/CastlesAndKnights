@@ -30,7 +30,7 @@ namespace Assets.Scripts
 
         private void CreateFieldsIfNotExistView()
         {
-            var fields = RoomService.Instance.Client.AllAsync(RoomService.Instance.RoomId).Result;
+            var fields = GameManager.Instance.RoomService.GetFields();
             foreach (var field in fields)
             {
                 var x = field.X;
@@ -86,9 +86,9 @@ namespace Assets.Scripts
             // пересчитать доступные поля
             ICollection<Field> availableFields = new List<Field>();
             if (card != null)
-                availableFields = RoomService.Instance.Client.AvailableFieldsAsync(RoomService.Instance.RoomId, card?.CardName).Result;
+                availableFields = GameManager.Instance.RoomService.GetAvailableFields(card?.CardName);
 
-            var notAvailableFields = RoomService.Instance.Client.NotAvailableFieldsAsync(RoomService.Instance.RoomId).Result;
+            var notAvailableFields = GameManager.Instance.RoomService.GetNotAvailableFields();
             var fields = _fieldsToGameObject.Keys;
             foreach (var field in fields)
             {

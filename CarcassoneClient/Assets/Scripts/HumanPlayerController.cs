@@ -58,7 +58,7 @@ namespace Assets.Scripts
             // в начале хода тянем карту, если ее нет
             if (_currentCard == null)
             {
-                _currentCard = RoomService.Instance.Client.Current2Async(RoomService.Instance.RoomId).Result;
+                _currentCard = GameManager.Instance.RoomService.GetCurrentCard();
                 if (_currentCard == null)
                     return;
             }
@@ -69,11 +69,11 @@ namespace Assets.Scripts
             {
                 MouseButton0 = false;
                 // клик на поле левой кнопкой помещает в него карту
-                var canPutCard = RoomService.Instance.Client.CanPutCardAsync(RoomService.Instance.RoomId, _selectedFieldId, _currentCard.CardName).Result;
+                var canPutCard = GameManager.Instance.RoomService.CanPutCard(_selectedFieldId, _currentCard.CardName);
                 if (canPutCard)
                 {
-                    RoomService.Instance.Client.PutCardInFieldAsync(RoomService.Instance.RoomId, _selectedFieldId, _currentCard.CardName).Wait();
-                    var player1 = RoomService.Instance.Client.PlayerGETAsync(RoomService.Instance.RoomId, player.Name).Result;
+                    GameManager.Instance.RoomService.PutCard(_selectedFieldId, _currentCard.CardName);
+                    var player1 = GameManager.Instance.RoomService.GetPlayer(player.Name);
                     if (player1.ChipCount != 0)
                     {
                         _cardsController.ShowCardMarks(_currentCard.CardName);
@@ -86,7 +86,7 @@ namespace Assets.Scripts
             {
                 MouseButton1 = false;
                 // поворот поля если нажата правая кнопка поворачиваем карту и кладем на поле
-                RoomService.Instance.Client.RotateCardAsync(RoomService.Instance.RoomId, _currentCard.CardName).Wait();
+                GameManager.Instance.RoomService.RotateCard(_currentCard.CardName);
             }
         }
 
@@ -99,14 +99,14 @@ namespace Assets.Scripts
             {
                 MouseButton0 = false;
 
-                var playerHaveChip = RoomService.Instance.Client.PlayerGETAsync(RoomService.Instance.RoomId, player.Name).Result;
+                var playerHaveChip = GameManager.Instance.RoomService.GetPlayer(player.Name);
                 if (playerHaveChip.ChipCount != 0)
                 {
                     // установка фишки
                     var partObject = GetSelectedPartUI(_currentCard.CardName);
                     if (partObject != null)
                     {
-                        RoomService.Instance.Client.PutChipInCardAsync(RoomService.Instance.RoomId, _currentCard.CardName, partObject, player.Name);
+                        GameManager.Instance.RoomService.PutChip(_currentCard.CardName, partObject, player.Name);
                         EndTurn();
                     }
                 }
@@ -176,7 +176,7 @@ namespace Assets.Scripts
 
         private void EndTurn()
         {
-            RoomService.Instance.Client.EndTurnAsync(RoomService.Instance.RoomId).Wait();
+            GameManager.Instance.RoomService.EndTurn();
             _cardsController.HideCardMarks(_currentCard.CardName);
             _currentCard = null;
             _playerState = PlayerState.PlayerWait;

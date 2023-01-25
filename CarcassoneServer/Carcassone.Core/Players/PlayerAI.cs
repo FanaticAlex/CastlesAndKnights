@@ -17,6 +17,7 @@ namespace Carcassone.Core.Players.AI
             if (card == null)
                 return; // игра уже окончена
 
+            // where to put a card
             var fields = room.GetAvailableFields(card.CardName);
             var field = fields[_random.Next(fields.Count)];
             if (field.RotateCardTilFit(card))
@@ -24,6 +25,7 @@ namespace Carcassone.Core.Players.AI
                 room.PutCardInField(card, field);
             }
 
+            // where to put a chip
             var parts = room.GetAvailableParts(card.CardName);
             if (parts.Count > 0)
             {

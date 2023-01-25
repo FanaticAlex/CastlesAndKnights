@@ -1,0 +1,57 @@
+﻿using Carcassone.ApiClient;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Assets.Scripts
+{
+    /// <summary>
+    /// Provide functons to access game logic
+    /// </summary>
+    internal interface IGameService
+    {
+        User User { get; }
+
+        void Login(string login, string password); // этот метод не подхдит интерфейсу он только для сетевой игры
+        void Create();
+        void Connect(string roomId); // этот метод не подхдит интерфейсу он только для сетевой игры
+        void AddHuman(string userName);
+        void AddAI();
+        void Start();
+        void EndTurn();
+
+        GameRoom GetRoom();
+        List<string> GetRoomsIds(); // этот метод не подхдит интерфейсу он только для сетевой игры
+
+        Player GetPlayer(string playerName);
+        List<Player> GetPlayers();
+        Player GetCurrentPlayer();
+
+        Card GetCurrentCard();
+        List<Card> GetCards();
+        Card GetCard(string cardName);
+        bool CanPutCard(string fieldId, string cardName);
+        void PutCard(string fieldId, string cardName);
+        void RotateCard(string cardName);
+
+        List<Field> GetFields();
+        List<Field> GetAvailableFields(string cardName);
+        List<Field> GetNotAvailableFields();
+
+        List<ObjectPart> GetAvailableObjectParts(string cardId);
+        void PutChip(string cardName, string partId, string playerName);
+
+        List<GameScore> GetGameScores();
+        PlayerScore GetScore(string playerName);
+        List<Road> GetRoads();
+        List<Castle> GetCastles();
+        List<Cornfield> GetCornfields();
+        List<Church> GetChurches();
+
+        int GetCardsRemain();
+
+        void Reset();
+    }
+}

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Carcassone.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Carcassone.Core
+namespace Carcassone.Server.Services
 {
-    public class CarcassoneGamesService : ICarcassoneGamesService
+    public class GamesService : IGamesService
     {
         private readonly List<GameRoom> _rooms = new();
 

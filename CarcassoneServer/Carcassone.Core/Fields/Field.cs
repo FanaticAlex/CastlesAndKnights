@@ -130,13 +130,12 @@ namespace Carcassone.Core.Fields
             return false;
         }
 
-        /// <summary>
-        /// Можно ли класть карту в поле
-        /// </summary>
-        /// <param name="card"></param>
-        /// <returns></returns>
         internal bool CanPutCardInThisField(Card card)
         {
+            // if there is another card in field then false
+            if (_cardInField != null)
+                return false;
+
             // если есть граничные карты то границы должны совпадать иначе карту присоединить нельзя
             var isRiverCard = card.CardName.Contains("W");
             if (isRiverCard)

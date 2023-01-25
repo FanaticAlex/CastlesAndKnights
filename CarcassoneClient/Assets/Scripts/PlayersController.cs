@@ -19,9 +19,9 @@ namespace Assets.Scripts
 
         public PlayersController(FieldsController fieldsController, CardsController cardsController)
         {
-            var players = RoomService.Instance.Client.List2Async(RoomService.Instance.RoomId).Result;
+            var players = GameManager.Instance.RoomService.GetPlayers();
             _scoreController = new ScoreController(players);
-            var player = players.First(p => p.Name == RoomService.Instance.User.Login);
+            var player = players.First(p => p.Name == GameManager.Instance.RoomService.User.Login);
             _playerController = new HumanPlayerController(player, fieldsController, cardsController);
 
             _cardsController = cardsController;
@@ -29,8 +29,8 @@ namespace Assets.Scripts
 
         public void UpdatePlayersView()
         {
-            var currentPlayer = RoomService.Instance.Client.CurrentAsync(RoomService.Instance.RoomId).Result;
-            var _isMyTurn = (currentPlayer.Name == RoomService.Instance.User.Login);
+            var currentPlayer = GameManager.Instance.RoomService.GetCurrentPlayer();
+            var _isMyTurn = (currentPlayer.Name == GameManager.Instance.RoomService.User.Login);
 
             UpdatePlayersLastMoveMarkerUI();
 
@@ -48,7 +48,7 @@ namespace Assets.Scripts
         /// </summary>
         public void UpdatePlayersLastMoveMarkerUI()
         {
-            var players = RoomService.Instance.Client.List2Async(RoomService.Instance.RoomId).Result;
+            var players = GameManager.Instance.RoomService.GetPlayers();
             foreach (var player in players)
             {
                 var playerHaveMark = _playerToMarkers.ContainsKey(player.Name);
@@ -69,17 +69,17 @@ namespace Assets.Scripts
         private void UpdateScore()
         {
             // вычислить очки
-            var players = RoomService.Instance.Client.List2Async(RoomService.Instance.RoomId).Result;
+            var players = GameManager.Instance.RoomService.GetPlayers();
             var _playerToScore = new Dictionary<Player, PlayerScore>();
             foreach (var player in players)
             {
-                var score = RoomService.Instance.Client.ScoreAsync(RoomService.Instance.RoomId, player.Name).Result;
+                var score = GameManager.Instance.RoomService.GetScore(player.Name);
                 _playerToScore.Add(player, score);
             }
 
             _scoreController.UpdateScore(_playerToScore);
 
-            var cardsRemain = RoomService.Instance.Client.RemainAsync(RoomService.Instance.RoomId).Result;
+            var cardsRemain = GameManager.Instance.RoomService.GetCardsRemain();
             var cardsRemainText = GameObject.Find("CardsRemain").GetComponent<Text>();
             cardsRemainText.text = "Осталось карт:" + cardsRemain;
         }
