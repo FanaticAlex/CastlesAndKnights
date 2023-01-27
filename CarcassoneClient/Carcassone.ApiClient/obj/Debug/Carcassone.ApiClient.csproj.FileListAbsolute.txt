@@ -1,7 +1,0 @@
-C:\Users\fanat\source\repos\unity3dexamples\Carcassone\CarcassoneClient\Carcassone.ApiClient\obj\Debug\Carcassone.ApiClient.csproj.AssemblyReference.cache
-C:\Users\fanat\source\repos\unity3dexamples\Carcassone\CarcassoneClient\Carcassone.ApiClient\obj\Debug\Carcassone.ApiClient.csproj.CoreCompileInputs.cache
-C:\Users\fanat\source\repos\unity3dexamples\Carcassone\CarcassoneClient\Carcassone.ApiClient\obj\Debug\Carcassone.ApiClient.csproj.CopyComplete
-C:\Users\fanat\source\repos\unity3dexamples\Carcassone\CarcassoneClient\Carcassone.ApiClient\obj\Debug\Carcassone.ApiClient.dll
-C:\Users\fanat\source\repos\unity3dexamples\Carcassone\CarcassoneClient\Carcassone.ApiClient\obj\Debug\Carcassone.ApiClient.pdb
-C:\Users\fanat\source\repos\unity3dexamples\Carcassone\CarcassoneClient\Assets\Carcassone.ApiClient.dll
-C:\Users\fanat\source\repos\unity3dexamples\Carcassone\CarcassoneClient\Assets\Carcassone.ApiClient.pdb
