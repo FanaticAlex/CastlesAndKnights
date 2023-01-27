@@ -71,6 +71,11 @@ namespace Assets.Scripts.Menu
             MainMenu.SwitchToMenuPanel(MenuPanel.SetupRoom);
         }
 
+        public void OnExitBtnClick()
+        {
+            Application.Quit();
+        }
+
         private void CheckConnection()
         {
             if (_stopCheckConnection)
