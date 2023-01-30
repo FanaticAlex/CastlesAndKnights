@@ -51,5 +51,41 @@ namespace Carcassone.Core.Tests.Calculation.Objects
 
             Assert.Equal(3, cornfield.GetPoints(castles, room));
         }
+
+        /// <summary>
+        ///       R
+        ///   |    \  |
+        /// W |+++  \_| R
+        ///   |   +   |
+        ///       W
+        /// 
+        ///       W
+        ///   |   +  /|
+        /// W |++ /   | C
+        ///   |/      |
+        ///       C
+        /// </summary>
+        [Fact]
+        public void GetScore1()
+        {
+            var room = new GameRoom();
+            var owner1 = room.AddHumanPlayer("owner1");
+
+            var card1 = room.GetCard("RRWW_0");
+            var field1 = room.GetField("0_0");
+            room.PutCardInField(card1, field1);
+
+            var card2 = room.GetCard("WCCW_0");
+            var field2 = room.GetField("0_-1");
+            room.PutCardInField(card2, field2);
+
+            Assert.Single(room.GetCastles());
+            Assert.Single(room.GetRoads());
+            Assert.Equal(3, room.GetCornfields().Count);
+
+            Assert.Equal(2, room.GetCornfields()[0].OpenBorders.Count);
+            Assert.Equal(6, room.GetCornfields()[1].OpenBorders.Count);
+            Assert.Equal(4, room.GetCornfields()[2].OpenBorders.Count);
+        }
     }
 }

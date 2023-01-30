@@ -8,7 +8,7 @@ namespace Carcassone.Core.Calculation.Objects
 {
     public class Cornfield : IMultipartObject
     {
-        private List<Border> OpenBorders = new List<Border>();
+        public List<Border> OpenBorders = new List<Border>();
 
         public List<ObjectPart> Parts { get; set; } = new List<ObjectPart>();
 

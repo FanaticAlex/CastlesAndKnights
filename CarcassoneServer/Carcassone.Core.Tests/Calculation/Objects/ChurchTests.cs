@@ -35,10 +35,9 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             church.TryAddCard(GetNearCard(1, -1)); // bot right
             Assert.Equal(8, church.GetPoints());
             church.TryAddCard(GetNearCard(-1, -1)); // bot left
-            Assert.Equal(9, church.GetPoints());
+            Assert.Equal(18, church.GetPoints());
 
             church.TryToClose();
-            Assert.Equal(18, church.GetPoints());
 
             Assert.True(church.IsFinished);
         }

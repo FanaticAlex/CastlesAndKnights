@@ -72,7 +72,7 @@ namespace Carcassone.Core.Cards
             cornfield2sidePart1 = RotateSidePart(cornfield2sidePart1, RotationsCount);
             var cornfield2Border1 = new Border(this.Field, this.Field.GetNeighbour(cornfield2Side1), this);
             cornfield2Border1.cornfieldSide = cornfield2sidePart1;
-            _cornfieldPart1.Borders.Add(cornfield2Border1);
+            _cornfieldPart2.Borders.Add(cornfield2Border1);
         }
     }
 }

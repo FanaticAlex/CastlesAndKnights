@@ -8,7 +8,7 @@ namespace Carcassone.Core.Calculation.Objects
 {
     public class Church : IClosingObject
     {
-        public bool IsFinished { get; set; }
+        public bool IsFinished => (ChurchElements.Count == 9);
         public ChurchPart BaseChurchPart { get; set; }
         public List<Card> ChurchElements { get; set; } = new List<Card>();
 
@@ -63,7 +63,6 @@ namespace Carcassone.Core.Calculation.Objects
         /// </summary>
         public void TryToClose()
         {
-            var IsFinished = (ChurchElements.Count == 9);
             if (IsFinished)
                 Owner?.ReturnChipAndSetFlag(BaseChurchPart);
         }
