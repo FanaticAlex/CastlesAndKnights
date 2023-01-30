@@ -81,7 +81,7 @@ namespace Assets.Scripts
 
             var cardsRemain = GameManager.Instance.RoomService.GetCardsRemain();
             var cardsRemainText = GameObject.Find("CardsRemain").GetComponent<Text>();
-            cardsRemainText.text = "Осталось карт:" + cardsRemain;
+            cardsRemainText.text = "Карт в колоде:" + cardsRemain;
         }
     }
 }

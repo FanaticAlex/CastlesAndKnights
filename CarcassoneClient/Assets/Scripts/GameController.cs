@@ -73,6 +73,9 @@ namespace Assets.Scripts
             var isTurnChanged = (card?.CardName != _currentCard?.CardName);
             _currentCard = card;
 
+            // установка рисунка карты в контрол текущей карты
+            GameObject.Find("CurrentCardImage").GetComponent<Image>().sprite = _cardsController._cardsToGameObject[card.CardName].GetComponent<SpriteRenderer>().sprite;
+
             // это обновляем только при смене хода, для оптимизации
             if (isTurnChanged)
             {
