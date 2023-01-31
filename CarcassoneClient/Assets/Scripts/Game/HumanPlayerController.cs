@@ -14,6 +14,7 @@ namespace Assets.Scripts
 
     internal class HumanPlayerController
     {
+        // это не надо хранить, это надо получить с сервера
         public PlayerState _playerState;
         private string _selectedFieldId;
         private Card _currentCard;
