@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Управляет камерой
 /// </summary>
-public class CameraController : MonoBehaviour {
+public class CameraBehaviour : MonoBehaviour {
     
     private Vector3 _mouseOrigin;
     private Vector3 _cameraOrigin;

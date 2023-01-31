@@ -15,7 +15,7 @@ namespace Assets.Scripts
     /// <summary>
     /// Содержит данные об игре и управляет ходами одного игрока.
     /// </summary>
-    public class GameController : MonoBehaviour
+    public class GameBehaviour : MonoBehaviour
     {
         private FieldsController _fieldsController;
         private CardsController _cardsController;
