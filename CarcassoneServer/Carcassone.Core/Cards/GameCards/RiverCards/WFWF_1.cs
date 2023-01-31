@@ -28,7 +28,7 @@ namespace Carcassone.Core.Cards
             base.ConnectField(field);
 
             // поле 1
-            var cornfield1Side0 = Side.left;
+            var cornfield1Side0 = Side.right;
             cornfield1Side0 = RotateSide(cornfield1Side0, RotationsCount);
             var cornfieldBorder0 = new Border(this.Field, this.Field.GetNeighbour(cornfield1Side0), this);
             _cornfieldPart1.Borders.Add(cornfieldBorder0);
@@ -67,7 +67,7 @@ namespace Carcassone.Core.Cards
             cornfield2Border2.cornfieldSide = cornfield2SidePart2;
             _cornfieldPart2.Borders.Add(cornfield2Border2);
 
-            var cornfield2Side3 = Side.right;
+            var cornfield2Side3 = Side.left;
             cornfield2Side3 = RotateSide(cornfield2Side3, RotationsCount);
             var cornfield2Border3 = new Border(this.Field, this.Field.GetNeighbour(cornfield2Side3), this);
             _cornfieldPart2.Borders.Add(cornfield2Border3);

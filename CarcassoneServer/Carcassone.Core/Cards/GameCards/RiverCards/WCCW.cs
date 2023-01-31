@@ -5,8 +5,8 @@ namespace Carcassone.Core.Cards
     /// <summary>
     ///       W
     ///   |   +  /|
-    /// W |++  /  | C
-    ///   |  /    |
+    /// W |++ /   | C
+    ///   |/      |
     ///       C
     /// </summary>
     public class WCCW : Card
