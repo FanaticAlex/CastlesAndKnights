@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TMPro;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.Menu
 {
-    public class ChooseRoomPanelManager : BaseMenuManager
+    /// <summary>
+    /// Контроллер окна поиска игровой комнаты.
+    /// </summary>
+    public class ChooseRoomWindowController : BaseMenuWindowController
     {
         private float _timer;
         private float _delta = 3f;
@@ -25,12 +21,12 @@ namespace Assets.Scripts.Menu
             }
         }
 
-        public override MenuPanel MenuPanel => MenuPanel.ChooseRoom;
+        public override MenuWindowType MenuPanelType => MenuWindowType.ChooseRoom;
 
         public void OnBackBtnClick()
         {
-            MainMenu.IsWaitingForStart = false;
-            MainMenu.SwitchToMenuPanel(MenuPanel.Profile);
+            MenuManager.IsWaitingForStart = false;
+            MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
         }
 
         public void OnConnectToGameBtnClick(string roomId)
@@ -40,8 +36,8 @@ namespace Assets.Scripts.Menu
             GameManager.Instance.RoomService.AddHuman(user.Login);
 
             // мы подключились к игре, но добавлять игроков и начинать игру мы не можем
-            MainMenu.SwitchToMenuPanel(MenuPanel.SetupRoom);
-            MainMenu.IAmGameMaster = false;
+            MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);
+            MenuManager.IAmGameMaster = false;
         }
 
         private void UpdateRoomsList()

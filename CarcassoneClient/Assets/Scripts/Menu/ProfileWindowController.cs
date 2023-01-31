@@ -9,13 +9,12 @@ using UnityEngine;
 namespace Assets.Scripts.Menu
 {
     /// <summary>
-    /// Информация об игроке
+    /// Контроллер окна информации об игроке
     /// *новая игра
     /// *подключиться к игре
     /// </summary>
-    internal class ProfilePanelManager : BaseMenuManager
+    internal class ProfileWindowController : BaseMenuWindowController
     {
-        // ProfilePanel
         public GameObject UserName;
         public GameObject Statistic;
 
@@ -28,11 +27,11 @@ namespace Assets.Scripts.Menu
             Statistic.GetComponent<TMP_Text>().text = $"Raiting: {user.Raiting}";
         }
 
-        public override MenuPanel MenuPanel => MenuPanel.Profile;
+        public override MenuWindowType MenuPanelType => MenuWindowType.Profile;
 
         public void OnFindGameBtnClick()
         {
-            MainMenu.SwitchToMenuPanel(MenuPanel.ChooseRoom);
+            MenuManager.SwitchToMenuPanel(MenuWindowType.ChooseRoom);
         }
 
         public void OnNewGameBtnClick()
@@ -41,14 +40,14 @@ namespace Assets.Scripts.Menu
             var user = GameManager.Instance.RoomService.User;
             GameManager.Instance.RoomService.AddHuman(user.Login);
 
-            MainMenu.IAmGameMaster = true;
-            MainMenu.SwitchToMenuPanel(MenuPanel.SetupRoom);
+            MenuManager.IAmGameMaster = true;
+            MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);
         }
 
         public void OnBackBtnClick()
         {
-            MainMenu.SwitchToMenuPanel(MenuPanel.Login);
-            MainMenu.IsWaitingForStart = false;
+            MenuManager.SwitchToMenuPanel(MenuWindowType.Login);
+            MenuManager.IsWaitingForStart = false;
         }
     }
 }

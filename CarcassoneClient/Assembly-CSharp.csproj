@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{B795BFFB-4334-539E-5F0B-2E7A84B7143E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -56,26 +57,27 @@
     <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Menu\MenuWindowType.cs" />
     <Compile Include="Assets\Scripts\ScoreController.cs" />
-    <Compile Include="Assets\Scripts\Menu\BaseMenuManager.cs" />
+    <Compile Include="Assets\Scripts\Menu\BaseMenuWindowController.cs" />
     <Compile Include="Assets\Scripts\FieldsController.cs" />
     <Compile Include="Assets\Scripts\PartsController.cs" />
-    <Compile Include="Assets\Scripts\Menu\ChooseRoomPanelManager.cs" />
+    <Compile Include="Assets\Scripts\Menu\ChooseRoomWindowController.cs" />
     <Compile Include="Assets\Scripts\PlayersController.cs" />
-    <Compile Include="Assets\Scripts\Menu\LoginPanelManager.cs" />
+    <Compile Include="Assets\Scripts\Menu\LoginWindowController.cs" />
     <Compile Include="Assets\Scripts\CardsController.cs" />
     <Compile Include="Assets\Scripts\Game\OfflineGameService.cs" />
-    <Compile Include="Assets\Scripts\Menu\MainMenu.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuManager.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
     <Compile Include="Assets\Scripts\Game\GameManager.cs" />
     <Compile Include="Assets\Scripts\HumanPlayerController.cs" />
-    <Compile Include="Assets\Scripts\Menu\ProfilePanelManager.cs" />
+    <Compile Include="Assets\Scripts\Menu\ProfileWindowController.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Game\OnlineGameService.cs" />
     <Compile Include="Assets\Scripts\MusicPlayer.cs" />
     <Compile Include="Assets\Scripts\Constants.cs" />
     <Compile Include="Assets\Scripts\Game\IGameService.cs" />
-    <Compile Include="Assets\Scripts\Menu\SetupRoomPanelManager.cs" />
+    <Compile Include="Assets\Scripts\Menu\SetupRoomWindowController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -95,8 +97,6 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
-    <None Include="Assets\Newtonsoft.Json.dll" />
-    <None Include="Assets\Newtonsoft.Json.xml" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />

@@ -9,15 +9,10 @@ using UnityEngine;
 namespace Assets.Scripts.Menu
 {
     /// <summary>
-    /// Панель логина игрока:
-    /// *логин
-    /// *пароль
-    ///     Войти
-    /// оффлайн игра
+    /// Контроллер окна логина
     /// </summary>
-    public class LoginPanelManager : BaseMenuManager
+    public class LoginWindowController : BaseMenuWindowController
     {
-        // LoginPanel
         public GameObject LoginBtn;
         public GameObject ErrorText;
 
@@ -35,7 +30,7 @@ namespace Assets.Scripts.Menu
             }
         }
 
-        public override MenuPanel MenuPanel => MenuPanel.Login;
+        public override MenuWindowType MenuPanelType => MenuWindowType.Login;
 
         public override void Enable()
         {
@@ -61,14 +56,14 @@ namespace Assets.Scripts.Menu
                 return;
             }
 
-            MainMenu.SwitchToMenuPanel(MenuPanel.Profile);
+            MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
         }
 
         public void OnOfflineGameBtnClick()
         {
             _stopCheckConnection = true;
             GameManager.Instance.SetOfflineMode();
-            MainMenu.SwitchToMenuPanel(MenuPanel.SetupRoom);
+            MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);
         }
 
         public void OnExitBtnClick()

@@ -11,26 +11,26 @@ using UnityEngine.UI;
 namespace Assets.Scripts.Menu
 {
     /// <summary>
+    /// Контроллер окна создания новой игры.
     /// *Список игроков
     /// *добавить AI
     /// *начать игру
     /// </summary>
-    internal class SetupRoomPanelManager : BaseMenuManager
+    internal class SetupRoomWindowController : BaseMenuWindowController
     {
-        // SetupRoomPanel
         public GameObject AddAIPlayerBtn;
         public GameObject StartGameBtn;
 
         private float _timer;
         private float _delta = 3f;
 
-        public override MenuPanel MenuPanel => MenuPanel.SetupRoom;
+        public override MenuWindowType MenuPanelType => MenuWindowType.SetupRoom;
 
         public override void Enable()
         {
             base.Enable();
 
-            if (MainMenu.IAmGameMaster)
+            if (MenuManager.IAmGameMaster)
             {
                 // если мы создаем игру
                 AddAIPlayerBtn.SetActive(true);
@@ -41,7 +41,7 @@ namespace Assets.Scripts.Menu
                 // если мы подключились
                 AddAIPlayerBtn.SetActive(false);
                 StartGameBtn.SetActive(false);
-                MainMenu.IsWaitingForStart = true;
+                MenuManager.IsWaitingForStart = true;
             }
         }
 
@@ -68,7 +68,7 @@ namespace Assets.Scripts.Menu
 
         private void WaitingForStart()
         {
-            if (MainMenu.IsWaitingForStart)
+            if (MenuManager.IsWaitingForStart)
             {
                 // тут мы подключились к игре и ждем пока она стартает
                 var room = GameManager.Instance.RoomService.GetRoom();
@@ -85,8 +85,8 @@ namespace Assets.Scripts.Menu
 
         public void OnBackBtnClick()
         {
-            MainMenu.SwitchToMenuPanel(MenuPanel.Profile);
-            MainMenu.IsWaitingForStart = false;
+            MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
+            MenuManager.IsWaitingForStart = false;
         }
 
         private void UpdatePlayerList()
