@@ -22,6 +22,8 @@ namespace Assets.Scripts
         public bool MouseButton0 { get; set; }
         public bool MouseButton1 { get; set; }
 
+        public bool Rotated { get; set; }
+
         private Player _player;
         private FieldsController _fieldsController;
         private CardsController _cardsController;
@@ -83,9 +85,10 @@ namespace Assets.Scripts
                     _playerState = PlayerState.PlayerHoldChip;
                 }
             }
-            else if (MouseButton1)
+            else if (MouseButton1 || Rotated)
             {
                 MouseButton1 = false;
+                Rotated = false;
                 // поворот поля если нажата правая кнопка поворачиваем карту и кладем на поле
                 GameManager.Instance.RoomService.RotateCard(_currentCard.CardName);
             }

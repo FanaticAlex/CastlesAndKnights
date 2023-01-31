@@ -66,6 +66,11 @@ namespace Assets.Scripts
                 _cardsController.UpdateCardPositionByCursor(_currentCard);
         }
 
+        public void OnRotateButonClick()
+        {
+            _playersController._playerController.Rotated = true;
+        }
+
         private void UpdateGameViews()
         {
             // проверяем окончание хода
@@ -74,7 +79,9 @@ namespace Assets.Scripts
             _currentCard = card;
 
             // установка рисунка карты в контрол текущей карты
-            GameObject.Find("CurrentCardImage").GetComponent<Image>().sprite = _cardsController._cardsToGameObject[card.CardName].GetComponent<SpriteRenderer>().sprite;
+            var cardGO = _cardsController._cardsToGameObject[card.CardName];
+            GameObject.Find("CurrentCardImage").GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
+            GameObject.Find("CurrentCardImage").transform.localRotation = Quaternion.Euler(0, 0, card.RotationsCount * -90);
 
             // это обновляем только при смене хода, для оптимизации
             if (isTurnChanged)
