@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{B795BFFB-4334-539E-5F0B-2E7A84B7143E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carcassone.ApiClient", "Carcassone.ApiClient\Carcassone.ApiClient.csproj", "{C615063B-DEF7-483C-BFC1-C40CDD8358C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,12 +15,11 @@ Global
 		{B795BFFB-4334-539E-5F0B-2E7A84B7143E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B795BFFB-4334-539E-5F0B-2E7A84B7143E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B795BFFB-4334-539E-5F0B-2E7A84B7143E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C615063B-DEF7-483C-BFC1-C40CDD8358C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C615063B-DEF7-483C-BFC1-C40CDD8358C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C615063B-DEF7-483C-BFC1-C40CDD8358C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C615063B-DEF7-483C-BFC1-C40CDD8358C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {201A7C88-3FE6-4987-AC7B-1A060B2CEB93}
 	EndGlobalSection
 EndGlobal
