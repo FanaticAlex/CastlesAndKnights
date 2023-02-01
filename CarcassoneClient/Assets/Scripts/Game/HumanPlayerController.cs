@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
 using Carcassone.ApiClient;
-using System.Collections.Generic;
 
 namespace Assets.Scripts
 {
@@ -23,16 +22,21 @@ namespace Assets.Scripts
         public bool MouseButton1 { get; set; }
 
         public bool Rotated { get; set; }
+        public bool TurnEnded { get; set; }
 
         private Player _player;
         private FieldsController _fieldsController;
         private CardsController _cardsController;
+
+        private GameObject EndTurnButton { get; set; }
 
         public HumanPlayerController(Player player, FieldsController fieldsController, CardsController cardsController)
         {
             _player = player;
             _fieldsController = fieldsController;
             _cardsController = cardsController;
+
+            EndTurnButton = GameObject.Find("EndTurnButton");
         }
 
         public void StartMyTurn()
@@ -45,12 +49,14 @@ namespace Assets.Scripts
         {
             if (_playerState == PlayerState.PlayerHoldCard)
             {
+                EndTurnButton.SetActive(false);
                 PlayerHoldCardProcess(_player);
                 return;
             }
 
             if (_playerState == PlayerState.PlayerHoldChip)
             {
+                EndTurnButton.SetActive(true);
                 HoldChipProcess(_player);
                 return;
             }
@@ -66,11 +72,14 @@ namespace Assets.Scripts
                     return;
             }
 
-            _selectedFieldId = _fieldsController.GetSelectedFieldId();
-
             if (MouseButton0)
             {
                 MouseButton0 = false;
+
+                _selectedFieldId = _fieldsController.GetSelectedFieldId();
+                if (_selectedFieldId == null)
+                    return;
+
                 // клик на поле левой кнопкой помещает в него карту
                 var canPutCard = GameManager.Instance.RoomService.CanPutCard(_selectedFieldId, _currentCard.CardName);
                 if (canPutCard)
@@ -117,9 +126,10 @@ namespace Assets.Scripts
             }
 
             // клик на поле правой кнопкой означает что игрок не хочет устанавливать фишку.
-            if (MouseButton1)
+            if (MouseButton1 || TurnEnded)
             {
                 MouseButton1 = false;
+                TurnEnded = false;
                 EndTurn();
             }
         }

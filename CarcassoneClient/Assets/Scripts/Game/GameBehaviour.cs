@@ -1,12 +1,8 @@
 ﻿using Carcassone.ApiClient;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Threading.Tasks;
 using TMPro;
 
 namespace Assets.Scripts
@@ -61,14 +57,19 @@ namespace Assets.Scripts
 
             // тут операции, которые необходимо делать каждый update для нормального отображения
             // карта перемещается вместе с курсором
-            var isPlayerHoldCard = _playersController._playerController._playerState == PlayerState.PlayerHoldCard;
-            if (isPlayerHoldCard)
-                _cardsController.UpdateCardPositionByCursor(_currentCard);
+            //var isPlayerHoldCard = _playersController._playerController._playerState == PlayerState.PlayerHoldCard;
+            //if (isPlayerHoldCard)
+            //    _cardsController.UpdateCardPositionByCursor(_currentCard);
         }
 
         public void OnRotateButonClick()
         {
             _playersController._playerController.Rotated = true;
+        }
+
+        public void OnEndTurnButonClick()
+        {
+            _playersController._playerController.TurnEnded = true;
         }
 
         private void UpdateGameViews()
