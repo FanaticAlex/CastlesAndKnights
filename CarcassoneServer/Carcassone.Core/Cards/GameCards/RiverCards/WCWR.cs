@@ -11,29 +11,29 @@ namespace Carcassone.Core.Cards
     /// </summary>
     public class WCWR : Card
     {
-        private CastlePart _castlePart1;
+        private CastlePart _castlePart0;
+        private CornfieldPart _cornfieldPart0;
         private CornfieldPart _cornfieldPart1;
         private CornfieldPart _cornfieldPart2;
         private CornfieldPart _cornfieldPart3;
-        private CornfieldPart _cornfieldPart4;
         private RoadPart _roadPart;
 
         public WCWR(string cardName) : base(cardName)
         {
-            _castlePart1 = new CastlePart("Castle_0", cardName);
-            Parts.Add(_castlePart1);
+            _castlePart0 = new CastlePart("Castle_0", cardName);
+            Parts.Add(_castlePart0);
 
-            _cornfieldPart1 = new CornfieldPart("Cornfield_0", cardName);
+            _cornfieldPart0 = new CornfieldPart("Cornfield_0", cardName);
+            Parts.Add(_cornfieldPart0);
+
+            _cornfieldPart1 = new CornfieldPart("Cornfield_1", cardName);
             Parts.Add(_cornfieldPart1);
 
-            _cornfieldPart2 = new CornfieldPart("Cornfield_1", cardName);
+            _cornfieldPart2 = new CornfieldPart("Cornfield_2", cardName);
             Parts.Add(_cornfieldPart2);
 
-            _cornfieldPart3 = new CornfieldPart("Cornfield_2", cardName);
+            _cornfieldPart3 = new CornfieldPart("Cornfield_3", cardName);
             Parts.Add(_cornfieldPart3);
-
-            _cornfieldPart4 = new CornfieldPart("Cornfield_3", cardName);
-            Parts.Add(_cornfieldPart4);
 
             _roadPart = new RoadPart("Road_0", cardName);
             Parts.Add(_roadPart);
@@ -46,7 +46,7 @@ namespace Carcassone.Core.Cards
             // замок
             var side1 = RotateSide(Side.right, RotationsCount);
             var castleBorder1 = new Border(this.Field, this.Field.GetNeighbour(side1), this);
-            _castlePart1.Borders.Add(castleBorder1);
+            _castlePart0.Borders.Add(castleBorder1);
 
             // поле 1
             var cornfield1Side0 = Side.top;
@@ -55,7 +55,7 @@ namespace Carcassone.Core.Cards
             cornfield1sidePart0 = RotateSidePart(cornfield1sidePart0, RotationsCount);
             var cornfield1Border0 = new Border(this.Field, this.Field.GetNeighbour(cornfield1Side0), this);
             cornfield1Border0.cornfieldSide = cornfield1sidePart0;
-            _cornfieldPart1.Borders.Add(cornfield1Border0);
+            _cornfieldPart0.Borders.Add(cornfield1Border0);
 
             // поле 2
             var cornfield2Side0 = Side.bottom;
@@ -64,7 +64,7 @@ namespace Carcassone.Core.Cards
             cornfield2sidePart0 = RotateSidePart(cornfield2sidePart0, RotationsCount);
             var cornfield2Border0 = new Border(this.Field, this.Field.GetNeighbour(cornfield2Side0), this);
             cornfield2Border0.cornfieldSide = cornfield2sidePart0;
-            _cornfieldPart2.Borders.Add(cornfield2Border0);
+            _cornfieldPart1.Borders.Add(cornfield2Border0);
 
             // поле 3
             var cornfield3Side0 = Side.bottom;
@@ -73,7 +73,7 @@ namespace Carcassone.Core.Cards
             cornfield3sidePart0 = RotateSidePart(cornfield3sidePart0, RotationsCount);
             var cornfield3Border0 = new Border(this.Field, this.Field.GetNeighbour(cornfield3Side0), this);
             cornfield3Border0.cornfieldSide = cornfield3sidePart0;
-            _cornfieldPart3.Borders.Add(cornfield3Border0);
+            _cornfieldPart2.Borders.Add(cornfield3Border0);
 
             var cornfield3Side1 = Side.left;
             cornfield3Side1 = RotateSide(cornfield3Side1, RotationsCount);
@@ -81,7 +81,7 @@ namespace Carcassone.Core.Cards
             cornfield3sidePart1 = RotateSidePart(cornfield3sidePart1, RotationsCount);
             var cornfield3Border1 = new Border(this.Field, this.Field.GetNeighbour(cornfield3Side1), this);
             cornfield3Border1.cornfieldSide = cornfield3sidePart1;
-            _cornfieldPart3.Borders.Add(cornfield3Border1);
+            _cornfieldPart2.Borders.Add(cornfield3Border1);
 
             // поле 4
             var cornfield4Side0 = Side.left;
@@ -90,7 +90,7 @@ namespace Carcassone.Core.Cards
             cornfield4sidePart0 = RotateSidePart(cornfield4sidePart0, RotationsCount);
             var cornfield4Border0 = new Border(this.Field, this.Field.GetNeighbour(cornfield4Side0), this);
             cornfield4Border0.cornfieldSide = cornfield4sidePart0;
-            _cornfieldPart4.Borders.Add(cornfield4Border0);
+            _cornfieldPart3.Borders.Add(cornfield4Border0);
 
             var cornfield4Side1 = Side.top;
             cornfield4Side1 = RotateSide(cornfield4Side1, RotationsCount);
@@ -98,7 +98,7 @@ namespace Carcassone.Core.Cards
             cornfield4sidePart1 = RotateSidePart(cornfield4sidePart1, RotationsCount);
             var cornfield4Border1 = new Border(this.Field, this.Field.GetNeighbour(cornfield4Side1), this);
             cornfield4Border1.cornfieldSide = cornfield4sidePart1;
-            _cornfieldPart4.Borders.Add(cornfield4Border1);
+            _cornfieldPart3.Borders.Add(cornfield4Border1);
 
 
             // дорога

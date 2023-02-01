@@ -96,7 +96,7 @@ namespace Carcassone.Core.Cards
             cornfield3Border0.cornfieldSide = cornfield3sidePart0;
             _cornfieldPart2.Borders.Add(cornfield3Border0);
 
-            var cornfield3Side1 = Side.right;
+            var cornfield3Side1 = Side.left;
             cornfield3Side1 = RotateSide(cornfield3Side1, RotationsCount);
             var cornfield3sidePart1 = CornfieldSide.side_5;
             cornfield3sidePart1 = RotateSidePart(cornfield3sidePart1, RotationsCount);

@@ -154,5 +154,75 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             Assert.Equal(2, room.GetCornfields()[0].OpenBorders.Count);
             Assert.Equal(10, room.GetCornfields()[1].OpenBorders.Count);
         }
+
+        /// <summary>
+        ///       F
+        ///   |       |
+        /// F |   +   | F
+        ///   |   +   |
+        ///       W
+        /// 
+        ///       W
+        ///   |   +   |
+        /// W |++++   | F   (rotated 2)
+        ///   |       |
+        ///       F
+        /// </summary>
+        [Fact]
+        public void GetScore4()
+        {
+            var room = new GameRoom();
+            var owner1 = room.AddHumanPlayer("owner1");
+
+            var card1 = room.GetCard("FFWF_0");
+            var field1 = room.GetField("0_0");
+            room.PutCardInField(card1, field1);
+
+            var card2 = room.GetCard("FWWF_0");
+            card2.RotateCard();
+            card2.RotateCard();
+            var field2 = room.GetField("0_-1");
+            room.PutCardInField(card2, field2);
+
+            Assert.Single(room.GetCornfields());
+
+            Assert.Equal(11, room.GetCornfields()[0].OpenBorders.Count);
+        }
+
+        /// <summary>
+        ///       R
+        ///   |    \  |
+        /// W |+++  \_| R
+        ///   |   +   |
+        ///       W
+        /// 
+        ///       W
+        ///   |   +  /|
+        /// R |-----| | C
+        ///   |   +  \|
+        ///       W
+        /// </summary>
+        [Fact]
+        public void GetScore5()
+        {
+            var room = new GameRoom();
+            var owner1 = room.AddHumanPlayer("owner1");
+
+            var card1 = room.GetCard("RRWW_0");
+            var field1 = room.GetField("0_0");
+            room.PutCardInField(card1, field1);
+
+            var card2 = room.GetCard("WCWR_0");
+            var field2 = room.GetField("0_-1");
+            room.PutCardInField(card2, field2);
+
+            Assert.Equal(5, room.GetCornfields().Count);
+
+            Assert.Equal(2, room.GetCornfields()[0].OpenBorders.Count);
+            Assert.Equal(5, room.GetCornfields()[1].OpenBorders.Count);
+            Assert.Equal(1, room.GetCornfields()[2].OpenBorders.Count);
+            Assert.Equal(2, room.GetCornfields()[3].OpenBorders.Count);
+            Assert.Equal(4, room.GetCornfields()[4].OpenBorders.Count);
+        }
     }
 }
