@@ -63,7 +63,7 @@ namespace Assets.Scripts.Menu
         {
             _stopCheckConnection = true;
             GameManager.Instance.SetOfflineMode();
-            MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);
+            MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
         }
 
         public void OnExitBtnClick()
