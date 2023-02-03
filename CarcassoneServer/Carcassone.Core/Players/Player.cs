@@ -62,6 +62,9 @@ namespace Carcassone.Core.Players
 
         public void ReturnChipAndSetFlag(ObjectPart part)
         {
+            if (part.Chip == null)
+                throw new System.Exception("Объект не принадлежит игроку, невозможно установить флаг.");
+
             var chip = part.Chip;
             chip.Owner = this;
             _chipList.Add(chip);

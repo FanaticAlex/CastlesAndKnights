@@ -19,8 +19,8 @@ namespace Assets.Scripts
 
         private Card _currentCard;
 
-        float _timer;
-        float _delta = 0.5f;
+        float _timer1;
+        float _timer2;
 
         public GameObject FinalScoreUIPanel;
         public GameObject FinalScoreUIPanelText;
@@ -48,11 +48,18 @@ namespace Assets.Scripts
             _playersController._playerController.MouseButton0 |= Input.GetMouseButtonDown(0);
             _playersController._playerController.MouseButton1 |= Input.GetMouseButtonDown(1);
 
-            _timer += Time.deltaTime;
-            if (_timer > _delta) // тут помещаем длительные операции, которые невозможно производить каждый upadate
+            _timer2 += Time.deltaTime;
+            if (_timer2 > 0.1f) // тут помещаем длительные операции, которые невозможно производить каждый upadate
             {
-                _timer = 0;
-                UpdateGameViews();
+                _timer2 = 0;
+                _playersController.HandlePlayerActions();
+            }
+
+            _timer1 += Time.deltaTime;
+            if (_timer1 > 0.5f) // тут помещаем длительные операции, которые невозможно производить каждый upadate
+            {
+                _timer1 = 0;
+                UpdateGameViewsFromServer();
             }
 
             // тут операции, которые необходимо делать каждый update для нормального отображения
@@ -72,29 +79,33 @@ namespace Assets.Scripts
             _playersController._playerController.TurnEnded = true;
         }
 
-        private void UpdateGameViews()
+        private void UpdateGameViewsFromServer()
         {
             // проверяем окончание хода
             var card = _cardsController.GetCurrentPlayerCard();
             var isTurnChanged = (card?.CardName != _currentCard?.CardName);
             _currentCard = card;
-
-            // установка рисунка карты в контрол текущей карты
-            var cardGO = _cardsController._cardsToGameObject[card.CardName];
-            GameObject.Find("CurrentCardImage").GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
-            GameObject.Find("CurrentCardImage").transform.localRotation = Quaternion.Euler(0, 0, card.RotationsCount * -90);
-
-            // это обновляем только при смене хода, для оптимизации
             if (isTurnChanged)
             {
+                // это обновляем только при смене хода, для оптимизации
                 _fieldsController.UpdateFieldsView(_currentCard);
                 _cardsController.UpdateCardsView();
             }
 
+            // установка рисунка карты в контрол текущей карты
+            if (card != null)
+            {
+                var cardGO = _cardsController._cardsToGameObject[card.CardName];
+                GameObject.Find("CurrentCardImage").GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
+                GameObject.Find("CurrentCardImage").transform.localRotation = Quaternion.Euler(0, 0, card.RotationsCount * -90);
+            }
+
             _cardsController.UpdateChipsView();
             _playersController.UpdatePlayersView();
+
+
             // обновление поворота карты (нужно ли это вообще?)
-            _cardsController.UpdateCardRotationUI(_currentCard);
+            //_cardsController.UpdateCardRotationUI(_currentCard);
 
             // окончание игры
             var isFinished = GameManager.Instance.RoomService.GetRoom().IsFinished;

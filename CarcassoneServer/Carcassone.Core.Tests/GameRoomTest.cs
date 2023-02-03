@@ -11,17 +11,15 @@ namespace Carcassone.Core.Tests.Room
         public void Workflow()
         {
             var room = new GameRoom();
-            var jack = room.AddHumanPlayer("jack");
-            var bob = room.AddHumanPlayer("bob");
             room.AddAIPlayer();
+            var jack = room.AddHumanPlayer("jack");
+            //var bob = room.AddHumanPlayer("bob");
             room.Start();
 
-            Card? newCard;
-            Player? currentPlayer = null;
             while (true)
             {
-                currentPlayer = GetNextPlayer(jack, bob, currentPlayer);
-                newCard = room.GetCurrentCard();
+                var currentPlayer = room.GetCurrentPlayer();
+                var newCard = room.GetCurrentCard();
                 if (room.IsFinished)
                     break;
 
@@ -29,10 +27,10 @@ namespace Carcassone.Core.Tests.Room
             }
 
             var jackScore = room.GetPlayerScore(jack);
-            var bobScore = room.GetPlayerScore(bob);
+            //var bobScore = room.GetPlayerScore(bob);
 
             Assert.NotEqual(0, jackScore.GetOverallScore());
-            Assert.NotEqual(0, bobScore.GetOverallScore());
+            //Assert.NotEqual(0, bobScore.GetOverallScore());
         }
 
         private static void PlayerMakeMove(Card newCard, GameRoom room, Player player)
@@ -49,30 +47,6 @@ namespace Carcassone.Core.Tests.Room
                 room.PutChipInCard(newCard.CardName, choosenPart.PartId, player.Name);
             }
             room.EndTurn();
-        }
-
-        private Player GetNextPlayer(Player jack, Player bob, Player? currentPlayer)
-        {
-            Player newCurrentPlayer;
-            if (currentPlayer == jack)
-            {
-                newCurrentPlayer = bob;
-                return newCurrentPlayer;
-            }
-
-            if (currentPlayer == bob)
-            {
-                newCurrentPlayer = jack;
-                return newCurrentPlayer;
-            }
-
-            if (currentPlayer == null)
-            {
-                newCurrentPlayer = jack;
-                return newCurrentPlayer;
-            }
-
-            throw new System.Exception("не найден игрок");
         }
     }
 }

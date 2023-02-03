@@ -64,7 +64,7 @@ namespace Carcassone.Core.Calculation.Objects
         public void TryToClose()
         {
             if (IsFinished)
-                Owner?.ReturnChipAndSetFlag(BaseChurchPart);
+                BaseChurchPart.Chip?.Owner.ReturnChipAndSetFlag(BaseChurchPart);
         }
 
         /// <summary>

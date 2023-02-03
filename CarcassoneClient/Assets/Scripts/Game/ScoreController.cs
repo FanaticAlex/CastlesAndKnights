@@ -37,7 +37,7 @@ namespace Assets.Scripts
 
                     Color userColor;
                     ColorUtility.TryParseHtmlString(player.Color, out userColor);
-                    playerPanel.GetComponentInChildren<Image>().color = userColor;
+                    playerPanel.transform.Find("ColorPanel").GetComponentInChildren<Image>().color = userColor;
 
                     remainPlayers.Remove(player);
                 }

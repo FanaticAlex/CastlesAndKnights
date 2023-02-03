@@ -29,18 +29,19 @@ namespace Assets.Scripts
 
         public void UpdatePlayersView()
         {
-            var currentPlayer = GameManager.Instance.RoomService.GetCurrentPlayer();
-            var _isMyTurn = (currentPlayer.Name == GameManager.Instance.RoomService.User.Login);
-
             UpdatePlayersLastMoveMarkerUI();
+            UpdateScore();
+        }
 
-            if (_isMyTurn)
+        public void HandlePlayerActions()
+        {
+            var currentPlayer = GameManager.Instance.RoomService.GetCurrentPlayer();
+            var isMyTurn = (currentPlayer.Name == GameManager.Instance.RoomService.User.Login);
+            if (isMyTurn)
             {
                 _playerController.StartMyTurn();
                 _playerController.MakingMove();
             }
-
-            UpdateScore();
         }
 
         /// <summary>

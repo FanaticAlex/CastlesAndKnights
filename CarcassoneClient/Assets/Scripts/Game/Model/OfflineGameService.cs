@@ -74,6 +74,9 @@ namespace Assets.Scripts
     {
         public static Carcassone.ApiClient.GameRoom ToCommon(this Carcassone.Core.GameRoom room)
         {
+            if (room == null)
+                return null;
+
             var commonRoom = new Carcassone.ApiClient.GameRoom();
             commonRoom.Id = room.Id;
             commonRoom.IsStarted = room.IsStarted;
@@ -83,6 +86,9 @@ namespace Assets.Scripts
 
         public static Carcassone.ApiClient.Player ToCommon(this Carcassone.Core.Players.Player player)
         {
+            if (player == null)
+                return null;
+
             var commonPlayer = new Carcassone.ApiClient.Player();
             commonPlayer.ChipCount = player.ChipCount;
             commonPlayer.LastCardId = player.LastCardId;
@@ -93,6 +99,9 @@ namespace Assets.Scripts
 
         public static Carcassone.ApiClient.Flag ToCommon(this Carcassone.Core.Players.Flag flag)
         {
+            if (flag == null)
+                return null;
+
             var commonFlag = new Carcassone.ApiClient.Flag();
             commonFlag.Owner = flag.Owner?.ToCommon();
             return commonFlag;
@@ -114,6 +123,9 @@ namespace Assets.Scripts
 
         public static Carcassone.ApiClient.Chip ToCommon(this Carcassone.Core.Players.Chip chip)
         {
+            if (chip == null)
+                return null;
+
             var commonChip = new Carcassone.ApiClient.Chip();
             commonChip.Owner = chip.Owner?.ToCommon();
             commonChip.Type = chip.Type.ToCommon();
@@ -122,6 +134,9 @@ namespace Assets.Scripts
 
         public static Carcassone.ApiClient.ObjectPart ToCommon(this Carcassone.Core.Cards.ObjectPart part)
         {
+            if (part == null)
+                return null;
+
             var commonPart = new Carcassone.ApiClient.ObjectPart();
             commonPart.PartName = part.PartName;
             commonPart.CardName = part.CardName;
@@ -135,6 +150,9 @@ namespace Assets.Scripts
 
         public static Carcassone.ApiClient.ChurchPart ToCommon(this Carcassone.Core.Cards.ChurchPart part)
         {
+            if (part == null)
+                return null;
+
             var commonChurchPart = new Carcassone.ApiClient.ChurchPart();
             commonChurchPart.PartName = part.PartName;
             commonChurchPart.CardName = part.CardName;
@@ -149,6 +167,9 @@ namespace Assets.Scripts
 
         public static Carcassone.ApiClient.Field ToCommon(this Carcassone.Core.Fields.Field field)
         {
+            if (field == null)
+                return null;
+
             var commonField = new Carcassone.ApiClient.Field();
             commonField.X = field.X;
             commonField.Y = field.Y;
@@ -158,6 +179,9 @@ namespace Assets.Scripts
 
         public static Carcassone.ApiClient.Card ToCommon(this Carcassone.Core.Cards.Card card)
         {
+            if (card == null)
+                return null;
+
             var commonCard = new Carcassone.ApiClient.Card();
             commonCard.CardName = card.CardName;
             commonCard.Parts = card.Parts.Select(p => p.ToCommon()).ToList();
@@ -179,6 +203,9 @@ namespace Assets.Scripts
 
         public static Carcassone.ApiClient.Road ToCommon(this Carcassone.Core.Calculation.Objects.Road road)
         {
+            if (road == null)
+                return null;
+
             var commonRoad = new Carcassone.ApiClient.Road();
             commonRoad.Parts = road.Parts.Select(p => p.ToCommon()).ToList();
             commonRoad.IsFinished = road.IsFinished;
@@ -187,6 +214,9 @@ namespace Assets.Scripts
 
         public static Carcassone.ApiClient.Castle ToCommon(this Carcassone.Core.Calculation.Objects.Castle castle)
         {
+            if (castle == null)
+                return null;
+
             var commonCastle = new Carcassone.ApiClient.Castle();
             commonCastle.Parts = castle.Parts.Select(p => p.ToCommon()).ToList();
             commonCastle.IsFinished = castle.IsFinished;
@@ -195,6 +225,9 @@ namespace Assets.Scripts
 
         public static Carcassone.ApiClient.Cornfield ToCommon(this Carcassone.Core.Calculation.Objects.Cornfield cornfield)
         {
+            if (cornfield == null)
+                return null;
+
             var commonCornfield = new Carcassone.ApiClient.Cornfield();
             commonCornfield.Parts = cornfield.Parts.Select(p => p.ToCommon()).ToList();
             return commonCornfield;
@@ -202,6 +235,9 @@ namespace Assets.Scripts
 
         public static Carcassone.ApiClient.Church ToCommon(this Carcassone.Core.Calculation.Objects.Church church)
         {
+            if (church == null)
+                return null;
+
             var commonChurch = new Carcassone.ApiClient.Church();
             commonChurch.IsFinished = church.IsFinished;
             commonChurch.BaseChurchPart = church.BaseChurchPart.ToCommon();
