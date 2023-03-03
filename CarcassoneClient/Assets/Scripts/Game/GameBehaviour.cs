@@ -25,6 +25,8 @@ namespace Assets.Scripts
         public GameObject FinalScoreUIPanel;
         public GameObject FinalScoreUIPanelText;
 
+        public GameObject PlayerDetailScorePanel;
+
         /// <summary>
         /// Инициализация сцены комнаты игры.
         /// - создание игрового поля
@@ -33,6 +35,7 @@ namespace Assets.Scripts
         void Start()
         {
             FinalScoreUIPanel.SetActive(false);
+            PlayerDetailScorePanel.SetActive(false);
 
             _fieldsController = new FieldsController();
             _cardsController = new CardsController(_fieldsController);
@@ -77,6 +80,27 @@ namespace Assets.Scripts
         public void OnEndTurnButonClick()
         {
             _playersController._playerController.TurnEnded = true;
+        }
+
+        public void OnShowPlayerDetailedScore(Text playerNamePanel)
+        {
+            var playerName = playerNamePanel.text;
+            if (!PlayerDetailScorePanel.activeSelf)
+            {
+                PlayerDetailScorePanel.SetActive(true);
+                var textComp = GameObject.Find("DetailedPlayerScore").GetComponent<TMP_Text>();
+                textComp.text = "Очки игрока " + playerName + "\r\n";
+                var score = GameManager.Instance.RoomService.GetScore(playerName);
+                textComp.text += $"Замки: {score.Castles}\r\n";
+                textComp.text += $"Поля: {score.Cornfields}\r\n";
+                textComp.text += $"Аббатства: {score.Churches}\r\n";
+                textComp.text += $"Дороги: {score.Roads}\r\n";
+            }
+        }
+
+        public void OnClosePlayerDetailedScore()
+        {
+            PlayerDetailScorePanel.SetActive(false);
         }
 
         private void UpdateGameViewsFromServer()

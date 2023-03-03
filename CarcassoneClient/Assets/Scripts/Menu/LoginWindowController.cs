@@ -35,9 +35,7 @@ namespace Assets.Scripts.Menu
         public override void Enable()
         {
             base.Enable();
-
             ErrorText.SetActive(false);
-            LoginBtn.SetActive(false);
         }
 
         public void OnLoginBtnClick()
@@ -82,14 +80,13 @@ namespace Assets.Scripts.Menu
             try
             {
                 var result = GameManager.Instance.RoomService.GetRoomsIds();
+                ErrorText.GetComponent<TMP_Text>().text = "";
                 ErrorText.SetActive(false);
-                LoginBtn.SetActive(true);
             }
             catch (Exception e)
             {
                 ErrorText.GetComponent<TMP_Text>().text = "Server is not available";
                 ErrorText.SetActive(true);
-                LoginBtn.SetActive(false);
                 Debug.LogException(e);
             }
         }
