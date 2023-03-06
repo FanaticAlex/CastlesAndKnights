@@ -15,11 +15,12 @@ namespace Carcassone.Core.Players
         public const string MiddleBotName = "Vikont(Middle)";
         public const string HardBotName = "King(Hard)";
 
-        private int _currentPlayerIndex;
+        private int _currentPlayerIndex = 0;
+        private static int _maximumPlayersCount = 5;
+        private static int _playerChipCount = 7;
 
         public PlayersPool()
         {
-            _currentPlayerIndex = 0;
         }
 
         public Player? GetPlayer(string playerName) => Players.FirstOrDefault(_player => _player.Name == playerName);
@@ -30,7 +31,10 @@ namespace Carcassone.Core.Players
 
         public void DeletePlayer(string name)
         {
-            var player = Players.Single(p => p.Name == name);
+            var player = GetPlayer(name);
+            if (player == null)
+                return;
+
             Players.Remove(player);
         }
 
@@ -39,21 +43,24 @@ namespace Carcassone.Core.Players
             // если этот игрок уже подключен
             var player = GetPlayer(name);
             if (player != null)
-                return player;
+                throw new Exception($"Игрок '{name}' уже подключен.");
 
             var color = GetFreeColor();
-            var player1 = new Player(name, color, false, 7);
+            var player1 = new Player(name, color, false, _playerChipCount);
             Players.Add(player1);
             return player1;
         }
 
         public void AddAIPlayerEasy()
         {
+            if (Players.Count == _maximumPlayersCount)
+                throw new Exception($"Cant add player. Maximum player count is {_maximumPlayersCount}");
+
             if (Players.Select(player => player.Name).Contains(EasyBotName))
                 throw new Exception("Easy bot already added");
 
             var color = GetFreeColor();
-            var player1 = new Player(EasyBotName, color, true, 7);
+            var player1 = new Player(EasyBotName, color, true, _playerChipCount);
             Players.Add(player1);
         }
 
