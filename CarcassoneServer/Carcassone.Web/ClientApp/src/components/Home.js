@@ -6,11 +6,9 @@ export class Home extends Component {
   render () {
       return (
           <div>
-              <h1>Обновления</h1>
+              <h1>Сборки:</h1>
               <ul>
-                  <li><strong>Обновление1</strong></li>
-                  <li><strong>Обновление2</strong>. Дополнителньная информация.</li>
-                  <li><strong>Обновление2</strong></li>
+                  <li><a href="/Carcassone_0.3_android.apk">Carcassone_0.3</a></li>
               </ul>
           </div>
 
