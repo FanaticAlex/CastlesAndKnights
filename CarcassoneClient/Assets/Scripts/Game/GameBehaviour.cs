@@ -16,6 +16,7 @@ namespace Assets.Scripts
         private FieldsController _fieldsController;
         private CardsController _cardsController;
         private PlayersController _playersController;
+        private ScoreController _scoreController;
 
         private Card _currentCard;
 
@@ -24,7 +25,6 @@ namespace Assets.Scripts
 
         public GameObject FinalScoreUIPanel;
         public GameObject FinalScoreUIPanelText;
-
         public GameObject PlayerDetailScorePanel;
 
         /// <summary>
@@ -34,12 +34,11 @@ namespace Assets.Scripts
         /// </summary>
         void Start()
         {
-            FinalScoreUIPanel.SetActive(false);
-            PlayerDetailScorePanel.SetActive(false);
-
             _fieldsController = new FieldsController();
             _cardsController = new CardsController(_fieldsController);
             _playersController = new PlayersController(_fieldsController, _cardsController);
+
+            _scoreController = new ScoreController(FinalScoreUIPanel, FinalScoreUIPanelText, PlayerDetailScorePanel);
         }
 
         /// <summary>
@@ -84,23 +83,17 @@ namespace Assets.Scripts
 
         public void OnShowPlayerDetailedScore(Text playerNamePanel)
         {
-            var playerName = playerNamePanel.text;
-            if (!PlayerDetailScorePanel.activeSelf)
-            {
-                PlayerDetailScorePanel.SetActive(true);
-                var textComp = GameObject.Find("DetailedPlayerScore").GetComponent<TMP_Text>();
-                textComp.text = "Очки игрока " + playerName + "\r\n";
-                var score = GameManager.Instance.RoomService.GetScore(playerName);
-                textComp.text += $"Замки: {score.Castles}\r\n";
-                textComp.text += $"Поля: {score.Cornfields}\r\n";
-                textComp.text += $"Аббатства: {score.Churches}\r\n";
-                textComp.text += $"Дороги: {score.Roads}\r\n";
-            }
+            _scoreController.ShowDetailedScore(playerNamePanel);
         }
 
         public void OnClosePlayerDetailedScore()
         {
-            PlayerDetailScorePanel.SetActive(false);
+            _scoreController.HideDetailedScore();
+        }
+
+        public void OnEndGameBtn()
+        {
+            SceneManager.LoadScene("CreateRoom", LoadSceneMode.Single);
         }
 
         private void UpdateGameViewsFromServer()
@@ -126,7 +119,7 @@ namespace Assets.Scripts
 
             _cardsController.UpdateChipsView();
             _playersController.UpdatePlayersView();
-
+            _scoreController.UpdateScore();
 
             // обновление поворота карты (нужно ли это вообще?)
             //_cardsController.UpdateCardRotationUI(_currentCard);
@@ -140,29 +133,10 @@ namespace Assets.Scripts
                 _cardsController.UpdateCardsView();
                 _cardsController.UpdateChipsView();
 
-                SetEndGameView();
+                this.enabled = false;
+                _scoreController.ShowEndGameWindow();
                 return;
             }
-        }
-
-        private void SetEndGameView()
-        {
-            FinalScoreUIPanel.SetActive(true);
-            this.enabled = false;
-
-            FinalScoreUIPanelText.GetComponent<TMP_Text>().text = String.Empty;
-            var scores = GameManager.Instance.RoomService.GetGameScores();
-            foreach (var score in scores)
-            {
-                FinalScoreUIPanelText.GetComponent<TMP_Text>().text += $"{score.UserName} : {score.FinalScore} \r\n"; 
-            }
-
-            GameManager.Instance.RoomService.Reset();
-        }
-
-        public void OnEndGameBtn()
-        {
-            SceneManager.LoadScene("CreateRoom", LoadSceneMode.Single);
         }
     }
 }

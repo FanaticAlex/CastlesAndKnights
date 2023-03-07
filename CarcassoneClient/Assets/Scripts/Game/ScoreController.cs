@@ -1,6 +1,8 @@
 ﻿using Carcassone.ApiClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,12 +16,28 @@ namespace Assets.Scripts
     {
         private Dictionary<string, GameObject> _playersScorePanels = new Dictionary<string, GameObject>();
 
+        public GameObject _finalScoreUIPanel;
+        public GameObject _finalScoreUIPanelText;
+        public GameObject _playerDetailScorePanel;
+
         /// <summary>
         /// Инициализирует панели игроков
         /// </summary>
         /// <param name="players"></param>
-        public ScoreController(IEnumerable<BasePlayer> players)
+        public ScoreController(
+            GameObject finalScoreUIPanel,
+            GameObject finalScoreUIPanelText,
+            GameObject playerDetailScorePanel)
         {
+            var players = GameManager.Instance.RoomService.GetPlayers();
+
+            _finalScoreUIPanel = finalScoreUIPanel;
+            _finalScoreUIPanelText = finalScoreUIPanelText;
+            _playerDetailScorePanel = playerDetailScorePanel;
+
+            _finalScoreUIPanel.SetActive(false);
+            _playerDetailScorePanel.SetActive(false);
+
             var panels = new List<GameObject>();
             panels.Add(GameObject.Find("PlayerScorePanel_1"));
             panels.Add(GameObject.Find("PlayerScorePanel_2"));
@@ -48,9 +66,40 @@ namespace Assets.Scripts
             }
         }
 
-        public void UpdateScore(Dictionary<BasePlayer, PlayerScore> allScore)
+        public void ShowDetailedScore(Text playerNamePanel)
         {
-            foreach(var item in allScore)
+            var playerName = playerNamePanel.text;
+            if (!_playerDetailScorePanel.activeSelf)
+            {
+                _playerDetailScorePanel.SetActive(true);
+                var textComp = GameObject.Find("DetailedPlayerScore").GetComponent<TMP_Text>();
+                textComp.text = "Очки игрока " + playerName + "\r\n";
+                var score = GameManager.Instance.RoomService.GetScore(playerName);
+                textComp.text += $"Замки: {score.Castles}\r\n";
+                textComp.text += $"Поля: {score.Cornfields}\r\n";
+                textComp.text += $"Аббатства: {score.Churches}\r\n";
+                textComp.text += $"Дороги: {score.Roads}\r\n";
+            }
+        }
+
+        public void HideDetailedScore()
+        {
+            _playerDetailScorePanel.SetActive(false);
+        }
+
+        public void UpdateScore()
+        {
+            var players = GameManager.Instance.RoomService.GetPlayers();
+
+            // вычислить очки
+            var _playerToScore = new Dictionary<BasePlayer, PlayerScore>();
+            foreach (var player in players)
+            {
+                var score = GameManager.Instance.RoomService.GetScore(player.Name);
+                _playerToScore.Add(player, score);
+            }
+
+            foreach (var item in _playerToScore)
             {
                 var player = item.Key;
                 var score = item.Value;
@@ -70,7 +119,29 @@ namespace Assets.Scripts
                              " Д:" + score.Roads;
 
                 playerScoreUI.transform.Find("InfoText").GetComponentInChildren<Text>().text = result;
+                
             }
+        }
+
+        public void ShowEndGameWindow()
+        {
+            _finalScoreUIPanel.SetActive(true);
+
+            var scores = GameManager.Instance.RoomService.GetGameScores();
+            var winnerScore = scores.Max(x => x.FinalScore);
+            var winners = scores
+                .Where(x => x.FinalScore == winnerScore)
+                .Select(x => x.UserName)
+                .ToList();
+            _finalScoreUIPanelText.GetComponent<TMP_Text>().text = $"The winner is {string.Join(",", winners)} \r\n";
+            _finalScoreUIPanelText.GetComponent<TMP_Text>().text += "SCORE \r\n";
+            foreach (var score in scores)
+            {
+                _finalScoreUIPanelText.GetComponent<TMP_Text>().text +=
+                    $"{score.UserName} : {score.FinalScore} \r\n";
+            }
+
+            GameManager.Instance.RoomService.Reset();
         }
     }
 }

@@ -13,14 +13,14 @@ namespace Assets.Scripts
     {
         public Dictionary<string, GameObject> _playerToMarkers = new Dictionary<string, GameObject>();
 
-        private ScoreController _scoreController;
         public HumanPlayerController _playerController;
         private CardsController _cardsController;
 
-        public PlayersController(FieldsController fieldsController, CardsController cardsController)
+        public PlayersController(
+            FieldsController fieldsController,
+            CardsController cardsController)
         {
             var players = GameManager.Instance.RoomService.GetPlayers();
-            _scoreController = new ScoreController(players);
             var player = players.First(p => p.Name == GameManager.Instance.RoomService.User.Login);
             _playerController = new HumanPlayerController(player, fieldsController, cardsController);
 
@@ -30,7 +30,6 @@ namespace Assets.Scripts
         public void UpdatePlayersView()
         {
             UpdatePlayersLastMoveMarkerUI();
-            UpdateScore();
         }
 
         public void HandlePlayerActions()
@@ -65,24 +64,6 @@ namespace Assets.Scripts
                     markObject.transform.position = _cardsController._cardsToGameObject[player.LastCardId].transform.position + new Vector3(0, 0, -1.3f);
                 }
             }
-        }
-
-        private void UpdateScore()
-        {
-            // вычислить очки
-            var players = GameManager.Instance.RoomService.GetPlayers();
-            var _playerToScore = new Dictionary<BasePlayer, PlayerScore>();
-            foreach (var player in players)
-            {
-                var score = GameManager.Instance.RoomService.GetScore(player.Name);
-                _playerToScore.Add(player, score);
-            }
-
-            _scoreController.UpdateScore(_playerToScore);
-
-            var cardsRemain = GameManager.Instance.RoomService.GetCardsRemain();
-            var cardsRemainText = GameObject.Find("CardsRemain").GetComponent<Text>();
-            cardsRemainText.text = "Карт в колоде:" + cardsRemain;
         }
     }
 }

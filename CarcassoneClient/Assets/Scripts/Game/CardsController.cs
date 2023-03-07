@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
@@ -69,6 +70,10 @@ namespace Assets.Scripts
                     _partsController._partToGameObject.Add(part.PartId, partGameObject);
                 }
             }
+
+            var cardsRemain = GameManager.Instance.RoomService.GetCardsRemain();
+            var cardsRemainText = GameObject.Find("CardsRemain").GetComponent<Text>();
+            cardsRemainText.text = "Карт в колоде:" + cardsRemain;
         }
 
         public void ShowCardMarks(string cardId)
