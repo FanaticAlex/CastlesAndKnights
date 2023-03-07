@@ -40,9 +40,9 @@ namespace Carcassone.Core.Calculation.Objects
             }
         }
 
-        public Player? Owner => BaseChurchPart.Chip?.Owner ?? BaseChurchPart.Flag?.Owner;
+        public BasePlayer? Owner => BaseChurchPart.Chip?.Owner ?? BaseChurchPart.Flag?.Owner;
 
-        public bool IsPlayerOwner(Player player)
+        public bool IsPlayerOwner(BasePlayer player)
         {
             return Owner?.Name == player.Name;
         }

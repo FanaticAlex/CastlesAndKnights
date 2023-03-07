@@ -7,11 +7,15 @@ using System.Threading.Tasks;
 
 namespace Carcassone.Core.Players.AI
 {
-    internal class PlayerAI
+    public class PlayerAI : BasePlayer
     {
         private Random _random = new Random();
 
-        public void MakeMove(GameRoom room, Player player)
+        public PlayerAI(string name, string color, int chipCount)
+            : base(name, color, chipCount)
+        { }
+
+        public override void ProcessMove(GameRoom room)
         {
             var card = room.GetCurrentCard();
             if (card == null)
@@ -31,11 +35,13 @@ namespace Carcassone.Core.Players.AI
             {
                 var part1 = parts[_random.Next(parts.Count)];
                 var part = card.Parts.Single(p => p.PartId == part1.PartId);
-                if (!part.IsOwned && player.ChipCount > 0)
+                if (!part.IsOwned && ChipCount > 0)
                 {
-                    room.PutChipInCard(card.CardName, part.PartId, player.Name);
+                    room.PutChipInCard(part, this);
                 }
             }
+
+            room.EndTurn();
         }
     }
 }

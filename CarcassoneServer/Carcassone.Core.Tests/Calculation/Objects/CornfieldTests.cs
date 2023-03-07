@@ -29,7 +29,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         public void GetScore()
         {
             var room = new GameRoom();
-            var owner1 = new Player();
+            var owner1 = new Player("Jack", "red", 7);
             var chip = new Chip();
             chip.Owner = owner1;
 

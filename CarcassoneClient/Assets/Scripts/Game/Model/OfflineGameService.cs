@@ -32,20 +32,20 @@ namespace Assets.Scripts
         public void AddHuman(string userName) => room.AddHumanPlayer(userName);
         public void AddAI() => room.AddAIPlayer();
         public void Start() => room.Start();
-        public void EndTurn() => room.EndTurn();
+        public void EndTurn(string userName) => room.EndTurn();
 
         public Carcassone.ApiClient.GameRoom GetRoom() => room.ToCommon();
         public List<string> GetRoomsIds() => throw new NotImplementedException();
 
-        public Carcassone.ApiClient.Player GetPlayer(string playerName) => room.GetPlayer(playerName).ToCommon();
-        public List<Carcassone.ApiClient.Player> GetPlayers() => room.GetPlayers().Select(p => p.ToCommon()).ToList();
-        public Carcassone.ApiClient.Player GetCurrentPlayer() => room.GetCurrentPlayer().ToCommon();
+        public Carcassone.ApiClient.BasePlayer GetPlayer(string playerName) => room.GetPlayer(playerName).ToCommon();
+        public List<Carcassone.ApiClient.BasePlayer> GetPlayers() => room.GetPlayers().Select(p => p.ToCommon()).ToList();
+        public Carcassone.ApiClient.BasePlayer GetCurrentPlayer() => room.GetCurrentPlayer().ToCommon();
 
         public Carcassone.ApiClient.Card GetCurrentCard() => room.GetCurrentCard().ToCommon();
         public List<Carcassone.ApiClient.Card> GetCards() => room.GetAllCards().Select(c => c.ToCommon()).ToList();
         public Carcassone.ApiClient.Card GetCard(string cardName) => room.GetCard(cardName).ToCommon();
         public bool CanPutCard(string fieldId, string cardName) => room.CanPutCard(fieldId, cardName);
-        public void PutCard(string fieldId, string cardName) => room.PutCardInField(room.GetCard(cardName), room.GetField(fieldId));
+        public void PutCard(string fieldId, string cardName, string userName) => room.PutCardInField(room.GetCard(cardName), room.GetField(fieldId));
         public void RotateCard(string cardName) => room.RotateCard(cardName);
 
         public List<Field> GetFields() => room.GetFields().Select(f => f.ToCommon()).ToList();
@@ -53,7 +53,13 @@ namespace Assets.Scripts
         public List<Field> GetNotAvailableFields() => room.GetNotAvailableFields().Select(f => f.ToCommon()).ToList();
 
         public List<Carcassone.ApiClient.ObjectPart> GetAvailableObjectParts(string cardId) => room.GetAvailableParts(cardId).Select(p => p.ToCommon()).ToList();
-        public void PutChip(string cardName, string partId, string playerName) => room.PutChipInCard(cardName, partId, playerName);
+        public void PutChip(string cardName, string partId, string playerName)
+        {
+            var card = room.GetCard(cardName);
+            var part = card.Parts.FirstOrDefault(p => p.PartId == partId);
+            var player = room.GetPlayer(playerName);
+            room.PutChipInCard(part, player);
+        }
 
         public List<GameScore> GetGameScores() => throw new NotImplementedException();
         public PlayerScore GetScore(string playerName) => room.GetPlayerScore(room.GetPlayer(playerName)).ToCommon();
@@ -84,12 +90,12 @@ namespace Assets.Scripts
             return commonRoom;
         }
 
-        public static Carcassone.ApiClient.Player ToCommon(this Carcassone.Core.Players.Player player)
+        public static Carcassone.ApiClient.BasePlayer ToCommon(this Carcassone.Core.Players.BasePlayer player)
         {
             if (player == null)
                 return null;
 
-            var commonPlayer = new Carcassone.ApiClient.Player();
+            var commonPlayer = new Carcassone.ApiClient.BasePlayer();
             commonPlayer.ChipCount = player.ChipCount;
             commonPlayer.LastCardId = player.LastCardId;
             commonPlayer.Name = player.Name;

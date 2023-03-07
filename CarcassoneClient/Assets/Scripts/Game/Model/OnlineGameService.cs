@@ -27,20 +27,20 @@ namespace Assets.Scripts
         public void AddHuman(string userName) => client.AddHumanAsync(RoomId, userName).Wait();
         public void AddAI() => client.AddAIAsync(RoomId).Wait();
         public void Start() => client.StartAsync(RoomId).Wait();
-        public void EndTurn() => client.EndTurnAsync(RoomId).Wait();
+        public void EndTurn(string userName) => client.EndTurnAsync(RoomId, userName).Wait();
 
         public GameRoom GetRoom() => client.RoomGETAsync(RoomId).Result;
         public List<string> GetRoomsIds() => client.ListAsync().Result.ToList();
 
-        public Player GetPlayer(string playerName) => client.PlayerGETAsync(RoomId, playerName).Result;
-        public List<Player> GetPlayers() => client.List2Async(RoomId).Result.ToList();
-        public Player GetCurrentPlayer() => client.CurrentAsync(RoomId).Result;
+        public BasePlayer GetPlayer(string playerName) => client.PlayerGETAsync(RoomId, playerName).Result;
+        public List<BasePlayer> GetPlayers() => client.List2Async(RoomId).Result.ToList();
+        public BasePlayer GetCurrentPlayer() => client.CurrentAsync(RoomId).Result;
 
         public Card GetCurrentCard() => client.Current2Async(RoomId).Result;
         public List<Card> GetCards() => client.List3Async(RoomId).Result.ToList();
         public Card GetCard(string cardName) => client.CardAsync(RoomId, cardName).Result;
         public bool CanPutCard(string fieldId, string cardName) => client.CanPutCardAsync(RoomId, fieldId, cardName).Result;
-        public void PutCard(string fieldId, string cardName) => client.PutCardInFieldAsync(RoomId, fieldId, cardName).Wait();
+        public void PutCard(string fieldId, string cardName, string userName) => client.PutCardInFieldAsync(RoomId, fieldId, cardName, userName).Wait();
         public void RotateCard(string cardName) => client.RotateCardAsync(RoomId, cardName).Wait();
 
         public List<Field> GetFields() => client.AllAsync(RoomId).Result.ToList();

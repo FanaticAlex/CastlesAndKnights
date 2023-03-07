@@ -18,7 +18,7 @@ namespace Assets.Scripts
         /// Инициализирует панели игроков
         /// </summary>
         /// <param name="players"></param>
-        public ScoreController(IEnumerable<Player> players)
+        public ScoreController(IEnumerable<BasePlayer> players)
         {
             var panels = new List<GameObject>();
             panels.Add(GameObject.Find("PlayerScorePanel_1"));
@@ -48,7 +48,7 @@ namespace Assets.Scripts
             }
         }
 
-        public void UpdateScore(Dictionary<Player, PlayerScore> allScore)
+        public void UpdateScore(Dictionary<BasePlayer, PlayerScore> allScore)
         {
             foreach(var item in allScore)
             {

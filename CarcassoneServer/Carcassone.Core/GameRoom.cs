@@ -6,6 +6,8 @@ using Carcassone.Core.Players;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Carcassone.Core
 {
@@ -21,7 +23,22 @@ namespace Carcassone.Core
 
         public string Id { get; }
         public bool IsStarted { get; set; }
-        public bool IsFinished { get; set; }
+
+        private bool _isFinished;
+        public bool IsFinished
+        {
+            get
+            {
+                return _isFinished;
+            }
+            set
+            {
+                _isFinished = value;
+                Finished?.Invoke(null, this);
+            }
+        }
+
+        public event EventHandler<GameRoom> Finished;
 
         public GameRoom()
         {
@@ -38,27 +55,42 @@ namespace Carcassone.Core
         public void Start()
         {
             IsStarted = true;
-
             var firstCard = _cardsPool.GetCurrentCard(_fieldBoard);
             var firstField = _fieldBoard.GetCenter();
             PutCardInField(firstCard, firstField);
-            MakeAIPlayersMove();
+
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    var player = _playersPool.CurrentPlayer;
+                    player.ProcessMove(this);
+                    _playersPool.MoveNextPlayer();
+
+                    var card = GetCurrentCard();
+                    if (card == null)
+                    {
+                        IsFinished = true;
+                        break;
+                    }
+                }
+            });
         }
 
 
         public Player AddHumanPlayer(string playerName) => _playersPool.AddHumanPlayer(playerName);
         public void AddAIPlayer() => _playersPool.AddAIPlayerEasy();
-        public List<Player> GetPlayers() => _playersPool.Players;
-        public Player? GetPlayer(string playerName) => _playersPool.GetPlayer(playerName);
+        public List<BasePlayer> GetPlayers() => _playersPool.Players;
+        public BasePlayer? GetPlayer(string playerName) => _playersPool.GetPlayer(playerName);
         public void DeletePlayer(string playerName) => _playersPool.DeletePlayer(playerName);
-        public Player GetCurrentPlayer() => _playersPool.CurrentPlayer;
+        public BasePlayer GetCurrentPlayer() => _playersPool.CurrentPlayer;
 
 
         public List<Road> GetRoads() => _scoreCalculator.Roads;
         public List<Castle> GetCastles() => _scoreCalculator.Castles;
         public List<Cornfield> GetCornfields() => _scoreCalculator.Cornfields;
         public List<Church> GetChurches() => _scoreCalculator.Churches;
-        public PlayerScore GetPlayerScore(Player player) => _scoreCalculator.GetPlayerScore(player, this);
+        public PlayerScore GetPlayerScore(BasePlayer player) => _scoreCalculator.GetPlayerScore(player, this);
 
 
         public List<Card> GetAllCards() => _cardsPool.GetAllCards();
@@ -121,66 +153,20 @@ namespace Carcassone.Core
             return list;
         }
 
-        public void PutCardInField(string fieldId, string cardName)
-        {
-            var card = GetCard(cardName);
-            var field = GetField(fieldId);
-            PutCardInField(card, field);
-        }
-
         public void PutCardInField(Card card, Field field)
         {
-            var currentPlayer = _playersPool.CurrentPlayer;
-            currentPlayer.LastCardId = card.CardName;
             _fieldBoard.PutCard(card, field);
             _scoreCalculator.AddCard(card);
         }
 
-        public void PutChipInCard(string cardName, string partId, string playerName)
+        public void PutChipInCard(ObjectPart partObject, BasePlayer player)
         {
-            var card = GetAllCards().First(_card => _card.CardName == cardName);
-            var partObject = card.Parts.First(_part => _part.PartId == partId);
-            var player = _playersPool.GetPlayer(playerName);
-            if (player == null)
-                throw new Exception($"player {playerName} не найден");
-
             partObject.Chip = player.TakeChip();
         }
 
         public void EndTurn()
         {
             _scoreCalculator.CloseObjectsAndReturnChips();
-            CheckGameOver();
-            if (!IsFinished)
-            {
-                _playersPool.MoveNextPlayer();
-                MakeAIPlayersMove();
-            }
-        }
-
-        private void MakeAIPlayersMove()
-        {
-            while (_playersPool.CurrentPlayer.IsBot())
-            {
-                _playersPool.CurrentPlayer.MakeMoveAI(this);
-                _scoreCalculator.CloseObjectsAndReturnChips();
-
-                CheckGameOver();
-                if (IsFinished)
-                    break;
-
-                _playersPool.MoveNextPlayer();
-            }
-        }
-
-        /// <summary>
-        /// Game is over if there is no cards to put
-        /// </summary>
-        private void CheckGameOver()
-        {
-            var card = GetCurrentCard();
-            if (card == null)
-                IsFinished = true;
         }
     }
 }

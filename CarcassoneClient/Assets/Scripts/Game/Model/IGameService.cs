@@ -20,20 +20,20 @@ namespace Assets.Scripts
         void AddHuman(string userName);
         void AddAI();
         void Start();
-        void EndTurn();
+        void EndTurn(string userName);
 
         GameRoom GetRoom();
         List<string> GetRoomsIds(); // этот метод не подхдит интерфейсу он только для сетевой игры
 
-        Player GetPlayer(string playerName);
-        List<Player> GetPlayers();
-        Player GetCurrentPlayer();
+        BasePlayer GetPlayer(string playerName);
+        List<BasePlayer> GetPlayers();
+        BasePlayer GetCurrentPlayer();
 
         Card GetCurrentCard();
         List<Card> GetCards();
         Card GetCard(string cardName);
         bool CanPutCard(string fieldId, string cardName);
-        void PutCard(string fieldId, string cardName);
+        void PutCard(string fieldId, string cardName, string userName);
         void RotateCard(string cardName);
 
         List<Field> GetFields();

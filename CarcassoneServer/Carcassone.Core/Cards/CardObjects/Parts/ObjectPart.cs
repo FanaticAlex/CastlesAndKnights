@@ -6,7 +6,7 @@ namespace Carcassone.Core.Cards
     /// <summary>
     /// Часть обьекта дорога, замок, поле или церковь.
     /// </summary>
-    public class ObjectPart
+    public abstract class ObjectPart
     {
         /// <summary>
         /// Список границ части игрового объекта,
@@ -15,8 +15,8 @@ namespace Carcassone.Core.Cards
         /// </summary>
         public List<Border> Borders = new List<Border>();
 
-        public Chip Chip { get; set; }
-        public Flag Flag { get; set; }
+        public Chip? Chip { get; set; }
+        public Flag? Flag { get; set; }
 
         public string PartId { get; set; }
         public string PartName { get; set; }
@@ -29,6 +29,7 @@ namespace Carcassone.Core.Cards
             PartId = cardName + partName;
             CardName = cardName;
             PartName = partName;
+            PartType = string.Empty;
         }
     }
 }

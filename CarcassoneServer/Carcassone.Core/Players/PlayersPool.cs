@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Carcassone.Core.Players.AI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,11 +24,11 @@ namespace Carcassone.Core.Players
         {
         }
 
-        public Player? GetPlayer(string playerName) => Players.FirstOrDefault(_player => _player.Name == playerName);
+        public BasePlayer? GetPlayer(string playerName) => Players.FirstOrDefault(_player => _player.Name == playerName);
 
-        public Player CurrentPlayer => Players[_currentPlayerIndex];
+        public BasePlayer CurrentPlayer => Players[_currentPlayerIndex];
 
-        public List<Player> Players { get; } = new List<Player>();
+        public List<BasePlayer> Players { get; } = new List<BasePlayer>();
 
         public void DeletePlayer(string name)
         {
@@ -46,7 +47,7 @@ namespace Carcassone.Core.Players
                 throw new Exception($"Игрок '{name}' уже подключен.");
 
             var color = GetFreeColor();
-            var player1 = new Player(name, color, false, _playerChipCount);
+            var player1 = new Player(name, color, _playerChipCount);
             Players.Add(player1);
             return player1;
         }
@@ -56,11 +57,18 @@ namespace Carcassone.Core.Players
             if (Players.Count == _maximumPlayersCount)
                 throw new Exception($"Cant add player. Maximum player count is {_maximumPlayersCount}");
 
-            if (Players.Select(player => player.Name).Contains(EasyBotName))
-                throw new Exception("Easy bot already added");
+            var botName = string.Empty;
+            var botIndex = 0;
+            while(true)
+            {
+                botIndex++;
+                botName = $"{EasyBotName}_{botIndex}";
+                if (!Players.Select(player => player.Name).Contains(botName))
+                    break;
+            }
 
             var color = GetFreeColor();
-            var player1 = new Player(EasyBotName, color, true, _playerChipCount);
+            var player1 = new PlayerAI(botName, color, _playerChipCount);
             Players.Add(player1);
         }
 

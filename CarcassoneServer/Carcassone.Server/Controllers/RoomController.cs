@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Carcassone.Core;
 using Carcassone.Core.Calculation;
 using Carcassone.Core.Calculation.Objects;
@@ -33,38 +34,15 @@ namespace CarcassoneServer.Controllers
 
         [HttpPost]
         [Route("create")]
-        public GameRoom CreateRoom() => _service.CreateRoom();
-
-        [HttpGet]
-        [Route("list")]
-        public List<string> GetRoomsList() => _service.GetAvailableRoomsId();
-
-        [HttpDelete]
-        [Route("{roomId}")]
-        public void DeleteRoom(string roomId) => _service.DeleteRoom(roomId);
-
-        [HttpGet]
-        [Route("{roomId}")]
-        public GameRoom GetRoom(string roomId) => _service.GetRoom(roomId);
-
-        [HttpGet]
-        [Route("{roomId}/start")]
-        public void Start(string roomId) => _service.GetRoom(roomId).Start();
-
-        [HttpGet]
-        [Route("{roomId}/availableFields/{cardId}")]
-        public List<Field> GetAvailableFields(string roomId, string cardId) => _service.GetRoom(roomId).GetAvailableFields(cardId);
-
-        [HttpGet]
-        [Route("{roomId}/notAvailableFields")]
-        public List<Field> GetNotAvailableFields(string roomId) => _service.GetRoom(roomId).GetNotAvailableFields();
-
-        [HttpGet]
-        [Route("{roomId}/endTurn")]
-        public void EndTurn(string roomId)
+        public GameRoom CreateRoom()
         {
-            var room = _service.GetRoom(roomId);
-            room.EndTurn();
+            var room = _service.CreateRoom();
+            room.Finished += Room_Finished;
+            return room;
+        }
+
+        private void Room_Finished(object sender, GameRoom room)
+        {
             if (room.IsFinished)
             {
                 WriteGameResults(room);
@@ -93,6 +71,31 @@ namespace CarcassoneServer.Controllers
         }
 
         [HttpGet]
+        [Route("list")]
+        public List<string> GetRoomsList() => _service.GetAvailableRoomsId();
+
+        [HttpDelete]
+        [Route("{roomId}")]
+        public void DeleteRoom(string roomId) => _service.DeleteRoom(roomId);
+
+        [HttpGet]
+        [Route("{roomId}")]
+        public GameRoom GetRoom(string roomId) => _service.GetRoom(roomId);
+
+        [HttpGet]
+        [Route("{roomId}/start")]
+        public void Start(string roomId) => _service.GetRoom(roomId).Start();
+
+        [HttpGet]
+        [Route("{roomId}/availableFields/{cardId}")]
+        public List<Field> GetAvailableFields(string roomId, string cardId) => _service.GetRoom(roomId).GetAvailableFields(cardId);
+
+        [HttpGet]
+        [Route("{roomId}/notAvailableFields")]
+        public List<Field> GetNotAvailableFields(string roomId) => _service.GetRoom(roomId).GetNotAvailableFields();
+
+
+        [HttpGet]
         [Route("{roomId}/field/all")]
         public List<Field> GetFields(string roomId) => _service.GetRoom(roomId).GetFields();
 
@@ -104,15 +107,46 @@ namespace CarcassoneServer.Controllers
 
         [HttpGet]
         [Route("{roomId}/canPutCard/{fieldId}/{cardName}")]
-        public bool CanPutCard(string roomId, string fieldId, string cardName) => _service.GetRoom(roomId).CanPutCard(fieldId, cardName);
+        public bool CanPutCard(string roomId, string fieldId, string cardName)
+        {
+            return _service.GetRoom(roomId).CanPutCard(fieldId, cardName);
+        }
+
+        [HttpGet]
+        [Route("{roomId}/putCardInField/{fieldId}/{cardName}/{playerName}")]
+        public void PutCardInField(string roomId, string fieldId, string cardName, string playerName)
+        {
+            var human = GetHumanPlayer(roomId, playerName);
+            human.SetPlayerMove1(cardName, fieldId);
+        }
 
         [HttpGet]
         [Route("{roomId}/putChipInCard/{cardName}/{partId}/{playerName}")]
-        public void PutChipInCard(string roomId, string cardName, string partId, string playerName) => _service.GetRoom(roomId).PutChipInCard(cardName, partId, playerName);
+        public void PutChipInCard(string roomId, string cardName, string partId, string playerName)
+        {
+            var human = GetHumanPlayer(roomId, playerName);
+            human.SetPlayerMove2(cardName, partId);
+        }
 
         [HttpGet]
-        [Route("{roomId}/putCardInField/{fieldId}/{cardName}")]
-        public void PutCardInField(string roomId, string fieldId, string cardName) => _service.GetRoom(roomId).PutCardInField(fieldId, cardName);
+        [Route("{roomId}/endTurn/{playerName}")]
+        public void EndTurn(string roomId, string playerName)
+        {
+            var human = GetHumanPlayer(roomId, playerName);
+            human.SetPlayerMove3();
+        }
+
+        private Player GetHumanPlayer(string roomId, string playerName)
+        {
+            var player = _service.GetRoom(roomId).GetCurrentPlayer();
+            if (player.Name != playerName)
+                throw new Exception($"Its '{player.Name}' turn!");
+
+            if (player is not Player)
+                throw new Exception($"Its AI '{player.Name}' turn!");
+
+            return ((Player)player);
+        }
 
         [HttpGet]
         [Route("{roomId}/roads")]
@@ -142,15 +176,15 @@ namespace CarcassoneServer.Controllers
 
         [HttpGet]
         [Route("{roomId}/player/list")]
-        public List<Player> GetPlayersList(string roomId) => _service.GetRoom(roomId).GetPlayers();
+        public List<BasePlayer> GetPlayersList(string roomId) => _service.GetRoom(roomId).GetPlayers();
 
         [HttpGet]
         [Route("{roomId}/player/current")]
-        public Player GetCurrentPlayer(string roomId) => _service.GetRoom(roomId).GetCurrentPlayer();
+        public BasePlayer GetCurrentPlayer(string roomId) => _service.GetRoom(roomId).GetCurrentPlayer();
 
         [HttpGet]
         [Route("{roomId}/player/{playerName}")]
-        public Player GetPlayer(string roomId, string playerName) => _service.GetRoom(roomId).GetPlayer(playerName);
+        public BasePlayer GetPlayer(string roomId, string playerName) => _service.GetRoom(roomId).GetPlayer(playerName);
 
         [HttpGet]
         [Route("{roomId}/player/{playerName}/score")]

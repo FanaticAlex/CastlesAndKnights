@@ -9,6 +9,6 @@ namespace Carcassone.Core.Players
 
         public ChipType Type { get; set; }
 
-        public Player Owner { get; set; }
+        public BasePlayer Owner { get; set; }
     }
 }

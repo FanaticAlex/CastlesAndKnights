@@ -124,7 +124,7 @@ namespace Carcassone.Core.Calculation
                 cornfield.RecalculatePartsOwner();
         }
 
-        public PlayerScore GetPlayerScore(Player player, GameRoom room)
+        public PlayerScore GetPlayerScore(BasePlayer player, GameRoom room)
         {
             var score = new PlayerScore();
             score.Churches = GetChurchesScore(player);
@@ -175,28 +175,28 @@ namespace Carcassone.Core.Calculation
             return mergedObject;
         }
 
-        private int GetCastlesScore(Player player)
+        private int GetCastlesScore(BasePlayer player)
         {
             return Castles
                 .Where(castle => castle.IsPlayerOwner(player))
                 .Sum(castle => castle.GetPoints());
         }
 
-        private int GetRoadsScore(Player player)
+        private int GetRoadsScore(BasePlayer player)
         {
             return Roads
                 .Where(road => road.IsPlayerOwner(player))
                 .Sum(road => road.GetPoints());
         }
 
-        private int GetCornfieldsScore(Player player, GameRoom room)
+        private int GetCornfieldsScore(BasePlayer player, GameRoom room)
         {
             return Cornfields
                 .Where(cornfield => cornfield.IsPlayerOwner(player))
                 .Sum(cornfield => cornfield.GetPoints(Castles, room));
         }
 
-        private int GetChurchesScore(Player player)
+        private int GetChurchesScore(BasePlayer player)
         {
             return Churches
                 .Where(church => church.IsPlayerOwner(player))

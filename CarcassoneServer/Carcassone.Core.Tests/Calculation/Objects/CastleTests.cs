@@ -39,7 +39,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
 
             room.PutCardInField(card1, room.GetField($"{0}_{-1}"));
             var part = card1.Parts.Single(p => p is CastlePart);
-            room.PutChipInCard(card1.CardName, part.PartId, bob.Name);
+            room.PutChipInCard(part, bob);
             room.EndTurn();
 
             var castles = room.GetCastles();
@@ -98,7 +98,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
 
             room.PutCardInField(card2, room.GetField($"{0}_{-1}"));
             var part = card2.Parts.Single(p => p is CastlePart);
-            room.PutChipInCard(card2.CardName, part.PartId, bob.Name);
+            room.PutChipInCard(part, bob);
             room.EndTurn();
 
             var castles = room.GetCastles();

@@ -24,13 +24,13 @@ namespace Assets.Scripts
         public bool Rotated { get; set; }
         public bool TurnEnded { get; set; }
 
-        private Player _player;
+        private BasePlayer _player;
         private FieldsController _fieldsController;
         private CardsController _cardsController;
 
         private GameObject EndTurnButton { get; set; }
 
-        public HumanPlayerController(Player player, FieldsController fieldsController, CardsController cardsController)
+        public HumanPlayerController(BasePlayer player, FieldsController fieldsController, CardsController cardsController)
         {
             _player = player;
             _fieldsController = fieldsController;
@@ -62,7 +62,7 @@ namespace Assets.Scripts
             }
         }
 
-        private void PlayerHoldCardProcess(Player player)
+        private void PlayerHoldCardProcess(BasePlayer player)
         {
             // в начале хода тянем карту, если ее нет
             if (_currentCard == null)
@@ -84,7 +84,7 @@ namespace Assets.Scripts
                 var canPutCard = GameManager.Instance.RoomService.CanPutCard(_selectedFieldId, _currentCard.CardName);
                 if (canPutCard)
                 {
-                    GameManager.Instance.RoomService.PutCard(_selectedFieldId, _currentCard.CardName);
+                    GameManager.Instance.RoomService.PutCard(_selectedFieldId, _currentCard.CardName, player.Name);
                     var player1 = GameManager.Instance.RoomService.GetPlayer(player.Name);
                     if (player1.ChipCount != 0)
                     {
@@ -103,7 +103,7 @@ namespace Assets.Scripts
             }
         }
 
-        private void HoldChipProcess(Player player)
+        private void HoldChipProcess(BasePlayer player)
         {
             HilightSelectedCardMark(_currentCard.CardName);
 
@@ -120,7 +120,7 @@ namespace Assets.Scripts
                     if (partObject != null)
                     {
                         GameManager.Instance.RoomService.PutChip(_currentCard.CardName, partObject, player.Name);
-                        EndTurn();
+                        EndTurn(player.Name);
                     }
                 }
             }
@@ -130,7 +130,7 @@ namespace Assets.Scripts
             {
                 MouseButton1 = false;
                 TurnEnded = false;
-                EndTurn();
+                EndTurn(player.Name);
             }
         }
 
@@ -188,9 +188,9 @@ namespace Assets.Scripts
             return null;
         }
 
-        private void EndTurn()
+        private void EndTurn(string userName)
         {
-            GameManager.Instance.RoomService.EndTurn();
+            GameManager.Instance.RoomService.EndTurn(userName);
             _cardsController.HideCardMarks(_currentCard.CardName);
             _currentCard = null;
             _playerState = PlayerState.PlayerWait;

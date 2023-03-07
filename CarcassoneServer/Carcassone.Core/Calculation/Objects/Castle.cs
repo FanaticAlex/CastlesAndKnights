@@ -29,7 +29,7 @@ namespace Carcassone.Core.Calculation.Objects
         public List<ObjectPart> GetParts() => Parts;
 
 
-        public bool IsPlayerOwner(Player player)
+        public bool IsPlayerOwner(BasePlayer player)
         {
             return GetOwners().Select(p => p.Name).Contains(player.Name);
         }
@@ -96,7 +96,7 @@ namespace Carcassone.Core.Calculation.Objects
             return false;
         }
 
-        private List<Player> GetOwnersByFlags()
+        private List<BasePlayer> GetOwnersByFlags()
         {
             return Parts
                 .Where(part => part.Flag?.Owner != null)
@@ -104,10 +104,10 @@ namespace Carcassone.Core.Calculation.Objects
                 .Distinct().ToList();
         }
 
-        private List<Player> GetOwnersByChips()
+        private List<BasePlayer> GetOwnersByChips()
         {
             // количество фишек у каждого игрока
-            var ownersToChipCount = new Dictionary<Player, int>();
+            var ownersToChipCount = new Dictionary<BasePlayer, int>();
             foreach (var part in Parts)
             {
                 if (part.Chip != null)
@@ -125,7 +125,7 @@ namespace Carcassone.Core.Calculation.Objects
 
             // замок без владельцев
             if (!ownersToChipCount.Any())
-                return new List<Player>();
+                return new List<BasePlayer>();
 
             // владельцы - игроки у которых максимальное число фишек на замке.
             var maxChip = ownersToChipCount.Values.Max();
@@ -148,7 +148,7 @@ namespace Carcassone.Core.Calculation.Objects
             return isClosed1;
         }
 
-        private List<Player> GetOwners()
+        private List<BasePlayer> GetOwners()
         {
             // если замок закончен считаем по флагам владельцев
             // если не закончен считаем количество фишек

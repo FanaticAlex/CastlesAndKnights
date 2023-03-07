@@ -15,7 +15,7 @@ namespace Carcassone.Core.Calculation.Objects
 
         public List<ObjectPart> GetParts() => Parts;
 
-        public bool IsPlayerOwner(Player player)
+        public bool IsPlayerOwner(BasePlayer player)
         {
             return GetOwners().Select(p => p.Name).Contains(player.Name);
         }
@@ -91,9 +91,9 @@ namespace Carcassone.Core.Calculation.Objects
             return isClosed1;
         }
 
-        private List<Player> GetOwners()
+        private List<BasePlayer> GetOwners()
         {
-            var owners = new List<Player>();
+            var owners = new List<BasePlayer>();
             if (IsFinished)
             {
                 foreach (var part in Parts)
@@ -107,7 +107,7 @@ namespace Carcassone.Core.Calculation.Objects
                 return owners;
             }
 
-            var ownersToChipCount = new Dictionary<Player, int>();
+            var ownersToChipCount = new Dictionary<BasePlayer, int>();
             foreach (var part in Parts)
             {
                 if (part.Chip != null)

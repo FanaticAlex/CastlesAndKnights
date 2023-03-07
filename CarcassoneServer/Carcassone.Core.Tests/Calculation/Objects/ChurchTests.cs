@@ -15,7 +15,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             var churchPart = new ChurchPart("partName", churchCard.CardName);
             churchPart.ChurchField = churchCard.Field;
             churchPart.Chip = new Chip();
-            churchPart.Chip.Owner = new Player();
+            churchPart.Chip.Owner = new Player("Jack", "red", 7);
 
             var church = new Church(churchPart);
             Assert.Equal(1, church.GetPoints());

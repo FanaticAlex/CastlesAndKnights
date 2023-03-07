@@ -71,7 +71,7 @@ namespace Assets.Scripts
         {
             // вычислить очки
             var players = GameManager.Instance.RoomService.GetPlayers();
-            var _playerToScore = new Dictionary<Player, PlayerScore>();
+            var _playerToScore = new Dictionary<BasePlayer, PlayerScore>();
             foreach (var player in players)
             {
                 var score = GameManager.Instance.RoomService.GetScore(player.Name);

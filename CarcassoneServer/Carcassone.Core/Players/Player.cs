@@ -1,76 +1,81 @@
-﻿using Carcassone.Core.Cards;
+﻿using Carcassone.Core.Calculation;
+using Carcassone.Core.Cards;
+using Carcassone.Core.Fields;
 using Carcassone.Core.Players.AI;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Carcassone.Core.Players
 {
-    public class Player
+    public class Player : BasePlayer
     {
-        private PlayerAI _playerAI;
-        private List<Chip> _chipList = new List<Chip>();
+        private string? _cardName;
+        private string? _fieldId;
+        private string? _partId;
+        public bool _turnEnded;
 
-        public Player()
+        public Player(string name, string color, int chipCount)
+            : base(name, color, chipCount)
         {
         }
 
-        public Player(string name, string color, bool isBot, int chipCount)
+        public void SetPlayerMove1(string cardName, string fieldId) // положить карту
         {
-            Name = name;
-            Color = color;
+            _cardName = cardName;
+            _fieldId = fieldId;
+        }
 
-            for (var i = 0; i < chipCount; i++)
+        public void SetPlayerMove2(string cardName, string partId) // положить фишку
+        {
+            _cardName = cardName;
+            _partId = partId;
+        }
+
+        public void SetPlayerMove3() // завершить ход
+        {
+            _turnEnded = true;
+        }
+
+        public override void ProcessMove(GameRoom room)
+        {
+            while (true)
             {
-                var chip = new Chip();
-                chip.Owner = this;
-                _chipList.Add(chip);
+                if (_cardName != null && _fieldId != null)
+                {
+                    var card = room.GetCard(_cardName);
+                    var field = room.GetField(_fieldId);
+                    LastCardId = card.CardName;
+                    room.PutCardInField(card, field);
+                    break;
+                }
             }
 
-            if (isBot)
+            while (true)
             {
-                _playerAI = new PlayerAI();
+                if (_turnEnded)
+                    break;
+
+                if (_cardName != null && _partId != null)
+                {
+                    var card = room.GetAllCards().First(_card => _card.CardName == _cardName);
+                    var partObject = card.Parts.First(_part => _part.PartId == _partId);
+                    room.PutChipInCard(partObject, this);
+                    break;
+                }
             }
-        }
 
-        public string Name { get; set; }
-
-        public string Color { get; set; }
-
-        public string LastCardId { get; set; }
-
-        public int ChipCount => _chipList.Count;
-
-        public bool IsBot()
-        {
-            return _playerAI != null;
-        }
-
-        public void MakeMoveAI(GameRoom room)
-        {
-            _playerAI.MakeMove(room, this);
-        }
-
-        public Chip? TakeChip()
-        {
-            if (_chipList.Count == 0)
-                return null;
-
-            var chip = _chipList[0];
-            _chipList.Remove(chip);
-            return chip;
-        }
-
-        public void ReturnChipAndSetFlag(ObjectPart part)
-        {
-            if (part.Chip == null)
-                throw new System.Exception("Объект не принадлежит игроку, невозможно установить флаг.");
-
-            var chip = part.Chip;
-            chip.Owner = this;
-            _chipList.Add(chip);
-
-            part.Chip = null;
-            part.Flag = new Flag(this);
+            while (true)
+            {
+                if (_turnEnded)
+                {
+                    _cardName = null;
+                    _partId = null;
+                    _turnEnded = false;
+                    break;
+                }
+            }
         }
     }
 }

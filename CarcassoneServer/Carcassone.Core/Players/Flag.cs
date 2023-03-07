@@ -8,9 +8,9 @@ namespace Carcassone.Core.Players
 {
     public class Flag
     {
-        public Player Owner { get; set; }
+        public BasePlayer Owner { get; set; }
 
-        public Flag(Player owner)
+        public Flag(BasePlayer owner)
         {
             Owner = owner;
         }

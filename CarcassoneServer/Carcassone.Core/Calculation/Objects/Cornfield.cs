@@ -14,7 +14,7 @@ namespace Carcassone.Core.Calculation.Objects
 
         public List<ObjectPart> GetParts() => Parts;
 
-        public bool IsPlayerOwner(Player player)
+        public bool IsPlayerOwner(BasePlayer player)
         {
             return GetOwners().Select(owner => owner.Name).Contains(player.Name);
         }
@@ -114,9 +114,9 @@ namespace Carcassone.Core.Calculation.Objects
         }
 
 
-        private List<Player> GetOwners()
+        private List<BasePlayer> GetOwners()
         {
-            var owners = new List<Player>();
+            var owners = new List<BasePlayer>();
             foreach (var part in Parts)
             {
                 if (part.Chip != null && !owners.Contains(part.Chip.Owner))
