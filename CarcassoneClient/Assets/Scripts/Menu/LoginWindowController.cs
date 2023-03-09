@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -16,20 +12,6 @@ namespace Assets.Scripts.Menu
         public GameObject LoginBtn;
         public GameObject ErrorText;
 
-        private float _timer;
-        private float _delta = 3f;
-        private bool _stopCheckConnection;
-
-        void Update()
-        {
-            _timer += Time.deltaTime;
-            if (_timer > _delta)
-            {
-                CheckConnection();
-                _timer = 0;
-            }
-        }
-
         public override MenuWindowType MenuPanelType => MenuWindowType.Login;
 
         public override void Enable()
@@ -42,24 +24,49 @@ namespace Assets.Scripts.Menu
         {
             var login = GameObject.Find("Login").GetComponent<TMP_InputField>().text;
             var password = GameObject.Find("Password").GetComponent<TMP_InputField>().text;
+
+            // делаем несколько попыток, если не получилось выдаем ошибку
+            var maxTryCount = 10;
+            var tryNumber = 1;
+            while (true)
+            {
+                var errorMessage = string.Empty;
+                if (TryLogin(login, password, out errorMessage))
+                {
+                    MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
+                    break;
+                }
+
+                if (tryNumber >= maxTryCount)
+                {
+                    ErrorText.GetComponent<TMP_Text>().text = $"Error: {errorMessage}";
+                    ErrorText.SetActive(true);
+                    break;
+                }
+
+                tryNumber++;
+            }
+        }
+
+        private bool TryLogin(string login, string password, out string message)
+        {
             try
             {
                 GameManager.Instance.SetOnlineMode();
                 GameManager.Instance.RoomService.Login(login, password);
+                message = String.Empty;
+                return true;
             }
             catch (Exception e)
             {
-                ErrorText.GetComponent<TMP_Text>().text = $"Error: {e.Message}";
-                ErrorText.SetActive(true);
-                return;
+                Debug.LogException(e);
+                message = e.InnerException?.Message ?? e.Message;
+                return false;
             }
-
-            MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
         }
 
         public void OnOfflineGameBtnClick()
         {
-            _stopCheckConnection = true;
             GameManager.Instance.SetOfflineMode();
             MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
         }
@@ -67,34 +74,6 @@ namespace Assets.Scripts.Menu
         public void OnExitBtnClick()
         {
             Application.Quit();
-        }
-
-        private void CheckConnection()
-        {
-            if (_stopCheckConnection)
-            {
-                ErrorText.SetActive(false);
-                return;
-            }
-
-            try
-            {
-                var result = GameManager.Instance.RoomService.GetRoomsIds();
-                ErrorText.GetComponent<TMP_Text>().text = "";
-                ErrorText.SetActive(false);
-            }
-            catch (AggregateException e)
-            {
-                ErrorText.GetComponent<TMP_Text>().text = $"Error: {e.InnerException.Message}";
-                ErrorText.SetActive(true);
-                Debug.LogException(e);
-            }
-            catch (Exception e)
-            {
-                ErrorText.GetComponent<TMP_Text>().text = $"Error: {e.Message}";
-                ErrorText.SetActive(true);
-                Debug.LogException(e);
-            }
         }
     }
 }

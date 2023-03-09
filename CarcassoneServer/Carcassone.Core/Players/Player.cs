@@ -1,11 +1,4 @@
-﻿using Carcassone.Core.Calculation;
-using Carcassone.Core.Cards;
-using Carcassone.Core.Fields;
-using Carcassone.Core.Players.AI;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Carcassone.Core.Players
 {
