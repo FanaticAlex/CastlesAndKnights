@@ -30,7 +30,7 @@ namespace Carcassone.Core.Players
 
         public string Color { get; set; }
 
-        public string LastCardId { get; set; }
+        public string? LastCardId { get; set; }
 
         public int ChipCount => _chipList.Count;
 

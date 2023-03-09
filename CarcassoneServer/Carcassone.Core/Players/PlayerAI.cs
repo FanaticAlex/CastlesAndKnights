@@ -26,6 +26,7 @@ namespace Carcassone.Core.Players.AI
             var field = fields[_random.Next(fields.Count)];
             if (field.RotateCardTilFit(card))
             {
+                LastCardId = card.CardName;
                 room.PutCardInField(card, field);
             }
 
