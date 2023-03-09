@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,8 +16,11 @@ namespace Assets.Scripts
         public OnlineGameService()
         {
             var httpClient = new System.Net.Http.HttpClient() { Timeout = new TimeSpan(0, 0, 1) };
+            //client = new Client(@"https://192.168.1.65:443/", httpClient);
             client = new Client(@"http://192.168.1.65:81/", httpClient);
             //client = new Client(@"https://localhost:44322/", httpClient);
+
+            ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
         }
 
         public User User { get; private set; }

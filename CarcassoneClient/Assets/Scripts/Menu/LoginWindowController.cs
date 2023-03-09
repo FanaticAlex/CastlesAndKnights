@@ -47,9 +47,9 @@ namespace Assets.Scripts.Menu
                 GameManager.Instance.SetOnlineMode();
                 GameManager.Instance.RoomService.Login(login, password);
             }
-            catch
+            catch (Exception e)
             {
-                ErrorText.GetComponent<TMP_Text>().text = "Login or password is incorrect";
+                ErrorText.GetComponent<TMP_Text>().text = $"Error: {e.Message}";
                 ErrorText.SetActive(true);
                 return;
             }
@@ -83,9 +83,15 @@ namespace Assets.Scripts.Menu
                 ErrorText.GetComponent<TMP_Text>().text = "";
                 ErrorText.SetActive(false);
             }
+            catch (AggregateException e)
+            {
+                ErrorText.GetComponent<TMP_Text>().text = $"Error: {e.InnerException.Message}";
+                ErrorText.SetActive(true);
+                Debug.LogException(e);
+            }
             catch (Exception e)
             {
-                ErrorText.GetComponent<TMP_Text>().text = "Server is not available";
+                ErrorText.GetComponent<TMP_Text>().text = $"Error: {e.Message}";
                 ErrorText.SetActive(true);
                 Debug.LogException(e);
             }
