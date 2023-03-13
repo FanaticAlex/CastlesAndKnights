@@ -1,11 +1,6 @@
-﻿using Carcassone.ApiClient;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
@@ -16,6 +11,8 @@ namespace Assets.Scripts
         public HumanPlayerController _playerController;
         private CardsController _cardsController;
 
+        private GameObject _waitingSpinner;
+
         public PlayersController(
             FieldsController fieldsController,
             CardsController cardsController)
@@ -25,6 +22,8 @@ namespace Assets.Scripts
             _playerController = new HumanPlayerController(player, fieldsController, cardsController);
 
             _cardsController = cardsController;
+
+            _waitingSpinner = GameObject.Find("WaitingSpinner");
         }
 
         public void UpdatePlayersView()
@@ -40,6 +39,11 @@ namespace Assets.Scripts
             {
                 _playerController.StartMyTurn();
                 _playerController.MakingMove();
+                _waitingSpinner.SetActive(false);
+            }
+            else
+            {
+                _waitingSpinner.SetActive(true);
             }
         }
 

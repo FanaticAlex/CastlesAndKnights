@@ -63,12 +63,6 @@ namespace Assets.Scripts
                 _timer1 = 0;
                 UpdateGameViewsFromServer();
             }
-
-            // тут операции, которые необходимо делать каждый update для нормального отображения
-            // карта перемещается вместе с курсором
-            //var isPlayerHoldCard = _playersController._playerController._playerState == PlayerState.PlayerHoldCard;
-            //if (isPlayerHoldCard)
-            //    _cardsController.UpdateCardPositionByCursor(_currentCard);
         }
 
         public void OnRotateButonClick()
@@ -120,9 +114,7 @@ namespace Assets.Scripts
             _cardsController.UpdateChipsView();
             _playersController.UpdatePlayersView();
             _scoreController.UpdateScore();
-
-            // обновление поворота карты (нужно ли это вообще?)
-            //_cardsController.UpdateCardRotationUI(_currentCard);
+            _scoreController.UpdateCurrentPlayerMark();
 
             // окончание игры
             var isFinished = GameManager.Instance.RoomService.GetRoom().IsFinished;

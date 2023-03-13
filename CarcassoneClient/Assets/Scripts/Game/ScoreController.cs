@@ -123,6 +123,18 @@ namespace Assets.Scripts
             }
         }
 
+        public void UpdateCurrentPlayerMark()
+        {
+            var currentPlayer = GameManager.Instance.RoomService.GetCurrentPlayer();
+            foreach(var item in  _playersScorePanels)
+            {
+                if (item.Key == currentPlayer.Name)
+                    item.Value.transform.Find("SelectedBorder").gameObject.SetActive(true);
+                else
+                    item.Value.transform.Find("SelectedBorder").gameObject.SetActive(false);
+            }
+        }
+
         public void ShowEndGameWindow()
         {
             _finalScoreUIPanel.SetActive(true);
