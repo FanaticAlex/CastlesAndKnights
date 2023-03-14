@@ -3,6 +3,7 @@ using Carcassone.Core.Calculation.Objects;
 using Carcassone.Core.Cards;
 using Carcassone.Core.Fields;
 using Carcassone.Core.Players;
+using Carcassone.Core.Players.AI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace Carcassone.Core
             }
         }
 
-        public event EventHandler<GameRoom> Finished;
+        public event EventHandler<GameRoom>? Finished;
 
         public GameRoom()
         {
@@ -55,28 +56,17 @@ namespace Carcassone.Core
         public void Start()
         {
             IsStarted = true;
+
+            // инициализирующий ход
             var firstCard = _cardsPool.GetCurrentCard(_fieldBoard);
+            if (firstCard == null)
+                throw new Exception("Ошибка. В колоде нет карт!");
+
             var firstField = _fieldBoard.GetCenter();
             PutCardInField(firstCard, firstField);
 
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    var player = _playersPool.CurrentPlayer;
-                    player.ProcessMove(this);
-                    _playersPool.MoveNextPlayer();
-
-                    var card = GetCurrentCard();
-                    if (card == null)
-                    {
-                        IsFinished = true;
-                        break;
-                    }
-                }
-            });
+            _playersPool.MoveNextPlayer(this);
         }
-
 
         public Player AddHumanPlayer(string playerName) => _playersPool.AddHumanPlayer(playerName);
         public void AddAIPlayer() => _playersPool.AddAIPlayerEasy();
@@ -167,6 +157,15 @@ namespace Carcassone.Core
         public void EndTurn()
         {
             _scoreCalculator.CloseObjectsAndReturnChips();
+
+            var card = GetCurrentCard();
+            if (card == null)
+            {
+                IsFinished = true;
+                return;
+            }
+
+            _playersPool.MoveNextPlayer(this);
         }
     }
 }

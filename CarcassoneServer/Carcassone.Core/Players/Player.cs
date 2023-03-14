@@ -4,71 +4,29 @@ namespace Carcassone.Core.Players
 {
     public class Player : BasePlayer
     {
-        private string? _cardName;
-        private string? _fieldId;
-        private string? _partId;
-        public bool _turnEnded;
-
         public Player(string name, string color, int chipCount)
             : base(name, color, chipCount)
         {
         }
 
-        public void SetPlayerMove1(string cardName, string fieldId) // положить карту
+        public void SetPlayerMove1(GameRoom room, string cardName, string fieldId) // положить карту
         {
-            _cardName = cardName;
-            _fieldId = fieldId;
+            var card = room.GetCard(cardName);
+            var field = room.GetField(fieldId);
+            LastCardId = card.CardName;
+            room.PutCardInField(card, field);
         }
 
-        public void SetPlayerMove2(string cardName, string partId) // положить фишку
+        public void SetPlayerMove2(GameRoom room, string cardName, string partId) // положить фишку
         {
-            _cardName = cardName;
-            _partId = partId;
+            var card = room.GetAllCards().First(_card => _card.CardName == cardName);
+            var partObject = card.Parts.First(_part => _part.PartId == partId);
+            room.PutChipInCard(partObject, this);
         }
 
-        public void SetPlayerMove3() // завершить ход
+        public void SetPlayerMove3(GameRoom room) // завершить ход
         {
-            _turnEnded = true;
-        }
-
-        public override void ProcessMove(GameRoom room)
-        {
-            while (true)
-            {
-                if (_cardName != null && _fieldId != null)
-                {
-                    var card = room.GetCard(_cardName);
-                    var field = room.GetField(_fieldId);
-                    LastCardId = card.CardName;
-                    room.PutCardInField(card, field);
-                    break;
-                }
-            }
-
-            while (true)
-            {
-                if (_turnEnded)
-                    break;
-
-                if (_cardName != null && _partId != null)
-                {
-                    var card = room.GetAllCards().First(_card => _card.CardName == _cardName);
-                    var partObject = card.Parts.First(_part => _part.PartId == _partId);
-                    room.PutChipInCard(partObject, this);
-                    break;
-                }
-            }
-
-            while (true)
-            {
-                if (_turnEnded)
-                {
-                    _cardName = null;
-                    _partId = null;
-                    _turnEnded = false;
-                    break;
-                }
-            }
+            room.EndTurn();
         }
     }
 }

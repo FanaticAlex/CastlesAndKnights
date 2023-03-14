@@ -30,8 +30,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         {
             var room = new GameRoom();
             var owner1 = new Player("Jack", "red", 7);
-            var chip = new Chip();
-            chip.Owner = owner1;
+            var chip = new Chip(owner1);
 
             var card = room.GetCard("CFFF_0");
             var cornfield = new Cornfield();

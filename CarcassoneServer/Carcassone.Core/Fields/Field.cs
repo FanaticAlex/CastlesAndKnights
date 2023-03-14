@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System;
+﻿using System;
 using Carcassone.Core.Cards;
-using System.Dynamic;
 
 namespace Carcassone.Core.Fields
 {

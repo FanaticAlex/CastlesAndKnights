@@ -116,29 +116,32 @@ namespace CarcassoneServer.Controllers
         [Route("{roomId}/putCardInField/{fieldId}/{cardName}/{playerName}")]
         public void PutCardInField(string roomId, string fieldId, string cardName, string playerName)
         {
-            var human = GetHumanPlayer(roomId, playerName);
-            human.SetPlayerMove1(cardName, fieldId);
+            var room = _service.GetRoom(roomId);
+            var human = GetHumanPlayer(room, playerName);
+            human.SetPlayerMove1(room, cardName, fieldId);
         }
 
         [HttpGet]
         [Route("{roomId}/putChipInCard/{cardName}/{partId}/{playerName}")]
         public void PutChipInCard(string roomId, string cardName, string partId, string playerName)
         {
-            var human = GetHumanPlayer(roomId, playerName);
-            human.SetPlayerMove2(cardName, partId);
+            var room = _service.GetRoom(roomId);
+            var human = GetHumanPlayer(room, playerName);
+            human.SetPlayerMove2(room, cardName, partId);
         }
 
         [HttpGet]
         [Route("{roomId}/endTurn/{playerName}")]
         public void EndTurn(string roomId, string playerName)
         {
-            var human = GetHumanPlayer(roomId, playerName);
-            human.SetPlayerMove3();
+            var room = _service.GetRoom(roomId);
+            var human = GetHumanPlayer(room, playerName);
+            human.SetPlayerMove3(room);
         }
 
-        private Player GetHumanPlayer(string roomId, string playerName)
+        private Player GetHumanPlayer(GameRoom room, string playerName)
         {
-            var player = _service.GetRoom(roomId).GetCurrentPlayer();
+            var player = room.GetCurrentPlayer();
             if (player.Name != playerName)
                 throw new Exception($"Its '{player.Name}' turn!");
 

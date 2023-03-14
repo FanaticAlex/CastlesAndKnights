@@ -1,9 +1,6 @@
 ﻿using Carcassone.Core.Cards;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using System.Xml.Linq;
 
 namespace Carcassone.Core.Players
 {
@@ -18,13 +15,10 @@ namespace Carcassone.Core.Players
 
             for (var i = 0; i < chipCount; i++)
             {
-                var chip = new Chip();
-                chip.Owner = this;
+                var chip = new Chip(this);
                 _chipList.Add(chip);
             }
         }
-
-        public abstract void ProcessMove(GameRoom room);
 
         public string Name { get; set; }
 
@@ -47,7 +41,7 @@ namespace Carcassone.Core.Players
         public void ReturnChipAndSetFlag(ObjectPart part)
         {
             if (part.Chip == null)
-                throw new System.Exception("Объект не принадлежит игроку, невозможно установить флаг.");
+                throw new Exception("Объект не принадлежит игроку, невозможно установить флаг.");
 
             var chip = part.Chip;
             chip.Owner = this;

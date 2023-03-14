@@ -14,8 +14,8 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             var churchCard = GetNearCard(0, 0);
             var churchPart = new ChurchPart("partName", churchCard.CardName);
             churchPart.ChurchField = churchCard.Field;
-            churchPart.Chip = new Chip();
-            churchPart.Chip.Owner = new Player("Jack", "red", 7);
+            var player = new Player("Jack", "red", 7);
+            churchPart.Chip = new Chip(player);
 
             var church = new Church(churchPart);
             Assert.Equal(1, church.GetPoints());
@@ -45,7 +45,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         private Card GetNearCard(int x, int y)
         {
             var churchCard = new Card("FFFF_0");
-            var field = new Field(null, x, y);
+            var field = new Field(new FieldBoard(), x, y);
             churchCard.ConnectField(field);
             field.SetCardInField(churchCard);
             return churchCard;

@@ -15,7 +15,7 @@ namespace Carcassone.Core.Players.AI
             : base(name, color, chipCount)
         { }
 
-        public override void ProcessMove(GameRoom room)
+        public void ProcessMove(GameRoom room)
         {
             var card = room.GetCurrentCard();
             if (card == null)

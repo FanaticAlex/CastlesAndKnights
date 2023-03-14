@@ -65,8 +65,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             var card3 = room.GetCard("FFRR_3");
             card3.RotationsCount = 1;
 
-            var chip = new Chip();
-            chip.Owner = bob;
+            var chip = new Chip(bob);
             card0.Parts.First(p => p is RoadPart).Chip = chip;
 
             room.PutCardInField(card0, room.GetField($"{0}_{0}"));
@@ -109,8 +108,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             var card1 = room.GetCard("FRRR_0");
             card1.RotationsCount = 2;
 
-            var chip = new Chip();
-            chip.Owner = bob;
+            var chip = new Chip(bob);
             card0.Parts.First(p => p is RoadPart).Chip = chip;
 
             room.PutCardInField(card0, room.GetField($"{0}_{0}"));

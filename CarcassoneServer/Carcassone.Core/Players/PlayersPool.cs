@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Carcassone.Core.Players
 {
@@ -16,7 +14,7 @@ namespace Carcassone.Core.Players
         public const string MiddleBotName = "Vikont(Middle)";
         public const string HardBotName = "King(Hard)";
 
-        private int _currentPlayerIndex = 0;
+        private int _currentPlayerIndex = -1;
         private static int _maximumPlayersCount = 5;
         private static int _playerChipCount = 7;
 
@@ -72,12 +70,17 @@ namespace Carcassone.Core.Players
             Players.Add(player1);
         }
 
-        public void MoveNextPlayer()
+        public void MoveNextPlayer(GameRoom room)
         {
             // передать ход
             // если ход сделан то ход передается следующему игроку
             _currentPlayerIndex++;
             _currentPlayerIndex = _currentPlayerIndex % Players.Count;
+
+            // ходят AI игроки
+            var player = CurrentPlayer;
+            if (player is PlayerAI)
+                ((PlayerAI)player).ProcessMove(room);
         }
 
         private string GetFreeColor()
