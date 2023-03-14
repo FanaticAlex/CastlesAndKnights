@@ -14,8 +14,8 @@ namespace Carcassone.Core.Cards
     /// </summary>
     public class CCFC : Card
     {
-        private CastlePart _castlePart;
-        private CornfieldPart _cornfieldPart;
+        private readonly CastlePart _castlePart;
+        private readonly CornfieldPart _cornfieldPart;
 
         public CCFC(string cardName) : base(cardName)
         {
@@ -36,14 +36,14 @@ namespace Carcassone.Core.Cards
             foreach (var side in sides)
             {
                 var rotatedSide = RotateSide(side, RotationsCount);
-                var castleBorder = new Border(this.Field, this.Field.GetNeighbour(rotatedSide), this);
+                var castleBorder = new Border(this.Field, this.Field?.GetNeighbour(rotatedSide), this);
                 _castlePart.Borders.Add(castleBorder);
             }
 
 
             var side3 = Side.bottom;
             side3 = RotateSide(side3, RotationsCount);
-            var cornfieldBorder3 = new Border(this.Field, this.Field.GetNeighbour(side3), this);
+            var cornfieldBorder3 = new Border(this.Field, this.Field?.GetNeighbour(side3), this);
             _cornfieldPart.Borders.Add(cornfieldBorder3);
         }
     }

@@ -9,7 +9,7 @@ namespace Carcassone.Core.Fields
     /// </summary>
     public class Field
     {
-        private FieldBoard _fieldBoard;
+        private readonly FieldBoard _fieldBoard;
         private Card? _cardInField;
 
         public Field(FieldBoard fieldBoard, int x, int y)
@@ -54,14 +54,14 @@ namespace Carcassone.Core.Fields
 
         public Field? GetNeighbour(Side side)
         {
-            switch (side)
+            return side switch
             {
-                case Side.top:      return _fieldBoard?.GetField(X, Y + 1);
-                case Side.bottom:   return _fieldBoard?.GetField(X, Y - 1);
-                case Side.right:    return _fieldBoard?.GetField(X + 1, Y);
-                case Side.left:     return _fieldBoard?.GetField(X - 1, Y);
-                default: return null;
-            }
+                Side.top => _fieldBoard?.GetField(X, Y + 1),
+                Side.bottom => _fieldBoard?.GetField(X, Y - 1),
+                Side.right => _fieldBoard?.GetField(X + 1, Y),
+                Side.left => _fieldBoard?.GetField(X - 1, Y),
+                _ => null,
+            };
         }
 
         public bool RotateCardTilFit(Card card)
@@ -101,32 +101,6 @@ namespace Carcassone.Core.Fields
             return RotateCardTilFit(copy);
         }
 
-        private bool IsWaterCardNear(Field? field)
-        {
-            if (field == null)
-                return false;
-
-            var top = field.GetNeighbour(Side.top);
-            var left = field.GetNeighbour(Side.left);
-            var bottom = field.GetNeighbour(Side.bottom);
-            var right = field.GetNeighbour(Side.right);
-
-            Card? TopCard = top?._cardInField;
-            Card? leftCard = left?._cardInField;
-            Card? bottomCard = bottom?._cardInField;
-            Card? rightCard = right?._cardInField;
-
-            if (((TopCard != null) && TopCard.CardName.Contains("W")) ||
-                ((leftCard != null) && leftCard.CardName.Contains("W")) ||
-                ((bottomCard != null) && bottomCard.CardName.Contains("W")) ||
-                ((rightCard != null) && rightCard.CardName.Contains("W")))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         internal bool CanPutCardInThisField(Card card)
         {
             // if there is another card in field then false
@@ -141,16 +115,6 @@ namespace Carcassone.Core.Fields
                 Card? neighbourLeftCard = GetNeighbour(Side.left)?._cardInField;
                 Card? neighbourBottomCard = GetNeighbour(Side.bottom)?._cardInField;
                 Card? neighbourRightCard = GetNeighbour(Side.right)?._cardInField;
-
-                bool isTopNearWater = (neighbourTopCard == null && !IsWaterCardNear(GetNeighbour(Side.top)));
-                bool isLeftNearWater = (neighbourLeftCard == null && !IsWaterCardNear(GetNeighbour(Side.left)));
-                bool isBottomNearWater = (neighbourBottomCard == null && !IsWaterCardNear(GetNeighbour(Side.bottom)));
-                bool isRightNearWater = (neighbourRightCard == null && !IsWaterCardNear(GetNeighbour(Side.right)));
-
-                bool topWithoutWaterCards = card.TopEdgeType != EdgeType.Water;
-                bool leftWithoutWaterCards = card.LeftEdgeType != EdgeType.Water;
-                bool bottmWithoutWaterCards = card.BottomEdgeType != EdgeType.Water;
-                bool rightWithoutWaterCards = card.RightEdgeType != EdgeType.Water;
 
                 bool isTopFree = neighbourTopCard == null;
                 bool isLeftFree = neighbourLeftCard == null;
@@ -167,10 +131,10 @@ namespace Carcassone.Core.Fields
 
                 // водную карту можно положить в поле, если в соседних с полем областях либо нет карт
                 // либо водные границы соседних карт совпадают
-                if ((/*topWithoutWaterCards || isTopNearWater ||*/ isTopFree || connectWithTopWaterCard) &&
-                    (/*leftWithoutWaterCards || isLeftNearWater ||*/ isLeftFree || connectWithLeftWaterCard) &&
-                    (/*bottmWithoutWaterCards || isBottomNearWater ||*/ isBottomFree || connectWithBottomWaterCard) &&
-                    (/*rightWithoutWaterCards || isRightNearWater ||*/ isRightFree || connectWithRightWaterCard) &&
+                if ((isTopFree || connectWithTopWaterCard) &&
+                    (isLeftFree || connectWithLeftWaterCard) &&
+                    (isBottomFree || connectWithBottomWaterCard) &&
+                    (isRightFree || connectWithRightWaterCard) &&
                     isWaterDirectionCorrect)
                 {
                     return true;

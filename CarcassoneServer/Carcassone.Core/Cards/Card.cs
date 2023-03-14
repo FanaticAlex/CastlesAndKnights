@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Carcassone.Core.Fields;
 
@@ -29,7 +28,7 @@ namespace Carcassone.Core.Cards
         /// <summary>
         /// Поле в котором установлена карта.
         /// </summary>
-        public Field Field { get; set; }
+        public Field? Field { get; set; }
 
         public EdgeType TopEdgeType { get; set; } = EdgeType.None;
         public EdgeType RightEdgeType { get; set; } = EdgeType.None;
@@ -87,7 +86,7 @@ namespace Carcassone.Core.Cards
             RightEdgeType = tempTop;
 
             RotationsCount += 1;
-            RotationsCount = RotationsCount % 4;
+            RotationsCount %= 4;
         }
 
         /// <summary>

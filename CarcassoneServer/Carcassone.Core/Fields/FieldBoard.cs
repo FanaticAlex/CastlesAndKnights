@@ -45,7 +45,7 @@ namespace Carcassone.Core.Fields
             card.ConnectField(field);
         }
 
-        public Field GetCenter() => GetField(0, 0);
+        public Field? GetCenter() => GetField(0, 0);
 
         public Field? GetField(int x, int y) => GetField($"{x}_{y}");
 

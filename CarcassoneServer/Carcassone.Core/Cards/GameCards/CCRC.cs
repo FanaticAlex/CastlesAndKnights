@@ -13,10 +13,10 @@ namespace Carcassone.Core.Cards
     /// </summary>
     public class CCRC : Card
     {
-        private CastlePart _castlePart;
-        private RoadPart _roadPart;
-        private CornfieldPart _cornfieldPart1;
-        private CornfieldPart _cornfieldPart2;
+        private readonly CastlePart _castlePart;
+        private readonly RoadPart _roadPart;
+        private readonly CornfieldPart _cornfieldPart1;
+        private readonly CornfieldPart _cornfieldPart2;
 
         public CCRC(string cardName) : base(cardName)
         {
@@ -46,14 +46,14 @@ namespace Carcassone.Core.Cards
             foreach (var side in sides)
             {
                 var rotatedSide = RotateSide(side, RotationsCount);
-                var castleBorder = new Border(this.Field, this.Field.GetNeighbour(rotatedSide), this);
+                var castleBorder = new Border(this.Field, this.Field?.GetNeighbour(rotatedSide), this);
                 _castlePart.Borders.Add(castleBorder);
             }
 
             // дорога
             var side3 = Side.bottom;
             side3 = RotateSide(side3, RotationsCount);
-            var roadBorder3 = new Border(this.Field, this.Field.GetNeighbour(side3), this);
+            var roadBorder3 = new Border(this.Field, this.Field?.GetNeighbour(side3), this);
             _roadPart.Borders.Add(roadBorder3);
 
             // поле 1
@@ -61,8 +61,8 @@ namespace Carcassone.Core.Cards
             side31 = RotateSide(side31, RotationsCount);
             var sidePart31 = CornfieldSide.side_3;
             sidePart31 = RotateSidePart(sidePart31, RotationsCount);
-            var cornfieldBorder31 = new Border(this.Field, this.Field.GetNeighbour(side31), this);
-            cornfieldBorder31.cornfieldSide = sidePart31;
+            var cornfieldBorder31 = new Border(this.Field, this.Field?.GetNeighbour(side31), this);
+            cornfieldBorder31.CornfieldSide = sidePart31;
             _cornfieldPart1.Borders.Add(cornfieldBorder31);
 
 
@@ -71,8 +71,8 @@ namespace Carcassone.Core.Cards
             side32 = RotateSide(side32, RotationsCount);
             var sidePart32 = CornfieldSide.side_4;
             sidePart32 = RotateSidePart(sidePart32, RotationsCount);
-            var cornfieldBorder32 = new Border(this.Field, this.Field.GetNeighbour(side32), this);
-            cornfieldBorder32.cornfieldSide = sidePart32;
+            var cornfieldBorder32 = new Border(this.Field, this.Field?.GetNeighbour(side32), this);
+            cornfieldBorder32.CornfieldSide = sidePart32;
             _cornfieldPart2.Borders.Add(cornfieldBorder32);
         }
     }

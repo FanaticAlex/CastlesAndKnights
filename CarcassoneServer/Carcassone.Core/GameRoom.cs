@@ -3,12 +3,9 @@ using Carcassone.Core.Calculation.Objects;
 using Carcassone.Core.Cards;
 using Carcassone.Core.Fields;
 using Carcassone.Core.Players;
-using Carcassone.Core.Players.AI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Carcassone.Core
 {
@@ -17,10 +14,10 @@ namespace Carcassone.Core
     /// </summary>
     public class GameRoom
     {
-        private CardPool _cardsPool;
-        private ScoreCalculator _scoreCalculator;
-        private FieldBoard _fieldBoard;
-        private PlayersPool _playersPool;
+        private readonly CardPool _cardsPool;
+        private readonly ScoreCalculator _scoreCalculator;
+        private readonly FieldBoard _fieldBoard;
+        private readonly PlayersPool _playersPool;
 
         public string Id { get; }
         public bool IsStarted { get; set; }
@@ -34,8 +31,11 @@ namespace Carcassone.Core
             }
             set
             {
+                var isChanged = _isFinished =! value;
                 _isFinished = value;
-                Finished?.Invoke(null, this);
+
+                if (isChanged && _isFinished == true)
+                    Finished?.Invoke(null, this);
             }
         }
 
@@ -58,10 +58,7 @@ namespace Carcassone.Core
             IsStarted = true;
 
             // инициализирующий ход
-            var firstCard = _cardsPool.GetCurrentCard(_fieldBoard);
-            if (firstCard == null)
-                throw new Exception("Ошибка. В колоде нет карт!");
-
+            var firstCard = _cardsPool.GetCurrentCard(_fieldBoard) ?? throw new Exception("Ошибка. В колоде нет карт!");
             var firstField = _fieldBoard.GetCenter();
             PutCardInField(firstCard, firstField);
 

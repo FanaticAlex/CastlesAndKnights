@@ -1,15 +1,11 @@
-﻿using Carcassone.Core.Cards;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Carcassone.Core.Players.AI
 {
     public class PlayerAI : BasePlayer
     {
-        private Random _random = new Random();
+        private readonly Random _random = new Random();
 
         public PlayerAI(string name, string color, int chipCount)
             : base(name, color, chipCount)
@@ -17,6 +13,9 @@ namespace Carcassone.Core.Players.AI
 
         public void ProcessMove(GameRoom room)
         {
+            if (room == null)
+                return;
+
             var card = room.GetCurrentCard();
             if (card == null)
                 return; // игра уже окончена

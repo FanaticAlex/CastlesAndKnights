@@ -34,7 +34,7 @@ namespace Carcassone.Core.Cards
 
             // замок
             var side1 = RotateSide(Side.top, RotationsCount);
-            var castleBorder = new Border(this.Field, this.Field.GetNeighbour(side1), this);
+            var castleBorder = new Border(this.Field, this.Field?.GetNeighbour(side1), this);
             _castlePart1.Borders.Add(castleBorder);
 
             // поле
@@ -42,7 +42,7 @@ namespace Carcassone.Core.Cards
             foreach (var side in sides1)
             {
                 var rotatedSide = RotateSide(side, RotationsCount);
-                var cornfieldBorder = new Border(this.Field, this.Field.GetNeighbour(rotatedSide), this);
+                var cornfieldBorder = new Border(this.Field, this.Field?.GetNeighbour(rotatedSide), this);
                 _cornfieldPart.Borders.Add(cornfieldBorder);
             }
         }

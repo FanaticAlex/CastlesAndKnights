@@ -13,7 +13,7 @@ namespace Carcassone.Core.Cards
     /// </summary>
     public class CCCC : Card
     {
-        private CastlePart _castlePart;
+        private readonly CastlePart _castlePart;
 
         public CCCC(string cardName) : base(cardName)
         {
@@ -31,7 +31,7 @@ namespace Carcassone.Core.Cards
             {
                 // учет поворота карты
                 var rotatedSide = RotateSide(side, RotationsCount);
-                var castleBorder = new Border(Field, Field.GetNeighbour(rotatedSide), this);
+                var castleBorder = new Border(Field, Field?.GetNeighbour(rotatedSide), this);
                 _castlePart.Borders.Add(castleBorder);
             }
         }

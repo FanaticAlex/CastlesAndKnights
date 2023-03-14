@@ -1,20 +1,25 @@
 ﻿using Carcassone.Core.Fields;
-using System.Collections.Generic;
 
 namespace Carcassone.Core.Cards
 {
     /// <summary>
-    /// граница двух полей.
+    /// Граница на карте
     /// </summary>
     public class Border
     {
-        public Field FirstField { get; private set; }
-        public Field SecondField { get; private set; }
-        public CornfieldSide? cornfieldSide { get; set; }
-        public Card Card { get; set; }
+        public Field FirstField { get; }
 
-        public Border(Field first, Field second, Card card)
+        public Field SecondField { get; }
+
+        public CornfieldSide? CornfieldSide { get; set; }
+
+        public Card Card { get; }
+
+        public Border(Field? first, Field? second, Card card)
         {
+            if (first == null || second == null)
+                throw new System.Exception($"Field can not be null. Card: {card.CardName}, first: {first?.Id}, second: {second?.Id}");
+
             FirstField = first;
             SecondField = second;
             Card = card;

@@ -13,13 +13,12 @@ namespace Carcassone.Core.Cards
     /// </summary>
     public class CFFC_1 : Card
     {
-        private CastlePart _castlePart;
-        private CornfieldPart _cornfieldPart;
+        private readonly CastlePart _castlePart;
+        private readonly CornfieldPart _cornfieldPart;
 
         public CFFC_1(string cardName) : base(cardName)
         {
-            _castlePart = new CastlePart("Castle_0", cardName);
-            _castlePart.IsThereShield = true;
+            _castlePart = new CastlePart("Castle_0", cardName, true);
             Parts.Add(_castlePart);
 
             _cornfieldPart = new CornfieldPart("Cornfield_0", cardName);
@@ -37,7 +36,7 @@ namespace Carcassone.Core.Cards
             foreach (var side in sides)
             {
                 var rotatedSide = RotateSide(side, RotationsCount);
-                var castleBorder = new Border(this.Field, this.Field.GetNeighbour(rotatedSide), this);
+                var castleBorder = new Border(this.Field, this.Field?.GetNeighbour(rotatedSide), this);
                 _castlePart.Borders.Add(castleBorder);
             }
 
@@ -46,7 +45,7 @@ namespace Carcassone.Core.Cards
             foreach (var side in sides1)
             {
                 var rotatedSide = RotateSide(side, RotationsCount);
-                var cornfieldBorder = new Border(this.Field, this.Field.GetNeighbour(rotatedSide), this);
+                var cornfieldBorder = new Border(this.Field, this.Field?.GetNeighbour(rotatedSide), this);
                 _cornfieldPart.Borders.Add(cornfieldBorder);
             }
         }

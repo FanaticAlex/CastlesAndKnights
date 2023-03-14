@@ -14,7 +14,7 @@ namespace Carcassone.Core.Calculation.Objects
         /// <summary>
         /// Открытые границы замка.
         /// </summary>
-        private List<Border> openBorders = new List<Border>();
+        private readonly List<Border> _openBorders = new List<Border>();
 
         /// <summary>
         /// Если у замка есть открытые границы то он не закончен.
@@ -67,7 +67,7 @@ namespace Carcassone.Core.Calculation.Objects
             // если замок завершен очки удваиваются
             var score = Parts.Sum(part => ((CastlePart)part).IsThereShield ? 2 : 1);
             if (IsFinished)
-                score = score * 2;
+                score *= 2;
 
             return score;
         }
@@ -75,7 +75,7 @@ namespace Carcassone.Core.Calculation.Objects
         public void AddPart(ObjectPart part)
         {
             Parts.Add(part);
-            openBorders.AddRange(part.Borders);
+            _openBorders.AddRange(part.Borders);
 
             if (GetOwners().Count > 0)
             {
@@ -88,7 +88,7 @@ namespace Carcassone.Core.Calculation.Objects
         {
             foreach (Border border in part.Borders)
             {
-                var sameBorder = openBorders.Find(border2 => Border.Equial(border, border2));
+                var sameBorder = _openBorders.Find(border2 => Border.Equial(border, border2));
                 if (sameBorder != null)
                     return true;
             }
@@ -136,9 +136,9 @@ namespace Carcassone.Core.Calculation.Objects
         private bool IsClosed()
         {
             var isClosed1 = true;
-            foreach (Border border in openBorders)
+            foreach (Border border in _openBorders)
             {
-                var isClosed = openBorders.FindAll(border2 => Border.Equial(border, border2)).Count == 2;
+                var isClosed = _openBorders.FindAll(border2 => Border.Equial(border, border2)).Count == 2;
                 if (!isClosed)
                 {
                     isClosed1 = false;

@@ -52,11 +52,11 @@ namespace Carcassone.Core.Calculation.Objects
 
                     // если сторон нет тоесть граница карты не разделена дорогой или рекой,
                     // то считаем границы смежными и соединяем
-                    if (adjacentCornfieldBorder.cornfieldSide == null && partBorder.cornfieldSide == null)
+                    if (adjacentCornfieldBorder.CornfieldSide == null && partBorder.CornfieldSide == null)
                         return true;
 
                     // одна граница с дорогой или рекой а другая нет, поля соеденены неверно
-                    if (adjacentCornfieldBorder.cornfieldSide == null || partBorder.cornfieldSide == null)
+                    if (adjacentCornfieldBorder.CornfieldSide == null || partBorder.CornfieldSide == null)
                         throw new Exception("поля соеденены неверно");
 
                     // проверяем четность. 
@@ -71,10 +71,10 @@ namespace Carcassone.Core.Calculation.Objects
                     var group2 = new List<CornfieldSide>() { CornfieldSide.side_1, CornfieldSide.side_3, CornfieldSide.side_5, CornfieldSide.side_7 };
 
                     // проверяемые части должны быть в разных группах
-                    if (group1.Contains(adjacentCornfieldBorder.cornfieldSide.Value) && group2.Contains(partBorder.cornfieldSide.Value))
+                    if (group1.Contains(adjacentCornfieldBorder.CornfieldSide.Value) && group2.Contains(partBorder.CornfieldSide.Value))
                         return true;
 
-                    if (group2.Contains(adjacentCornfieldBorder.cornfieldSide.Value) && group1.Contains(partBorder.cornfieldSide.Value))
+                    if (group2.Contains(adjacentCornfieldBorder.CornfieldSide.Value) && group1.Contains(partBorder.CornfieldSide.Value))
                         return true;
                 }
             }

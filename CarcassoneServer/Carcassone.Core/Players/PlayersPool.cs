@@ -15,8 +15,8 @@ namespace Carcassone.Core.Players
         public const string HardBotName = "King(Hard)";
 
         private int _currentPlayerIndex = -1;
-        private static int _maximumPlayersCount = 5;
-        private static int _playerChipCount = 7;
+        private static readonly int _maximumPlayersCount = 5;
+        private static readonly int _playerChipCount = 7;
 
         public PlayersPool()
         {
@@ -75,12 +75,12 @@ namespace Carcassone.Core.Players
             // передать ход
             // если ход сделан то ход передается следующему игроку
             _currentPlayerIndex++;
-            _currentPlayerIndex = _currentPlayerIndex % Players.Count;
+            _currentPlayerIndex %= Players.Count;
 
             // ходят AI игроки
             var player = CurrentPlayer;
-            if (player is PlayerAI)
-                ((PlayerAI)player).ProcessMove(room);
+            if (player is PlayerAI aI)
+                aI.ProcessMove(room);
         }
 
         private string GetFreeColor()

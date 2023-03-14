@@ -42,7 +42,7 @@ namespace Carcassone.Core.Cards
             foreach (var side in sides)
             {
                 var rotatedSide = RotateSide(side, RotationsCount);
-                var castleBorder = new Border(this.Field, this.Field.GetNeighbour(rotatedSide), this);
+                var castleBorder = new Border(this.Field, this.Field?.GetNeighbour(rotatedSide), this);
                 _castlePart.Borders.Add(castleBorder);
             }
 
@@ -51,7 +51,7 @@ namespace Carcassone.Core.Cards
             foreach (var side in sides1)
             {
                 var rotatedSide = RotateSide(side, RotationsCount);
-                var castleBorder = new Border(this.Field, this.Field.GetNeighbour(rotatedSide), this);
+                var castleBorder = new Border(this.Field, this.Field?.GetNeighbour(rotatedSide), this);
                 _castlePart1.Borders.Add(castleBorder);
             }
 
@@ -60,7 +60,7 @@ namespace Carcassone.Core.Cards
             foreach (var side in sides2)
             {
                 var cornfieldSide = RotateSide(side, RotationsCount);
-                var cornfieldBorder3 = new Border(this.Field, this.Field.GetNeighbour(cornfieldSide), this);
+                var cornfieldBorder3 = new Border(this.Field, this.Field?.GetNeighbour(cornfieldSide), this);
                 _cornfieldPart.Borders.Add(cornfieldBorder3);
             }
         }

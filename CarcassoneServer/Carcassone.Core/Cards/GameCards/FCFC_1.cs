@@ -43,19 +43,19 @@ namespace Carcassone.Core.Cards
             foreach (var side in sides1)
             {
                 var side2 = RotateSide(side, RotationsCount);
-                var castleBorder2 = new Border(this.Field, this.Field.GetNeighbour(side2), this);
+                var castleBorder2 = new Border(this.Field, this.Field?.GetNeighbour(side2), this);
                 _castlePart2.Borders.Add(castleBorder2);
             }
 
 
             // поле1
             var side1 = RotateSide(Side.top, RotationsCount);
-            var cornfieldBorder1 = new Border(this.Field, this.Field.GetNeighbour(side1), this);
+            var cornfieldBorder1 = new Border(this.Field, this.Field?.GetNeighbour(side1), this);
             _cornfieldPart1.Borders.Add(cornfieldBorder1);
 
             // поле2
             var side3 = RotateSide(Side.bottom, RotationsCount);
-            var castleBorder3 = new Border(this.Field, this.Field.GetNeighbour(side3), this);
+            var castleBorder3 = new Border(this.Field, this.Field?.GetNeighbour(side3), this);
             _cornfieldPart2.Borders.Add(castleBorder3);
 
 

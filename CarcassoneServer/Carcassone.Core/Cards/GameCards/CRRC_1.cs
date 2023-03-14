@@ -13,15 +13,14 @@ namespace Carcassone.Core.Cards
     /// </summary>
     public class CRRC_1 : Card
     {
-        private CastlePart _castlePart;
-        private ObjectPart _roadPart;
-        private CornfieldPart _cornfieldPart1;
-        private ObjectPart _cornfieldPart2;
+        private readonly CastlePart _castlePart;
+        private readonly ObjectPart _roadPart;
+        private readonly CornfieldPart _cornfieldPart1;
+        private readonly ObjectPart _cornfieldPart2;
 
         public CRRC_1(string cardName) : base(cardName)
         {
-            _castlePart = new CastlePart("Castle_0", cardName);
-            _castlePart.IsThereShield = true;
+            _castlePart = new CastlePart("Castle_0", cardName, true);
             Parts.Add(_castlePart);
 
             _roadPart = new RoadPart("Road_0", cardName);
@@ -46,47 +45,47 @@ namespace Carcassone.Core.Cards
             foreach (var side in sides)
             {
                 var rotatedSide = RotateSide(side, RotationsCount);
-                var castleBorder = new Border(this.Field, this.Field.GetNeighbour(rotatedSide), this);
+                var castleBorder = new Border(this.Field, this.Field?.GetNeighbour(rotatedSide), this);
                 _castlePart.Borders.Add(castleBorder);
             }
 
 
             // дорога
             var side2 = RotateSide(Side.right, RotationsCount);
-            var roadBorder2 = new Border(this.Field, this.Field.GetNeighbour(side2), this);
+            var roadBorder2 = new Border(this.Field, this.Field?.GetNeighbour(side2), this);
             _roadPart.Borders.Add(roadBorder2);
 
             var side3 = RotateSide(Side.bottom, RotationsCount);
-            var roadBorder4 = new Border(this.Field, this.Field.GetNeighbour(side3), this);
+            var roadBorder4 = new Border(this.Field, this.Field?.GetNeighbour(side3), this);
             _roadPart.Borders.Add(roadBorder4);
 
 
             // поле 1
             var side21 = RotateSide(Side.right, RotationsCount);
             var sidePart21 = RotateSidePart(CornfieldSide.side_1, RotationsCount);
-            var cornfieldBorder21 = new Border(this.Field, this.Field.GetNeighbour(side21), this);
+            var cornfieldBorder21 = new Border(this.Field, this.Field?.GetNeighbour(side21), this);
             _cornfieldPart1.Borders.Add(cornfieldBorder21);
-            cornfieldBorder21.cornfieldSide = sidePart21;
+            cornfieldBorder21.CornfieldSide = sidePart21;
 
             var side32 = RotateSide(Side.bottom, RotationsCount);
             var sidePart32 = RotateSidePart(CornfieldSide.side_4, RotationsCount);
-            var cornfieldBorder32 = new Border(this.Field, this.Field.GetNeighbour(side32), this);
+            var cornfieldBorder32 = new Border(this.Field, this.Field?.GetNeighbour(side32), this);
             _cornfieldPart1.Borders.Add(cornfieldBorder32);
-            cornfieldBorder32.cornfieldSide = sidePart32;
+            cornfieldBorder32.CornfieldSide = sidePart32;
 
 
             // поле 2
             var side22 = RotateSide(Side.right, RotationsCount);
             var sidePart22 = RotateSidePart(CornfieldSide.side_2, RotationsCount);
-            var cornfieldBorder22 = new Border(this.Field, this.Field.GetNeighbour(side22), this);
+            var cornfieldBorder22 = new Border(this.Field, this.Field?.GetNeighbour(side22), this);
             _cornfieldPart2.Borders.Add(cornfieldBorder22);
-            cornfieldBorder22.cornfieldSide = sidePart22;
+            cornfieldBorder22.CornfieldSide = sidePart22;
 
             var side31 = RotateSide(Side.bottom, RotationsCount);
             var sidePart31 = RotateSidePart(CornfieldSide.side_3, RotationsCount);
-            var cornfieldBorder31 = new Border(this.Field, this.Field.GetNeighbour(side31), this);
+            var cornfieldBorder31 = new Border(this.Field, this.Field?.GetNeighbour(side31), this);
             _cornfieldPart2.Borders.Add(cornfieldBorder31);
-            cornfieldBorder31.cornfieldSide = sidePart31;
+            cornfieldBorder31.CornfieldSide = sidePart31;
         }
     }
 }

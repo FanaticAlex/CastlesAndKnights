@@ -13,14 +13,13 @@ namespace Carcassone.Core.Cards
     /// </summary>
     public class FCFC_2 : Card
     {
-        private CastlePart _castlePart2;
-        private CornfieldPart _cornfieldPart1;
-        private CornfieldPart _cornfieldPart2;
+        private readonly CastlePart _castlePart2;
+        private readonly CornfieldPart _cornfieldPart1;
+        private readonly CornfieldPart _cornfieldPart2;
 
         public FCFC_2(string cardName) : base(cardName)
         {
-            _castlePart2 = new CastlePart("Castle_0", cardName);
-            _castlePart2.IsThereShield = true;
+            _castlePart2 = new CastlePart("Castle_0", cardName, true);
             Parts.Add(_castlePart2);
 
             _cornfieldPart1 = new CornfieldPart("Cornfield_0", cardName);
@@ -43,19 +42,19 @@ namespace Carcassone.Core.Cards
             foreach (var side in sides1)
             {
                 var side2 = RotateSide(side, RotationsCount);
-                var castleBorder2 = new Border(this.Field, this.Field.GetNeighbour(side2), this);
+                var castleBorder2 = new Border(this.Field, this.Field?.GetNeighbour(side2), this);
                 _castlePart2.Borders.Add(castleBorder2);
             }
 
 
             // поле1
             var side1 = RotateSide(Side.top, RotationsCount);
-            var cornfieldBorder1 = new Border(this.Field, this.Field.GetNeighbour(side1), this);
+            var cornfieldBorder1 = new Border(this.Field, this.Field?.GetNeighbour(side1), this);
             _cornfieldPart1.Borders.Add(cornfieldBorder1);
 
             // поле2
             var side3 = RotateSide(Side.bottom, RotationsCount);
-            var castleBorder3 = new Border(this.Field, this.Field.GetNeighbour(side3), this);
+            var castleBorder3 = new Border(this.Field, this.Field?.GetNeighbour(side3), this);
             _cornfieldPart2.Borders.Add(castleBorder3);
         }
     }

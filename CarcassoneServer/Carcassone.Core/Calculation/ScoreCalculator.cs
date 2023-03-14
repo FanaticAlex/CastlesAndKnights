@@ -126,12 +126,12 @@ namespace Carcassone.Core.Calculation
 
         public PlayerScore GetPlayerScore(BasePlayer player, GameRoom room)
         {
-            var score = new PlayerScore();
-            score.Churches = GetChurchesScore(player);
-            score.Roads = GetRoadsScore(player);
-            score.Cornfields = GetCornfieldsScore(player, room);
-            score.Castles = GetCastlesScore(player);
-            score.ChipCount = player.ChipCount;
+            var pChurches = GetChurchesScore(player);
+            var pRoads = GetRoadsScore(player);
+            var pCornfields = GetCornfieldsScore(player, room);
+            var pCastles = GetCastlesScore(player);
+            var pChipCount = player.ChipCount;
+            var score = new PlayerScore(pChurches, pCornfields, pRoads, pCastles, pChipCount);
             return score;
         }
 
@@ -158,10 +158,10 @@ namespace Carcassone.Core.Calculation
             where T : IMultipartObject
         {
             if (objectsToMerge == null)
-                return default(T);
+                return default;
 
             if (!objectsToMerge.Any())
-                return default(T);
+                return default;
 
             var mergedObject = (T)Activator.CreateInstance(typeof(T));
             mergedObject.AddPart(connectingPart);

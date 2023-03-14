@@ -45,47 +45,47 @@ namespace Carcassone.Core.Cards
             foreach (var side in sides)
             {
                 var rotatedSide = RotateSide(side, RotationsCount);
-                var castleBorder = new Border(this.Field, this.Field.GetNeighbour(rotatedSide), this);
+                var castleBorder = new Border(this.Field, this.Field?.GetNeighbour(rotatedSide), this);
                 _castlePart.Borders.Add(castleBorder);
             }
 
 
             // дорога
             var side2 = RotateSide(Side.right, RotationsCount);
-            var roadBorder2 = new Border(this.Field, this.Field.GetNeighbour(side2), this);
+            var roadBorder2 = new Border(this.Field, this.Field?.GetNeighbour(side2), this);
             _roadPart.Borders.Add(roadBorder2);
 
             var side3 = RotateSide(Side.bottom, RotationsCount);
-            var roadBorder4 = new Border(this.Field, this.Field.GetNeighbour(side3), this);
+            var roadBorder4 = new Border(this.Field, this.Field?.GetNeighbour(side3), this);
             _roadPart.Borders.Add(roadBorder4);
 
 
             // поле 1
             var side21 = RotateSide(Side.right, RotationsCount);
             var sidePart21 = RotateSidePart(CornfieldSide.side_1, RotationsCount);
-            var cornfieldBorder21 = new Border(this.Field, this.Field.GetNeighbour(side21), this);
+            var cornfieldBorder21 = new Border(this.Field, this.Field?.GetNeighbour(side21), this);
             _cornfieldPart1.Borders.Add(cornfieldBorder21);
-            cornfieldBorder21.cornfieldSide = sidePart21;
+            cornfieldBorder21.CornfieldSide = sidePart21;
 
             var side32 = RotateSide(Side.bottom, RotationsCount);
             var sidePart32 = RotateSidePart(CornfieldSide.side_4, RotationsCount);
-            var cornfieldBorder32 = new Border(this.Field, this.Field.GetNeighbour(side32), this);
+            var cornfieldBorder32 = new Border(this.Field, this.Field?.GetNeighbour(side32), this);
             _cornfieldPart1.Borders.Add(cornfieldBorder32);
-            cornfieldBorder32.cornfieldSide = sidePart32;
+            cornfieldBorder32.CornfieldSide = sidePart32;
 
 
             // поле 2
             var side22 = RotateSide(Side.right, RotationsCount);
             var sidePart22 = RotateSidePart(CornfieldSide.side_2, RotationsCount);
-            var cornfieldBorder22 = new Border(this.Field, this.Field.GetNeighbour(side22), this);
+            var cornfieldBorder22 = new Border(this.Field, this.Field?.GetNeighbour(side22), this);
             _cornfieldPart2.Borders.Add(cornfieldBorder22);
-            cornfieldBorder22.cornfieldSide = sidePart22;
+            cornfieldBorder22.CornfieldSide = sidePart22;
 
             var side31 = RotateSide(Side.bottom, RotationsCount);
             var sidePart31 = RotateSidePart(CornfieldSide.side_3, RotationsCount);
-            var cornfieldBorder31 = new Border(this.Field, this.Field.GetNeighbour(side31), this);
+            var cornfieldBorder31 = new Border(this.Field, this.Field?.GetNeighbour(side31), this);
             _cornfieldPart2.Borders.Add(cornfieldBorder31);
-            cornfieldBorder31.cornfieldSide = sidePart31;
+            cornfieldBorder31.CornfieldSide = sidePart31;
         }
     }
 }
