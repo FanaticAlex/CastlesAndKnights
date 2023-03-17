@@ -1,16 +1,11 @@
-﻿using Carcassone.Core.Calculation.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Carcassone.Core.Calculation
+﻿namespace Carcassone.Core.Calculation
 {
     public class PlayerScore
     {
-        public PlayerScore(int churches, int cornfields, int roads, int castles, int chipCount)
+        public PlayerScore(
+            string playerName, int churches, int cornfields, int roads, int castles, int chipCount)
         {
+            PlayerName = playerName;
             Churches = churches;
             Cornfields = cornfields;
             Roads = roads;
@@ -18,11 +13,14 @@ namespace Carcassone.Core.Calculation
             ChipCount = chipCount;
         }
 
+        public string PlayerName { get; }
         public int Churches { get; }
         public int Cornfields { get; }
         public int Roads { get; }
         public int Castles { get; }
         public int ChipCount { get; }
+
+        public int Rank { get; set; }
 
         public int GetOverallScore()
         {

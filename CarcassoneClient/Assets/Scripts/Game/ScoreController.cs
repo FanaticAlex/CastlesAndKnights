@@ -1,4 +1,5 @@
 ﻿using Carcassone.ApiClient;
+using Carcassone.Core.Players;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,28 +91,19 @@ namespace Assets.Scripts
         public void UpdateScore()
         {
             var players = GameManager.Instance.RoomService.GetPlayers();
+            var scores = players.Select(p => GameManager.Instance.RoomService.GetScore(p.Name));
 
-            // вычислить очки
-            var _playerToScore = new Dictionary<BasePlayer, PlayerScore>();
-            foreach (var player in players)
+            foreach (var score in scores)
             {
-                var score = GameManager.Instance.RoomService.GetScore(player.Name);
-                _playerToScore.Add(player, score);
-            }
-
-            foreach (var item in _playerToScore)
-            {
-                var player = item.Key;
-                var score = item.Value;
-                var playerScoreUI = _playersScorePanels[player.Name];
+                var playerScoreUI = _playersScorePanels[score.PlayerName];
 
                 var nameUI = playerScoreUI.transform.Find("PlayerName").GetComponent<Text>();
-                nameUI.text = player.Name;
+                nameUI.text = score.PlayerName;
 
                 var chipUI = playerScoreUI.transform.Find("ChipCount").GetComponent<Text>();
                 chipUI.text = " Фишек:" + score.ChipCount;
 
-                var overall = score.Castles + score.Cornfields + score.Churches + score.Roads;
+                var overall = SumScore(score);
                 var result = overall + " / " +
                              " З:" + score.Castles +
                              " П:" + score.Cornfields +
@@ -139,21 +131,32 @@ namespace Assets.Scripts
         {
             _finalScoreUIPanel.SetActive(true);
 
-            var scores = GameManager.Instance.RoomService.GetGameScores();
-            var winnerScore = scores.Max(x => x.FinalScore);
+            ////var scores = GameManager.Instance.RoomService.GetGameScores();
+
+            var players = GameManager.Instance.RoomService.GetPlayers();
+            var scores = players.Select(p => GameManager.Instance.RoomService.GetScore(p.Name));
+
+            var winnerScore = scores.Max(x => SumScore(x));
             var winners = scores
-                .Where(x => x.FinalScore == winnerScore)
-                .Select(x => x.UserName)
+                .Where(x => SumScore(x) == winnerScore)
+                .Select(x => x.PlayerName)
                 .ToList();
             _finalScoreUIPanelText.GetComponent<TMP_Text>().text = $"The winner is {string.Join(",", winners)} \r\n";
             _finalScoreUIPanelText.GetComponent<TMP_Text>().text += "SCORE \r\n";
+
+
             foreach (var score in scores)
             {
                 _finalScoreUIPanelText.GetComponent<TMP_Text>().text +=
-                    $"{score.UserName} : {score.FinalScore} \r\n";
+                    $"{score.PlayerName} : {SumScore(score)} \r\n";
             }
 
             GameManager.Instance.RoomService.Reset();
+        }
+
+        private int SumScore(PlayerScore score)
+        {
+            return score.Castles + score.Cornfields + score.Churches + score.Roads;
         }
     }
 }

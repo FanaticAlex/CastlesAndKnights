@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog.Core;
+using Serilog;
+using Microsoft.Extensions.Configuration;
 
 namespace CarcassoneServer
 {
@@ -13,7 +11,25 @@ namespace CarcassoneServer
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var builder = CreateHostBuilder(args);
+
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false)
+                .Build();
+
+            var logger = new LoggerConfiguration()
+                 .ReadFrom.Configuration(config)
+                 .Enrich.FromLogContext()
+                 .CreateLogger();
+
+            builder.ConfigureLogging(logging =>
+             {
+                 logging.ClearProviders();
+                 logging.AddConsole();
+                 logging.AddSerilog(logger);
+             });
+
+            builder.Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

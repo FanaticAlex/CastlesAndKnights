@@ -29,6 +29,6 @@ namespace Carcassone.DAL
         //entities
         public DbSet<User> Users { get; set; }
 
-        public DbSet<GameScore> GameScores { get; set; }
+        public DbSet<UserGameScore> Scores { get; set; }
     }
 }

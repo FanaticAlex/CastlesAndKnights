@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Carcassone.Core;
@@ -19,6 +20,8 @@ namespace CarcassoneServer
 {
     public class Startup
     {
+        public static string DbConnectionStringBuilder = "Data Source=Carcassone.db";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,11 +32,11 @@ namespace CarcassoneServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<CarcassoneContext>(options => options.UseSqlite("Data Source=Carcassone.db"), ServiceLifetime.Transient, ServiceLifetime.Singleton);
+            services.AddDbContext<CarcassoneContext>(options => options.UseSqlite(DbConnectionStringBuilder));
 
             services.AddSingleton<IGamesService, GamesService>();
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IGameScoreService, GameScoreService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IGameScoreService, GameScoreService>();
             services.AddControllers();
 
             // Register the Swagger generator, defining 1 or more Swagger documents

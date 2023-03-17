@@ -1,7 +1,8 @@
 ﻿using Carcassone.DAL;
 using Carcassone.Server.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,24 +13,58 @@ namespace Carcassone.Server.Controllers
     public class GameScoreController : ControllerBase
     {
         private IGameScoreService _service;
+        private readonly ILogger _logger;
 
-        public GameScoreController(IGameScoreService userService)
+        public GameScoreController(ILogger<GameScoreController> logger, IGameScoreService userService)
         {
             _service = userService;
+            _logger = logger;
         }
 
         [HttpGet]
         [Route("user/{userName}")]
-        public List<GameScore> GetScoreByUser(string userName)
+        public ActionResult<List<UserGameScore>> GetScoreByUser(string userName)
         {
-            return _service.GetUserScores(userName).ToList();
+            try
+            {
+                _logger.LogWarning("GetScoreByUser Called");
+                return _service.GetUserScores(userName).ToList();
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e.Message);
+                return Problem(e.Message);
+            }
         }
 
         [HttpGet]
         [Route("game/{gameId}")]
-        public List<GameScore> GetScoreByGame(string gameId)
+        public ActionResult<List<UserGameScore>> GetScoreByGame(string gameId)
         {
-            return _service.GetGameScores(gameId).ToList();
+            try
+            {
+                return _service.GetGameScores(gameId).ToList();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return Problem(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("user/{userName}/statistic")]
+        public ActionResult<UserStatistic> GetUserStatistic(string userName)
+        {
+            try
+            {
+                return _service.GetUserStatistic(userName);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return Problem(e.Message);
+            }
         }
     }
 }

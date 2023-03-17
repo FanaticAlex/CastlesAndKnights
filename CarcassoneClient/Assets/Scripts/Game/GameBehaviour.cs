@@ -1,9 +1,7 @@
 ﻿using Carcassone.ApiClient;
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro;
 
 namespace Assets.Scripts
 {

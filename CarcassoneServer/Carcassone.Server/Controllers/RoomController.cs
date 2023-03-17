@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Carcassone.Core;
 using Carcassone.Core.Calculation;
 using Carcassone.Core.Calculation.Objects;
@@ -12,6 +10,7 @@ using Carcassone.Core.Players;
 using Carcassone.DAL;
 using Carcassone.Server.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace CarcassoneServer.Controllers
@@ -24,12 +23,12 @@ namespace CarcassoneServer.Controllers
     public class RoomController : ControllerBase
     {
         private readonly IGamesService _service;
-        private readonly IGameScoreService _scoreService;
+        private readonly ILogger _logger;
 
-        public RoomController(IGamesService service, IGameScoreService scoreService)
+        public RoomController(ILogger<RoomController> logger, IGamesService service)
         {
+            _logger = logger;
             _service = service;
-            _scoreService = scoreService;
         }
 
         [HttpPost]
@@ -38,16 +37,15 @@ namespace CarcassoneServer.Controllers
         {
             var room = _service.CreateRoom();
             room.Finished += Room_Finished;
+            _logger.LogInformation("RoomCreated");
             return room;
         }
 
         private void Room_Finished(object sender, GameRoom room)
         {
-            if (room.IsFinished)
-            {
-                WriteGameResults(room);
-                Task.Run(async () => await RemoveGame(room.Id));
-            }
+            _logger.LogInformation("Game Finished");
+            SaveGameResults(room);
+            Task.Run(async () => await RemoveGame(room.Id));
         }
 
         private async Task RemoveGame(string roomId)
@@ -56,17 +54,28 @@ namespace CarcassoneServer.Controllers
             _service.DeleteRoom(roomId);
         }
 
-        private void WriteGameResults(GameRoom room)
+        private void SaveGameResults(GameRoom room)
         {
             // записать результаты в базу
             foreach (var player in room.GetPlayers())
             {
+                if (player is not Player) // не записываем в базу результаты AI игроков
+                    continue;
+
                 var playerScore = room.GetPlayerScore(player);
-                var userScore = new GameScore();
-                userScore.UserName = player.Name;
-                userScore.RoomId = room.Id;
-                userScore.FinalScore = playerScore.GetOverallScore();
-                _scoreService.WriteUserScore(userScore);
+                var userScore = new UserGameScore()
+                {
+                    UserName = player.Name,
+                    RoomId = room.Id,
+                    FinalScore = playerScore.GetOverallScore(),
+                    Rank = playerScore.Rank
+                };
+
+                var optionsBuilder = new DbContextOptionsBuilder<CarcassoneContext>();
+                optionsBuilder.UseSqlite(Startup.DbConnectionStringBuilder);
+                var context = new CarcassoneContext(optionsBuilder.Options);
+                var scoreService = new GameScoreService(context);
+                scoreService.SaveUserGameScore(userScore);
             }
         }
 

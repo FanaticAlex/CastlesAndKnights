@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 namespace Assets.Scripts.Menu
@@ -23,8 +18,11 @@ namespace Assets.Scripts.Menu
             base.Enable();
 
             var user = GameManager.Instance.RoomService.User;
+            var statistic = GameManager.Instance.RoomService.GetUserStatistic(user.Login);
             UserName.GetComponent<TMP_Text>().text = user.Login;
-            Statistic.GetComponent<TMP_Text>().text = $"Raiting: {user.Raiting}";
+            Statistic.GetComponent<TMP_Text>().text = 
+                $"GamesCount: {statistic.GamesCount} \r\n" +
+                $"WinCount: {statistic.WinCount}";
         }
 
         public override MenuWindowType MenuPanelType => MenuWindowType.Profile;

@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Game\Model\Client.cs" />
+    <Compile Include="Assets\Scripts\Game\Model\GameObjectTranslator.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuWindowType.cs" />
     <Compile Include="Assets\Scripts\Game\ScoreController.cs" />
     <Compile Include="Assets\Scripts\Menu\BaseMenuWindowController.cs" />

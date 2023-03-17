@@ -31,11 +31,8 @@ namespace Carcassone.Core
             }
             set
             {
-                var isChanged = _isFinished =! value;
                 _isFinished = value;
-
-                if (isChanged && _isFinished == true)
-                    Finished?.Invoke(null, this);
+                Finished?.Invoke(null, this);
             }
         }
 

@@ -126,13 +126,36 @@ namespace Carcassone.Core.Calculation
 
         public PlayerScore GetPlayerScore(BasePlayer player, GameRoom room)
         {
-            var pChurches = GetChurchesScore(player);
-            var pRoads = GetRoadsScore(player);
-            var pCornfields = GetCornfieldsScore(player, room);
-            var pCastles = GetCastlesScore(player);
-            var pChipCount = player.ChipCount;
-            var score = new PlayerScore(pChurches, pCornfields, pRoads, pCastles, pChipCount);
+            var scores = GetPlayersScores(room);
+            var score = scores.Single(s => s.PlayerName == player.Name);
             return score;
+        }
+
+        private IEnumerable<PlayerScore> GetPlayersScores(GameRoom room)
+        {
+            var scores = new List<PlayerScore>();
+            foreach (var player in room.GetPlayers())
+            {
+                var pChurches = GetChurchesScore(player);
+                var pRoads = GetRoadsScore(player);
+                var pCornfields = GetCornfieldsScore(player, room);
+                var pCastles = GetCastlesScore(player);
+                var pChipCount = player.ChipCount;
+                var score = new PlayerScore(player.Name, pChurches, pCornfields, pRoads, pCastles, pChipCount);
+                scores.Add(score);
+            }
+
+            scores.Sort(delegate (PlayerScore x, PlayerScore y)
+            {
+                return x.GetOverallScore().CompareTo(y.GetOverallScore());
+            });
+
+            foreach(var score  in scores)
+            {
+                score.Rank = scores.IndexOf(score);
+            }
+
+            return scores;
         }
 
         /// <summary>

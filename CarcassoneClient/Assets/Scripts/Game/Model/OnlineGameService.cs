@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Scripts
 {
@@ -54,7 +52,7 @@ namespace Assets.Scripts
         public List<ObjectPart> GetAvailableObjectParts(string cardId) => client.AvailablePartsAsync(RoomId, cardId).Result.ToList();
         public void PutChip(string cardName, string partId, string playerName) => client.PutChipInCardAsync(RoomId, cardName, partId, playerName).Wait();
 
-        public List<GameScore> GetGameScores() => client.GameAsync(RoomId).Result.ToList();
+        public List<UserGameScore> GetGameScores() => client.GameAsync(RoomId).Result.ToList();
         public PlayerScore GetScore(string playerName) => client.ScoreAsync(RoomId, playerName).Result;
         public List<Road> GetRoads() => client.RoadsAsync(RoomId).Result.ToList();
         public List<Castle> GetCastles() => client.CastlesAsync(RoomId).Result.ToList();
@@ -68,5 +66,7 @@ namespace Assets.Scripts
             User = null;
             RoomId = null;
         }
+
+        public UserStatistic GetUserStatistic(string userName) => client.StatisticAsync(userName).Result;
     }
 }

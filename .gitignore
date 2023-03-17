@@ -2,6 +2,7 @@ bin
 obj
 .vs
 CarcassoneServer/packages/
+CarcassoneServer/logs/
 CarcassoneClient/Library/
 CarcassoneClient/Packages/
 CarcassoneClient/Logs/

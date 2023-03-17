@@ -43,7 +43,7 @@ namespace Assets.Scripts
         List<ObjectPart> GetAvailableObjectParts(string cardId);
         void PutChip(string cardName, string partId, string playerName);
 
-        List<GameScore> GetGameScores();
+        List<UserGameScore> GetGameScores();
         PlayerScore GetScore(string playerName);
         List<Road> GetRoads();
         List<Castle> GetCastles();
@@ -53,5 +53,7 @@ namespace Assets.Scripts
         int GetCardsRemain();
 
         void Reset();
+
+        UserStatistic GetUserStatistic(string userName);
     }
 }
