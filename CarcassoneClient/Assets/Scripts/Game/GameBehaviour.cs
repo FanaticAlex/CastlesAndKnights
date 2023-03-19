@@ -99,6 +99,11 @@ namespace Assets.Scripts
                 // это обновляем только при смене хода, для оптимизации
                 _fieldsController.UpdateFieldsView(_currentCard);
                 _cardsController.UpdateCardsView();
+
+                _cardsController.UpdateChipsView();
+                _playersController.UpdatePlayersView();
+                _scoreController.UpdateScore();
+                _scoreController.UpdateCurrentPlayerMark();
             }
 
             // установка рисунка карты в контрол текущей карты
@@ -108,11 +113,6 @@ namespace Assets.Scripts
                 GameObject.Find("CurrentCardImage").GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
                 GameObject.Find("CurrentCardImage").transform.localRotation = Quaternion.Euler(0, 0, card.RotationsCount * -90);
             }
-
-            _cardsController.UpdateChipsView();
-            _playersController.UpdatePlayersView();
-            _scoreController.UpdateScore();
-            _scoreController.UpdateCurrentPlayerMark();
 
             // окончание игры
             var isFinished = GameManager.Instance.RoomService.GetRoom().IsFinished;
