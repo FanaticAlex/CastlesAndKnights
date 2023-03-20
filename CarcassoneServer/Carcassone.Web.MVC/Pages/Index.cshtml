@@ -9,10 +9,29 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-@{
-    foreach (var build in Model.MyBuilds)
+
+<div>
+    <h1>Android:</h1>
+    <br />
+    @{
+    foreach (var build in Model.AndroidBuilds)
     {
         <a href="@build.Value">@build.Key</a>
         <br />
     };
-}
+    }
+</div>
+
+<br />
+
+<div>
+    <h1>Desktop:</h1>
+    <br />
+    @{
+    foreach (var build in Model.DesctopBuilds)
+    {
+        <a href="@build.Value">@build.Key</a>
+        <br />
+    };
+    }
+</div>

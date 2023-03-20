@@ -77,7 +77,7 @@ namespace Assets.Scripts
         /// Подсвечивает поля доступные для устновки карты игрока.
         /// </summary>
         /// <param name="player"></param>
-        public void UpdateFieldsView(Card card)
+        public void UpdateAvailableFieldsView(Card card)
         {
             CreateFieldsIfNotExistView();
 

@@ -16,10 +16,9 @@ namespace Assets.Scripts
         private PlayersController _playersController;
         private ScoreController _scoreController;
 
-        private Card _currentCard;
+        private string _currentPlayerName;
 
-        float _timer1;
-        float _timer2;
+        float _timer;
 
         public GameObject FinalScoreUIPanel;
         public GameObject FinalScoreUIPanelText;
@@ -45,32 +44,51 @@ namespace Assets.Scripts
         /// </summary>
         void Update()
         {
-            _playersController._playerController.MouseButton0 |= Input.GetMouseButtonDown(0);
-            _playersController._playerController.MouseButton1 |= Input.GetMouseButtonDown(1);
+            _playersController._humanPlayerController.MouseButton0 |= Input.GetMouseButtonDown(0);
+            _playersController._humanPlayerController.MouseButton1 |= Input.GetMouseButtonDown(1);
 
-            _timer2 += Time.deltaTime;
-            if (_timer2 > 0.1f) // тут помещаем длительные операции, которые невозможно производить каждый upadate
+            _timer -= Time.deltaTime;
+            if (_timer <= 0.0f) // длительные операции, запросы к серверу
             {
-                _timer2 = 0;
-                _playersController.HandlePlayerActions();
-            }
+                _timer = 0.1f;
+                var currentPlayer = GameManager.Instance.RoomService.GetCurrentPlayer();
+                var isMyTurn = (currentPlayer.Name == GameManager.Instance.RoomService.User.Login);
+                if (isMyTurn)
+                {
+                    _playersController.HandlePlayerActions();
+                }
+                else
+                {
+                    _playersController.ShowWaitingSpinner();
+                }
 
-            _timer1 += Time.deltaTime;
-            if (_timer1 > 0.5f) // тут помещаем длительные операции, которые невозможно производить каждый upadate
-            {
-                _timer1 = 0;
-                UpdateGameViewsFromServer();
+                // установка рисунка карты в контрол текущей карты
+                if (_cardsController.CurrentCard != null)
+                {
+                    var cardGO = _cardsController._cardsToGameObject[_cardsController.CurrentCard.CardName];
+                    GameObject.Find("CurrentCardImage").GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
+                    GameObject.Find("CurrentCardImage").transform.localRotation = Quaternion.Euler(0, 0, _cardsController.CurrentCard.RotationsCount * -90);
+                }
+
+                // это обновляем только при смене хода, для оптимизации
+                var isTurnChanged = (currentPlayer?.Name != _currentPlayerName);
+                if (isTurnChanged || _playersController._humanPlayerController.StateChanged)
+                {
+                    _playersController._humanPlayerController.StateChanged = false;
+                    _currentPlayerName = currentPlayer?.Name;
+                    UpdateGameViewsFromServer();
+                }
             }
         }
 
         public void OnRotateButonClick()
         {
-            _playersController._playerController.Rotated = true;
+            _playersController._humanPlayerController.Rotated = true;
         }
 
         public void OnEndTurnButonClick()
         {
-            _playersController._playerController.TurnEnded = true;
+            _playersController._humanPlayerController.TurnEnded = true;
         }
 
         public void OnShowPlayerDetailedScore(Text playerNamePanel)
@@ -90,36 +108,23 @@ namespace Assets.Scripts
 
         private void UpdateGameViewsFromServer()
         {
-            // проверяем окончание хода
-            var card = _cardsController.GetCurrentPlayerCard();
-            var isTurnChanged = (card?.CardName != _currentCard?.CardName);
-            _currentCard = card;
-            if (isTurnChanged)
-            {
-                // это обновляем только при смене хода, для оптимизации
-                _fieldsController.UpdateFieldsView(_currentCard);
-                _cardsController.UpdateCardsView();
+            if (_playersController._humanPlayerController.PlayerState != PlayerState.PlayerHoldChip)
+                _cardsController.ReloadCurrentCard();
 
-                _cardsController.UpdateChipsView();
-                _playersController.UpdatePlayersView();
-                _scoreController.UpdateScore();
-                _scoreController.UpdateCurrentPlayerMark();
-            }
+            _fieldsController.UpdateAvailableFieldsView(_cardsController.CurrentCard);
+            _cardsController.UpdateCardsView();
 
-            // установка рисунка карты в контрол текущей карты
-            if (card != null)
-            {
-                var cardGO = _cardsController._cardsToGameObject[card.CardName];
-                GameObject.Find("CurrentCardImage").GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
-                GameObject.Find("CurrentCardImage").transform.localRotation = Quaternion.Euler(0, 0, card.RotationsCount * -90);
-            }
+            _cardsController.UpdateChipsView();
+            _playersController.UpdatePlayersView();
+            _scoreController.UpdateScore();
+            _scoreController.UpdateCurrentPlayerMark();
 
             // окончание игры
             var isFinished = GameManager.Instance.RoomService.GetRoom().IsFinished;
             if (isFinished)
             {
                 // дополнительное обновление
-                _fieldsController.UpdateFieldsView(null);
+                _fieldsController.UpdateAvailableFieldsView(null);
                 _cardsController.UpdateCardsView();
                 _cardsController.UpdateChipsView();
 

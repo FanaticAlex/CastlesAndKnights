@@ -8,7 +8,7 @@ namespace Assets.Scripts
     {
         public Dictionary<string, GameObject> _playerToMarkers = new Dictionary<string, GameObject>();
 
-        public HumanPlayerController _playerController;
+        public HumanPlayerController _humanPlayerController;
         private CardsController _cardsController;
 
         private GameObject _waitingSpinner;
@@ -19,7 +19,7 @@ namespace Assets.Scripts
         {
             var players = GameManager.Instance.RoomService.GetPlayers();
             var player = players.First(p => p.Name == GameManager.Instance.RoomService.User.Login);
-            _playerController = new HumanPlayerController(player, fieldsController, cardsController);
+            _humanPlayerController = new HumanPlayerController(player, fieldsController, cardsController);
 
             _cardsController = cardsController;
 
@@ -33,18 +33,14 @@ namespace Assets.Scripts
 
         public void HandlePlayerActions()
         {
-            var currentPlayer = GameManager.Instance.RoomService.GetCurrentPlayer();
-            var isMyTurn = (currentPlayer.Name == GameManager.Instance.RoomService.User.Login);
-            if (isMyTurn)
-            {
-                _playerController.StartMyTurn();
-                _playerController.MakingMove();
-                _waitingSpinner.SetActive(false);
-            }
-            else
-            {
-                _waitingSpinner.SetActive(true);
-            }
+            _humanPlayerController.StartMyTurn();
+            _humanPlayerController.MakingMove();
+            _waitingSpinner.SetActive(false);
+        }
+
+        public void ShowWaitingSpinner()
+        {
+            _waitingSpinner.SetActive(true);
         }
 
         /// <summary>

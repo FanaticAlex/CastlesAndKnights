@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +15,8 @@ namespace Assets.Scripts
         private PartsController _partsController;
         private FieldsController _fieldsController;
 
+        public Card? CurrentCard { get; set; }
+
         public CardsController(FieldsController fieldsController)
         {
             _partsController = new PartsController();
@@ -26,11 +26,12 @@ namespace Assets.Scripts
             UpdateCardsView();
         }
 
-        public Card GetCurrentPlayerCard()
+        public Card ReloadCurrentCard()
         {
             try
             {
-                return GameManager.Instance.RoomService.GetCurrentCard();
+                CurrentCard = GameManager.Instance.RoomService.GetCurrentCard();
+                return CurrentCard;
             }
             catch (AggregateException ex)
             {

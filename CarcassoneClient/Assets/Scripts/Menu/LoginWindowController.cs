@@ -34,6 +34,8 @@ namespace Assets.Scripts.Menu
                 if (TryLogin(login, password, out errorMessage))
                 {
                     MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
+                    ErrorText.GetComponent<TMP_Text>().text = string.Empty;
+                    ErrorText.SetActive(false);
                     break;
                 }
 

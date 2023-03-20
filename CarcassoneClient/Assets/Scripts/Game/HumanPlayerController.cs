@@ -14,7 +14,12 @@ namespace Assets.Scripts
     internal class HumanPlayerController
     {
         // это не надо хранить, это надо получить с сервера
-        public PlayerState _playerState;
+        private PlayerState _playerState;
+        public PlayerState PlayerState
+        {
+            get { return _playerState; }
+            private set { _playerState = value; StateChanged = true; }
+        }
         private string _selectedFieldId;
         private Card _currentCard;
 
@@ -23,6 +28,8 @@ namespace Assets.Scripts
 
         public bool Rotated { get; set; }
         public bool TurnEnded { get; set; }
+
+        public bool StateChanged { get; set; }
 
         private BasePlayer _player;
         private FieldsController _fieldsController;
@@ -41,20 +48,22 @@ namespace Assets.Scripts
 
         public void StartMyTurn()
         {
-            if (_playerState == PlayerState.PlayerWait)
-                _playerState = PlayerState.PlayerHoldCard;
+            if (PlayerState == PlayerState.PlayerWait)
+            {
+                PlayerState = PlayerState.PlayerHoldCard;
+            }
         }
 
         public void MakingMove()
         {
-            if (_playerState == PlayerState.PlayerHoldCard)
+            if (PlayerState == PlayerState.PlayerHoldCard)
             {
                 EndTurnButton.SetActive(false);
                 PlayerHoldCardProcess(_player);
                 return;
             }
 
-            if (_playerState == PlayerState.PlayerHoldChip)
+            if (PlayerState == PlayerState.PlayerHoldChip)
             {
                 EndTurnButton.SetActive(true);
                 HoldChipProcess(_player);
@@ -91,7 +100,7 @@ namespace Assets.Scripts
                         _cardsController.ShowCardMarks(_currentCard.CardName);
                     }
 
-                    _playerState = PlayerState.PlayerHoldChip;
+                    PlayerState = PlayerState.PlayerHoldChip;
                 }
             }
             else if (MouseButton1 || Rotated)
@@ -100,6 +109,7 @@ namespace Assets.Scripts
                 Rotated = false;
                 // поворот поля если нажата правая кнопка поворачиваем карту и кладем на поле
                 GameManager.Instance.RoomService.RotateCard(_currentCard.CardName);
+                _cardsController.ReloadCurrentCard();
             }
         }
 
@@ -193,7 +203,7 @@ namespace Assets.Scripts
             GameManager.Instance.RoomService.EndTurn(userName);
             _cardsController.HideCardMarks(_currentCard.CardName);
             _currentCard = null;
-            _playerState = PlayerState.PlayerWait;
+            PlayerState = PlayerState.PlayerWait;
         }
     }
 }
