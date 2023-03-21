@@ -72,9 +72,14 @@ namespace Assets.Scripts
                 }
             }
 
+            UpdateCardRemainView();
+        }
+
+        public void UpdateCardRemainView()
+        {
             var cardsRemain = GameManager.Instance.RoomService.GetCardsRemain();
             var cardsRemainText = GameObject.Find("CardsRemain").GetComponent<Text>();
-            cardsRemainText.text = "Карт в колоде:" + cardsRemain;
+            cardsRemainText.text = $"{cardsRemain}";
         }
 
         public void ShowCardMarks(string cardId)

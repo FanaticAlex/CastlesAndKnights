@@ -113,6 +113,7 @@ namespace Assets.Scripts
 
             _fieldsController.UpdateAvailableFieldsView(_cardsController.CurrentCard);
             _cardsController.UpdateCardsView();
+            _cardsController.UpdateCardRemainView();
 
             _cardsController.UpdateChipsView();
             _playersController.UpdatePlayersView();
