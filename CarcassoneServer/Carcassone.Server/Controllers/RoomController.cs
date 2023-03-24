@@ -11,6 +11,7 @@ using Carcassone.DAL;
 using Carcassone.Server.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace CarcassoneServer.Controllers
@@ -24,11 +25,16 @@ namespace CarcassoneServer.Controllers
     {
         private readonly IGamesService _service;
         private readonly ILogger _logger;
+        private static IConfiguration _configuration;
 
-        public RoomController(ILogger<RoomController> logger, IGamesService service)
+        public RoomController(
+            ILogger<RoomController> logger,
+            IGamesService service,
+            IConfiguration configuration)
         {
             _logger = logger;
             _service = service;
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -72,7 +78,7 @@ namespace CarcassoneServer.Controllers
                 };
 
                 var optionsBuilder = new DbContextOptionsBuilder<CarcassoneContext>();
-                optionsBuilder.UseSqlite(Startup.DbConnectionStringBuilder);
+                optionsBuilder.UseSqlite(_configuration["dbConnectionStringBuilder"]);
                 var context = new CarcassoneContext(optionsBuilder.Options);
                 var scoreService = new GameScoreService(context);
                 scoreService.SaveUserGameScore(userScore);

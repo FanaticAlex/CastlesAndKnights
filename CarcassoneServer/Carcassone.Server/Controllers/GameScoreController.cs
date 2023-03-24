@@ -1,6 +1,7 @@
 ﻿using Carcassone.DAL;
 using Carcassone.Server.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,9 @@ namespace Carcassone.Server.Controllers
         private IGameScoreService _service;
         private readonly ILogger _logger;
 
-        public GameScoreController(ILogger<GameScoreController> logger, IGameScoreService userService)
+        public GameScoreController(
+            ILogger<GameScoreController> logger,
+            IGameScoreService userService)
         {
             _service = userService;
             _logger = logger;

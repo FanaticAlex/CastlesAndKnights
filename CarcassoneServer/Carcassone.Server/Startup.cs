@@ -1,27 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Threading.Tasks;
-using Carcassone.Core;
 using Carcassone.DAL;
 using Carcassone.Server.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System.Data.Common;
 
 namespace CarcassoneServer
 {
     public class Startup
     {
-        public static string DbConnectionStringBuilder = "Data Source=Carcassone.db";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,7 +22,8 @@ namespace CarcassoneServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<CarcassoneContext>(options => options.UseSqlite(DbConnectionStringBuilder));
+            var _dbConnectionStringBuilder = Configuration["DbConnectionStringBuilder"];
+            services.AddDbContext<CarcassoneContext>(options => options.UseSqlite(_dbConnectionStringBuilder));
 
             services.AddSingleton<IGamesService, GamesService>();
             services.AddScoped<IUserService, UserService>();
