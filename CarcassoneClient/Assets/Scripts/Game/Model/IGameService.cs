@@ -12,7 +12,7 @@ namespace Assets.Scripts
     /// </summary>
     internal interface IGameService
     {
-        User User { get; }
+        string User { get; }
 
         void Login(string login, string password); // этот метод не подхдит интерфейсу он только для сетевой игры
         void Create();

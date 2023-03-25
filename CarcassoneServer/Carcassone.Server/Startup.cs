@@ -2,11 +2,11 @@ using Carcassone.DAL;
 using Carcassone.Server.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Data.Common;
 
 namespace CarcassoneServer
 {
@@ -22,11 +22,15 @@ namespace CarcassoneServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var _dbConnectionStringBuilder = Configuration["DbConnectionStringBuilder"];
-            services.AddDbContext<CarcassoneContext>(options => options.UseSqlite(_dbConnectionStringBuilder));
+            var _dbConnectionString = Configuration["DbConnectionString"];
+            services.AddDbContext<CarcassoneContext>(options => options.UseSqlite(_dbConnectionString));
+
+            services
+                .AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<CarcassoneContext>()
+                .AddDefaultTokenProviders();
 
             services.AddSingleton<IGamesService, GamesService>();
-            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGameScoreService, GameScoreService>();
             services.AddControllers();
 
@@ -61,6 +65,7 @@ namespace CarcassoneServer
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {

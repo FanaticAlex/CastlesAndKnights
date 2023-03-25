@@ -21,11 +21,16 @@ namespace Assets.Scripts
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
         }
 
-        public User User { get; private set; }
+        public string User { get; private set; }
 
         public void Create() => RoomId = client.CreateAsync().Result.Id;
         public void Connect(string roomId) => RoomId = client.RoomGETAsync(roomId).Result.Id;
-        public void Login(string login, string password) => User = client.LoginAsync(login, password).Result;
+        public void Login(string login, string password)
+        {
+            client.LoginAsync(login, password).Wait();
+            User = login;
+        }
+
         public void AddHuman(string userName) => client.AddHumanAsync(RoomId, userName).Wait();
         public void AddAI() => client.AddAIAsync(RoomId).Wait();
         public void Start() => client.StartAsync(RoomId).Wait();

@@ -18,7 +18,7 @@ namespace Assets.Scripts
             CardsController cardsController)
         {
             var players = GameManager.Instance.RoomService.GetPlayers();
-            var player = players.First(p => p.Name == GameManager.Instance.RoomService.User.Login);
+            var player = players.First(p => p.Name == GameManager.Instance.RoomService.User);
             _humanPlayerController = new HumanPlayerController(player, fieldsController, cardsController);
 
             _cardsController = cardsController;

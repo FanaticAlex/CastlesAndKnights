@@ -78,7 +78,7 @@ namespace CarcassoneServer.Controllers
                 };
 
                 var optionsBuilder = new DbContextOptionsBuilder<CarcassoneContext>();
-                optionsBuilder.UseSqlite(_configuration["dbConnectionStringBuilder"]);
+                optionsBuilder.UseSqlite(_configuration["DbConnectionString"]);
                 var context = new CarcassoneContext(optionsBuilder.Options);
                 var scoreService = new GameScoreService(context);
                 scoreService.SaveUserGameScore(userScore);

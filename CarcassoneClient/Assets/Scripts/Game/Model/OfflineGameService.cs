@@ -12,14 +12,13 @@ namespace Assets.Scripts
 
         public OfflineGameService()
         {
-            User = new User();
-            User.Login = "LocalPlayerMe";
+            User = "LocalPlayerMe";
 
             Create();
-            AddHuman(User.Login);
+            AddHuman(User);
         }
 
-        public User User { get; private set; }
+        public String User { get; private set; }
 
         public void Create() { room = new Carcassone.Core.GameRoom(); }
         public void Connect(string roomId) => throw new NotImplementedException();

@@ -77,5 +77,10 @@ namespace Assets.Scripts.Menu
         {
             Application.Quit();
         }
+
+        public void OnRegisterBtnClick()
+        {
+            Application.OpenURL("http://192.168.1.65/Identity/Account/Register");
+        }
     }
 }

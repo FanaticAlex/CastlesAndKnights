@@ -18,8 +18,8 @@ namespace Assets.Scripts.Menu
             base.Enable();
 
             var user = GameManager.Instance.RoomService.User;
-            var statistic = GameManager.Instance.RoomService.GetUserStatistic(user.Login);
-            UserName.GetComponent<TMP_Text>().text = user.Login;
+            var statistic = GameManager.Instance.RoomService.GetUserStatistic(user);
+            UserName.GetComponent<TMP_Text>().text = user;
             Statistic.GetComponent<TMP_Text>().text = 
                 $"GamesCount: {statistic.GamesCount} \r\n" +
                 $"WinCount: {statistic.WinCount}";
@@ -36,7 +36,7 @@ namespace Assets.Scripts.Menu
         {
             GameManager.Instance.RoomService.Create();
             var user = GameManager.Instance.RoomService.User;
-            GameManager.Instance.RoomService.AddHuman(user.Login);
+            GameManager.Instance.RoomService.AddHuman(user);
 
             MenuManager.IAmGameMaster = true;
             MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);

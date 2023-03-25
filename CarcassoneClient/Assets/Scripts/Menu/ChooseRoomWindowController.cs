@@ -33,7 +33,7 @@ namespace Assets.Scripts.Menu
         {
             var user = GameManager.Instance.RoomService.User;
             GameManager.Instance.RoomService.Connect(roomId);
-            GameManager.Instance.RoomService.AddHuman(user.Login);
+            GameManager.Instance.RoomService.AddHuman(user);
 
             // мы подключились к игре, но добавлять игроков и начинать игру мы не можем
             MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);

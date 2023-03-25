@@ -1,7 +1,6 @@
 ﻿using Carcassone.DAL;
 using Carcassone.Server.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

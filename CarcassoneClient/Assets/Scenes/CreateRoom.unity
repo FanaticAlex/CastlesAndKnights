@@ -2903,8 +2903,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1119812716}
-        m_TargetAssemblyTypeName: Assets.Scripts.Menu.LoginPanelManager, Assembly-CSharp
-        m_MethodName: OnLoginBtnClick
+        m_TargetAssemblyTypeName: Assets.Scripts.Menu.LoginWindowController, Assembly-CSharp
+        m_MethodName: OnRegisterBtnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

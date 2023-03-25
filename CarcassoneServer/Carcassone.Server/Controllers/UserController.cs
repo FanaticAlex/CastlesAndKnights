@@ -1,7 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 using Carcassone.DAL;
 using Carcassone.Server.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CarcassoneServer.Controllers
 {
@@ -9,40 +17,52 @@ namespace CarcassoneServer.Controllers
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
-        private IUserService _userService;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-        public UserController(IUserService userService)
+        public UserController(UserManager<IdentityUser> userManager, IConfiguration configuration)
         {
-            _userService = userService;
-        }
-
-        [HttpPost]
-        [Route("register/{email}/{login}/{password}")]
-        public void Register(string login, string password, string email)
-        {
-            var newUser = new User()
-            {
-                Login = login,
-                Password = password,
-                Email = email,
-            };
-
-            _userService.Register(newUser);
-        }
-
-        [HttpGet]
-        [Route("verify/{key}")]
-        public void Verify(string key)
-        {
-            throw new Exception();
+            _userManager = userManager;
+            _configuration = configuration;
         }
 
         [HttpGet]
         [Route("login/{login}/{password}")]
-        public User Login(string login, string password)
+        public async Task<ActionResult> Login(string login, string password)
         {
-            var user = _userService.Authorize(login, password);
-            return user;
+            var user = await _userManager.FindByNameAsync(login);
+            if (user != null && await _userManager.CheckPasswordAsync(user, password))
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
+
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                }
+
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+                var token = new JwtSecurityToken(
+                    issuer: _configuration["JWT:ValidIssuer"],
+                    audience: _configuration["JWT:ValidAudience"],
+                    expires: DateTime.Now.AddHours(3),
+                    claims: authClaims,
+                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                    );
+
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo
+                });
+            }
+            return Unauthorized();
         }
     }
 }
