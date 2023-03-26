@@ -95,13 +95,13 @@ namespace Carcassone.Core.Cards
 
 
             // поле 3
-            var side32 = RotateSide(Side.right, RotationsCount);
+            var side32 = RotateSide(Side.bottom, RotationsCount);
             var sidePart32 = RotateSidePart(CornfieldSide.side_4, RotationsCount);
             var cornfieldBorder32 = new Border(this.Field, this.Field?.GetNeighbour(side32), this);
             _cornfieldPart3.Borders.Add(cornfieldBorder32);
             cornfieldBorder32.CornfieldSide = sidePart32;
 
-            var side41 = RotateSide(Side.bottom, RotationsCount);
+            var side41 = RotateSide(Side.right, RotationsCount);
             var sidePart41 = RotateSidePart(CornfieldSide.side_5, RotationsCount);
             var cornfieldBorder41 = new Border(this.Field, this.Field?.GetNeighbour(side41), this);
             _cornfieldPart3.Borders.Add(cornfieldBorder41);
