@@ -1,5 +1,4 @@
-﻿using Carcassone.ApiClient;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -44,8 +43,9 @@ namespace Assets.Scripts
         /// </summary>
         void Update()
         {
-            _playersController._humanPlayerController.MouseButton0 |= Input.GetMouseButtonDown(0);
-            _playersController._humanPlayerController.MouseButton1 |= Input.GetMouseButtonDown(1);
+            _playersController._humanPlayerController.LeftButton |= Input.GetMouseButtonDown(0);
+            _playersController._humanPlayerController.DoubleClick |= IsDoubleClick();
+            _playersController._humanPlayerController.RighrButtonClick |= Input.GetMouseButtonDown(1);
 
             _timer -= Time.deltaTime;
             if (_timer <= 0.0f) // длительные операции, запросы к серверу
@@ -66,11 +66,13 @@ namespace Assets.Scripts
                 if (_cardsController.CurrentCard != null)
                 {
                     var cardGO = _cardsController._cardsToGameObject[_cardsController.CurrentCard.CardName];
-                    GameObject.Find("CurrentCardImage").GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
-                    GameObject.Find("CurrentCardImage").transform.localRotation = Quaternion.Euler(0, 0, _cardsController.CurrentCard.RotationsCount * -90);
+                    var currentCardImageGO = GameObject.Find("CurrentCardImage");
+                    currentCardImageGO.GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
+                    currentCardImageGO.transform.localRotation = Quaternion.Euler(0, 0, _cardsController.CurrentCard.RotationsCount * -90);
                 }
 
-                // это обновляем только при смене хода, для оптимизации
+                // это обновляем отображение карт только при смене хода,
+                // и при смене статуса хода, для оптимизации
                 var isTurnChanged = (currentPlayer?.Name != _currentPlayerName);
                 if (isTurnChanged || _playersController._humanPlayerController.StateChanged)
                 {
@@ -79,6 +81,39 @@ namespace Assets.Scripts
                     UpdateGameViewsFromServer();
                 }
             }
+        }
+
+        private float timer1 = 0;
+        private bool rememberedButtonClick;
+        private bool IsDoubleClick()
+        {
+            // first click setup timer and remember click
+            if (Input.GetMouseButtonDown(0) && timer1 <= 0)
+            {
+                timer1 = 1;
+                rememberedButtonClick = true;
+                return false;
+            }
+
+            // second click is doubleclick
+            if (rememberedButtonClick && Input.GetMouseButtonDown(0) && timer1 > 0)
+            {
+                timer1 = 0;
+                rememberedButtonClick = false;
+                return true;
+            }
+
+            // just waiting second click
+            if (timer1 > 0)
+            {
+                timer1 -= Time.deltaTime;
+            }
+            else // timer dropped
+            {
+                rememberedButtonClick = false;
+            }
+
+            return false;
         }
 
         public void OnRotateButonClick()

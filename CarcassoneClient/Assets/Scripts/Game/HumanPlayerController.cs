@@ -23,8 +23,9 @@ namespace Assets.Scripts
         private string _selectedFieldId;
         private Card _currentCard;
 
-        public bool MouseButton0 { get; set; }
-        public bool MouseButton1 { get; set; }
+        public bool LeftButton { get; set; }
+        public bool DoubleClick { get; set; }
+        public bool RighrButtonClick { get; set; }
 
         public bool Rotated { get; set; }
         public bool TurnEnded { get; set; }
@@ -81,9 +82,9 @@ namespace Assets.Scripts
                     return;
             }
 
-            if (MouseButton0)
+            if (DoubleClick)
             {
-                MouseButton0 = false;
+                DoubleClick = false;
 
                 _selectedFieldId = _fieldsController.GetSelectedFieldId();
                 if (_selectedFieldId == null)
@@ -103,9 +104,9 @@ namespace Assets.Scripts
                     PlayerState = PlayerState.PlayerHoldChip;
                 }
             }
-            else if (MouseButton1 || Rotated)
+            else if (RighrButtonClick || Rotated)
             {
-                MouseButton1 = false;
+                RighrButtonClick = false;
                 Rotated = false;
                 // поворот поля если нажата правая кнопка поворачиваем карту и кладем на поле
                 GameManager.Instance.RoomService.RotateCard(_currentCard.CardName);
@@ -118,9 +119,9 @@ namespace Assets.Scripts
             HilightSelectedCardMark(_currentCard.CardName);
 
             // клик на поле левой кнопкой помещает в него Фишку
-            if (MouseButton0)
+            if (LeftButton)
             {
-                MouseButton0 = false;
+                LeftButton = false;
 
                 var playerHaveChip = GameManager.Instance.RoomService.GetPlayer(player.Name);
                 if (playerHaveChip.ChipCount != 0)
@@ -136,9 +137,9 @@ namespace Assets.Scripts
             }
 
             // клик на поле правой кнопкой означает что игрок не хочет устанавливать фишку.
-            if (MouseButton1 || TurnEnded)
+            if (RighrButtonClick || TurnEnded)
             {
-                MouseButton1 = false;
+                RighrButtonClick = false;
                 TurnEnded = false;
                 EndTurn(player.Name);
             }
