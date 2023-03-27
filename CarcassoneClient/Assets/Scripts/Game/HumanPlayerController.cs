@@ -44,7 +44,7 @@ namespace Assets.Scripts
             _fieldsController = fieldsController;
             _cardsController = cardsController;
 
-            EndTurnButton = GameObject.Find("EndTurnButton");
+            EndTurnButton = GameObject.Find("EndTurnBtn");
         }
 
         public void StartMyTurn()
