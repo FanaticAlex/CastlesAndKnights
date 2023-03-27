@@ -43,6 +43,8 @@ namespace Assets.Scripts.Menu
                 StartGameBtn.SetActive(false);
                 MenuManager.IsWaitingForStart = true;
             }
+
+            InitPlayersListGO();
         }
 
         void Update()
@@ -91,27 +93,37 @@ namespace Assets.Scripts.Menu
 
         private void UpdatePlayerList()
         {
-            var listUi = GameObject.Find("PlayersList")?.transform?.Find("Viewport")?.Find("Content");
-            if (listUi == null)
-                return;
+            Transform playersListGO = InitPlayersListGO();
 
-            foreach (Transform child in listUi.transform)
-                GameObject.Destroy(child.gameObject);
-
-            var pos = 0;
+            var pos = 0.0f;
             var playersList = GameManager.Instance.RoomService.GetPlayers();
             foreach (var player in playersList)
             {
-                var rowPrefab = (GameObject)Resources.Load("Additional/PlayersListRow", typeof(GameObject));
+                var rowPrefab = (GameObject)Resources.Load("UI/PlayersListRow", typeof(GameObject));
                 var row = GameObject.Instantiate(rowPrefab);
                 row.transform.Find("NameText").GetComponent<Text>().text = player.Name;
                 row.transform.Find("DeleteBtn").GetComponentInChildren<Button>().onClick.AddListener(delegate { OnDeletePlayerBtn(player.Name); });
 
-                row.transform.parent = listUi;
+                row.transform.parent = playersListGO;
                 row.transform.localScale = Vector3.one;
                 row.transform.localPosition = new Vector3(0, pos, 0);
-                pos -= 30;
+
+                var rowHight = row.GetComponent<RectTransform>().rect.height;
+
+                pos -= rowHight;
             }
+        }
+
+        private static Transform InitPlayersListGO()
+        {
+            var playersListGO = GameObject.Find("PlayersList")?.transform?.Find("Viewport")?.Find("Content");
+            if (playersListGO == null)
+                throw new Exception("PlayersList GameObject Not Found");
+
+            foreach (Transform child in playersListGO.transform)
+                GameObject.Destroy(child.gameObject);
+
+            return playersListGO;
         }
     }
 }

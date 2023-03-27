@@ -9,7 +9,6 @@ namespace Assets.Scripts.Menu
     /// </summary>
     public class LoginWindowController : BaseMenuWindowController
     {
-        public GameObject LoginBtn;
         public GameObject ErrorText;
 
         public override MenuWindowType MenuPanelType => MenuWindowType.Login;

@@ -13,11 +13,6 @@ namespace Assets.Scripts.Menu
         /// </summary>
         public virtual MenuWindowType MenuPanelType { get; }
 
-        /// <summary>
-        /// Кнопка назад, есть во всех типах окон
-        /// </summary>
-        public GameObject BackBtn;
-
         public virtual void Disable()
         {
             gameObject.SetActive(false);
