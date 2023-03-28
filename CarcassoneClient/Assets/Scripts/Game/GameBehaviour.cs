@@ -45,7 +45,6 @@ namespace Assets.Scripts
         {
             _playersController._humanPlayerController.LeftButton |= Input.GetMouseButtonUp(0);
             _playersController._humanPlayerController.DoubleClick |= IsDoubleClick();
-            //_playersController._humanPlayerController.RighrButtonClick |= Input.GetMouseButtonDown(1);
 
             _timer -= Time.deltaTime;
             if (_timer <= 0.0f) // длительные операции, запросы к серверу
@@ -101,8 +100,8 @@ namespace Assets.Scripts
             // second click is doubleclick
             if (_rememberedButtonClick && Input.GetMouseButtonUp(0) && _timer1 > 0)
             {
-                var isNear = Vector3.Magnitude(Input.mousePosition - _rememberedCoursorPosition) < 0.5;
-                //if (isNear)
+                var isNear = Vector3.Magnitude(Input.mousePosition - _rememberedCoursorPosition) < 20;
+                if (isNear)
                 {
                     _timer1 = 0;
                     _rememberedButtonClick = false;

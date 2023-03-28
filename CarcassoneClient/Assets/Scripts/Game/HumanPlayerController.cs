@@ -26,7 +26,6 @@ namespace Assets.Scripts
 
         public bool LeftButton { get; set; }
         public bool DoubleClick { get; set; }
-        public bool RighrButtonClick { get; set; }
 
         public bool Rotated { get; set; }
         public bool TurnEnded { get; set; }
@@ -105,9 +104,8 @@ namespace Assets.Scripts
                     PlayerState = PlayerState.PlayerHoldChip;
                 }
             }
-            else if (RighrButtonClick || Rotated)
+            else if (Rotated)
             {
-                RighrButtonClick = false;
                 Rotated = false;
                 // поворот поля если нажата правая кнопка поворачиваем карту и кладем на поле
                 GameManager.Instance.RoomService.RotateCard(_currentCard.CardName);
@@ -138,9 +136,8 @@ namespace Assets.Scripts
             }
 
             // клик на поле правой кнопкой означает что игрок не хочет устанавливать фишку.
-            if (RighrButtonClick || TurnEnded)
+            if (TurnEnded)
             {
-                RighrButtonClick = false;
                 TurnEnded = false;
                 EndTurn(player.Name);
             }
