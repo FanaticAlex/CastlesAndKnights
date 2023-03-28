@@ -43,9 +43,9 @@ namespace Assets.Scripts
         /// </summary>
         void Update()
         {
-            _playersController._humanPlayerController.LeftButton |= Input.GetMouseButtonDown(0);
+            _playersController._humanPlayerController.LeftButton |= Input.GetMouseButtonUp(0);
             _playersController._humanPlayerController.DoubleClick |= IsDoubleClick();
-            _playersController._humanPlayerController.RighrButtonClick |= Input.GetMouseButtonDown(1);
+            //_playersController._humanPlayerController.RighrButtonClick |= Input.GetMouseButtonDown(1);
 
             _timer -= Time.deltaTime;
             if (_timer <= 0.0f) // длительные операции, запросы к серверу
@@ -83,34 +83,43 @@ namespace Assets.Scripts
             }
         }
 
-        private float timer1 = 0;
-        private bool rememberedButtonClick;
+        private float _timer1 = 0;
+        private bool _rememberedButtonClick;
+        private Vector3 _rememberedCoursorPosition;
+
         private bool IsDoubleClick()
         {
             // first click setup timer and remember click
-            if (Input.GetMouseButtonDown(0) && timer1 <= 0)
+            if (Input.GetMouseButtonUp(0) && _timer1 <= 0)
             {
-                timer1 = 1;
-                rememberedButtonClick = true;
+                _timer1 = 1;
+                _rememberedButtonClick = true;
+                _rememberedCoursorPosition = Input.mousePosition;
                 return false;
             }
 
             // second click is doubleclick
-            if (rememberedButtonClick && Input.GetMouseButtonDown(0) && timer1 > 0)
+            if (_rememberedButtonClick && Input.GetMouseButtonUp(0) && _timer1 > 0)
             {
-                timer1 = 0;
-                rememberedButtonClick = false;
-                return true;
+                var isNear = Vector3.Magnitude(Input.mousePosition - _rememberedCoursorPosition) < 0.5;
+                //if (isNear)
+                {
+                    _timer1 = 0;
+                    _rememberedButtonClick = false;
+                    _rememberedCoursorPosition = Vector3.zero;
+                    return true;
+                }
             }
 
             // just waiting second click
-            if (timer1 > 0)
+            if (_timer1 > 0)
             {
-                timer1 -= Time.deltaTime;
+                _timer1 -= Time.deltaTime;
             }
             else // timer dropped
             {
-                rememberedButtonClick = false;
+                _rememberedButtonClick = false;
+                _rememberedCoursorPosition = Vector3.zero;
             }
 
             return false;

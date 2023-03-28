@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 using Carcassone.ApiClient;
+using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
@@ -59,14 +60,14 @@ namespace Assets.Scripts
         {
             if (PlayerState == PlayerState.PlayerHoldCard)
             {
-                EndTurnButton.SetActive(false);
+                EndTurnButton.GetComponent<Button>().interactable = false;
                 PlayerHoldCardProcess(_player);
                 return;
             }
 
             if (PlayerState == PlayerState.PlayerHoldChip)
             {
-                EndTurnButton.SetActive(true);
+                EndTurnButton.GetComponent<Button>().interactable = true;
                 HoldChipProcess(_player);
                 return;
             }
