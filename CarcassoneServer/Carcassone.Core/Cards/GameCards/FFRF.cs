@@ -31,23 +31,14 @@ namespace Carcassone.Core.Cards
         {
             Field = field;
 
-            // дорога
-            var side3 = RotateSide(Side.bottom, RotationsCount);
-            var roadBorder3 = new Border(this.Field, this.Field?.GetNeighbour(side3), this);
-            _roadPart3.Borders.Add(roadBorder3);
-
+            AddBorderToPart(Side.bottom, _roadPart3);
 
             // церковь
             _churchPart.ChurchField = field;
 
-            // поле
-            var side1 = RotateSide(Side.top, RotationsCount);
-            var cornfieldBorder1 = new Border(this.Field, this.Field?.GetNeighbour(side1), this);
-            _cornfieldPart1.Borders.Add(cornfieldBorder1);
-
-            var side2 = RotateSide(Side.right, RotationsCount);
-            var cornfieldBorder2 = new Border(this.Field, this.Field?.GetNeighbour(side2), this);
-            _cornfieldPart1.Borders.Add(cornfieldBorder2);
+            AddBorderToPart(Side.top, _cornfieldPart1);
+            AddBorderToPart(Side.right, _cornfieldPart1);
+            AddBorderToPart(Side.left, _cornfieldPart1);
 
             var side31 = RotateSide(Side.bottom, RotationsCount);
             var sidePart31 = RotateSidePart(CornfieldSide.side_3, RotationsCount);
@@ -61,9 +52,6 @@ namespace Carcassone.Core.Cards
             _cornfieldPart1.Borders.Add(cornfieldBorder32);
             cornfieldBorder32.CornfieldSide = sidePart32;
 
-            var side4 = RotateSide(Side.left, RotationsCount);
-            var cornfieldBorder4 = new Border(this.Field, this.Field?.GetNeighbour(side4), this);
-            _cornfieldPart1.Borders.Add(cornfieldBorder4);
         }
     }
 }

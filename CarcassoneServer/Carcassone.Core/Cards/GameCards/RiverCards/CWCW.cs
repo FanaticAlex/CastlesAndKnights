@@ -41,10 +41,8 @@ namespace Carcassone.Core.Cards
         {
             Field = field;
 
-            // замок
             AddBorderToPart(Side.top, _castlePart0);
 
-            // замок
             AddBorderToPart(Side.bottom, _castlePart1);
 
             // поле 1

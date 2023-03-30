@@ -147,7 +147,7 @@ namespace Carcassone.Core.Calculation
 
             scores.Sort(delegate (PlayerScore x, PlayerScore y)
             {
-                return x.GetOverallScore().CompareTo(y.GetOverallScore());
+                return y.GetOverallScore().CompareTo(x.GetOverallScore());
             });
 
             foreach(var score  in scores)

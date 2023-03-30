@@ -48,10 +48,7 @@ namespace Carcassone.Core.Cards
             AddBorderToPart(Side.left, _castlePart);
 
             // дорога
-            var side3 = Side.bottom;
-            side3 = RotateSide(side3, RotationsCount);
-            var roadBorder3 = new Border(this.Field, this.Field?.GetNeighbour(side3), this);
-            _roadPart.Borders.Add(roadBorder3);
+            AddBorderToPart(Side.bottom, _roadPart);
 
             // поле
             var side31 = Side.bottom;

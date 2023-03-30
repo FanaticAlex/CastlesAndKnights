@@ -24,20 +24,10 @@ namespace Carcassone.Core.Cards
         {
             Field = field;
 
-            var side1 = Side.left;
-            side1 = RotateSide(side1, RotationsCount);
-            var cornfieldBorder1 = new Border(this.Field, this.Field?.GetNeighbour(side1), this);
-            _cornfieldPart.Borders.Add(cornfieldBorder1);
+            AddBorderToPart(Side.left, _cornfieldPart);
+            AddBorderToPart(Side.top, _cornfieldPart);
+            AddBorderToPart(Side.right, _cornfieldPart);
 
-            var side2 = Side.top;
-            side2 = RotateSide(side2, RotationsCount);
-            var cornfieldBorder2 = new Border(this.Field, this.Field?.GetNeighbour(side2), this);
-            _cornfieldPart.Borders.Add(cornfieldBorder2);
-
-            var side3 = Side.right;
-            side3 = RotateSide(side3, RotationsCount);
-            var cornfieldBorder3 = new Border(this.Field, this.Field?.GetNeighbour(side3), this);
-            _cornfieldPart.Borders.Add(cornfieldBorder3);
 
             var cornfield1Side0 = Side.bottom;
             cornfield1Side0 = RotateSide(cornfield1Side0, RotationsCount);

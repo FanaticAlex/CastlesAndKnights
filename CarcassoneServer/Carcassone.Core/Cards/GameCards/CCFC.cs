@@ -36,10 +36,7 @@ namespace Carcassone.Core.Cards
             AddBorderToPart(Side.right, _castlePart);
             AddBorderToPart(Side.left, _castlePart);
 
-            var side3 = Side.bottom;
-            side3 = RotateSide(side3, RotationsCount);
-            var cornfieldBorder3 = new Border(this.Field, this.Field?.GetNeighbour(side3), this);
-            _cornfieldPart.Borders.Add(cornfieldBorder3);
+            AddBorderToPart(Side.bottom, _cornfieldPart);
         }
     }
 }

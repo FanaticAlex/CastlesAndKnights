@@ -40,20 +40,9 @@ namespace Carcassone.Core.Cards
             cornfield1Border1.CornfieldSide = cornfield1sidePart1;
             _cornfieldPart1.Borders.Add(cornfield1Border1);
 
-            var Side1 = Side.right;
-            Side1 = RotateSide(Side1, RotationsCount);
-            var cornfieldBorder1 = new Border(this.Field, this.Field?.GetNeighbour(Side1), this);
-            _cornfieldPart1.Borders.Add(cornfieldBorder1);
-
-            var Side2 = Side.bottom;
-            Side2 = RotateSide(Side2, RotationsCount);
-            var cornfieldBorder2 = new Border(this.Field, this.Field?.GetNeighbour(Side2), this);
-            _cornfieldPart1.Borders.Add(cornfieldBorder2);
-
-            var Side3 = Side.left;
-            Side3 = RotateSide(Side3, RotationsCount);
-            var cornfieldBorder3 = new Border(this.Field, this.Field?.GetNeighbour(Side3), this);
-            _cornfieldPart1.Borders.Add(cornfieldBorder3);
+            AddBorderToPart(Side.right, _cornfieldPart1);
+            AddBorderToPart(Side.bottom, _cornfieldPart1);
+            AddBorderToPart(Side.left, _cornfieldPart1);
         }
     }
 }

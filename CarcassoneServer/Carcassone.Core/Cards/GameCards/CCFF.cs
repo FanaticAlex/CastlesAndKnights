@@ -38,16 +38,11 @@ namespace Carcassone.Core.Cards
             Field = field;
 
             AddBorderToPart(Side.top, _castlePart);
+
             AddBorderToPart(Side.right, _castlePart1);
 
-            // поле
-            var sides2 = new List<Side>() { Side.bottom, Side.left };
-            foreach (var side in sides2)
-            {
-                var cornfieldSide = RotateSide(side, RotationsCount);
-                var cornfieldBorder3 = new Border(this.Field, this.Field?.GetNeighbour(cornfieldSide), this);
-                _cornfieldPart.Borders.Add(cornfieldBorder3);
-            }
+            AddBorderToPart(Side.bottom, _cornfieldPart);
+            AddBorderToPart(Side.left, _cornfieldPart);
         }
     }
 }

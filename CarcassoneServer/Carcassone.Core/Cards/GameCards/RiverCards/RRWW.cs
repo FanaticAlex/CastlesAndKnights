@@ -105,13 +105,8 @@ namespace Carcassone.Core.Cards
             _cornfieldPart2.Borders.Add(cornfield3Border1);
 
             // дорога
-            var side1 = RotateSide(Side.top, RotationsCount);
-            var roadBorder1 = new Border(this.Field, this.Field?.GetNeighbour(side1), this);
-            _roadPart.Borders.Add(roadBorder1);
-
-            var side2 = RotateSide(Side.right, RotationsCount);
-            var roadBorder2 = new Border(this.Field, this.Field?.GetNeighbour(side2), this);
-            _roadPart.Borders.Add(roadBorder2);
+            AddBorderToPart(Side.top, _roadPart);
+            AddBorderToPart(Side.right, _roadPart);
         }
     }
 }

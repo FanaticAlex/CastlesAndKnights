@@ -82,9 +82,7 @@ namespace Carcassone.Core.Cards
             _cornfieldPart2.Borders.Add(cornfield2Border2);
 
             // дорога
-            var side3 = RotateSide(Side.bottom, RotationsCount);
-            var roadBorder3 = new Border(this.Field, this.Field?.GetNeighbour(side3), this);
-            _roadPart.Borders.Add(roadBorder3);
+            AddBorderToPart(Side.bottom, _roadPart);
 
             // поле 3
             var cornfield3Side1 = Side.bottom;
