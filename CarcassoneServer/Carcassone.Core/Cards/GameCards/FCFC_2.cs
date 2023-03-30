@@ -13,14 +13,14 @@ namespace Carcassone.Core.Cards
     /// </summary>
     public class FCFC_2 : Card
     {
-        private readonly CastlePart _castlePart2;
+        private readonly CastlePart _castlePart;
         private readonly CornfieldPart _cornfieldPart1;
         private readonly CornfieldPart _cornfieldPart2;
 
         public FCFC_2(string cardName) : base(cardName)
         {
-            _castlePart2 = new CastlePart("Castle_0", cardName, true);
-            Parts.Add(_castlePart2);
+            _castlePart = new CastlePart("Castle_0", cardName, true);
+            Parts.Add(_castlePart);
 
             _cornfieldPart1 = new CornfieldPart("Cornfield_0", cardName);
             Parts.Add(_cornfieldPart1);
@@ -29,22 +29,17 @@ namespace Carcassone.Core.Cards
             Parts.Add(_cornfieldPart2);
 
 
-            _fieldToCastleParts.Add(_cornfieldPart1, new List<CastlePart>() { _castlePart2 });
-            _fieldToCastleParts.Add(_cornfieldPart2, new List<CastlePart>() { _castlePart2 });
+            _fieldToCastleParts.Add(_cornfieldPart1, new List<CastlePart>() { _castlePart });
+            _fieldToCastleParts.Add(_cornfieldPart2, new List<CastlePart>() { _castlePart });
         }
 
         public override void ConnectField(Field field)
         {
-            base.ConnectField(field);
+            Field = field;
 
             // замок
-            var sides1 = new List<Side>() { Side.right, Side.left };
-            foreach (var side in sides1)
-            {
-                var side2 = RotateSide(side, RotationsCount);
-                var castleBorder2 = new Border(this.Field, this.Field?.GetNeighbour(side2), this);
-                _castlePart2.Borders.Add(castleBorder2);
-            }
+            AddBorderToPart(Side.right, _castlePart);
+            AddBorderToPart(Side.left, _castlePart);
 
 
             // поле1

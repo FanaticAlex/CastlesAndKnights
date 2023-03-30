@@ -7,7 +7,7 @@ namespace Carcassone.Core.Cards
     /// <summary>
     /// Игровая карта. определяет местность на поле.
     /// </summary>
-    public class Card
+    public abstract class Card
     {
         /// <summary>
         /// Вручную соединенные замки и поля
@@ -56,6 +56,13 @@ namespace Carcassone.Core.Cards
             LeftEdgeType = nameDict[cardName[3]];
         }
 
+        public void AddBorderToPart(Side side, ObjectPart part)
+        {
+            var rotatedSide = RotateSide(side, RotationsCount);
+            var castleBorder = new Border(Field, Field?.GetNeighbour(rotatedSide), this);
+            part.Borders.Add(castleBorder);
+        }
+
         public List<CastlePart> GetConnectedCastleParts(CornfieldPart part)
         {
             var castleParts = new List<CastlePart>();
@@ -67,10 +74,7 @@ namespace Carcassone.Core.Cards
             return castleParts;
         }
 
-        public virtual void ConnectField(Field field)
-        {
-            Field = field;
-        }
+        public abstract void ConnectField(Field field);
 
         // поворачивает карту на 90 по часовой стрелке градусов счетчик поворотов увеличивается на 1
         public void RotateCard()

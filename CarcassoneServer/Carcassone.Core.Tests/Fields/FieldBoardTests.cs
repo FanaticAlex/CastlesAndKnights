@@ -16,7 +16,7 @@ namespace Carcassone.Core.Tests.Fields
             Assert.Equal(0, center.X);
             Assert.Equal(0, center.Y);
 
-            var card = new Card("CCCC_0");
+            var card = new CCCC("CCCC_0");
             fieldBoard.PutCard(card, center);
             Assert.Equal(5, fieldBoard.GetAllFields().Count);
         }

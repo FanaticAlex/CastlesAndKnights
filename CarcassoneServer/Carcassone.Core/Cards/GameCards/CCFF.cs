@@ -35,25 +35,10 @@ namespace Carcassone.Core.Cards
         /// <param name="field"></param>
         public override void ConnectField(Field field)
         {
-            base.ConnectField(field);
+            Field = field;
 
-            //замок 1
-            var sides = new List<Side>() { Side.top };
-            foreach (var side in sides)
-            {
-                var rotatedSide = RotateSide(side, RotationsCount);
-                var castleBorder = new Border(this.Field, this.Field?.GetNeighbour(rotatedSide), this);
-                _castlePart.Borders.Add(castleBorder);
-            }
-
-            //замок 2
-            var sides1 = new List<Side>() { Side.right };
-            foreach (var side in sides1)
-            {
-                var rotatedSide = RotateSide(side, RotationsCount);
-                var castleBorder = new Border(this.Field, this.Field?.GetNeighbour(rotatedSide), this);
-                _castlePart1.Borders.Add(castleBorder);
-            }
+            AddBorderToPart(Side.top, _castlePart);
+            AddBorderToPart(Side.right, _castlePart1);
 
             // поле
             var sides2 = new List<Side>() { Side.bottom, Side.left };

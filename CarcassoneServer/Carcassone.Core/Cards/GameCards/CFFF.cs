@@ -13,29 +13,27 @@ namespace Carcassone.Core.Cards
     /// </summary>
     public class CFFF : Card
     {
-        private CastlePart _castlePart1;
+        private CastlePart _castlePart;
         private CornfieldPart _cornfieldPart;
 
         public CFFF(string cardName) : base(cardName)
         {
-            _castlePart1 = new CastlePart("Castle_0", cardName);
-            Parts.Add(_castlePart1);
+            _castlePart = new CastlePart("Castle_0", cardName);
+            Parts.Add(_castlePart);
 
             _cornfieldPart = new CornfieldPart("Cornfield_0", cardName);
             Parts.Add(_cornfieldPart);
 
 
-            _fieldToCastleParts.Add(_cornfieldPart, new List<CastlePart>() { _castlePart1 });
+            _fieldToCastleParts.Add(_cornfieldPart, new List<CastlePart>() { _castlePart });
         }
 
         public override void ConnectField(Field field)
         {
-            base.ConnectField(field);
+            Field = field;
 
             // замок
-            var side1 = RotateSide(Side.top, RotationsCount);
-            var castleBorder = new Border(this.Field, this.Field?.GetNeighbour(side1), this);
-            _castlePart1.Borders.Add(castleBorder);
+            AddBorderToPart(Side.top, _castlePart);
 
             // поле
             var sides1 = new List<Side>() { Side.right, Side.bottom, Side.left };

@@ -22,7 +22,7 @@ namespace Carcassone.Core.Cards
 
         public override void ConnectField(Field field)
         {
-            base.ConnectField(field);
+            Field = field;
 
             var side1 = Side.left;
             side1 = RotateSide(side1, RotationsCount);

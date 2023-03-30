@@ -37,7 +37,7 @@ namespace Carcassone.Core.Cards
         
         public override void ConnectField(Field field)
         {
-            base.ConnectField(field);
+            Field = field;
 
             // поле 1
             var cornfield1Side0 = Side.top;

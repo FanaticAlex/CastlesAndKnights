@@ -23,17 +23,12 @@ namespace Carcassone.Core.Cards
 
         public override void ConnectField(Field field)
         {
-            base.ConnectField(field);
+            Field = field;
 
-            // для каждой стороны замка добавляем границу
-            var sides = new List<Side>() { Side.top, Side.right, Side.bottom, Side.left };
-            foreach (var side in sides)
-            {
-                // учет поворота карты
-                var rotatedSide = RotateSide(side, RotationsCount);
-                var castleBorder = new Border(Field, Field?.GetNeighbour(rotatedSide), this);
-                _castlePart.Borders.Add(castleBorder);
-            }
+            AddBorderToPart(Side.top, _castlePart);
+            AddBorderToPart(Side.right, _castlePart);
+            AddBorderToPart(Side.bottom, _castlePart);
+            AddBorderToPart(Side.left, _castlePart);
         }
     }
 }

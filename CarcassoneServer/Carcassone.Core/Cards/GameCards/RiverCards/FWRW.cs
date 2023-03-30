@@ -38,7 +38,7 @@ namespace Carcassone.Core.Cards
 
         public override void ConnectField(Field field)
         {
-            base.ConnectField(field);
+            Field = field;
 
             _churchPart.ChurchField = field;
 

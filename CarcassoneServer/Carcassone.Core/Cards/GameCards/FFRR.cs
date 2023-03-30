@@ -31,7 +31,7 @@ namespace Carcassone.Core.Cards
         /// <param name="field"></param>
         public override void ConnectField(Field field)
         {
-            base.ConnectField(field);
+            Field = field;
 
             // дорога
             var side3 = RotateSide(Side.bottom, RotationsCount);

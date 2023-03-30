@@ -38,12 +38,10 @@ namespace Carcassone.Core.Cards
 
         public override void ConnectField(Field field)
         {
-            base.ConnectField(field);
+            Field = field;
 
             // замок
-            var side = RotateSide(Side.top, RotationsCount);
-            var castleBorder = new Border(this.Field, this.Field?.GetNeighbour(side), this);
-            _castlePart.Borders.Add(castleBorder);
+            AddBorderToPart(Side.top, _castlePart);
 
 
             // дорога

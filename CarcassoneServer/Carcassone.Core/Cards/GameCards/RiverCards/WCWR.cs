@@ -41,12 +41,10 @@ namespace Carcassone.Core.Cards
 
         public override void ConnectField(Field field)
         {
-            base.ConnectField(field);
+            Field = field;
 
             // замок
-            var side1 = RotateSide(Side.right, RotationsCount);
-            var castleBorder1 = new Border(this.Field, this.Field?.GetNeighbour(side1), this);
-            _castlePart0.Borders.Add(castleBorder1);
+            AddBorderToPart(Side.right, _castlePart0);
 
             // поле 1
             var cornfield1Side0 = Side.top;

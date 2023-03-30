@@ -8,9 +8,13 @@ namespace Carcassone.Core.Tests.Calculation.Objects
 {
     public class ChurchTests
     {
+        private FieldBoard _board;
+
         [Fact]
         public void GetPointsTest()
         {
+            _board = new FieldBoard();
+
             var churchCard = GetNearCard(0, 0);
             var churchPart = new ChurchPart("partName", churchCard.CardName);
             churchPart.ChurchField = churchCard.Field;
@@ -44,10 +48,10 @@ namespace Carcassone.Core.Tests.Calculation.Objects
 
         private Card GetNearCard(int x, int y)
         {
-            var churchCard = new Card("FFFF_0");
-            var field = new Field(new FieldBoard(), x, y);
-            churchCard.ConnectField(field);
-            field.SetCardInField(churchCard);
+            var churchCard = new FFFF("FFFF_0");
+            var field_xy = new Field(_board, x, y);
+            _board.PutCard(churchCard, field_xy);
+            field_xy.SetCardInField(churchCard);
             return churchCard;
         }
     }
