@@ -22,7 +22,7 @@ namespace Assets.Scripts.Menu
         public GameObject StartGameBtn;
 
         private float _timer;
-        private float _delta = 1f;
+        private float _delta = 0.5f;
 
         public override MenuWindowType MenuPanelType => MenuWindowType.SetupRoom;
 

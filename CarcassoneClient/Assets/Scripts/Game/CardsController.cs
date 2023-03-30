@@ -113,10 +113,11 @@ namespace Assets.Scripts
         /// </summary>
         public void UpdateChipsView()
         {
-            var cards = GameManager.Instance.RoomService.GetCards();
-            foreach (var card in cards)
+            //var cards = GameManager.Instance.RoomService.GetCards();
+            foreach (var cardName in _cardsToGameObject.Keys)
             {
-                foreach(var part in card.Parts)
+                var card = GameManager.Instance.RoomService.GetCard(cardName);
+                foreach (var part in card.Parts)
                 {
                     // если фишку снали убираем ее
                     if (part.Chip == null)

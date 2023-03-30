@@ -100,7 +100,7 @@ namespace Assets.Scripts
             // second click is doubleclick
             if (_rememberedButtonClick && Input.GetMouseButtonUp(0) && _timer1 > 0)
             {
-                var isNear = Vector3.Magnitude(Input.mousePosition - _rememberedCoursorPosition) < 20;
+                var isNear = Vector3.Magnitude(Input.mousePosition - _rememberedCoursorPosition) < 30;
                 if (isNear)
                 {
                     _timer1 = 0;
