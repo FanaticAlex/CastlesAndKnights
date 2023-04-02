@@ -3,19 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 
 namespace Assets.Scripts
 {
     internal class OnlineGameService : IGameService
     {
         private Client client;
+        private HttpClient _httpClient;
         private string RoomId;
 
         public OnlineGameService()
         {
-            var httpClient = new System.Net.Http.HttpClient() { Timeout = new TimeSpan(0, 0, 1) };
-            //client = new Client(@"https://192.168.1.65:443/", httpClient);
-            client = new Client(@"http://192.168.1.65:81/", httpClient);
+            _httpClient = new HttpClient() { Timeout = new TimeSpan(0, 0, 1) };
+            client = new Client(@"http://192.168.1.65:82/", _httpClient);
             //client = new Client(@"https://localhost:44322/", httpClient);
 
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
@@ -27,7 +28,9 @@ namespace Assets.Scripts
         public void Connect(string roomId) => RoomId = client.RoomGETAsync(roomId).Result.Id;
         public void Login(string login, string password)
         {
-            client.LoginAsync(login, password).Wait();
+            var tokenResult = client.LoginAsync(login, password).Result;
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenResult.Token);
             User = login;
         }
 

@@ -1,5 +1,6 @@
 ﻿using Carcassone.DAL;
 using Carcassone.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,6 +11,7 @@ namespace Carcassone.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class GameScoreController : ControllerBase
     {
         private IGameScoreService _service;

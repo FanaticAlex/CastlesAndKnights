@@ -9,6 +9,7 @@ using Carcassone.Core.Fields;
 using Carcassone.Core.Players;
 using Carcassone.DAL;
 using Carcassone.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,7 @@ namespace CarcassoneServer.Controllers
     /// </summary>
     [ApiController]
     [Route("[controller]")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class RoomController : ControllerBase
     {
         private readonly IGamesService _service;

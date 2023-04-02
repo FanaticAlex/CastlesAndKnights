@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Carcassone.DAL;
-using Carcassone.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +13,12 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CarcassoneServer.Controllers
 {
+    public class TokenResult
+    {
+        public string Token { get; set; }
+        public DateTime? Expiration { get;set; }
+    }
+
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase
@@ -28,7 +34,8 @@ namespace CarcassoneServer.Controllers
 
         [HttpGet]
         [Route("login/{login}/{password}")]
-        public async Task<ActionResult> Login(string login, string password)
+        [AllowAnonymous]
+        public async Task<ActionResult<TokenResult>> Login(string login, [DataType(DataType.Password)] string password)
         {
             var user = await _userManager.FindByNameAsync(login);
             if (user != null && await _userManager.CheckPasswordAsync(user, password))
@@ -52,14 +59,14 @@ namespace CarcassoneServer.Controllers
                     issuer: _configuration["JWT:ValidIssuer"],
                     audience: _configuration["JWT:ValidAudience"],
                     expires: DateTime.Now.AddHours(3),
-                    claims: authClaims,
+                    claims: null, // authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
 
-                return Ok(new
+                return Ok(new TokenResult
                 {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
+                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                    Expiration = token.ValidTo
                 });
             }
             return Unauthorized();
