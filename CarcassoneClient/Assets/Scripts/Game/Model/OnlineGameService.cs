@@ -1,9 +1,11 @@
-﻿using Carcassone.ApiClient;
+﻿using Assets.Scripts.Game;
+using Carcassone.ApiClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
@@ -26,12 +28,24 @@ namespace Assets.Scripts
 
         public void Create() => RoomId = client.CreateAsync().Result.Id;
         public void Connect(string roomId) => RoomId = client.RoomGETAsync(roomId).Result.Id;
+
+        public void Login(SavedAuthData data)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", data.Token);
+            client.StatisticAsync(data.Login).Wait();
+
+            User = data.Login;
+        }
+
         public void Login(string login, string password)
         {
             var tokenResult = client.LoginAsync(login, password).Result;
             _httpClient.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenResult.Token);
             User = login;
+
+            CarcassonePrefs.SetSavedAuthData(login, tokenResult.Token);
         }
 
         public void AddHuman(string userName) => client.AddHumanAsync(RoomId, userName).Wait();

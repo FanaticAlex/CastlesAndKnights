@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Assets.Scripts.Game;
+using System;
 using TMPro;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 namespace Assets.Scripts.Menu
@@ -17,6 +19,18 @@ namespace Assets.Scripts.Menu
         {
             base.Enable();
             ErrorText.SetActive(false);
+
+            try
+            {
+                var data = CarcassonePrefs.GetSavedAuthData();
+                GameManager.Instance.SetOnlineMode();
+                GameManager.Instance.RoomService.Login(data);
+                MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e); // token expired
+            }
         }
 
         public void OnLoginBtnClick()

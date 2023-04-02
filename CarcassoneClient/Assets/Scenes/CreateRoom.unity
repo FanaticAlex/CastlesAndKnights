@@ -2008,7 +2008,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1981371768399730585, guid: 8238d2e2f1e3207409791c8c7c871bdc, type: 3}
       propertyPath: m_Name
-      value: BackBtn
+      value: LogoutBtn
       objectReference: {fileID: 0}
     - target: {fileID: 2861986389973585944, guid: 8238d2e2f1e3207409791c8c7c871bdc, type: 3}
       propertyPath: m_Pivot.x
@@ -2096,7 +2096,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8169414518488341201, guid: 8238d2e2f1e3207409791c8c7c871bdc, type: 3}
       propertyPath: m_text
-      value: Back
+      value: Logout
       objectReference: {fileID: 0}
     - target: {fileID: 8487985150953569976, guid: 8238d2e2f1e3207409791c8c7c871bdc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -2116,7 +2116,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8487985150953569976, guid: 8238d2e2f1e3207409791c8c7c871bdc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnBackBtnClick
+      value: OnLogoutBtnClick
       objectReference: {fileID: 0}
     - target: {fileID: 8487985150953569976, guid: 8238d2e2f1e3207409791c8c7c871bdc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName

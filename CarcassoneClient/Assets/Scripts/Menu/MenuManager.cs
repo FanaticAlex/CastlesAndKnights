@@ -18,7 +18,7 @@ public class MenuManager : MonoBehaviour
         return GameObject.FindObjectsOfType<BaseMenuWindowController>(true).ToList();
     }
 
-    void Start()
+    void Awake()
     {
         menuManagers = GetMenuControllers();
         SwitchToMenuPanel(MenuWindowType.Login);
@@ -27,13 +27,8 @@ public class MenuManager : MonoBehaviour
 
     public static void SwitchToMenuPanel(MenuWindowType menu)
     {
-        foreach(var manager in menuManagers)
-        {
-            if (menu == manager.MenuPanelType)
-                manager.Enable();
-            else
-                manager.Disable();
-        }
+        menuManagers.ForEach(manager => { manager.Disable(); });
+        menuManagers.Single(manager => (manager.MenuPanelType == menu)).Enable();
     }
 
     

@@ -1,4 +1,5 @@
-﻿using Carcassone.ApiClient;
+﻿using Assets.Scripts.Game;
+using Carcassone.ApiClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Assets.Scripts
     {
         string User { get; }
 
+        void Login(SavedAuthData data); // этот метод не подхдит интерфейсу он только для сетевой игры
         void Login(string login, string password); // этот метод не подхдит интерфейсу он только для сетевой игры
         void Create();
         void Connect(string roomId); // этот метод не подхдит интерфейсу он только для сетевой игры

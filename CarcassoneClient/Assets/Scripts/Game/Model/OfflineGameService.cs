@@ -1,4 +1,5 @@
-﻿using Carcassone.ApiClient;
+﻿using Assets.Scripts.Game;
+using Carcassone.ApiClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,5 +71,15 @@ namespace Assets.Scripts
         }
 
         public UserStatistic GetUserStatistic(string userName) => new UserStatistic();
+
+        public void LoginWithSavedToken(string login, string token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Login(SavedAuthData data)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using Assets.Scripts.Game;
+using TMPro;
 using UnityEngine;
 
 namespace Assets.Scripts.Menu
@@ -42,8 +43,9 @@ namespace Assets.Scripts.Menu
             MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);
         }
 
-        public void OnBackBtnClick()
+        public void OnLogoutBtnClick()
         {
+            CarcassonePrefs.DeleteSavedAuthData();
             MenuManager.SwitchToMenuPanel(MenuWindowType.Login);
             MenuManager.IsWaitingForStart = false;
         }
