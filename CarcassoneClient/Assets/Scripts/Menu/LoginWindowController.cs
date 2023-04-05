@@ -1,7 +1,6 @@
 ﻿using Assets.Scripts.Game;
 using System;
 using TMPro;
-using UnityEditor.VersionControl;
 using UnityEngine;
 
 namespace Assets.Scripts.Menu

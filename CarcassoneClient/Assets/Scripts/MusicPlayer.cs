@@ -6,24 +6,28 @@ public class MusicPlayer : MonoBehaviour
 {
     public AudioClip[] AudioClips;
     public AudioSource AudioSource;
+    private int _currentClipNumber;
 
     void Start()
     {
         AudioSource = FindObjectOfType<AudioSource>();
         AudioSource.loop = false;
+        PlayClip(_currentClipNumber);
+        _currentClipNumber = 0;
     }
 
     void Update()
     {
         if (!AudioSource.isPlaying)
         {
-            AudioSource.clip = GetRandomClip();
-            AudioSource.Play();
+            _currentClipNumber = (_currentClipNumber + 1) % AudioClips.Length;
+            PlayClip(_currentClipNumber);
         }
     }
 
-    private AudioClip GetRandomClip()
+    private void PlayClip(int clipNumber)
     {
-        return AudioClips[Random.Range(0, AudioClips.Length)];
+        AudioSource.clip = AudioClips[clipNumber];
+        AudioSource.Play();
     }
 }

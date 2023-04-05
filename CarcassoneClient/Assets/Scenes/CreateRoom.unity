@@ -3403,7 +3403,7 @@ GameObject:
   - component: {fileID: 1180981937}
   - component: {fileID: 1180981936}
   - component: {fileID: 1180981940}
-  - component: {fileID: 1180981941}
+  - component: {fileID: 1180981939}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3477,38 +3477,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1180981940
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1180981935}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca8ce304855db3c4a8682c72cb797fe4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AudioClips:
-  - {fileID: 8300000, guid: c6f4de11be721b44f8f61b44ad9513e1, type: 3}
-  - {fileID: 8300000, guid: e9f5b8397eec4df43aacdc00466a9056, type: 3}
-  - {fileID: 8300000, guid: 3597744410aeb054aabcef1d668b9455, type: 3}
-  - {fileID: 8300000, guid: 6e4e26ba375f0fc4dbc139f24d825382, type: 3}
-  - {fileID: 8300000, guid: d50ce728a05e25a4b93defde23878e3c, type: 3}
-  AudioSource: {fileID: 0}
---- !u!82 &1180981941
+--- !u!82 &1180981939
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1180981935}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: d50ce728a05e25a4b93defde23878e3c, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.275
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -3592,6 +3573,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1180981940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1180981935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca8ce304855db3c4a8682c72cb797fe4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioClips:
+  - {fileID: 8300000, guid: d072e48248cd35a45b950131e860b71e, type: 3}
+  - {fileID: 8300000, guid: 6c33a354f1b09cf4f9ba666cf456a145, type: 3}
+  - {fileID: 8300000, guid: 08e5acfae5525a3489bb016b4e63c88e, type: 3}
+  - {fileID: 8300000, guid: 37f8e8b98547455488435b1d0e67ec1b, type: 3}
+  - {fileID: 8300000, guid: 6aff5cc09da34c74caf9d5b9aee99c73, type: 3}
+  AudioSource: {fileID: 1180981939}
 --- !u!1 &1216494971 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1981371768399730585, guid: 8238d2e2f1e3207409791c8c7c871bdc, type: 3}
