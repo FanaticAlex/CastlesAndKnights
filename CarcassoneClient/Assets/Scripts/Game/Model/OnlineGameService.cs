@@ -62,6 +62,7 @@ namespace Assets.Scripts
 
         public Card GetCurrentCard() => client.Current2Async(RoomId).Result;
         public List<Card> GetCards() => client.List3Async(RoomId).Result.ToList();
+        public List<Card> GetActiveCards() => client.ActiveAsync(RoomId).Result.ToList();
         public Card GetCard(string cardName) => client.CardAsync(RoomId, cardName).Result;
         public bool CanPutCard(string fieldId, string cardName) => client.CanPutCardAsync(RoomId, fieldId, cardName).Result;
         public void PutCard(string fieldId, string cardName, string userName) => client.PutCardInFieldAsync(RoomId, fieldId, cardName, userName).Wait();

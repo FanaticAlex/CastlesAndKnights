@@ -91,7 +91,7 @@ namespace Assets.Scripts
             // first click setup timer and remember click
             if (Input.GetMouseButtonUp(0) && _timer1 <= 0)
             {
-                _timer1 = 1;
+                _timer1 = 1.5f; // time to make doubleclick
                 _rememberedButtonClick = true;
                 _rememberedCoursorPosition = Input.mousePosition;
                 return false;
@@ -156,9 +156,12 @@ namespace Assets.Scripts
 
             _fieldsController.UpdateAvailableFieldsView(_cardsController.CurrentCard);
             _cardsController.UpdateCardsView();
-            _cardsController.UpdateCardRemainView();
 
-            _cardsController.UpdateChipsView();
+            Logger.SaveTime(System.DateTime.Now);
+            _cardsController.UpdateCardRemainView();
+            Logger.PrintSpendedTime("UpdateCardRemainView");
+
+            //_cardsController.UpdateChipsView();
             _playersController.UpdatePlayersView();
             _scoreController.UpdateScore();
             _scoreController.UpdateCurrentPlayerMark();
@@ -168,9 +171,9 @@ namespace Assets.Scripts
             if (isFinished)
             {
                 // дополнительное обновление
-                _fieldsController.UpdateAvailableFieldsView(null);
-                _cardsController.UpdateCardsView();
-                _cardsController.UpdateChipsView();
+                _fieldsController.UpdateAvailableFieldsView(null); // подсвечивает все как недоступное
+                //_cardsController.UpdateCardsView();
+                //_cardsController.UpdateChipsView();
 
                 this.enabled = false;
                 _scoreController.ShowEndGameWindow();

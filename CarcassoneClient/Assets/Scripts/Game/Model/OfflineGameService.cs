@@ -38,6 +38,7 @@ namespace Assets.Scripts
 
         public Carcassone.ApiClient.Card GetCurrentCard() => room.GetCurrentCard().ToCommon();
         public List<Carcassone.ApiClient.Card> GetCards() => room.GetAllCards().Select(c => c.ToCommon()).ToList();
+        public List<Carcassone.ApiClient.Card> GetActiveCards() => room.GetAllCards().Select(c => c.ToCommon()).Where(card => card.Field != null).ToList();
         public Carcassone.ApiClient.Card GetCard(string cardName) => room.GetCard(cardName).ToCommon();
         public bool CanPutCard(string fieldId, string cardName) => room.CanPutCard(fieldId, cardName);
         public void PutCard(string fieldId, string cardName, string userName) => room.PutCardInField(room.GetCard(cardName), room.GetField(fieldId));

@@ -33,6 +33,7 @@ namespace Assets.Scripts
 
         Card GetCurrentCard();
         List<Card> GetCards();
+        List<Card> GetActiveCards();
         Card GetCard(string cardName);
         bool CanPutCard(string fieldId, string cardName);
         void PutCard(string fieldId, string cardName, string userName);

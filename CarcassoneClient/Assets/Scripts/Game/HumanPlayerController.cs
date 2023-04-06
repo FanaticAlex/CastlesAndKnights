@@ -88,7 +88,10 @@ namespace Assets.Scripts
 
                 _selectedFieldId = _fieldsController.GetSelectedFieldId();
                 if (_selectedFieldId == null)
+                {
+                    Logger.Info("No field selected");
                     return;
+                }
 
                 // клик на поле левой кнопкой помещает в него карту
                 var canPutCard = GameManager.Instance.RoomService.CanPutCard(_selectedFieldId, _currentCard.CardName);
@@ -102,6 +105,10 @@ namespace Assets.Scripts
                     }
 
                     PlayerState = PlayerState.PlayerHoldChip;
+                }
+                else
+                {
+                    Logger.Info("Cant put card!");
                 }
             }
             else if (Rotated)

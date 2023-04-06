@@ -229,6 +229,14 @@ namespace CarcassoneServer.Controllers
         public List<Card> GetAllCards(string roomId) => _service.GetRoom(roomId).GetAllCards();
 
         [HttpGet]
+        [Route("{roomId}/card/active")]
+        public List<Card> GetActiveCards(string roomId) =>
+            _service.GetRoom(roomId)
+                .GetAllCards()
+                .Where(card => card.Field != null)
+                .ToList();
+
+        [HttpGet]
         [Route("{roomId}/card/remain")]
         public int GetCardsRemain(string roomId) => _service.GetRoom(roomId).GetCardsRemain();
 

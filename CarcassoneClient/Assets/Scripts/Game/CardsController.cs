@@ -111,7 +111,7 @@ namespace Assets.Scripts
         /// <summary>
         /// Обновление расстановки выложенных фишек на игровой доске
         /// </summary>
-        public void UpdateChipsView()
+        /*public void UpdateChipsView()
         {
             //var cards = GameManager.Instance.RoomService.GetCards();
             foreach (var cardName in _cardsToGameObject.Keys)
@@ -159,7 +159,7 @@ namespace Assets.Scripts
                     }
                 }
             }
-        }
+        }*/
 
         /// <summary>
         /// Устанавливает правильную позицию карты и поворот.
@@ -167,13 +167,12 @@ namespace Assets.Scripts
         /// </summary>
         public void UpdateCardsView()
         {
-            foreach (var item in _cardsToGameObject)
+            var activeCards = GameManager.Instance.RoomService.GetActiveCards();
+            foreach (var card in activeCards)
             {
-                var cardName = item.Key;
-                var cardGameObject = item.Value;
+                var cardGameObject = _cardsToGameObject[card.CardName];
 
                 // поворот карты в нужную позицию
-                var card = GameManager.Instance.RoomService.GetCard(cardName);
                 cardGameObject.transform.rotation = Quaternion.Euler(0, 0, -90 * card.RotationsCount);
 
                 var fieldId = card.Field?.Id;
