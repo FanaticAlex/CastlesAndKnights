@@ -211,9 +211,14 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             var field1 = room.GetField("0_0");
             room.PutCardInField(card1, field1);
 
+            var part = card1.Parts.Single(p => p.PartName == "Cornfield_1");
+            room.PutChipInCard(part, owner1);
+
             var card2 = room.GetCard("WCWR_0");
             var field2 = room.GetField("0_-1");
             room.PutCardInField(card2, field2);
+
+            Assert.Equal(true, card2.Parts.Single(p => p.PartName == "Cornfield_0").IsOwned);
 
             Assert.Equal(5, room.GetCornfields().Count);
 

@@ -109,59 +109,6 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        /// Обновление расстановки выложенных фишек на игровой доске
-        /// </summary>
-        /*public void UpdateChipsView()
-        {
-            //var cards = GameManager.Instance.RoomService.GetCards();
-            foreach (var cardName in _cardsToGameObject.Keys)
-            {
-                var card = GameManager.Instance.RoomService.GetCard(cardName);
-                foreach (var part in card.Parts)
-                {
-                    // если фишку снали убираем ее
-                    if (part.Chip == null)
-                    {
-                        if (_chipsToGameObject.ContainsKey(part.PartId))
-                        {
-                            GameObject.Destroy(_chipsToGameObject[part.PartId]);
-                            _chipsToGameObject.Remove(part.PartId);
-                        }
-
-                        continue;
-                    }
-
-                    // если фишка уже установлена, то пропускаем
-                    if (_chipsToGameObject.ContainsKey(part.PartId))
-                        continue;
-
-                    GameObject chipPrefab = null;
-                    if (part.Chip.Type == ChipType._0)
-                        chipPrefab = Constants.Chip["Knight"];
-
-                    if (part.Chip.Type == ChipType._1)
-                        chipPrefab = Constants.Chip["Priest"];
-
-                    if (part.Chip.Type == ChipType._2)
-                        chipPrefab = Constants.Chip["Thief"];
-
-                    if (part.Chip.Type == ChipType._3)
-                        chipPrefab = Constants.Chip["Peasant"];
-
-                    if (chipPrefab != null)
-                    {
-                        var chipObject = GameObject.Instantiate(chipPrefab);
-                        chipObject.transform.position = _partsController._partToGameObject[part.PartId].transform.position + new Vector3(0, 0, -0.2f);
-                        Color userColor;
-                        ColorUtility.TryParseHtmlString(part.Chip.Owner.Color, out userColor);
-                        chipObject.GetComponent<MeshRenderer>().material.color = userColor;
-                        _chipsToGameObject.Add(part.PartId, chipObject);
-                    }
-                }
-            }
-        }*/
-
-        /// <summary>
         /// Устанавливает правильную позицию карты и поворот.
         /// - обновление карт после хода игроков
         /// </summary>

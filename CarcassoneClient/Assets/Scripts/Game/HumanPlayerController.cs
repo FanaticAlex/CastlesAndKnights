@@ -32,15 +32,15 @@ namespace Assets.Scripts
 
         public bool StateChanged { get; set; }
 
-        private BasePlayer _player;
+        private string _playerName;
         private FieldsController _fieldsController;
         private CardsController _cardsController;
 
         private GameObject EndTurnButton { get; set; }
 
-        public HumanPlayerController(BasePlayer player, FieldsController fieldsController, CardsController cardsController)
+        public HumanPlayerController(string player, FieldsController fieldsController, CardsController cardsController)
         {
-            _player = player;
+            _playerName = player;
             _fieldsController = fieldsController;
             _cardsController = cardsController;
 
@@ -60,19 +60,19 @@ namespace Assets.Scripts
             if (PlayerState == PlayerState.PlayerHoldCard)
             {
                 EndTurnButton.GetComponent<Button>().interactable = false;
-                PlayerHoldCardProcess(_player);
+                PlayerHoldCardProcess(_playerName);
                 return;
             }
 
             if (PlayerState == PlayerState.PlayerHoldChip)
             {
                 EndTurnButton.GetComponent<Button>().interactable = true;
-                HoldChipProcess(_player);
+                HoldChipProcess(_playerName);
                 return;
             }
         }
 
-        private void PlayerHoldCardProcess(BasePlayer player)
+        private void PlayerHoldCardProcess(string playerName)
         {
             // в начале хода тянем карту, если ее нет
             if (_currentCard == null)
@@ -97,13 +97,25 @@ namespace Assets.Scripts
                 var canPutCard = GameManager.Instance.RoomService.CanPutCard(_selectedFieldId, _currentCard.CardName);
                 if (canPutCard)
                 {
-                    GameManager.Instance.RoomService.PutCard(_selectedFieldId, _currentCard.CardName, player.Name);
-                    var player1 = GameManager.Instance.RoomService.GetPlayer(player.Name);
-                    if (player1.ChipCount != 0)
+                    GameManager.Instance.RoomService.PutCard(_selectedFieldId, _currentCard.CardName, playerName);
+                    var player = GameManager.Instance.RoomService.GetPlayer(playerName);
+
+                    var parts = GameManager.Instance.RoomService.GetAvailableObjectParts(_currentCard.CardName);
+                    if (!parts.Any())
                     {
-                        _cardsController.ShowCardMarks(_currentCard.CardName);
+                        // если нет вариантов установки фишки сразу завершаем ход
+                        EndTurn(playerName);
+                        return;
                     }
 
+                    if (player.ChipCount == 0)
+                    {
+                        // если фишек нет сразу завершаем ход
+                        EndTurn(playerName);
+                        return;
+                    }
+
+                    _cardsController.ShowCardMarks(_currentCard.CardName);
                     PlayerState = PlayerState.PlayerHoldChip;
                 }
                 else
@@ -120,24 +132,24 @@ namespace Assets.Scripts
             }
         }
 
-        private void HoldChipProcess(BasePlayer player)
+        private void HoldChipProcess(string playerName)
         {
-            HilightSelectedCardMark(_currentCard.CardName);
+            //HilightSelectedCardMark(_currentCard.CardName);
 
             // клик на поле левой кнопкой помещает в него Фишку
             if (LeftButton)
             {
                 LeftButton = false;
 
-                var playerHaveChip = GameManager.Instance.RoomService.GetPlayer(player.Name);
+                var playerHaveChip = GameManager.Instance.RoomService.GetPlayer(playerName);
                 if (playerHaveChip.ChipCount != 0)
                 {
                     // установка фишки
                     var partObject = GetSelectedPartUI(_currentCard.CardName);
                     if (partObject != null)
                     {
-                        GameManager.Instance.RoomService.PutChip(_currentCard.CardName, partObject, player.Name);
-                        EndTurn(player.Name);
+                        GameManager.Instance.RoomService.PutChip(_currentCard.CardName, partObject, playerName);
+                        EndTurn(playerName);
                     }
                 }
             }
@@ -146,7 +158,7 @@ namespace Assets.Scripts
             if (TurnEnded)
             {
                 TurnEnded = false;
-                EndTurn(player.Name);
+                EndTurn(playerName);
             }
         }
 
@@ -158,7 +170,7 @@ namespace Assets.Scripts
             return hit.collider;
         }
 
-        private void HilightSelectedCardMark(string cardId)
+        /*private void HilightSelectedCardMark(string cardId)
         {
             var collider = GetHitCollider();
 
@@ -180,7 +192,7 @@ namespace Assets.Scripts
                     partGameObject.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
                 }
             }
-        }
+        }*/
 
         private string GetSelectedPartUI(string cardId)
         {

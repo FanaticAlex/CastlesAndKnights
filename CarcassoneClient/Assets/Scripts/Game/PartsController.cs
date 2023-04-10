@@ -96,14 +96,14 @@ namespace Assets.Scripts
             foreach (var part in cornfield.Parts)
             {
                 // TEST
-                var partGO = _partToGameObject[part.PartId];
+                /*var partGO = _partToGameObject[part.PartId];
                 partGO.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
                 partGO.SetActive(true);
                 if (part.IsOwned)
                 {
                     var color = Color.magenta;
                     partGO.GetComponent<Renderer>().material.color = color;
-                }
+                }*/
 
                 TryCreateChip(part, "Peasant");
             }
