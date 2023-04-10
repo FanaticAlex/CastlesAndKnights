@@ -34,7 +34,7 @@ namespace Assets.Scripts.Menu
 
         public void OnLoginBtnClick()
         {
-            var login = GameObject.Find("Login").GetComponent<TMP_InputField>().text;
+            var login = GameObject.Find("Login").GetComponent<TMP_InputField>().text.Trim();
             var password = GameObject.Find("Password").GetComponent<TMP_InputField>().text;
 
             // делаем несколько попыток, если не получилось выдаем ошибку
