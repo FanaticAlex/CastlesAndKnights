@@ -34,12 +34,17 @@ namespace Assets.Scripts
         {
             _humanPlayerController.StartMyTurn();
             _humanPlayerController.MakingMove();
-            _waitingSpinner.SetActive(false);
+            HideWaitingSpinner();
         }
 
         public void ShowWaitingSpinner()
         {
             _waitingSpinner.SetActive(true);
+        }
+
+        public void HideWaitingSpinner()
+        {
+            _waitingSpinner.SetActive(false);
         }
 
         /// <summary>

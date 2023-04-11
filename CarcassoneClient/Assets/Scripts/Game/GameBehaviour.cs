@@ -174,6 +174,7 @@ namespace Assets.Scripts
 
                 this.enabled = false;
                 _scoreController.ShowEndGameWindow();
+                _playersController.HideWaitingSpinner();
                 return;
             }
         }

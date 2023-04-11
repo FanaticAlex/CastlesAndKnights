@@ -69,7 +69,6 @@ namespace Carcassone.Core
         public void DeletePlayer(string playerName) => _playersPool.DeletePlayer(playerName);
         public BasePlayer GetCurrentPlayer() => _playersPool.CurrentPlayer;
 
-
         public List<Road> GetRoads() => _scoreCalculator.Roads;
         public List<Castle> GetCastles() => _scoreCalculator.Castles;
         public List<Cornfield> GetCornfields() => _scoreCalculator.Cornfields;
@@ -156,7 +155,7 @@ namespace Carcassone.Core
             if (card == null)
             {
                 IsFinished = true;
-                return;
+                //return;
             }
 
             _playersPool.MoveNextPlayer(this);
