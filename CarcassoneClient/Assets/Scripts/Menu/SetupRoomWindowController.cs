@@ -30,19 +30,9 @@ namespace Assets.Scripts.Menu
         {
             base.Enable();
 
-            if (MenuManager.IAmGameMaster)
-            {
-                // если мы создаем игру
-                AddAIPlayerBtn.SetActive(true);
-                StartGameBtn.SetActive(true);
-            }
-            else
-            {
-                // если мы подключились
-                AddAIPlayerBtn.SetActive(false);
-                StartGameBtn.SetActive(false);
-            }
-
+            var canIAddAiPLayers = MenuManager.IAmGameMaster;
+            AddAIPlayerBtn.GetComponent<Button>().interactable = canIAddAiPLayers;
+            StartGameBtn.GetComponent<Button>().interactable = false;
             InitPlayersListGO();
         }
 
@@ -111,6 +101,9 @@ namespace Assets.Scripts.Menu
 
                 pos -= rowHight;
             }
+
+            var canStart = MenuManager.IAmGameMaster && (playersList.Count() > 1);
+            StartGameBtn.GetComponent<Button>().interactable = canStart;
         }
 
         private static Transform InitPlayersListGO()
