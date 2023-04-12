@@ -41,7 +41,6 @@ namespace Assets.Scripts.Menu
                 // если мы подключились
                 AddAIPlayerBtn.SetActive(false);
                 StartGameBtn.SetActive(false);
-                MenuManager.IsWaitingForStart = true;
             }
 
             InitPlayersListGO();
@@ -52,7 +51,11 @@ namespace Assets.Scripts.Menu
             _timer += Time.deltaTime;
             if (_timer > _delta)
             {
-                WaitingForStart();
+                if (!MenuManager.IAmGameMaster)
+                {
+                    WaitingForStart();
+                }
+
                 UpdatePlayerList();
                 _timer = 0;
             }
@@ -70,13 +73,10 @@ namespace Assets.Scripts.Menu
 
         private void WaitingForStart()
         {
-            if (MenuManager.IsWaitingForStart)
-            {
-                // тут мы подключились к игре и ждем пока она стартает
-                var room = GameManager.Instance.RoomService.GetRoom();
-                if (room.IsStarted)
-                    SceneManager.LoadScene("RoomScene");
-            }
+            // тут мы подключились к игре и ждем пока она стартает
+            var room = GameManager.Instance.RoomService.GetRoom();
+            if (room.IsStarted)
+                SceneManager.LoadScene("RoomScene");
         }
 
         public void OnStartGameBtnClick()
@@ -88,7 +88,6 @@ namespace Assets.Scripts.Menu
         public void OnBackBtnClick()
         {
             MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
-            MenuManager.IsWaitingForStart = false;
         }
 
         private void UpdatePlayerList()

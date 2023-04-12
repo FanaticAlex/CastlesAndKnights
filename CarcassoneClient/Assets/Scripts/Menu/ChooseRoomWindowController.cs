@@ -25,7 +25,6 @@ namespace Assets.Scripts.Menu
 
         public void OnBackBtnClick()
         {
-            MenuManager.IsWaitingForStart = false;
             MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
         }
 

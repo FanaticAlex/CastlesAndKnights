@@ -10,7 +10,6 @@ using UnityEngine;
 public class MenuManager : MonoBehaviour
 {
     private static List<BaseMenuWindowController> menuManagers;
-    public static bool IsWaitingForStart { get; set; }
     public static bool IAmGameMaster { get; set; }
 
     private List<BaseMenuWindowController> GetMenuControllers()

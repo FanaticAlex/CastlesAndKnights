@@ -47,7 +47,6 @@ namespace Assets.Scripts.Menu
         {
             CarcassonePrefs.DeleteSavedAuthData();
             MenuManager.SwitchToMenuPanel(MenuWindowType.Login);
-            MenuManager.IsWaitingForStart = false;
         }
     }
 }
