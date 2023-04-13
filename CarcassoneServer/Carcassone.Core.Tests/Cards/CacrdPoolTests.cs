@@ -1,4 +1,5 @@
 ﻿using Carcassone.Core.Cards;
+using Carcassone.Core.Extensions;
 using Carcassone.Core.Fields;
 using System;
 using Xunit;
@@ -10,7 +11,8 @@ namespace Carcassone.Core.Tests.Cards
         [Fact]
         public void GetCardTest()
         {
-            var cardPool = new CardPool();
+            var extensionsManager = new ExtensionsManager();
+            var cardPool = new CardPool(extensionsManager);
             var cccc = cardPool.GetCard("CCCC_0");
             Assert.NotNull(cccc);
         }
@@ -18,7 +20,8 @@ namespace Carcassone.Core.Tests.Cards
         [Fact]
         public void GetCurrentCardTest()
         {
-            var cardPool = new CardPool();
+            var extensionsManager = new ExtensionsManager();
+            var cardPool = new CardPool(extensionsManager);
             var fialdBoard = new FieldBoard();
             var card = cardPool.GetCurrentCard(fialdBoard);
             Assert.NotNull(card);
@@ -27,7 +30,8 @@ namespace Carcassone.Core.Tests.Cards
         [Fact]
         public void GetCardsRemainInPoolTest()
         {
-            var cardPool = new CardPool();
+            var extensionsManager = new ExtensionsManager();
+            var cardPool = new CardPool(extensionsManager);
             var card = cardPool.GetCardsRemainInPool();
             var allCards = cardPool.GetAllCards();
             Assert.Equal(card.Count, allCards.Count);

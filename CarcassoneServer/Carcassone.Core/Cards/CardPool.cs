@@ -1,4 +1,5 @@
-﻿using Carcassone.Core.Fields;
+﻿using Carcassone.Core.Extensions;
+using Carcassone.Core.Fields;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,29 +14,14 @@ namespace Carcassone.Core.Cards
         /// <summary>
         /// Конструктор. Создает колоду карт.
         /// </summary>
-        public CardPool()
+        public CardPool(ExtensionsManager extensionsManager)
         {
             // речные карты кладем их поверх остальных в колоде
-            var riverCards = new List<Card>();
-            AddCardToPool(typeof(FFWF), 1, riverCards); // начало реки
-
-            var middleRiverCards = new List<Card>();
-            AddCardToPool(typeof(CWCW), 1, middleRiverCards);
-            AddCardToPool(typeof(FWRW), 1, middleRiverCards);
-            AddCardToPool(typeof(FWWF), 1, middleRiverCards);
-            AddCardToPool(typeof(FWWF_1), 1, middleRiverCards);
-            AddCardToPool(typeof(RRWW), 1, middleRiverCards);
-            AddCardToPool(typeof(RWRW), 1, middleRiverCards);
-            AddCardToPool(typeof(WCCW), 1, middleRiverCards);
-            AddCardToPool(typeof(WCWR), 1, middleRiverCards);
-            AddCardToPool(typeof(WFWF), 1, middleRiverCards);
-            AddCardToPool(typeof(WFWF_1), 1, middleRiverCards);
-            // тасуем крты которые не начало и не конец реки
-            Shaffle(middleRiverCards);
-            riverCards.AddRange(middleRiverCards);
-
-            AddCardToPool(typeof(WFFF), 1, riverCards); // окончание реки
-            AllCards.AddRange(riverCards);
+            if (extensionsManager.RiverExtension != null)
+            {
+                var riverCards = extensionsManager.RiverExtension.GetCards();
+                AllCards.AddRange(riverCards);
+            }
 
             // границы карт нумеруются с севера по часовой стрелке.
             var baseCards = new List<Card>();
@@ -110,7 +96,7 @@ namespace Carcassone.Core.Cards
             return null;
         }
 
-        private void Shaffle(List<Card> cardsPile)
+        public static void Shaffle(List<Card> cardsPile)
         {
             // перетосовка
             var rnd = new System.Random();
@@ -125,7 +111,7 @@ namespace Carcassone.Core.Cards
             }
         }
 
-        private void AddCardToPool(Type cardType, byte count, List<Card> cardsPile)
+        public static void AddCardToPool(Type cardType, byte count, List<Card> cardsPile)
         {
             for (int i = 0; i < count; i++)
             {

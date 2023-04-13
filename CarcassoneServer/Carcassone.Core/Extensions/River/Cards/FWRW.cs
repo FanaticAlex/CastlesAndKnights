@@ -1,31 +1,47 @@
-﻿using Carcassone.Core.Fields;
+﻿using Carcassone.Core.Cards;
+using Carcassone.Core.Fields;
 
-namespace Carcassone.Core.Cards
+namespace Carcassone.Core.Extensions.River.Cards
 {
+
     /// <summary>
     ///       F
     ///   |       |
-    /// F |   ++++| W
-    ///   |   +   |
-    ///       W
+    /// W |+++O+++| W
+    ///   |   |   |
+    ///       R
     /// </summary>
-    public class FWWF : Card
+    public class FWRW : Card
     {
+        private ChurchPart _churchPart;
         private CornfieldPart _cornfieldPart1;
         private CornfieldPart _cornfieldPart2;
+        private CornfieldPart _cornfieldPart3;
+        private RoadPart _roadPart;
 
-        public FWWF(string cardName) : base(cardName)
+        public FWRW(string cardName) : base(cardName)
         {
+            _churchPart = new ChurchPart("Church_0", cardName);
+            Parts.Add(_churchPart);
+
             _cornfieldPart1 = new CornfieldPart("Cornfield_0", cardName);
             Parts.Add(_cornfieldPart1);
 
             _cornfieldPart2 = new CornfieldPart("Cornfield_1", cardName);
             Parts.Add(_cornfieldPart2);
+
+            _roadPart = new RoadPart("Road_0", cardName);
+            Parts.Add(_roadPart);
+
+            _cornfieldPart3 = new CornfieldPart("Cornfield_2", cardName);
+            Parts.Add(_cornfieldPart3);
         }
 
         public override void ConnectField(Field field)
         {
             Field = field;
+
+            _churchPart.ChurchField = field;
 
             // поле 1
             var cornfield1Side0 = Side.top;
@@ -41,19 +57,13 @@ namespace Carcassone.Core.Cards
             cornfield1Border1.CornfieldSide = cornfield1sidePart1;
             _cornfieldPart1.Borders.Add(cornfield1Border1);
 
-            var cornfield1Side3 = Side.bottom;
-            cornfield1Side3 = RotateSide(cornfield1Side3, RotationsCount);
-            var cornfield1sidePart3 = CornfieldSide.side_4;
-            cornfield1sidePart3 = RotateSidePart(cornfield1sidePart3, RotationsCount);
-            var cornfield1Border3 = new Border(this.Field, this.Field?.GetNeighbour(cornfield1Side3), this);
-            cornfield1Border3.CornfieldSide = cornfield1sidePart3;
-            _cornfieldPart1.Borders.Add(cornfield1Border3);
-
             var cornfield1Side2 = Side.left;
             cornfield1Side2 = RotateSide(cornfield1Side2, RotationsCount);
+            var cornfield1SidePart2 = CornfieldSide.side_6;
+            cornfield1SidePart2 = RotateSidePart(cornfield1SidePart2, RotationsCount);
             var cornfield1Border2 = new Border(this.Field, this.Field?.GetNeighbour(cornfield1Side2), this);
+            cornfield1Border2.CornfieldSide = cornfield1SidePart2;
             _cornfieldPart1.Borders.Add(cornfield1Border2);
-
 
             // поле 2
             var cornfield2Side1 = Side.right;
@@ -71,6 +81,26 @@ namespace Carcassone.Core.Cards
             var cornfield2Border2 = new Border(this.Field, this.Field?.GetNeighbour(cornfield2Side2), this);
             cornfield2Border2.CornfieldSide = cornfield2SidePart2;
             _cornfieldPart2.Borders.Add(cornfield2Border2);
+
+            // дорога
+            AddBorderToPart(Side.bottom, _roadPart);
+
+            // поле 3
+            var cornfield3Side1 = Side.bottom;
+            cornfield3Side1 = RotateSide(cornfield3Side1, RotationsCount);
+            var cornfield3sidePart1 = CornfieldSide.side_4;
+            cornfield3sidePart1 = RotateSidePart(cornfield3sidePart1, RotationsCount);
+            var cornfield3Border1 = new Border(this.Field, this.Field?.GetNeighbour(cornfield3Side1), this);
+            cornfield3Border1.CornfieldSide = cornfield3sidePart1;
+            _cornfieldPart3.Borders.Add(cornfield3Border1);
+
+            var cornfield3Side2 = Side.left;
+            cornfield3Side2 = RotateSide(cornfield3Side2, RotationsCount);
+            var cornfield3SidePart2 = CornfieldSide.side_5;
+            cornfield3SidePart2 = RotateSidePart(cornfield3SidePart2, RotationsCount);
+            var cornfield3Border2 = new Border(this.Field, this.Field?.GetNeighbour(cornfield3Side2), this);
+            cornfield3Border2.CornfieldSide = cornfield3SidePart2;
+            _cornfieldPart3.Borders.Add(cornfield3Border2);
         }
     }
 }

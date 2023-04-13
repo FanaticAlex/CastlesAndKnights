@@ -1,6 +1,7 @@
 ﻿using Carcassone.Core.Calculation;
 using Carcassone.Core.Calculation.Objects;
 using Carcassone.Core.Cards;
+using Carcassone.Core.Extensions;
 using Carcassone.Core.Fields;
 using Carcassone.Core.Players;
 using System;
@@ -14,6 +15,8 @@ namespace Carcassone.Core
     /// </summary>
     public class GameRoom
     {
+        private ExtensionsManager _extensionsManager;
+
         private readonly CardPool _cardsPool;
         private readonly ScoreCalculator _scoreCalculator;
         private readonly FieldBoard _fieldBoard;
@@ -41,7 +44,9 @@ namespace Carcassone.Core
         public GameRoom()
         {
             Id = Guid.NewGuid().ToString();
-            _cardsPool = new CardPool();
+            _extensionsManager = new ExtensionsManager();
+
+            _cardsPool = new CardPool(_extensionsManager);
             _scoreCalculator = new ScoreCalculator();
             _fieldBoard = new FieldBoard();
             _playersPool = new PlayersPool();

@@ -1,6 +1,7 @@
-﻿using Carcassone.Core.Fields;
+﻿using Carcassone.Core.Cards;
+using Carcassone.Core.Fields;
 
-namespace Carcassone.Core.Cards
+namespace Carcassone.Core.Extensions.River.Cards
 {
 
     /// <summary>
