@@ -43,7 +43,6 @@ namespace Assets.Scripts
         /// </summary>
         void Update()
         {
-            _playersController._humanPlayerController.LeftButton |= Input.GetMouseButtonUp(0);
             _playersController._humanPlayerController.DoubleClick |= IsDoubleClick();
 
             _timer -= Time.deltaTime;

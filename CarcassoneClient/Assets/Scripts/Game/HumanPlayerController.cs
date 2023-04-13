@@ -24,7 +24,6 @@ namespace Assets.Scripts
         private string _selectedFieldId;
         private Card _currentCard;
 
-        public bool LeftButton { get; set; }
         public bool DoubleClick { get; set; }
 
         public bool Rotated { get; set; }
@@ -137,9 +136,9 @@ namespace Assets.Scripts
             //HilightSelectedCardMark(_currentCard.CardName);
 
             // клик на поле левой кнопкой помещает в него Фишку
-            if (LeftButton)
+            if (DoubleClick)
             {
-                LeftButton = false;
+                DoubleClick = false;
 
                 var playerHaveChip = GameManager.Instance.RoomService.GetPlayer(playerName);
                 if (playerHaveChip.ChipCount != 0)
