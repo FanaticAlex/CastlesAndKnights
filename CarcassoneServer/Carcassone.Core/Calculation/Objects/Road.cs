@@ -23,13 +23,11 @@ namespace Carcassone.Core.Calculation.Objects
         public int GetPoints()
         {
             var score = 0;
-            // если замок не завершен то за каждую часть по 1 очку.
             foreach (RoadPart part in Parts)
             {
                 score++;
             }
 
-            // если замок завершен удваиваем очки
             if (IsFinished)
             {
                 score = score * 2;
