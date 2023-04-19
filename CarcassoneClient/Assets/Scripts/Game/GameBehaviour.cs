@@ -63,7 +63,7 @@ namespace Assets.Scripts
                 // установка рисунка карты в контрол текущей карты
                 if (_cardsController.CurrentCard != null)
                 {
-                    var cardGO = _cardsController._cardsToGameObject[_cardsController.CurrentCard.CardName];
+                    var cardGO = _cardsController._cardsToGameObject[_cardsController.CurrentCard.CardId];
                     var currentCardImageGO = GameObject.Find("CurrentCardImage");
                     currentCardImageGO.GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
                     currentCardImageGO.transform.localRotation = Quaternion.Euler(0, 0, _cardsController.CurrentCard.RotationsCount * -90);

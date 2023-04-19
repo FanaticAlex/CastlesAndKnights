@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Carcassone.Core.Players;
 
 namespace Carcassone.Core.Calculation.Objects
 {
     public interface IClosingObject
     {
-        public void TryToClose();
+        public bool IsFinished { get; }
+        public void TryToClose(PlayersPool playersPool);
     }
 }

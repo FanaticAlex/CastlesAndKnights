@@ -1,5 +1,6 @@
 ﻿using System;
 using Carcassone.Core.Cards;
+using Newtonsoft.Json;
 
 namespace Carcassone.Core.Fields
 {
@@ -9,27 +10,14 @@ namespace Carcassone.Core.Fields
     /// </summary>
     public class Field
     {
-        private readonly FieldBoard _fieldBoard;
-        private Card? _cardInField;
-
-        public Field(FieldBoard fieldBoard, int x, int y)
+        public Field(int x, int y)
         {
             Id = $"{x}_{y}";
             X = x;
             Y = y;
-
-            _fieldBoard = fieldBoard;
         }
 
-        public Card GetCardInField()
-        {
-            return _cardInField;
-        }
-
-        public void SetCardInField(Card card)
-        {
-            _cardInField = card;
-        }
+        public string CardName { get; set; }
 
         /// <summary>
         /// Координаты поля на игровой сетке
@@ -52,23 +40,11 @@ namespace Carcassone.Core.Fields
 
         public string Id { get; }
 
-        public Field? GetNeighbour(Side side)
-        {
-            return side switch
-            {
-                Side.top => _fieldBoard?.GetField(X, Y + 1),
-                Side.bottom => _fieldBoard?.GetField(X, Y - 1),
-                Side.right => _fieldBoard?.GetField(X + 1, Y),
-                Side.left => _fieldBoard?.GetField(X - 1, Y),
-                _ => null,
-            };
-        }
-
-        public bool RotateCardTilFit(Card card)
+        public bool RotateCardTilFit(Card card, FieldBoard fieldBoard, CardPool cardPool)
         {
             for (int i = 0; i < 4; i++)
             {
-                if (CanPutCardInThisField(card))
+                if (CanPutCardInThisField(card, fieldBoard, cardPool))
                 {
                     return true;
                 }
@@ -83,38 +59,38 @@ namespace Carcassone.Core.Fields
             return false;
         }
 
-        internal bool CanPutCardInThisFieldWithRotation(Card? card)
+        internal bool CanPutCardInThisFieldWithRotation(Card? card, FieldBoard fieldBoard, CardPool cardPool)
         {
-            if (_cardInField != null)
+            if (!string.IsNullOrEmpty(CardName))
                 return false;
 
             if (card == null)
                 return false;
 
             var type = card.GetType();
-            var copy = (Card)Activator.CreateInstance(type, card.CardName);
+            var copy = (Card)Activator.CreateInstance(type, card.CardType, card.CardNumber);
             copy.TopEdgeType = card.TopEdgeType;
             copy.LeftEdgeType = card.LeftEdgeType;
             copy.BottomEdgeType = card.BottomEdgeType;
             copy.RightEdgeType = card.RightEdgeType;
 
-            return RotateCardTilFit(copy);
+            return RotateCardTilFit(copy, fieldBoard, cardPool);
         }
 
-        internal bool CanPutCardInThisField(Card card)
+        internal bool CanPutCardInThisField(Card card, FieldBoard fieldBoard, CardPool cardPool)
         {
             // if there is another card in field then false
-            if (_cardInField != null)
+            if (!string.IsNullOrEmpty(CardName))
                 return false;
 
             // если есть граничные карты то границы должны совпадать иначе карту присоединить нельзя
-            var isRiverCard = card.CardName.Contains("W");
+            var isRiverCard = card.CardId.Contains("W");
             if (isRiverCard)
             {
-                Card? neighbourTopCard = GetNeighbour(Side.top)?._cardInField;
-                Card? neighbourLeftCard = GetNeighbour(Side.left)?._cardInField;
-                Card? neighbourBottomCard = GetNeighbour(Side.bottom)?._cardInField;
-                Card? neighbourRightCard = GetNeighbour(Side.right)?._cardInField;
+                Card? neighbourTopCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, Side.top)?.CardName);
+                Card? neighbourLeftCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, Side.left)?.CardName);
+                Card? neighbourBottomCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, Side.bottom)?.CardName);
+                Card? neighbourRightCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, Side.right)?.CardName);
 
                 bool isTopFree = neighbourTopCard == null;
                 bool isLeftFree = neighbourLeftCard == null;
@@ -142,10 +118,10 @@ namespace Carcassone.Core.Fields
             }
             else
             {
-                Card? neighbourTopCard = GetNeighbour(Side.top)?._cardInField;
-                Card? neighbourLeftCard = GetNeighbour(Side.left)?._cardInField;
-                Card? neighbourBottomCard = GetNeighbour(Side.bottom)?._cardInField;
-                Card? neighbourRightCard = GetNeighbour(Side.right)?._cardInField;
+                Card? neighbourTopCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, Side.top)?.CardName);
+                Card? neighbourLeftCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, Side.left)?.CardName);
+                Card? neighbourBottomCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, Side.bottom)?.CardName);
+                Card? neighbourRightCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, Side.right)?.CardName);
                 
                 // карту можно положить в поле, если в соседних с полем областях либо нет карт
                 // либо границы карты которую кладем и соседней карты совпадают

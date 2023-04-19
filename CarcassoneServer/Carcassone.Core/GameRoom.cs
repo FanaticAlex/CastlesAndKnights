@@ -1,9 +1,9 @@
 ﻿using Carcassone.Core.Calculation;
-using Carcassone.Core.Calculation.Objects;
 using Carcassone.Core.Cards;
 using Carcassone.Core.Extensions;
 using Carcassone.Core.Fields;
 using Carcassone.Core.Players;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +15,11 @@ namespace Carcassone.Core
     /// </summary>
     public class GameRoom
     {
-        private ExtensionsManager _extensionsManager;
-
-        private readonly CardPool _cardsPool;
-        private readonly ScoreCalculator _scoreCalculator;
-        private readonly FieldBoard _fieldBoard;
-        private readonly PlayersPool _playersPool;
+        public ExtensionsManager ExtensionsManager { get; set; }
+        public CardPool CardsPool { get; set; }
+        public ScoreCalculator ScoreCalculator { get; set; }
+        public FieldBoard FieldBoard { get; set; }
+        public PlayersPool PlayersPool { get; set; }
 
         public string Id { get; }
         public bool IsStarted { get; set; }
@@ -44,12 +43,13 @@ namespace Carcassone.Core
         public GameRoom()
         {
             Id = Guid.NewGuid().ToString();
-            _extensionsManager = new ExtensionsManager();
 
-            _cardsPool = new CardPool(_extensionsManager);
-            _scoreCalculator = new ScoreCalculator();
-            _fieldBoard = new FieldBoard();
-            _playersPool = new PlayersPool();
+            ExtensionsManager = new ExtensionsManager(true);
+
+            CardsPool = new CardPool(ExtensionsManager);
+            ScoreCalculator = new ScoreCalculator();
+            FieldBoard = new FieldBoard();
+            PlayersPool = new PlayersPool();
         }
 
         /// <summary>
@@ -60,38 +60,40 @@ namespace Carcassone.Core
             IsStarted = true;
 
             // инициализирующий ход
-            var firstCard = _cardsPool.GetCurrentCard(_fieldBoard) ?? throw new Exception("Ошибка. В колоде нет карт!");
-            var firstField = _fieldBoard.GetCenter();
+            var firstCard = GetCurrentCard() ?? throw new Exception("Ошибка. В колоде нет карт!");
+            var firstField = FieldBoard.GetCenter();
             PutCardInField(firstCard, firstField);
 
-            _playersPool.MoveNextPlayer(this);
+            PlayersPool.MoveNextPlayer(this);
         }
 
-        public Player AddHumanPlayer(string playerName) => _playersPool.AddHumanPlayer(playerName);
-        public void AddAIPlayer() => _playersPool.AddAIPlayerEasy();
-        public List<BasePlayer> GetPlayers() => _playersPool.Players;
-        public BasePlayer? GetPlayer(string playerName) => _playersPool.GetPlayer(playerName);
-        public void DeletePlayer(string playerName) => _playersPool.DeletePlayer(playerName);
-        public BasePlayer GetCurrentPlayer() => _playersPool.CurrentPlayer;
+        public string Save()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
 
-        public List<Road> GetRoads() => _scoreCalculator.Roads;
-        public List<Castle> GetCastles() => _scoreCalculator.Castles;
-        public List<Cornfield> GetCornfields() => _scoreCalculator.Cornfields;
-        public List<Church> GetChurches() => _scoreCalculator.Churches;
-        public PlayerScore GetPlayerScore(BasePlayer player) => _scoreCalculator.GetPlayerScore(player, this);
+        public void Load(string save)
+        {
+            var room = JsonConvert.DeserializeObject<GameRoom>(save);
+            ExtensionsManager = room.ExtensionsManager;
+            CardsPool = room.CardsPool;
+            ScoreCalculator = room.ScoreCalculator;
+            FieldBoard = room.FieldBoard;
+            PlayersPool = room.PlayersPool;
+        }
 
+        public PlayerScore GetPlayerScore(BasePlayer player) =>
+            ScoreCalculator.GetPlayerScore(player, PlayersPool, CardsPool);
 
-        public List<Card> GetAllCards() => _cardsPool.GetAllCards();
-        public int GetCardsRemain() => _cardsPool.GetCardsRemainInPool().Count();
-        public Card? GetCurrentCard() => _cardsPool.GetCurrentCard(_fieldBoard);
-        public void RotateCard(string cardName) => GetCard(cardName).RotateCard();
-        public Card GetCard(string cardName) => _cardsPool.GetCard(cardName);
-        public bool CanPutCard(string fieldId, string cardId) => GetField(fieldId).CanPutCardInThisField(GetCard(cardId));
-
-
-        public Field GetField(string fieldId) => _fieldBoard.GetField(fieldId);
-        public List<Field> GetFields() => _fieldBoard.GetAllFields();
-
+        public int GetCardsRemain() => GetCardsRemainInPool().Count();
+        public void RotateCard(string cardId) => GetCard(cardId).RotateCard();
+        public Card GetCard(string cardId) => CardsPool.GetCard(cardId);
+        public bool CanPutCard(string fieldId, string cardId)
+        {
+            var field = FieldBoard.GetField(fieldId);
+            var card = GetCard(cardId);
+            return field.CanPutCardInThisField(card, FieldBoard, CardsPool);
+        }
 
         public List<Field> GetAvailableFields(string cardName)
         {
@@ -100,10 +102,10 @@ namespace Carcassone.Core
                 return list;
 
             var card = GetCard(cardName);
-            var fields = GetFields();
+            var fields = FieldBoard.Fields;
             foreach (var field in fields)
             {
-                if (field.CanPutCardInThisFieldWithRotation(card))
+                if (field.CanPutCardInThisFieldWithRotation(card, FieldBoard, CardsPool))
                 {
                     list.Add(field);
                 }
@@ -115,13 +117,13 @@ namespace Carcassone.Core
         public List<Field> GetNotAvailableFields()
         {
             var list = new List<Field>();
-            var fields = GetFields();
+            var fields = FieldBoard.Fields;
             foreach (var field in fields)
             {
                 var canPut = false;
-                foreach (var card in _cardsPool.GetCardsRemainInPool())
+                foreach (var card in GetCardsRemainInPool())
                 {
-                    if (field.CanPutCardInThisFieldWithRotation(card))
+                    if (field.CanPutCardInThisFieldWithRotation(card, FieldBoard, CardsPool))
                     {
                         canPut = true;
                     }
@@ -137,24 +139,25 @@ namespace Carcassone.Core
         public List<ObjectPart> GetAvailableParts(string cardName)
         {
             var card = GetCard(cardName);
-            var list = card.Parts.Where(p => !p.IsOwned).ToList();
+            var list = card.Parts.Where(p => !p.IsPartOfOwnedObject).ToList();
             return list;
         }
 
         public void PutCardInField(Card card, Field field)
         {
-            _fieldBoard.PutCard(card, field);
-            _scoreCalculator.AddCard(card);
+            FieldBoard.PutCard(card, field);
+            ScoreCalculator.AddCard(card, field, FieldBoard);
         }
 
-        public void PutChipInCard(ObjectPart partObject, BasePlayer player)
+        public void PutChipInCard(ObjectPart partObject, string playerName)
         {
+            var player = PlayersPool.GetPlayer(playerName);
             partObject.Chip = player.TakeChip();
         }
 
         public void EndTurn()
         {
-            _scoreCalculator.CloseObjectsAndReturnChips();
+            ScoreCalculator.CloseObjectsAndReturnChips(PlayersPool);
 
             var card = GetCurrentCard();
             if (card == null)
@@ -163,7 +166,46 @@ namespace Carcassone.Core
                 //return;
             }
 
-            _playersPool.MoveNextPlayer(this);
+            PlayersPool.MoveNextPlayer(this);
+
+            // Тест
+            var save = Save();
+            Load(save);
+        }
+
+        public List<Card> GetActiveCards()
+        {
+            return FieldBoard.Fields
+                .Where(f => f.CardName != null)
+                .Select(f => CardsPool.GetCard(f.CardName))
+                .ToList();
+        }
+
+        /// <summary>
+        /// Return card from top if the card pool
+        /// </summary>
+        /// <returns></returns>
+        public Card? GetCurrentCard()
+        {
+            List<Field> fields = FieldBoard.GetAvailableFields();
+            var cardsRemainInPool = GetCardsRemainInPool();
+            foreach (var card in cardsRemainInPool)
+            {
+                // проверяем можно ли эту карту сыграть, если нет берем следующую
+                foreach (var field in fields)
+                {
+                    if (field.CanPutCardInThisFieldWithRotation(card, FieldBoard, CardsPool))
+                        return card;
+                }
+            }
+
+            return null;
+        }
+
+        private List<Card> GetCardsRemainInPool()
+        {
+            var activeCardsNames = GetActiveCards().Select(c => c.CardId);
+            return CardsPool.AllCards.Where(c => !activeCardsNames.Contains(c.CardId)).ToList();
         }
     }
 }

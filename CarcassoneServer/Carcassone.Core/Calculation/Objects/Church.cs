@@ -3,68 +3,94 @@ using System.Collections.Generic;
 using Carcassone.Core.Cards;
 using Carcassone.Core.Fields;
 using Carcassone.Core.Players;
+using Newtonsoft.Json;
 
 namespace Carcassone.Core.Calculation.Objects
 {
     public class Church : IClosingObject
     {
-        public bool IsFinished => (ChurchElements.Count == 9);
+        public bool IsFinished => (ChurchCards.Count == 9);
         public ChurchPart BaseChurchPart { get; set; }
-        public List<Card> ChurchElements { get; set; } = new List<Card>();
 
-        public Church(ChurchPart basePart)
+        [JsonProperty(ItemConverterType = typeof(CardConverter))]
+        public List<string> ChurchCards { get; set; } = new List<string>();
+
+        public Church()
+        {
+        }
+
+        public Church(ChurchPart basePart, FieldBoard fieldBoard)
         {
             BaseChurchPart = basePart;
 
             // проходим по соседним полям если там есть карты подключаем их
             var fields = new List<Field?>();
-            var centralField = basePart.ChurchField;
+
+            var centralField = fieldBoard.GetField(basePart.ChurchFieldId);
             fields.Add(centralField);
-            fields.Add(centralField?.GetNeighbour(Side.left));
-            fields.Add(centralField?.GetNeighbour(Side.right));
+            fields.Add(fieldBoard?.GetNeighbour(centralField, Side.left));
+            fields.Add(fieldBoard?.GetNeighbour(centralField, Side.right));
 
-            var topField = centralField?.GetNeighbour(Side.top);
+            var topField = fieldBoard?.GetNeighbour(centralField, Side.top);
             fields.Add(topField);
-            fields.Add(topField?.GetNeighbour(Side.left));
-            fields.Add(topField?.GetNeighbour(Side.right));
+            fields.Add(fieldBoard?.GetNeighbour(topField, Side.left));
+            fields.Add(fieldBoard?.GetNeighbour(topField, Side.right));
 
-            var bottomField = centralField?.GetNeighbour(Side.bottom);
+            var bottomField = fieldBoard?.GetNeighbour(centralField, Side.bottom);
             fields.Add(bottomField);
-            fields.Add(bottomField?.GetNeighbour(Side.left));
-            fields.Add(bottomField?.GetNeighbour(Side.right));
+            fields.Add(fieldBoard?.GetNeighbour(bottomField, Side.left));
+            fields.Add(fieldBoard?.GetNeighbour(bottomField, Side.right));
 
             foreach(var field in fields)
             {
-                if (field?.GetCardInField() != null)
-                    ChurchElements.Add(field.GetCardInField());
+                if (field?.CardName != null)
+                    ChurchCards.Add(field.CardName);
             }
         }
 
-        public BasePlayer? Owner => BaseChurchPart.Chip?.Owner ?? BaseChurchPart.Flag?.Owner;
+        public string GetOwnerName()
+        {
+            return BaseChurchPart.Chip?.OwnerName ?? BaseChurchPart.Flag?.OwnerName;
+        }
 
         public bool IsPlayerOwner(BasePlayer player)
         {
-            return Owner?.Name == player.Name;
+            return GetOwnerName() == player.Name;
         }
 
-        public void TryAddCard(Card card)
+        /// <summary>
+        /// Если добавляемая карта граничит с собором то добавляемм ее к этому собору
+        /// </summary>
+        /// <param name="card"></param>
+        public void TryAddCard(Card card, Field field, FieldBoard fieldBoard)
         {
-            var distanceX = Math.Abs(card.Field.X - BaseChurchPart.ChurchField.X);
-            var distanceY = Math.Abs(card.Field.Y - BaseChurchPart.ChurchField.Y);
+            var baseField = fieldBoard.GetField(BaseChurchPart.ChurchFieldId);
+
+            var distanceX = Math.Abs(field.X - baseField.X);
+            var distanceY = Math.Abs(field.Y - baseField.Y);
 
             if (distanceX <= 1 && distanceY <= 1)
             {
-                ChurchElements.Add(card);
+                ChurchCards.Add(card.CardId);
             }
+        }
+
+        public void TryRemoveCard(Card card)
+        {
+            if (ChurchCards.Contains(card.CardId))
+                ChurchCards.Remove(card.CardId);
         }
 
         /// <summary>
         /// закрыть церковь если в ней 9 карт и вернуть фишку
         /// </summary>
-        public void TryToClose()
+        public void TryToClose(PlayersPool playersPool)
         {
             if (IsFinished)
-                BaseChurchPart.Chip?.Owner.ReturnChipAndSetFlag(BaseChurchPart);
+            {
+                var player = playersPool.GetPlayer(BaseChurchPart.Chip?.OwnerName);
+                player?.ReturnChipAndSetFlag(BaseChurchPart);
+            }
         }
 
         /// <summary>
@@ -75,11 +101,11 @@ namespace Carcassone.Core.Calculation.Objects
         {
             if (IsFinished)
             {
-                return ChurchElements.Count * 2;
+                return ChurchCards.Count * 2;
             }
             else
             {
-                return ChurchElements.Count;
+                return ChurchCards.Count;
             }
         }
     }

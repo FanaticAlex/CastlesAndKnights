@@ -51,7 +51,8 @@ namespace Assets.Scripts
 
         private void SetOwnersToChurch(Church church)
         {
-            if (church.Owner == null)
+            // если церковь никому не принадлежит
+            if ((church.BaseChurchPart.Chip == null) && (church.BaseChurchPart.Flag == null))
                 return;
 
             if (church.IsFinished)
@@ -63,7 +64,8 @@ namespace Assets.Scripts
                 if (_ownedPartsChips.Keys.Contains(church.BaseChurchPart.PartId))
                     GameObject.Destroy(_ownedPartsChips[church.BaseChurchPart.PartId]);
 
-                var flagPrefab = Constants.Flags[church.Owner.Color];
+                var player = GameManager.Instance.RoomService.GetPlayer(church.BaseChurchPart.Flag.OwnerName);
+                var flagPrefab = Constants.Flags[player.Color];
                 var flagObject = GameObject.Instantiate(flagPrefab);
                 flagObject.transform.position = _partToGameObject[church.BaseChurchPart.PartId].transform.position + new Vector3(0, 0, -1.3f);
                 _ownedPartsFlags.Add(church.BaseChurchPart.PartId, flagObject);
@@ -75,7 +77,8 @@ namespace Assets.Scripts
 
                 var chipPrefab = Constants.Chip["Priest"];
                 var chipObject = GameObject.Instantiate(chipPrefab);
-                chipObject.GetComponent<Renderer>().material.color = Constants.Colors[church.BaseChurchPart.Chip.Owner.Color];
+                var player = GameManager.Instance.RoomService.GetPlayer(church.BaseChurchPart.Chip.OwnerName);
+                chipObject.GetComponent<Renderer>().material.color = Constants.Colors[player.Color];
                 var partGameObject = _partToGameObject[church.BaseChurchPart.PartId];
                 chipObject.transform.position = partGameObject.transform.position + new Vector3(0, 0, -1.3f);
                 _ownedPartsChips.Add(church.BaseChurchPart.PartId, chipObject);
@@ -121,7 +124,8 @@ namespace Assets.Scripts
             if (_ownedPartsFlags.Keys.Contains(part.PartId)) // такой флаг уже есть
                 return;
 
-            var flagPrefab = Constants.Flags[part.Flag.Owner.Color];
+            var player = GameManager.Instance.RoomService.GetPlayer(part.Flag.OwnerName);
+            var flagPrefab = Constants.Flags[player.Color];
             var flagObject = GameObject.Instantiate(flagPrefab);
             flagObject.transform.position = _partToGameObject[part.PartId].transform.position + new Vector3(0, 0, -1.3f);
             _ownedPartsFlags[part.PartId] = flagObject;
@@ -137,7 +141,9 @@ namespace Assets.Scripts
 
             var chipPrefab = Constants.Chip[type];
             var chipObject = GameObject.Instantiate(chipPrefab);
-            chipObject.GetComponent<Renderer>().material.color = Constants.Colors[part.Chip.Owner.Color];
+
+            var player = GameManager.Instance.RoomService.GetPlayer(part.Chip.OwnerName);
+            chipObject.GetComponent<Renderer>().material.color = Constants.Colors[player.Color];
             var partGameObject = _partToGameObject[part.PartId];
             chipObject.transform.position = partGameObject.transform.position + new Vector3(0, 0, -1.3f);
             _ownedPartsChips.Add(part.PartId, chipObject);

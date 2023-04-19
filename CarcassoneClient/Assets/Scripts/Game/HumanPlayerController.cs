@@ -93,13 +93,13 @@ namespace Assets.Scripts
                 }
 
                 // клик на поле левой кнопкой помещает в него карту
-                var canPutCard = GameManager.Instance.RoomService.CanPutCard(_selectedFieldId, _currentCard.CardName);
+                var canPutCard = GameManager.Instance.RoomService.CanPutCard(_selectedFieldId, _currentCard.CardId);
                 if (canPutCard)
                 {
-                    GameManager.Instance.RoomService.PutCard(_selectedFieldId, _currentCard.CardName, playerName);
+                    GameManager.Instance.RoomService.PutCard(_selectedFieldId, _currentCard.CardId, playerName);
                     var player = GameManager.Instance.RoomService.GetPlayer(playerName);
 
-                    var parts = GameManager.Instance.RoomService.GetAvailableObjectParts(_currentCard.CardName);
+                    var parts = GameManager.Instance.RoomService.GetAvailableObjectParts(_currentCard.CardId);
                     if (!parts.Any())
                     {
                         // если нет вариантов установки фишки сразу завершаем ход
@@ -114,7 +114,7 @@ namespace Assets.Scripts
                         return;
                     }
 
-                    _cardsController.ShowCardMarks(_currentCard.CardName);
+                    _cardsController.ShowCardMarks(_currentCard.CardId);
                     PlayerState = PlayerState.PlayerHoldChip;
                 }
                 else
@@ -126,7 +126,7 @@ namespace Assets.Scripts
             {
                 Rotated = false;
                 // поворот поля если нажата правая кнопка поворачиваем карту и кладем на поле
-                GameManager.Instance.RoomService.RotateCard(_currentCard.CardName);
+                GameManager.Instance.RoomService.RotateCard(_currentCard.CardId);
                 _cardsController.ReloadCurrentCard();
             }
         }
@@ -144,10 +144,10 @@ namespace Assets.Scripts
                 if (playerHaveChip.ChipCount != 0)
                 {
                     // установка фишки
-                    var partObject = GetSelectedPartUI(_currentCard.CardName);
+                    var partObject = GetSelectedPartUI(_currentCard.CardId);
                     if (partObject != null)
                     {
-                        GameManager.Instance.RoomService.PutChip(_currentCard.CardName, partObject, playerName);
+                        GameManager.Instance.RoomService.PutChip(_currentCard.CardId, partObject, playerName);
                         EndTurn(playerName);
                     }
                 }
@@ -218,7 +218,7 @@ namespace Assets.Scripts
         private void EndTurn(string userName)
         {
             GameManager.Instance.RoomService.EndTurn(userName);
-            _cardsController.HideCardMarks(_currentCard.CardName);
+            _cardsController.HideCardMarks(_currentCard.CardId);
             _currentCard = null;
             PlayerState = PlayerState.PlayerWait;
         }

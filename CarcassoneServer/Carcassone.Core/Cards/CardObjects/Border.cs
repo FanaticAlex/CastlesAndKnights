@@ -7,40 +7,44 @@ namespace Carcassone.Core.Cards
     /// </summary>
     public class Border
     {
-        public Field FirstField { get; }
+        public string FirstFieldId { get; set; }
 
-        public Field SecondField { get; }
+        public string SecondFieldId { get; set; }
 
         public CornfieldSide? CornfieldSide { get; set; }
 
-        public Card Card { get; }
+        public string CardName { get; set; }
+
+        public Border()
+        {
+        }
 
         public Border(Field? first, Field? second, Card card)
         {
             if (first == null || second == null)
-                throw new System.Exception($"Field can not be null. Card: {card.CardName}, first: {first?.Id}, second: {second?.Id}");
+                throw new System.Exception($"Field can not be null. Card: {card.CardId}, first: {first?.Id}, second: {second?.Id}");
 
-            FirstField = first;
-            SecondField = second;
-            Card = card;
+            FirstFieldId = first.Id;
+            SecondFieldId = second.Id;
+            CardName = card.CardId;
         }
 
         public static bool Equial(Border border1, Border border2)
         {
-            if (border1.FirstField == null || border1.SecondField == null)
+            if (border1.FirstFieldId == null || border1.SecondFieldId == null)
                 return false;
 
-            if (border2.FirstField == null || border2.SecondField == null)
+            if (border2.FirstFieldId == null || border2.SecondFieldId == null)
                 return false;
 
-            if ((border1.FirstField == border2.FirstField) &&
-                (border1.SecondField == border2.SecondField))
+            if ((border1.FirstFieldId == border2.FirstFieldId) &&
+                (border1.SecondFieldId == border2.SecondFieldId))
             {
                 return true;
             }
 
-            if ((border1.FirstField == border2.SecondField) &&
-                (border1.SecondField == border2.FirstField))
+            if ((border1.FirstFieldId == border2.SecondFieldId) &&
+                (border1.SecondFieldId == border2.FirstFieldId))
             {
                 return true;
             }

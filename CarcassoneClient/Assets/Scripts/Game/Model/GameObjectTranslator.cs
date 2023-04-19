@@ -3,7 +3,7 @@
 
 namespace Assets.Scripts
 {
-    internal static class GameObjectTranslator
+    /*internal static class GameObjectTranslator
     {
         public static Carcassone.ApiClient.GameRoom ToCommon(this Carcassone.Core.GameRoom room)
         {
@@ -118,7 +118,6 @@ namespace Assets.Scripts
             var commonCard = new Carcassone.ApiClient.Card();
             commonCard.CardName = card.CardName;
             commonCard.Parts = card.Parts.Select(p => p.ToCommon()).ToList();
-            commonCard.Field = card.Field?.ToCommon();
             commonCard.RotationsCount = card.RotationsCount;
             return commonCard;
         }
@@ -177,5 +176,5 @@ namespace Assets.Scripts
             return commonChurch;
         }
     }
-
+    */
 }

@@ -11,14 +11,14 @@ namespace Carcassone.Core.Tests.Fields
         {
             var fieldBoard = new FieldBoard();
             var center = fieldBoard.GetCenter();
-            Assert.Single(fieldBoard.GetAllFields());
+            Assert.Single(fieldBoard.Fields);
             Assert.NotNull(center);
             Assert.Equal(0, center.X);
             Assert.Equal(0, center.Y);
 
-            var card = new CCCC("CCCC_0");
+            var card = new CCCC("CCCC", 0);
             fieldBoard.PutCard(card, center);
-            Assert.Equal(5, fieldBoard.GetAllFields().Count);
+            Assert.Equal(5, fieldBoard.Fields.Count);
         }
     }
 }

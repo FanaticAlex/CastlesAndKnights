@@ -1,6 +1,4 @@
 ﻿using Carcassone.ApiClient;
-using Carcassone.Core.Players;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -76,10 +74,10 @@ namespace Assets.Scripts
                 var textComp = GameObject.Find("DetailedPlayerScore").GetComponent<TMP_Text>();
                 textComp.text = "Очки игрока " + playerName + "\r\n";
                 var score = GameManager.Instance.RoomService.GetScore(playerName);
-                textComp.text += $"Замки: {score.Castles}\r\n";
-                textComp.text += $"Поля: {score.Cornfields}\r\n";
-                textComp.text += $"Аббатства: {score.Churches}\r\n";
-                textComp.text += $"Дороги: {score.Roads}\r\n";
+                textComp.text += $"Замки: {score.CastlesScore}({score.CastlesCount})\r\n";
+                textComp.text += $"Поля: {score.CornfieldsScore}({score.CornfieldsCount})\r\n";
+                textComp.text += $"Аббатства: {score.ChurchesScore}({score.ChurchesCount})\r\n";
+                textComp.text += $"Дороги: {score.RoadsScore}({score.RoadsCount})\r\n";
             }
         }
 
@@ -105,10 +103,10 @@ namespace Assets.Scripts
 
                 var overall = SumScore(score);
                 var result = overall + " / " +
-                             " З:" + score.Castles +
-                             " П:" + score.Cornfields +
-                             " А:" + score.Churches +
-                             " Д:" + score.Roads;
+                             " З:" + score.CastlesScore +
+                             " П:" + score.CornfieldsScore +
+                             " А:" + score.ChurchesScore +
+                             " Д:" + score.RoadsScore;
 
                 playerScoreUI.transform.Find("InfoText").GetComponentInChildren<Text>().text = result;
                 
@@ -156,7 +154,7 @@ namespace Assets.Scripts
 
         private int SumScore(PlayerScore score)
         {
-            return score.Castles + score.Cornfields + score.Churches + score.Roads;
+            return score.CastlesScore + score.CornfieldsScore + score.ChurchesScore + score.RoadsScore;
         }
     }
 }

@@ -11,30 +11,10 @@ namespace Carcassone.Core.Tests.Cards
         [Fact]
         public void GetCardTest()
         {
-            var extensionsManager = new ExtensionsManager();
+            var extensionsManager = new ExtensionsManager(true);
             var cardPool = new CardPool(extensionsManager);
-            var cccc = cardPool.GetCard("CCCC_0");
+            var cccc = cardPool.GetCard("CCCC(0)");
             Assert.NotNull(cccc);
-        }
-
-        [Fact]
-        public void GetCurrentCardTest()
-        {
-            var extensionsManager = new ExtensionsManager();
-            var cardPool = new CardPool(extensionsManager);
-            var fialdBoard = new FieldBoard();
-            var card = cardPool.GetCurrentCard(fialdBoard);
-            Assert.NotNull(card);
-        }
-
-        [Fact]
-        public void GetCardsRemainInPoolTest()
-        {
-            var extensionsManager = new ExtensionsManager();
-            var cardPool = new CardPool(extensionsManager);
-            var card = cardPool.GetCardsRemainInPool();
-            var allCards = cardPool.GetAllCards();
-            Assert.Equal(card.Count, allCards.Count);
         }
     }
 }

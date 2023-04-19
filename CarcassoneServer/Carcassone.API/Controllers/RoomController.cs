@@ -63,7 +63,7 @@ namespace CarcassoneServer.Controllers
         private void SaveGameResults(GameRoom room)
         {
             // записать результаты в базу
-            foreach (var player in room.GetPlayers())
+            foreach (var player in room.PlayersPool.Players)
             {
                 if (player is not Player) // не записываем в базу результаты AI игроков
                     continue;
@@ -112,11 +112,11 @@ namespace CarcassoneServer.Controllers
 
         [HttpGet]
         [Route("{roomId}/field/all")]
-        public List<Field> GetFields(string roomId) => _service.GetRoom(roomId).GetFields();
+        public List<Field> GetFields(string roomId) => _service.GetRoom(roomId).FieldBoard.Fields;
 
         [HttpGet]
         [Route("{roomId}/field/{fieldId}")]
-        public Field GetField(string roomId, string fieldId) => _service.GetRoom(roomId).GetField(fieldId);
+        public Field GetField(string roomId, string fieldId) => _service.GetRoom(roomId).FieldBoard.GetField(fieldId);
 
 
 
@@ -156,7 +156,7 @@ namespace CarcassoneServer.Controllers
 
         private Player GetHumanPlayer(GameRoom room, string playerName)
         {
-            var player = room.GetCurrentPlayer();
+            var player = room.PlayersPool.GetCurrentPlayer();
             if (player.Name != playerName)
                 throw new Exception($"Its '{player.Name}' turn!");
 
@@ -168,55 +168,55 @@ namespace CarcassoneServer.Controllers
 
         [HttpGet]
         [Route("{roomId}/roads")]
-        public List<Road> GetRoads(string roomId) => _service.GetRoom(roomId).GetRoads();
+        public List<Road> GetRoads(string roomId) => _service.GetRoom(roomId).ScoreCalculator.Roads;
 
         [HttpGet]
         [Route("{roomId}/castles")]
-        public List<Castle> GetCastles(string roomId) => _service.GetRoom(roomId).GetCastles();
+        public List<Castle> GetCastles(string roomId) => _service.GetRoom(roomId).ScoreCalculator.Castles;
 
         [HttpGet]
         [Route("{roomId}/churches")]
-        public List<Church> GetChurches(string roomId) => _service.GetRoom(roomId).GetChurches();
+        public List<Church> GetChurches(string roomId) => _service.GetRoom(roomId).ScoreCalculator.Churches;
 
         [HttpGet]
         [Route("{roomId}/cornfields")]
-        public List<Cornfield> GetCornfields(string roomId) => _service.GetRoom(roomId).GetCornfields();
+        public List<Cornfield> GetCornfields(string roomId) => _service.GetRoom(roomId).ScoreCalculator.Cornfields;
 
 
 
         [HttpPost]
         [Route("{roomId}/player/addAI")]
-        public void AddAIPlayer(string roomId) => _service.GetRoom(roomId).AddAIPlayer();
+        public void AddAIPlayer(string roomId) => _service.GetRoom(roomId).PlayersPool.AddAIPlayerEasy();
 
         [HttpPost]
         [Route("{roomId}/player/addHuman")]
-        public void AddHumanPlayer(string roomId, string playerName) => _service.GetRoom(roomId).AddHumanPlayer(playerName);
+        public void AddHumanPlayer(string roomId, string playerName) => _service.GetRoom(roomId).PlayersPool.AddHumanPlayer(playerName);
 
         [HttpGet]
         [Route("{roomId}/player/list")]
-        public List<BasePlayer> GetPlayersList(string roomId) => _service.GetRoom(roomId).GetPlayers();
+        public List<BasePlayer> GetPlayersList(string roomId) => _service.GetRoom(roomId).PlayersPool.Players;
 
         [HttpGet]
         [Route("{roomId}/player/current")]
-        public BasePlayer GetCurrentPlayer(string roomId) => _service.GetRoom(roomId).GetCurrentPlayer();
+        public BasePlayer GetCurrentPlayer(string roomId) => _service.GetRoom(roomId).PlayersPool.GetCurrentPlayer();
 
         [HttpGet]
         [Route("{roomId}/player/{playerName}")]
-        public BasePlayer GetPlayer(string roomId, string playerName) => _service.GetRoom(roomId).GetPlayer(playerName);
+        public BasePlayer GetPlayer(string roomId, string playerName) => _service.GetRoom(roomId).PlayersPool.GetPlayer(playerName);
 
         [HttpGet]
         [Route("{roomId}/player/{playerName}/score")]
         public PlayerScore Score(string roomId, string playerName)
         {
             var room = _service.GetRoom(roomId);
-            var player = room.GetPlayer(playerName);
+            var player = room.PlayersPool.GetPlayer(playerName);
             var score = room.GetPlayerScore(player);
             return score;
         }
 
         [HttpDelete]
         [Route("{roomId}/player/{playerName}")]
-        public void Delete(string roomId, string playerName) => _service.GetRoom(roomId).DeletePlayer(playerName);
+        public void Delete(string roomId, string playerName) => _service.GetRoom(roomId).PlayersPool.DeletePlayer(playerName);
 
 
 
@@ -226,15 +226,12 @@ namespace CarcassoneServer.Controllers
 
         [HttpGet]
         [Route("{roomId}/card/list")]
-        public List<Card> GetAllCards(string roomId) => _service.GetRoom(roomId).GetAllCards();
+        public List<Card> GetAllCards(string roomId) => _service.GetRoom(roomId).CardsPool.AllCards;
 
         [HttpGet]
         [Route("{roomId}/card/active")]
         public List<Card> GetActiveCards(string roomId) =>
-            _service.GetRoom(roomId)
-                .GetAllCards()
-                .Where(card => card.Field != null)
-                .ToList();
+            _service.GetRoom(roomId).GetActiveCards();
 
         [HttpGet]
         [Route("{roomId}/card/remain")]

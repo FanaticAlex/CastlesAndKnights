@@ -6,11 +6,11 @@ namespace Carcassone.Core.Players
         public Chip(BasePlayer owner)
         {
             Type = ChipType.None;
-            Owner = owner;
+            OwnerName = owner?.Name;
         }
 
         public ChipType Type { get; set; }
 
-        public BasePlayer Owner { get; set; }
+        public string OwnerName { get; set; }
     }
 }

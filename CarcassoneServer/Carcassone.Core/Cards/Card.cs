@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Carcassone.Core.Fields;
+using Newtonsoft.Json;
 
 namespace Carcassone.Core.Cards
 {
@@ -10,25 +11,26 @@ namespace Carcassone.Core.Cards
     public abstract class Card
     {
         /// <summary>
-        /// Вручную соединенные замки и поля
+        /// Вручную соединенные замки и поля,
+        /// это нужно для подсчета какие замки присоденены к полямм при подсчете очков за поля
         /// </summary>
-        protected Dictionary<CornfieldPart, List<CastlePart>> _fieldToCastleParts =
-            new Dictionary<CornfieldPart, List<CastlePart>>();
+        public Dictionary<string, List<string>> FieldToCastleParts { get; set; } =
+            new Dictionary<string, List<string>>();
 
         /// <summary>
         /// Части обьектов на этой карте
         /// </summary>
+        [JsonProperty(ItemConverterType = typeof(PartConverter))]
         public List<ObjectPart> Parts { get; set; } = new List<ObjectPart>();
 
         /// <summary>
-        /// Название карты, например СССС_1.
+        /// Полное название карты (CardType+(CardNumber)), например СССС_1(0).
         /// </summary>
-        public string CardName { get; set; }
+        public string CardId { get; set; }
 
-        /// <summary>
-        /// Поле в котором установлена карта.
-        /// </summary>
-        public Field? Field { get; set; }
+        public string CardType { get; set; }
+
+        public int CardNumber { get; set; }
 
         public EdgeType TopEdgeType { get; set; } = EdgeType.None;
         public EdgeType RightEdgeType { get; set; } = EdgeType.None;
@@ -37,9 +39,9 @@ namespace Carcassone.Core.Cards
 
         public CenterType CenterType = CenterType.None;
 
-        public int RotationsCount { get; set; } = 0;
+        public int RotationsCount { get; set; }
 
-        public Card(string cardName)
+        public Card(string cardType, int cardNumber)
         {
             Dictionary<char, EdgeType> nameDict = new Dictionary<char, EdgeType>()
             {
@@ -49,32 +51,39 @@ namespace Carcassone.Core.Cards
                 { 'W', EdgeType.Water }
             };
 
-            CardName = cardName;
-            TopEdgeType = nameDict[cardName[0]];
-            RightEdgeType = nameDict[cardName[1]];
-            BottomEdgeType = nameDict[cardName[2]];
-            LeftEdgeType = nameDict[cardName[3]];
+            CardId = $"{cardType}({cardNumber})";
+            CardType = cardType;
+            CardNumber = cardNumber;
+            TopEdgeType = nameDict[cardType[0]];
+            RightEdgeType = nameDict[cardType[1]];
+            BottomEdgeType = nameDict[cardType[2]];
+            LeftEdgeType = nameDict[cardType[3]];
         }
 
-        public void AddBorderToPart(Side side, ObjectPart part)
+        public ObjectPart GetPart(string partName)
+        {
+            return Parts.Single(p => p.PartName == partName);
+        }
+
+        public void AddBorderToPart(Field field, Side side, ObjectPart part, FieldBoard fieldBoard)
         {
             var rotatedSide = RotateSide(side, RotationsCount);
-            var castleBorder = new Border(Field, Field?.GetNeighbour(rotatedSide), this);
+            var castleBorder = new Border(field, fieldBoard.GetNeighbour(field, rotatedSide), this);
             part.Borders.Add(castleBorder);
         }
 
-        public List<CastlePart> GetConnectedCastleParts(CornfieldPart part)
+        public List<string> GetConnectedCastleParts(CornfieldPart part)
         {
-            var castleParts = new List<CastlePart>();
-            if (_fieldToCastleParts.Keys.Contains(part))
+            var castleParts = new List<string>();
+            if (FieldToCastleParts.Keys.Contains(part.PartId))
             {
-                castleParts = _fieldToCastleParts[part];
+                castleParts = FieldToCastleParts[part.PartId];
             }
 
             return castleParts;
         }
 
-        public abstract void ConnectField(Field field);
+        public abstract void ConnectField(Field field, FieldBoard fieldBoard);
 
         // поворачивает карту на 90 по часовой стрелке градусов счетчик поворотов увеличивается на 1
         public void RotateCard()

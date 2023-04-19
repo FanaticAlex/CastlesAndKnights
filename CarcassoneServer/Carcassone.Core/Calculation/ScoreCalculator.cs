@@ -1,5 +1,6 @@
 ﻿using Carcassone.Core.Calculation.Objects;
 using Carcassone.Core.Cards;
+using Carcassone.Core.Fields;
 using Carcassone.Core.Players;
 using System;
 using System.Collections.Generic;
@@ -21,11 +22,11 @@ namespace Carcassone.Core.Calculation
         /// Добавляет карту и пересчитывает очки.
         /// </summary>
         /// <param name="card"></param>
-        public void AddCard(Card card)
+        public void AddCard(Card card, Field field, FieldBoard fieldBoard)
         {
             // проверяет подходит ли карта к одной из существующих церквей
             foreach (var church in Churches)
-                church.TryAddCard(card);
+                church.TryAddCard(card, field, fieldBoard);
 
             // подключаем карту
             foreach (ObjectPart part in card.Parts)
@@ -34,7 +35,7 @@ namespace Carcassone.Core.Calculation
                     ProcessCornfieldPart(part);
 
                 if (part is ChurchPart)
-                    ProcessChurchPart(part);
+                    ProcessChurchPart(part, fieldBoard);
 
                 if (part is CastlePart)
                     ProcessCastlePart(part);
@@ -83,9 +84,9 @@ namespace Carcassone.Core.Calculation
             }
         }
 
-        private void ProcessChurchPart(ObjectPart part)
+        private void ProcessChurchPart(ObjectPart part, FieldBoard fieldBoard)
         {
-            var church = new Church((ChurchPart)part);
+            var church = new Church((ChurchPart)part, fieldBoard);
             Churches.Add(church);
         }
 
@@ -109,39 +110,46 @@ namespace Carcassone.Core.Calculation
             }
         }
 
-        public void CloseObjectsAndReturnChips()
+        public void CloseObjectsAndReturnChips(PlayersPool playersPool)
         {
             foreach (var church in Churches)
-                church.TryToClose();
+                church.TryToClose(playersPool);
 
             foreach (var castle in Castles)
-                castle.TryToClose();
+                castle.TryToClose(playersPool);
 
             foreach (var road in Roads)
-                road.TryToClose();
+                road.TryToClose(playersPool);
 
             foreach (var cornfield in Cornfields)
                 cornfield.RecalculatePartsOwner();
         }
 
-        public PlayerScore GetPlayerScore(BasePlayer player, GameRoom room)
+        public PlayerScore GetPlayerScore(BasePlayer player, PlayersPool plyersPool, CardPool cardPool)
         {
-            var scores = GetPlayersScores(room);
+            var scores = GetPlayersScores(plyersPool, cardPool);
             var score = scores.Single(s => s.PlayerName == player.Name);
             return score;
         }
 
-        private IEnumerable<PlayerScore> GetPlayersScores(GameRoom room)
+        private IEnumerable<PlayerScore> GetPlayersScores(PlayersPool plyersPool, CardPool cardPool)
         {
             var scores = new List<PlayerScore>();
-            foreach (var player in room.GetPlayers())
+            foreach (var player in plyersPool.Players)
             {
-                var pChurches = GetChurchesScore(player);
-                var pRoads = GetRoadsScore(player);
-                var pCornfields = GetCornfieldsScore(player, room);
-                var pCastles = GetCastlesScore(player);
-                var pChipCount = player.ChipCount;
-                var score = new PlayerScore(player.Name, pChurches, pCornfields, pRoads, pCastles, pChipCount);
+                var score = new PlayerScore()
+                {
+                    PlayerName = player.Name,
+                    ChurchesScore = GetChurchesScore(player),
+                    CornfieldsScore = GetCornfieldsScore(player, cardPool),
+                    RoadsScore = GetRoadsScore(player),
+                    CastlesScore = GetCastlesScore(player),
+                    CastlesCount = GetCastles(player).Count(),
+                    RoadsCount = GetRoads(player).Count(),
+                    CornfieldsCount = GetCornfields(player).Count(),
+                    ChurchesCount = GetChurches(player).Count(),
+                    ChipCount = player.ChipCount
+                };
                 scores.Add(score);
             }
 
@@ -191,39 +199,52 @@ namespace Carcassone.Core.Calculation
 
             foreach (var gameObject in objectsToMerge)
             {
-                foreach (var part in gameObject.GetParts())
+                foreach (var part in gameObject.Parts)
                     mergedObject.AddPart(part);
             }
 
             return mergedObject;
         }
 
+        private IEnumerable<Castle> GetCastles(BasePlayer player)
+        {
+            return Castles.Where(castle => castle.IsPlayerOwner(player));
+        }
+
+        private IEnumerable<Road> GetRoads(BasePlayer player)
+        {
+            return Roads.Where(road => road.IsPlayerOwner(player));
+        }
+
+        private IEnumerable<Cornfield> GetCornfields(BasePlayer player)
+        {
+            return Cornfields.Where(cornfield => cornfield.IsPlayerOwner(player));
+        }
+
+        private IEnumerable<Church> GetChurches(BasePlayer player)
+        {
+            return Churches.Where(church => church.IsPlayerOwner(player));
+        }
+
+
         private int GetCastlesScore(BasePlayer player)
         {
-            return Castles
-                .Where(castle => castle.IsPlayerOwner(player))
-                .Sum(castle => castle.GetPoints());
+            return GetCastles(player).Sum(castle => castle.GetPoints());
         }
 
         private int GetRoadsScore(BasePlayer player)
         {
-            return Roads
-                .Where(road => road.IsPlayerOwner(player))
-                .Sum(road => road.GetPoints());
+            return GetRoads(player).Sum(road => road.GetPoints());
         }
 
-        private int GetCornfieldsScore(BasePlayer player, GameRoom room)
+        private int GetCornfieldsScore(BasePlayer player, CardPool cardPool)
         {
-            return Cornfields
-                .Where(cornfield => cornfield.IsPlayerOwner(player))
-                .Sum(cornfield => cornfield.GetPoints(Castles, room));
+            return GetCornfields(player).Sum(cornfield => cornfield.GetPoints(Castles, cardPool));
         }
 
         private int GetChurchesScore(BasePlayer player)
         {
-            return Churches
-                .Where(church => church.IsPlayerOwner(player))
-                .Sum(church => church.GetPoints());
+            return GetChurches(player).Sum(church => church.GetPoints());
         }
     }
 }

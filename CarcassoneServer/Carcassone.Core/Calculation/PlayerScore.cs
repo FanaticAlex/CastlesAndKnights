@@ -2,29 +2,25 @@
 {
     public class PlayerScore
     {
-        public PlayerScore(
-            string playerName, int churches, int cornfields, int roads, int castles, int chipCount)
-        {
-            PlayerName = playerName;
-            Churches = churches;
-            Cornfields = cornfields;
-            Roads = roads;
-            Castles = castles;
-            ChipCount = chipCount;
-        }
+        public string PlayerName { get; set; }
+        
+        public int ChurchesScore { get; set; }
+        public int CornfieldsScore { get; set; }
+        public int RoadsScore { get; set; }
+        public int CastlesScore { get; set; }
 
-        public string PlayerName { get; }
-        public int Churches { get; }
-        public int Cornfields { get; }
-        public int Roads { get; }
-        public int Castles { get; }
-        public int ChipCount { get; }
+        public int ChurchesCount { get; set; }
+        public int CornfieldsCount { get; set; }
+        public int RoadsCount { get; set; }
+        public int CastlesCount { get; set; }
+
+        public int ChipCount { get; set; }
 
         public int Rank { get; set; }
 
         public int GetOverallScore()
         {
-            return Churches + Cornfields + Roads + Castles;
+            return ChurchesScore + CornfieldsScore + RoadsScore + CastlesScore;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Carcassone.Core.Players.AI;
+﻿using Carcassone.Core.Cards;
+using Carcassone.Core.Players.AI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +16,6 @@ namespace Carcassone.Core.Players
         public const string MiddleBotName = "Vikont(Middle)";
         public const string HardBotName = "King(Hard)";
 
-        private int _currentPlayerIndex = -1;
         private static readonly int _maximumPlayersCount = 5;
         private static readonly int _playerChipCount = 7;
 
@@ -22,10 +23,13 @@ namespace Carcassone.Core.Players
         {
         }
 
-        public BasePlayer? GetPlayer(string playerName) => Players.FirstOrDefault(_player => _player.Name == playerName);
+        public BasePlayer? GetPlayer(string? playerName) => Players.FirstOrDefault(_player => _player.Name == playerName);
 
-        public BasePlayer CurrentPlayer => Players[_currentPlayerIndex];
+        public int CurrentPlayerIndex { get; set; } = -1;
 
+        public BasePlayer GetCurrentPlayer() => (CurrentPlayerIndex == -1) ? null : Players[CurrentPlayerIndex];
+
+        [JsonProperty(ItemConverterType = typeof(PlayerConverter))]
         public List<BasePlayer> Players { get; } = new List<BasePlayer>();
 
         public void DeletePlayer(string name)
@@ -74,11 +78,11 @@ namespace Carcassone.Core.Players
         {
             // передать ход
             // если ход сделан то ход передается следующему игроку
-            _currentPlayerIndex++;
-            _currentPlayerIndex %= Players.Count;
+            CurrentPlayerIndex++;
+            CurrentPlayerIndex %= Players.Count;
 
             // ходят AI игроки
-            var player = CurrentPlayer;
+            var player = GetCurrentPlayer();
             if (player is PlayerAI aI)
                 aI.ProcessMove(room);
         }

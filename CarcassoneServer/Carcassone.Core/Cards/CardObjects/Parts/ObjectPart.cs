@@ -20,14 +20,14 @@ namespace Carcassone.Core.Cards
 
         public string PartId { get; set; }
         public string PartName { get; set; }
-        public string CardName { get; set; }
+        public string CardId { get; set; }
         public string PartType { get; set; }
-        public bool IsOwned { get; set; }
+        public bool IsPartOfOwnedObject { get; set; }
 
-        public ObjectPart(string partName, string cardName)
+        public ObjectPart(string partName, string cardId)
         {
-            PartId = cardName + partName;
-            CardName = cardName;
+            PartId = cardId + partName;
+            CardId = cardId;
             PartName = partName;
             PartType = string.Empty;
         }

@@ -1,4 +1,5 @@
 ﻿using Carcassone.Core.Cards;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,28 +10,34 @@ namespace Carcassone.Core.Fields
     /// </summary>
     public class FieldBoard
     {
-        private List<Field> Fields { get; } = new List<Field>();
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
+        public List<Field> Fields { get; set; }
 
         public FieldBoard()
         {
-            CreateField(0, 0);
+            if (Fields == null)
+            {
+                Fields = new List<Field>();
+                CreateField(0, 0);
+            }
         }
 
         public List<Field> GetAvailableFields()
         {
-            return Fields.Where(f => f.GetCardInField() == null).ToList();
-        }
-
-        public List<Field> GetAllFields()
-        {
-            return Fields;
+            return Fields.Where(f => string.IsNullOrEmpty(f.CardName)).ToList();
         }
 
         public void CreateField(int x, int y)
         {
             var field = GetField(x, y);
             if (field == null)
-                Fields.Add(new Field(this, x, y));
+                Fields.Add(new Field(x, y));
+        }
+
+        public void RemoveField(int x, int y)
+        {
+            var field = Fields.Single(f => f.X == x && f.Y == y);
+            Fields.Remove(field);
         }
 
         public void PutCard(Card card, Field field)
@@ -41,14 +48,33 @@ namespace Carcassone.Core.Fields
             CreateField(field.X + 1, field.Y);
             CreateField(field.X - 1, field.Y);
 
-            field.SetCardInField(card);
-            card.ConnectField(field);
+            field.CardName = card.CardId;
+            card.ConnectField(field, this);
+        }
+
+
+        public Field? GetNeighbour(Field? field, Side side)
+        {
+            if (field == null)
+                return null;
+
+            return side switch
+            {
+                Side.top => GetField(field.X, field.Y + 1),
+                Side.bottom => GetField(field.X, field.Y - 1),
+                Side.right => GetField(field.X + 1, field.Y),
+                Side.left => GetField(field.X - 1, field.Y),
+                _ => throw new KeyNotFoundException(),
+            };
         }
 
         public Field? GetCenter() => GetField(0, 0);
 
         public Field? GetField(int x, int y) => GetField($"{x}_{y}");
 
-        public Field? GetField(string fieldId) => Fields.FirstOrDefault(field => field.Id == fieldId);
+        public Field? GetField(string fieldId)
+        {
+            return Fields.FirstOrDefault(field => field.Id == fieldId);
+        }
     }
 }

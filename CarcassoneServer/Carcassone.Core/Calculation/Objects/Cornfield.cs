@@ -1,5 +1,6 @@
 ﻿using Carcassone.Core.Cards;
 using Carcassone.Core.Players;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,14 @@ namespace Carcassone.Core.Calculation.Objects
     {
         public List<Border> OpenBorders = new List<Border>();
 
+        [JsonProperty(ItemConverterType = typeof(PartConverter))]
         public List<ObjectPart> Parts { get; set; } = new List<ObjectPart>();
 
         public List<ObjectPart> GetParts() => Parts;
 
         public bool IsPlayerOwner(BasePlayer player)
         {
-            return GetOwners().Select(owner => owner.Name).Contains(player.Name);
+            return GetOwnersNames().Contains(player.Name);
         }
 
         public void AddPart(ObjectPart part)
@@ -28,11 +30,11 @@ namespace Carcassone.Core.Calculation.Objects
 
         public void RecalculatePartsOwner()
         {
-            if (GetOwners().Count > 0)
+            if (GetOwnersNames().Count > 0)
             {
                 foreach (var part1 in Parts)
                 {
-                    part1.IsOwned = true;
+                    part1.IsPartOfOwnedObject = true;
                 }
             }
         }
@@ -47,7 +49,7 @@ namespace Carcassone.Core.Calculation.Objects
                 {
                     // части поля одной карты не могут быть смежными.
                     // если это граница от той же карты то присоединять нельзя
-                    if (partBorder.Card == adjacentCornfieldBorder.Card)
+                    if (partBorder.CardName == adjacentCornfieldBorder.CardName)
                         continue;
 
                     // если сторон нет тоесть граница карты не разделена дорогой или рекой,
@@ -82,7 +84,7 @@ namespace Carcassone.Core.Calculation.Objects
             return false;
         }
 
-        public int GetPoints(List<Castle> allCastles, GameRoom room)
+        public int GetPoints(List<Castle> allCastles, CardPool cardPool)
         {
             // считаем все подключенные карты,
             // за каждый подключенный и законченный замок 3 очка
@@ -91,7 +93,7 @@ namespace Carcassone.Core.Calculation.Objects
             var connectedCastles = new List<Castle>();
             foreach(var cornfieldPart in Parts)
             {
-                var card = room.GetCard(cornfieldPart.CardName);
+                var card = cardPool.GetCard(cornfieldPart.CardId);
                 var connectedCastleParts = card.GetConnectedCastleParts((CornfieldPart)cornfieldPart);
 
                 foreach (var castle in allCastles)
@@ -99,7 +101,7 @@ namespace Carcassone.Core.Calculation.Objects
                     var castleIsConnected = false;
                     foreach (var connectedCastlePart in connectedCastleParts)
                     {
-                        if (castle.Parts.Contains(connectedCastlePart))
+                        if (castle.Parts.Select(p => p.PartId).Contains(connectedCastlePart))
                             castleIsConnected = true;
                     }
 
@@ -114,14 +116,14 @@ namespace Carcassone.Core.Calculation.Objects
         }
 
 
-        private List<BasePlayer> GetOwners()
+        private List<string> GetOwnersNames()
         {
-            var owners = new List<BasePlayer>();
+            var owners = new List<string>();
             foreach (var part in Parts)
             {
-                if (part.Chip != null && !owners.Contains(part.Chip.Owner))
+                if (part.Chip != null && !owners.Contains(part.Chip.OwnerName))
                 {
-                    owners.Add(part.Chip.Owner);
+                    owners.Add(part.Chip.OwnerName);
                 }
             }
 

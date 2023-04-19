@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
-namespace Carcassone.Core.Cards
+﻿namespace Carcassone.Core.Cards
 {
     public class CastlePart : ObjectPart
     {
-        public CastlePart(string partName, string cardName, bool isThereShield = false) : base(partName, cardName)
+        public CastlePart(string partName, string cardId, bool isThereShield = false)
+            : base(partName, cardId)
         {
             PartType = "Castle";
             IsThereShield = isThereShield;
@@ -14,6 +12,6 @@ namespace Carcassone.Core.Cards
         /// <summary>
         /// Есть ли на карте города щит.
         /// </summary>
-        public bool IsThereShield { get; }
+        public bool IsThereShield { get; set; }
     }
 }

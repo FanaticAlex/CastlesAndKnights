@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -52,15 +53,15 @@ namespace Assets.Scripts
             var cards = GameManager.Instance.RoomService.GetCards();
             foreach (var card in cards)
             {
-                var prefab = (GameObject)Resources.Load(subfolderCards + card.CardName.Substring(0, card.CardName.Length - 2), typeof(GameObject));
+                var prefab = (GameObject)Resources.Load(subfolderCards + card.CardType, typeof(GameObject));
                 if (prefab == null)
-                    prefab = (GameObject)Resources.Load(subfolderCards + "River/" + card.CardName.Substring(0, card.CardName.Length - 2), typeof(GameObject));
+                    prefab = (GameObject)Resources.Load(subfolderCards + "River/" + card.CardType, typeof(GameObject));
 
                 var cardObject = GameObject.Instantiate(prefab);
                 if (cardObject == null)
                     throw new Exception();
 
-                _cardsToGameObject.Add(card.CardName, cardObject);
+                _cardsToGameObject.Add(card.CardId, cardObject);
                 cardObject.GetComponent<BoxCollider>().enabled = false;
 
                 // Части
@@ -114,15 +115,16 @@ namespace Assets.Scripts
         /// </summary>
         public void UpdateCardsView()
         {
-            var activeCards = GameManager.Instance.RoomService.GetActiveCards();
-            foreach (var card in activeCards)
+            var activeFields = GameManager.Instance.RoomService.GetFields().Where(f => f.CardName != null);
+            foreach (var field in activeFields)
             {
-                var cardGameObject = _cardsToGameObject[card.CardName];
+                var cardGameObject = _cardsToGameObject[field.CardName];
 
                 // поворот карты в нужную позицию
+                var card = GameManager.Instance.RoomService.GetCard(field.CardName);
                 cardGameObject.transform.rotation = Quaternion.Euler(0, 0, -90 * card.RotationsCount);
 
-                var fieldId = card.Field?.Id;
+                var fieldId = field.Id;
                 if (string.IsNullOrEmpty(fieldId))
                     continue;
 
@@ -142,7 +144,7 @@ namespace Assets.Scripts
             if (card == null)
                 return;
 
-            var currentCardGameObject = _cardsToGameObject[card.CardName];
+            var currentCardGameObject = _cardsToGameObject[card.CardId];
             currentCardGameObject.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + new Vector3(0, 0, 7);
         }
 
@@ -151,8 +153,8 @@ namespace Assets.Scripts
             if (card == null)
                 return;
 
-            var currentCardGameObject = _cardsToGameObject[card.CardName];
-            var currentCard = GameManager.Instance.RoomService.GetCard(card.CardName);
+            var currentCardGameObject = _cardsToGameObject[card.CardId];
+            var currentCard = GameManager.Instance.RoomService.GetCard(card.CardId);
             currentCardGameObject.transform.rotation = Quaternion.Euler(0, 0, -90 * currentCard.RotationsCount);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Carcassone.Core.Extensions;
 using Carcassone.Core.Fields;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,6 @@ namespace Carcassone.Core.Cards
 {
     public class CardPool
     {
-        private List<Card> AllCards = new List<Card>();
-
         /// <summary>
         /// Конструктор. Создает колоду карт.
         /// </summary>
@@ -58,42 +57,12 @@ namespace Carcassone.Core.Cards
             AllCards.AddRange(baseCards);
         }
 
-        public Card GetCard(string cardName)
+        [JsonProperty(ItemConverterType = typeof(CardConverter), ObjectCreationHandling = ObjectCreationHandling.Replace)]
+        public List<Card> AllCards { get; private set; } = new List<Card>();
+
+        public Card GetCard(string cardId)
         {
-            var card = AllCards.FirstOrDefault(card => card.CardName == cardName);
-            if (card == null)
-                throw new Exception($"Card name: '{cardName}' does not exist in the cardPool.");
-
-            return card;
-        }
-
-        public List<Card> GetAllCards() => AllCards;
-
-        public List<Card> GetCardsRemainInPool()
-        {
-            return AllCards.Where(c => c.Field == null).ToList();
-        }
-
-        /// <summary>
-        /// Return card from top if the card pool
-        /// </summary>
-        /// <param name="fieldBoard"></param>
-        /// <returns></returns>
-        public Card? GetCurrentCard(FieldBoard fieldBoard)
-        {
-            List<Field> fields = fieldBoard.GetAvailableFields();
-            var cardsRemainInPool = GetCardsRemainInPool();
-            foreach (var card in cardsRemainInPool)
-            {
-                // проверяем можно ли эту карту сыграть, если нет берем следующую
-                foreach (var field in fields)
-                {
-                    if (field.CanPutCardInThisFieldWithRotation(card))
-                        return card;
-                }
-            }
-
-            return null;
+            return AllCards.FirstOrDefault(card => card.CardId == cardId);
         }
 
         public static void Shaffle(List<Card> cardsPile)
@@ -115,10 +84,10 @@ namespace Carcassone.Core.Cards
         {
             for (int i = 0; i < count; i++)
             {
-                var name = cardType.Name.Replace(cardType.Namespace ?? string.Empty, string.Empty);
-                var card = (Card?)Activator.CreateInstance(cardType, name + "_" + i);
+                var cardTypeStr = cardType.Name.Replace(cardType.Namespace ?? string.Empty, string.Empty);
+                var card = (Card?)Activator.CreateInstance(cardType, cardTypeStr, i);
                 if (card == null)
-                    throw new Exception($"Невозможно создать карту типа {cardType} / {name + "_" + i}");
+                    throw new Exception($"Невозможно создать карту типа {cardTypeStr}: {i}");
 
                 cardsPile.Add(card);
             }

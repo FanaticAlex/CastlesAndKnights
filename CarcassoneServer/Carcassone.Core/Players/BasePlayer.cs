@@ -44,7 +44,7 @@ namespace Carcassone.Core.Players
                 throw new Exception("Объект не принадлежит игроку, невозможно установить флаг.");
 
             var chip = part.Chip;
-            chip.Owner = this;
+            chip.OwnerName = Name;
             _chipList.Add(chip);
 
             part.Chip = null;
