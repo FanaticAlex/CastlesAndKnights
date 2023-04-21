@@ -94,5 +94,16 @@ namespace Assets.Scripts.Menu
         {
             Application.OpenURL("http://192.168.1.65/Identity/Account/Register");
         }
+
+        public void OnEyeBtnClick()
+        {
+            var passwordField = GameObject.Find("Password").GetComponent<TMP_InputField>();
+            if (passwordField.contentType == TMP_InputField.ContentType.Password)
+                passwordField.contentType = TMP_InputField.ContentType.Standard;
+            else
+                passwordField.contentType = TMP_InputField.ContentType.Password;
+
+            passwordField.Select();
+        }
     }
 }
