@@ -1,17 +1,15 @@
 ﻿using Carcassone.Core.Cards;
-using Carcassone.Core.Players;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Carcassone.Core.Calculation.Objects
 {
     public class Road : ClosingMultipartObject
     {
-        public int GetPoints()
+        public int GetPoints(CardPool cardPool)
         {
             var score = 0;
-            foreach (RoadPart part in Parts)
+            var parts = PartsIds.Select(id => cardPool.GetPart(id));
+            foreach (RoadPart part in parts)
             {
                 score++;
             }

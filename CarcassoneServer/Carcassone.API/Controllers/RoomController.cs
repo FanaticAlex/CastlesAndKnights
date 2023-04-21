@@ -248,5 +248,10 @@ namespace CarcassoneServer.Controllers
         [HttpGet]
         [Route("{roomId}/card/rotateCard/{cardId}")]
         public void RotateCard(string roomId, string cardId) => _service.GetRoom(roomId).RotateCard(cardId);
+
+
+        [HttpGet]
+        [Route("{roomId}/objectPart/{partId}")]
+        public ObjectPart GetPart(string roomId, string partId) => _service.GetRoom(roomId).CardsPool.GetPart(partId);
     }
 }

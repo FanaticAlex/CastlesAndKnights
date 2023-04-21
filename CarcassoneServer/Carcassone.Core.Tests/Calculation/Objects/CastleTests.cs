@@ -46,10 +46,10 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             var castles = room.ScoreCalculator.Castles;
             Assert.Single(castles);
             var castle = castles.Single();
-            Assert.Equal(4, castle.GetPoints());
+            Assert.Equal(4, castle.GetPoints(room.CardsPool));
             Assert.True(castle.IsFinished);
-            Assert.True(castle.IsPlayerOwner(room.PlayersPool.GetPlayer(playerName)));
-            Assert.Contains(castle.Parts, p => p.Flag != null);
+            Assert.True(castle.IsPlayerOwner(room.PlayersPool.GetPlayer(playerName), room.CardsPool));
+            Assert.Contains(castle.PartsIds.Select(id => room.CardsPool.GetPart(id)), p => p.Flag != null);
 
             var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(playerName));
             Assert.Equal(4, score.CastlesScore);
@@ -107,10 +107,10 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             Assert.Equal(2, castles.Count);
 
             var castle = castles[1];
-            Assert.Equal(4, castle.GetPoints());
+            Assert.Equal(4, castle.GetPoints(room.CardsPool));
             Assert.True(castle.IsFinished);
-            Assert.True(castle.IsPlayerOwner(room.PlayersPool.GetPlayer(playerName)));
-            Assert.Contains(castle.Parts, p => p.Flag != null);
+            Assert.True(castle.IsPlayerOwner(room.PlayersPool.GetPlayer(playerName), room.CardsPool));
+            Assert.Contains(castle.PartsIds.Select(id => room.CardsPool.GetPart(id)), p => p.Flag != null);
 
             var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(playerName));
             Assert.Equal(4, score.CastlesScore);

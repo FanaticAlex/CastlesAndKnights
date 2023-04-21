@@ -14,13 +14,14 @@ namespace Carcassone.Core.Cards
         /// Вручную соединенные замки и поля,
         /// это нужно для подсчета какие замки присоденены к полямм при подсчете очков за поля
         /// </summary>
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public Dictionary<string, List<string>> FieldToCastleParts { get; set; } =
             new Dictionary<string, List<string>>();
 
         /// <summary>
         /// Части обьектов на этой карте
         /// </summary>
-        [JsonProperty(ItemConverterType = typeof(PartConverter))]
+        [JsonProperty(ItemConverterType = typeof(PartConverter), ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public List<ObjectPart> Parts { get; set; } = new List<ObjectPart>();
 
         /// <summary>

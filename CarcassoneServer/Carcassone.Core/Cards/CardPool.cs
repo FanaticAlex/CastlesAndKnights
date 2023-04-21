@@ -65,6 +65,11 @@ namespace Carcassone.Core.Cards
             return AllCards.FirstOrDefault(card => card.CardId == cardId);
         }
 
+        public ObjectPart GetPart(string partId)
+        {
+            return AllCards.SelectMany(c => c.Parts).FirstOrDefault(p => p.PartId == partId);
+        }
+
         public static void Shaffle(List<Card> cardsPile)
         {
             // перетосовка

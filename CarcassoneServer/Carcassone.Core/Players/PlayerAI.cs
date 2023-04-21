@@ -1,14 +1,22 @@
-﻿using System;
+﻿using Carcassone.Core.Calculation;
+using Carcassone.Core.Cards;
+using Carcassone.Core.Fields;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Carcassone.Core.Players.AI
 {
+    public class GameMove
+    {
+        public string FieldId { get; set; }
+        public string PartName { get; set; }
+        public PlayerScore ExpectedScore { get; set; }
+    }
+
     public class PlayerAI : BasePlayer
     {
-        private readonly Random _random = new Random();
-
-        public PlayerAI(string name, string color, int chipCount)
-            : base(name, color, chipCount)
+        public PlayerAI(string name, string color, int chipCount): base(name, color, chipCount)
         { }
 
         public void ProcessMove(GameRoom room)
@@ -21,31 +29,90 @@ namespace Carcassone.Core.Players.AI
                 return; // игра уже окончена
 
             // where to put a card
-            var fields = room.GetAvailableFields(card.CardId);
-            
-            
-            var field = fields[_random.Next(fields.Count)];
-            if (field.RotateCardTilFit(card, room.FieldBoard, room.CardsPool))
+            var fields = room.GetAvailableFields(card.CardId).Select(f => f.Id).ToList();
+            List<GameMove> possibleMoves = GetPossibleMoves(room.Save(), card.CardId, fields);
+
+            GameMove bestMove = GetBestMove(possibleMoves);
+
+            // ход
+            var field = room.FieldBoard.GetField(bestMove.FieldId);
+            field.RotateCardTilFit(card, room.FieldBoard, room.CardsPool);
+            room.PutCardInField(card, field);
+            LastCardId = card.CardId;
+            if (bestMove.PartName != null)
             {
-                LastCardId = card.CardId;
-                room.PutCardInField(card, field);
+                var part = card.GetPart(bestMove.PartName);
+                room.PutChipInCard(part, this.Name);
             }
-
-            // where to put a chip
-            var parts = room.GetAvailableParts(card.CardId);
-            if (parts.Count > 0)
-            {
-                var part1 = parts[_random.Next(parts.Count)];
-                var part = card.Parts.Single(p => p.PartId == part1.PartId);
-                if (!part.IsPartOfOwnedObject && ChipCount > 0)
-                {
-                    room.PutChipInCard(part, Name);
-                }
-            }
-
-            var resultScore = room.GetPlayerScore(this);
-
             room.EndTurn();
+        }
+
+        private GameMove GetBestMove(List<GameMove> possibleMoves)
+        {
+            // ходы возвращающие фишки
+            var maxReturnChips = possibleMoves.Max(m => (m.ExpectedScore.ChipCount - ChipCount));
+            var returnChipsMove = possibleMoves
+                .Where(m => (m.ExpectedScore.ChipCount - ChipCount) == maxReturnChips)
+                .FirstOrDefault();
+            if (maxReturnChips > 0 && returnChipsMove != null)
+                return returnChipsMove;
+
+            // ходы дающие наибольшее число очков
+            var maxScore = possibleMoves.Max(m => m.ExpectedScore.GetOverallScore());
+            var bestScoreMove = possibleMoves
+                .Where(m => m.ExpectedScore.GetOverallScore() == maxScore)
+                .First();
+            return bestScoreMove;
+        }
+
+        private List<GameMove> GetPossibleMoves(string roomSave, string cardId, List<string> fieldIds)
+        {
+            var possibleMoves = new List<GameMove>();
+            foreach (var fieldId in fieldIds)
+            {
+                var gameCopy = new GameRoom();
+                gameCopy.Load(roomSave);
+                var card = gameCopy.CardsPool.GetCard(cardId);
+                var field = gameCopy.FieldBoard.GetField(fieldId);
+                if (field.RotateCardTilFit(card, gameCopy.FieldBoard, gameCopy.CardsPool))
+                {
+                    gameCopy.PutCardInField(card, field);
+
+                    // where to put a chip
+                    var partNames = gameCopy.GetAvailableParts(card.CardId).Select(p => p.PartName);
+                    foreach (var partName in partNames)
+                    {
+                        var gameCopy1 = new GameRoom();
+                        gameCopy1.Load(gameCopy.Save());
+                        var card1 = gameCopy1.CardsPool.GetCard(cardId);
+                        var field1 = gameCopy1.FieldBoard.GetField(fieldId);
+                        var part1 = card1.GetPart(partName);
+                        if (!part1.IsPartOfOwnedObject && ChipCount > 0)
+                        {
+                            gameCopy1.PutChipInCard(part1, Name);
+                            gameCopy1.ScoreCalculator.CloseObjectsAndReturnChips(gameCopy1.PlayersPool, gameCopy1.CardsPool);
+                        }
+
+                        var gameMove1 = new GameMove();
+                        gameMove1.FieldId = field.Id;
+                        gameMove1.PartName = part1.PartName;
+                        gameMove1.ExpectedScore = gameCopy1.GetPlayerScore(this);
+                        possibleMoves.Add(gameMove1);
+                    }
+
+                    gameCopy.ScoreCalculator.CloseObjectsAndReturnChips(gameCopy.PlayersPool, gameCopy.CardsPool);
+                    // ход без установки фишки
+                    var gameMove = new GameMove();
+                    gameMove.FieldId = field.Id;
+                    gameMove.PartName = null;
+                    gameMove.ExpectedScore = gameCopy.GetPlayerScore(this);
+                    possibleMoves.Add(gameMove);
+                }
+
+                
+            }
+
+            return possibleMoves;
         }
     }
 }

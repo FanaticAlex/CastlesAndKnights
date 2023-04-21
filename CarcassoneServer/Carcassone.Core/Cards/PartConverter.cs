@@ -1,13 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Transactions;
-using System.Data.Common;
-using System.Reflection;
-using System.Linq;
-using Carcassone.Core.Calculation.Objects;
 
 namespace Carcassone.Core.Cards
 {

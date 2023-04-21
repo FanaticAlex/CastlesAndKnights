@@ -1,6 +1,5 @@
 ﻿using Carcassone.Core.Cards;
 using Carcassone.Core.Players;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,18 +9,20 @@ namespace Carcassone.Core.Calculation.Objects
     {
         public List<Border> OpenBorders = new List<Border>();
 
-        [JsonProperty(ItemConverterType = typeof(PartConverter))]
-        public List<ObjectPart> Parts { get; set; } = new List<ObjectPart>();
+        public List<string> PartsIds { get; set; } = new List<string>();
 
-        public void AddPart(ObjectPart part)
+        public void AddPart(ObjectPart part, CardPool cardPool)
         {
-            Parts.Add(part);
+            PartsIds.Add(part.PartId);
             OpenBorders.AddRange(part.Borders);
 
-            if (GetOwnersNames().Count > 0)
+            if (GetOwnersNames(cardPool).Count > 0)
             {
-                foreach (var part1 in Parts)
+                foreach (var partId in PartsIds)
+                {
+                    var part1 = cardPool.GetPart(partId);
                     part1.IsPartOfOwnedObject = true;
+                }
             }
         }
 
@@ -39,13 +40,14 @@ namespace Carcassone.Core.Calculation.Objects
 
         public bool IsFinished { get; set; }
 
-        public void TryToClose(PlayersPool playersPool)
+        public void TryToClose(PlayersPool playersPool, CardPool cardPool)
         {
             IsFinished = IsClosed();
             if (IsFinished)
             {
-                foreach (var part in Parts)
+                foreach (var partId in PartsIds)
                 {
+                    var part = cardPool.GetPart(partId);
                     var player = playersPool.GetPlayer(part.Chip?.OwnerName);
                     player?.ReturnChipAndSetFlag(part);
                 }
@@ -67,36 +69,38 @@ namespace Carcassone.Core.Calculation.Objects
             return isClosed1;
         }
 
-        public bool IsPlayerOwner(BasePlayer player)
+        public bool IsPlayerOwner(BasePlayer player, CardPool cardPool)
         {
-            return GetOwnersNames().Contains(player.Name);
+            return GetOwnersNames(cardPool).Contains(player.Name);
         }
 
-        private List<string> GetOwnersNames()
+        private List<string> GetOwnersNames(CardPool cardPool)
         {
             // если объект закончен считаем по флагам владельцев
             // если не закончен считаем количество фишек
             // если у какого то игрока фишек в замке больше,
             // то он считается владельцем (может быть несколько владельцев)
             if (IsFinished)
-                return GetOwnersByFlags();
+                return GetOwnersByFlags(cardPool);
             else
-                return GetOwnersByChips();
+                return GetOwnersByChips(cardPool);
         }
 
-        private List<string> GetOwnersByFlags()
+        private List<string> GetOwnersByFlags(CardPool cardPool)
         {
-            return Parts
+            var parts = PartsIds.Select(id => cardPool.GetPart(id));
+            return parts
                 .Where(part => part.Flag?.OwnerName != null)
                 .Select(part => part.Flag.OwnerName)
                 .Distinct().ToList();
         }
 
-        private List<string> GetOwnersByChips()
+        private List<string> GetOwnersByChips(CardPool cardPool)
         {
             // количество фишек у каждого игрока
             var ownersToChipCount = new Dictionary<string, int>();
-            foreach (var part in Parts)
+            var parts = PartsIds.Select(id => cardPool.GetPart(id));
+            foreach (var part in parts)
             {
                 if (part.Chip != null)
                 {

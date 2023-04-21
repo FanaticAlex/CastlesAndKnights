@@ -11,28 +11,26 @@ namespace Carcassone.Core.Calculation.Objects
     {
         public List<Border> OpenBorders = new List<Border>();
 
-        [JsonProperty(ItemConverterType = typeof(PartConverter))]
-        public List<ObjectPart> Parts { get; set; } = new List<ObjectPart>();
+        public List<string> PartsIds { get; set; } = new List<string>();
 
-        public List<ObjectPart> GetParts() => Parts;
-
-        public bool IsPlayerOwner(BasePlayer player)
+        public bool IsPlayerOwner(BasePlayer player, CardPool cardPool)
         {
-            return GetOwnersNames().Contains(player.Name);
+            return GetOwnersNames(cardPool).Contains(player.Name);
         }
 
-        public void AddPart(ObjectPart part)
+        public void AddPart(ObjectPart part, CardPool cardPool)
         {
-            Parts.Add(part);
+            PartsIds.Add(part.PartId);
             OpenBorders.AddRange(part.Borders);
-            RecalculatePartsOwner();
+            RecalculatePartsOwner(cardPool);
         }
 
-        public void RecalculatePartsOwner()
+        public void RecalculatePartsOwner(CardPool cardPool)
         {
-            if (GetOwnersNames().Count > 0)
+            if (GetOwnersNames(cardPool).Count > 0)
             {
-                foreach (var part1 in Parts)
+                var parts = PartsIds.Select(id => cardPool.GetPart(id));
+                foreach (var part1 in parts)
                 {
                     part1.IsPartOfOwnedObject = true;
                 }
@@ -91,7 +89,8 @@ namespace Carcassone.Core.Calculation.Objects
             // за незаконченный очков нет
 
             var connectedCastles = new List<Castle>();
-            foreach(var cornfieldPart in Parts)
+            var parts = PartsIds.Select(id => cardPool.GetPart(id));
+            foreach (var cornfieldPart in parts)
             {
                 var card = cardPool.GetCard(cornfieldPart.CardId);
                 var connectedCastleParts = card.GetConnectedCastleParts((CornfieldPart)cornfieldPart);
@@ -101,7 +100,7 @@ namespace Carcassone.Core.Calculation.Objects
                     var castleIsConnected = false;
                     foreach (var connectedCastlePart in connectedCastleParts)
                     {
-                        if (castle.Parts.Select(p => p.PartId).Contains(connectedCastlePart))
+                        if (castle.PartsIds.Contains(connectedCastlePart))
                             castleIsConnected = true;
                     }
 
@@ -116,10 +115,11 @@ namespace Carcassone.Core.Calculation.Objects
         }
 
 
-        private List<string> GetOwnersNames()
+        private List<string> GetOwnersNames(CardPool cardPool)
         {
             var owners = new List<string>();
-            foreach (var part in Parts)
+            var parts = PartsIds.Select(id => cardPool.GetPart(id));
+            foreach (var part in parts)
             {
                 if (part.Chip != null && !owners.Contains(part.Chip.OwnerName))
                 {

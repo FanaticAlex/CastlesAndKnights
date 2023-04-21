@@ -50,7 +50,7 @@ namespace Assets.Scripts
             {
                 _timer = 0.1f;
                 var currentPlayer = GameManager.Instance.RoomService.GetCurrentPlayer();
-                var isMyTurn = (currentPlayer.Name == GameManager.Instance.RoomService.User);
+                var isMyTurn = (currentPlayer?.Name == GameManager.Instance.RoomService.User);
                 if (isMyTurn)
                 {
                     _playersController.HandlePlayerActions();

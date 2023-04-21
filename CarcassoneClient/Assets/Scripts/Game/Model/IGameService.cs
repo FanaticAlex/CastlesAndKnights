@@ -31,6 +31,7 @@ namespace Assets.Scripts
         List<Card> GetCards();
         List<Card> GetActiveCards();
         Card GetCard(string cardName);
+        ObjectPart GetObjectPart(string partId);
         bool CanPutCard(string fieldId, string cardName);
         void PutCard(string fieldId, string cardName, string userName);
         void RotateCard(string cardName);

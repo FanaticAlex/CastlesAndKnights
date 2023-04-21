@@ -9,11 +9,11 @@ namespace Carcassone.Core.Calculation.Objects
 {
     public class Church : IClosingObject
     {
-        public bool IsFinished => (ChurchCards.Count == 9);
-        public ChurchPart BaseChurchPart { get; set; }
+        public bool IsFinished => (ChurchCardIds.Count == 9);
+        public string BaseChurchPartId { get; set; }
 
         [JsonProperty(ItemConverterType = typeof(CardConverter))]
-        public List<string> ChurchCards { get; set; } = new List<string>();
+        public List<string> ChurchCardIds { get; set; } = new List<string>();
 
         public Church()
         {
@@ -21,7 +21,7 @@ namespace Carcassone.Core.Calculation.Objects
 
         public Church(ChurchPart basePart, FieldBoard fieldBoard)
         {
-            BaseChurchPart = basePart;
+            BaseChurchPartId = basePart.PartId;
 
             // проходим по соседним полям если там есть карты подключаем их
             var fields = new List<Field?>();
@@ -44,52 +44,55 @@ namespace Carcassone.Core.Calculation.Objects
             foreach(var field in fields)
             {
                 if (field?.CardName != null)
-                    ChurchCards.Add(field.CardName);
+                    ChurchCardIds.Add(field.CardName);
             }
         }
 
-        public string GetOwnerName()
+        public string GetOwnerName(CardPool cardPool)
         {
-            return BaseChurchPart.Chip?.OwnerName ?? BaseChurchPart.Flag?.OwnerName;
+            var baseChurchPart = cardPool.GetPart(BaseChurchPartId);
+            return baseChurchPart.Chip?.OwnerName ?? baseChurchPart.Flag?.OwnerName;
         }
 
-        public bool IsPlayerOwner(BasePlayer player)
+        public bool IsPlayerOwner(BasePlayer player, CardPool cardPool)
         {
-            return GetOwnerName() == player.Name;
+            return GetOwnerName(cardPool) == player.Name;
         }
 
         /// <summary>
         /// Если добавляемая карта граничит с собором то добавляемм ее к этому собору
         /// </summary>
         /// <param name="card"></param>
-        public void TryAddCard(Card card, Field field, FieldBoard fieldBoard)
+        public void TryAddCard(Card card, Field field, FieldBoard fieldBoard, CardPool cardPool)
         {
-            var baseField = fieldBoard.GetField(BaseChurchPart.ChurchFieldId);
+            var baseChurchPart = (ChurchPart)cardPool.GetPart(BaseChurchPartId);
+            var baseField = fieldBoard.GetField(baseChurchPart.ChurchFieldId);
 
             var distanceX = Math.Abs(field.X - baseField.X);
             var distanceY = Math.Abs(field.Y - baseField.Y);
 
             if (distanceX <= 1 && distanceY <= 1)
             {
-                ChurchCards.Add(card.CardId);
+                ChurchCardIds.Add(card.CardId);
             }
         }
 
         public void TryRemoveCard(Card card)
         {
-            if (ChurchCards.Contains(card.CardId))
-                ChurchCards.Remove(card.CardId);
+            if (ChurchCardIds.Contains(card.CardId))
+                ChurchCardIds.Remove(card.CardId);
         }
 
         /// <summary>
         /// закрыть церковь если в ней 9 карт и вернуть фишку
         /// </summary>
-        public void TryToClose(PlayersPool playersPool)
+        public void TryToClose(PlayersPool playersPool, CardPool cardPool)
         {
             if (IsFinished)
             {
-                var player = playersPool.GetPlayer(BaseChurchPart.Chip?.OwnerName);
-                player?.ReturnChipAndSetFlag(BaseChurchPart);
+                var baseChurchPart = (ChurchPart)cardPool.GetPart(BaseChurchPartId);
+                var player = playersPool.GetPlayer(baseChurchPart.Chip?.OwnerName);
+                player?.ReturnChipAndSetFlag(baseChurchPart);
             }
         }
 
@@ -101,11 +104,11 @@ namespace Carcassone.Core.Calculation.Objects
         {
             if (IsFinished)
             {
-                return ChurchCards.Count * 2;
+                return ChurchCardIds.Count * 2;
             }
             else
             {
-                return ChurchCards.Count;
+                return ChurchCardIds.Count;
             }
         }
     }

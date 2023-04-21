@@ -32,7 +32,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             Assert.Equal(4, roads.Count);
             foreach (var road in roads)
             {
-                Assert.Equal(1, road.GetPoints());
+                Assert.Equal(1, road.GetPoints(room.CardsPool));
                 Assert.False(road.IsFinished);
             }
         }
@@ -80,9 +80,9 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             var roads = room.ScoreCalculator.Roads;
             Assert.Single(roads);
             var road = roads.Single();
-            Assert.Equal(8, road.GetPoints());
+            Assert.Equal(8, road.GetPoints(room.CardsPool));
             Assert.True(road.IsFinished);
-            Assert.Single(road.Parts.Where(p => p.Flag != null));
+            Assert.Single(road.PartsIds.Select(id => room.CardsPool.GetPart(id)).Where(p => p.Flag != null));
         }
 
         /// <summary>
@@ -120,9 +120,9 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             var roads = room.ScoreCalculator.Roads;
             Assert.Equal(3, roads.Count);
             var road = roads.First(r => r.IsFinished);
-            Assert.Equal(4, road.GetPoints());
+            Assert.Equal(4, road.GetPoints(room.CardsPool));
             Assert.True(road.IsFinished);
-            Assert.Single(road.Parts.Where(p => p.Flag != null));
+            Assert.Single(road.PartsIds.Select(id => room.CardsPool.GetPart(id)).Where(p => p.Flag != null));
         }
     }
 }

@@ -5,9 +5,9 @@ namespace Carcassone.Core.Calculation.Objects
 {
     public interface IMultipartObject
     {
-        public List<ObjectPart> Parts { get; set; }
+        public List<string> PartsIds { get; set; }
 
         bool CanConnect(ObjectPart part);
-        void AddPart(ObjectPart part);
+        void AddPart(ObjectPart part, CardPool cardPool);
     }
 }

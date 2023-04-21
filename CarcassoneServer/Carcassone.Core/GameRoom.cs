@@ -146,7 +146,7 @@ namespace Carcassone.Core
         public void PutCardInField(Card card, Field field)
         {
             FieldBoard.PutCard(card, field);
-            ScoreCalculator.AddCard(card, field, FieldBoard);
+            ScoreCalculator.AddCard(card, field, FieldBoard, CardsPool);
         }
 
         public void PutChipInCard(ObjectPart partObject, string playerName)
@@ -157,20 +157,13 @@ namespace Carcassone.Core
 
         public void EndTurn()
         {
-            ScoreCalculator.CloseObjectsAndReturnChips(PlayersPool);
+            ScoreCalculator.CloseObjectsAndReturnChips(PlayersPool, CardsPool);
 
             var card = GetCurrentCard();
             if (card == null)
-            {
                 IsFinished = true;
-                //return;
-            }
 
             PlayersPool.MoveNextPlayer(this);
-
-            // Тест
-            var save = Save();
-            Load(save);
         }
 
         public List<Card> GetActiveCards()

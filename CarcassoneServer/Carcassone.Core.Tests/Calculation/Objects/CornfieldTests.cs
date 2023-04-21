@@ -49,9 +49,9 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             Assert.Equal(3, score.CornfieldsScore);
 
             Assert.Equal(3, room.ScoreCalculator.Cornfields.Count);
-            Assert.True(room.ScoreCalculator.Cornfields[0].IsPlayerOwner(player));
-            Assert.True(!room.ScoreCalculator.Cornfields[1].IsPlayerOwner(player));
-            Assert.True(!room.ScoreCalculator.Cornfields[2].IsPlayerOwner(player));
+            Assert.True(room.ScoreCalculator.Cornfields[0].IsPlayerOwner(player, room.CardsPool));
+            Assert.True(!room.ScoreCalculator.Cornfields[1].IsPlayerOwner(player, room.CardsPool));
+            Assert.True(!room.ScoreCalculator.Cornfields[2].IsPlayerOwner(player, room.CardsPool));
         }
 
         /// <summary>
