@@ -127,7 +127,10 @@ namespace Assets.Scripts
             var player = GameManager.Instance.RoomService.GetPlayer(part.Flag.OwnerName);
             var flagPrefab = Constants.Flags[player.Color];
             var flagObject = GameObject.Instantiate(flagPrefab);
-            flagObject.transform.position = _partToGameObject[part.PartId].transform.position + new Vector3(0, 0, -1.3f);
+            var partGameObject = _partToGameObject[part.PartId];
+            partGameObject.SetActive(true);
+            flagObject.transform.parent = partGameObject.transform;
+            flagObject.transform.localPosition = Vector3.zero + new Vector3(0, 0, -1.3f);
             _ownedPartsFlags[part.PartId] = flagObject;
         }
 
@@ -146,7 +149,9 @@ namespace Assets.Scripts
             var player = GameManager.Instance.RoomService.GetPlayer(part.Chip.OwnerName);
             chipObject.GetComponent<Renderer>().material.color = Constants.Colors[player.Color];
             var partGameObject = _partToGameObject[part.PartId];
-            chipObject.transform.position = partGameObject.transform.position + new Vector3(0, 0, -1.3f);
+            partGameObject.SetActive(true);
+            chipObject.transform.parent = partGameObject.transform;
+            chipObject.transform.localPosition = Vector3.zero + new Vector3(0, 0, -1.3f);
             _ownedPartsChips.Add(part.PartId, chipObject);
         }
     }
