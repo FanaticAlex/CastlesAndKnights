@@ -10,6 +10,8 @@ namespace Carcassone.Core.Fields
     /// </summary>
     public class FieldBoard
     {
+        private object _fieldsLock = new object();
+
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public List<Field> Fields { get; set; }
 
@@ -24,32 +26,22 @@ namespace Carcassone.Core.Fields
 
         public List<Field> GetAvailableFields()
         {
-            return Fields.Where(f => string.IsNullOrEmpty(f.CardName)).ToList();
-        }
-
-        public void CreateField(int x, int y)
-        {
-            var field = GetField(x, y);
-            if (field == null)
-                Fields.Add(new Field(x, y));
-        }
-
-        public void RemoveField(int x, int y)
-        {
-            var field = Fields.Single(f => f.X == x && f.Y == y);
-            Fields.Remove(field);
+            return Fields.ToList().Where(f => string.IsNullOrEmpty(f.CardName)).ToList();
         }
 
         public void PutCard(Card card, Field field)
         {
-            // создаем новые поля вокруг положенной карты
-            CreateField(field.X, field.Y + 1);
-            CreateField(field.X, field.Y - 1);
-            CreateField(field.X + 1, field.Y);
-            CreateField(field.X - 1, field.Y);
+            lock (_fieldsLock)
+            {
+                // create 4 new fields around placed card
+                CreateField(field.X, field.Y + 1);
+                CreateField(field.X, field.Y - 1);
+                CreateField(field.X + 1, field.Y);
+                CreateField(field.X - 1, field.Y);
 
-            field.CardName = card.CardId;
-            card.ConnectField(field, this);
+                field.CardName = card.CardId;
+                card.ConnectField(field, this);
+            }
         }
 
 
@@ -74,7 +66,14 @@ namespace Carcassone.Core.Fields
 
         public Field? GetField(string fieldId)
         {
-            return Fields.FirstOrDefault(field => field.Id == fieldId);
+            return Fields.ToList().FirstOrDefault(field => field.Id == fieldId);
+        }
+
+        private void CreateField(int x, int y)
+        {
+            var field = GetField(x, y);
+            if (field == null)
+                Fields.Add(new Field(x, y));
         }
     }
 }

@@ -3,6 +3,7 @@ using Carcassone.Core.Cards;
 using Carcassone.Core.Extensions;
 using Carcassone.Core.Fields;
 using Carcassone.Core.Players;
+using Carcassone.Core.Players.AI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -23,22 +24,7 @@ namespace Carcassone.Core
 
         public string Id { get; }
         public bool IsStarted { get; set; }
-
-        private bool _isFinished;
-        public bool IsFinished
-        {
-            get
-            {
-                return _isFinished;
-            }
-            set
-            {
-                _isFinished = value;
-                Finished?.Invoke(null, this);
-            }
-        }
-
-        public event EventHandler<GameRoom>? Finished;
+        public bool IsFinished { get; set; }
 
         public GameRoom()
         {
@@ -63,8 +49,8 @@ namespace Carcassone.Core
             var firstCard = GetCurrentCard() ?? throw new Exception("Ошибка. В колоде нет карт!");
             var firstField = FieldBoard.GetCenter();
             PutCardInField(firstCard, firstField);
-
-            PlayersPool.MoveNextPlayer(this);
+            EndTurn();
+            AllAiPlayersMove();
         }
 
         public string Save()
@@ -117,7 +103,7 @@ namespace Carcassone.Core
         public List<Field> GetNotAvailableFields()
         {
             var list = new List<Field>();
-            var fields = FieldBoard.Fields;
+            var fields = FieldBoard.Fields.ToList();
             foreach (var field in fields)
             {
                 var canPut = false;
@@ -159,11 +145,27 @@ namespace Carcassone.Core
         {
             ScoreCalculator.CloseObjectsAndReturnChips(PlayersPool, CardsPool);
 
-            var card = GetCurrentCard();
-            if (card == null)
+            var isGameOver = (GetCurrentCard() == null);
+            if (isGameOver)
+            {
                 IsFinished = true;
+                PlayersPool.CurrentPlayerIndex = -1;
+            }
+            else
+            {
+                PlayersPool.MoveToNextPlayer();
+            }
+        }
 
-            PlayersPool.MoveNextPlayer(this);
+        public void AllAiPlayersMove()
+        {
+            while (PlayersPool.GetCurrentPlayer() is PlayerAI aI)
+            {
+                aI.ProcessMove(this);
+
+                if (IsFinished)
+                    break;
+            }
         }
 
         public List<Card> GetActiveCards()

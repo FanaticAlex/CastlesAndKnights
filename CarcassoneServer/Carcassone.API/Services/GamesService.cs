@@ -1,6 +1,4 @@
 ﻿using Carcassone.Core;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Carcassone.Server.Services
 {
@@ -28,7 +26,10 @@ namespace Carcassone.Server.Services
 
         public List<string> GetAvailableRoomsId()
         {
-            return _rooms.Where(room => !room.IsStarted).Select(room => room.Id).ToList();
+            return _rooms
+                .Where(room => !room.IsStarted)
+                .Where(room => !room.IsFinished)
+                .Select(room => room.Id).ToList();
         }
     }
 }

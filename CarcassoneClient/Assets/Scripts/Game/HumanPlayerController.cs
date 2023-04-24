@@ -2,7 +2,6 @@
 using UnityEngine;
 using Carcassone.ApiClient;
 using UnityEngine.UI;
-using System.Threading;
 
 namespace Assets.Scripts
 {
@@ -222,7 +221,6 @@ namespace Assets.Scripts
             _cardsController.HideCardMarks(_currentCard.CardId);
             _currentCard = null;
             PlayerState = PlayerState.PlayerWait;
-            Thread.Sleep(100);
         }
     }
 }

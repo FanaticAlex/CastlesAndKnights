@@ -39,47 +39,8 @@ namespace CarcassoneServer.Controllers
         public GameRoom CreateRoom()
         {
             var room = _service.CreateRoom();
-            room.Finished += Room_Finished;
             _logger.LogInformation("RoomCreated");
             return room;
-        }
-
-        private void Room_Finished(object sender, GameRoom room)
-        {
-            _logger.LogInformation("Game Finished");
-            SaveGameResults(room);
-            Task.Run(async () => await RemoveGame(room.Id));
-        }
-
-        private async Task RemoveGame(string roomId)
-        {
-            await Task.Delay(TimeSpan.FromSeconds(30));
-            _service.DeleteRoom(roomId);
-        }
-
-        private void SaveGameResults(GameRoom room)
-        {
-            // записать результаты в базу
-            foreach (var player in room.PlayersPool.Players)
-            {
-                if (player is not Player) // не записываем в базу результаты AI игроков
-                    continue;
-
-                var playerScore = room.GetPlayerScore(player);
-                var userScore = new UserGameScore()
-                {
-                    UserName = player.Name,
-                    RoomId = room.Id,
-                    FinalScore = playerScore.GetOverallScore(),
-                    Rank = playerScore.Rank
-                };
-
-                var optionsBuilder = new DbContextOptionsBuilder<CarcassoneContext>();
-                optionsBuilder.UseSqlite(_configuration["DbConnectionString"]);
-                var context = new CarcassoneContext(optionsBuilder.Options);
-                var scoreService = new GameScoreService(context);
-                scoreService.SaveUserGameScore(userScore);
-            }
         }
 
         [HttpGet]
@@ -109,7 +70,7 @@ namespace CarcassoneServer.Controllers
 
         [HttpGet]
         [Route("{roomId}/field/all")]
-        public List<Field> GetFields(string roomId) => _service.GetRoom(roomId).FieldBoard.Fields;
+        public List<Field> GetFields(string roomId) => _service.GetRoom(roomId).FieldBoard.Fields.ToList();
 
         [HttpGet]
         [Route("{roomId}/field/{fieldId}")]
@@ -144,11 +105,49 @@ namespace CarcassoneServer.Controllers
 
         [HttpGet]
         [Route("{roomId}/endTurn/{playerName}")]
-        public void EndTurn(string roomId, string playerName)
+        public async Task EndTurn(string roomId, string playerName)
         {
             var room = _service.GetRoom(roomId);
             var human = GetHumanPlayer(room, playerName);
             human.SetPlayerMove3(room);
+
+            // ходим за AI игроков
+            var task = Task.Run(room.AllAiPlayersMove);
+            await task.ContinueWith((obj) => FinishingTheGame(room));
+        }
+
+        private void FinishingTheGame(GameRoom room)
+        {
+            if (room.IsFinished)
+            {
+                _logger.LogInformation("Game Finished");
+                SaveGameResults(room);
+            }
+        }
+
+        private void SaveGameResults(GameRoom room)
+        {
+            // записать результаты в базу
+            foreach (var player in room.PlayersPool.Players)
+            {
+                if (player is not Player) // не записываем в базу результаты AI игроков
+                    continue;
+
+                var playerScore = room.GetPlayerScore(player);
+                var userScore = new UserGameScore()
+                {
+                    UserName = player.Name,
+                    RoomId = room.Id,
+                    FinalScore = playerScore.GetOverallScore(),
+                    Rank = playerScore.Rank
+                };
+
+                var optionsBuilder = new DbContextOptionsBuilder<CarcassoneContext>();
+                optionsBuilder.UseSqlite(_configuration["DbConnectionString"]);
+                var context = new CarcassoneContext(optionsBuilder.Options);
+                var scoreService = new GameScoreService(context);
+                scoreService.SaveUserGameScore(userScore);
+            }
         }
 
         private Player GetHumanPlayer(GameRoom room, string playerName)
@@ -195,7 +194,7 @@ namespace CarcassoneServer.Controllers
 
         [HttpGet]
         [Route("{roomId}/player/current")]
-        public BasePlayer GetCurrentPlayer(string roomId) => _service.GetRoom(roomId).PlayersPool.GetCurrentPlayer();
+        public Task<BasePlayer?> GetCurrentPlayer(string roomId) => Task.FromResult(_service.GetRoom(roomId).PlayersPool.GetCurrentPlayer());
 
         [HttpGet]
         [Route("{roomId}/player/{playerName}")]
@@ -240,7 +239,8 @@ namespace CarcassoneServer.Controllers
 
         [HttpGet]
         [Route("{roomId}/card/current")]
-        public Card GetCurrentCard(string roomId) => _service.GetRoom(roomId).GetCurrentCard();
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Card))]
+        public Task<Card?> GetCurrentCard(string roomId) => Task.FromResult(_service.GetRoom(roomId).GetCurrentCard());
 
         [HttpGet]
         [Route("{roomId}/card/rotateCard/{cardId}")]

@@ -16,7 +16,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         {
             var gameRoom = new GameRoom();
             gameRoom.PlayersPool.AddHumanPlayer("Jack");
-            gameRoom.PlayersPool.MoveNextPlayer(gameRoom);
+            gameRoom.PlayersPool.MoveToNextPlayer();
 
             var churchCard = new FFFF("FFFF", 0);
             gameRoom.PutCardInField(churchCard, gameRoom.FieldBoard.GetCenter());

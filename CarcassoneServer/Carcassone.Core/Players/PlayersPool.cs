@@ -75,17 +75,12 @@ namespace Carcassone.Core.Players
             Players.Add(player1);
         }
 
-        public void MoveNextPlayer(GameRoom room)
+        public void MoveToNextPlayer()
         {
             // передать ход
             // если ход сделан то ход передается следующему игроку
             CurrentPlayerIndex++;
             CurrentPlayerIndex %= Players.Count;
-
-            // ходят AI игроки
-            var player = GetCurrentPlayer();
-            if (player is PlayerAI aI)
-                Task.Run(() => aI.ProcessMove(room));
         }
 
         private string GetFreeColor()

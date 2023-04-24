@@ -20,7 +20,7 @@ namespace Carcassone.Server.Services
 
         public IEnumerable<UserGameScore> GetUserScores(string userName)
         {
-            return _context.Scores.Where(g => g.UserName == userName);
+            return _context.Scores.Where(g => g.UserName.ToLower() == userName.ToLower());
         }
 
         public UserStatistic GetUserStatistic(string userName)

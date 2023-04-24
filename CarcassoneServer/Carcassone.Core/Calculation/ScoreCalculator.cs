@@ -232,22 +232,22 @@ namespace Carcassone.Core.Calculation
 
         private int GetCastlesScore(BasePlayer player, CardPool cardPool)
         {
-            return GetCastles(player, cardPool).Sum(castle => castle.GetPoints(cardPool));
+            return GetCastles(player, cardPool).ToList().Sum(castle => castle.GetPoints(cardPool));
         }
 
         private int GetRoadsScore(BasePlayer player, CardPool cardPool)
         {
-            return GetRoads(player, cardPool).Sum(road => road.GetPoints(cardPool));
+            return GetRoads(player, cardPool).ToList().Sum(road => road.GetPoints(cardPool));
         }
 
         private int GetCornfieldsScore(BasePlayer player, CardPool cardPool)
         {
-            return GetCornfields(player, cardPool).Sum(cornfield => cornfield.GetPoints(Castles, cardPool));
+            return GetCornfields(player, cardPool).ToList().Sum(cornfield => cornfield.GetPoints(Castles, cardPool));
         }
 
         private int GetChurchesScore(BasePlayer player, CardPool cardPool)
         {
-            return GetChurches(player, cardPool).Sum(church => church.GetPoints());
+            return GetChurches(player, cardPool).ToList().Sum(church => church.GetPoints());
         }
     }
 }

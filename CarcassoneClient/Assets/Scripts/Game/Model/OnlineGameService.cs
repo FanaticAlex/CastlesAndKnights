@@ -65,13 +65,36 @@ namespace Assets.Scripts
             {
                 return client.CurrentAsync(RoomId).Result;
             }
-            catch (Exception ex)
+            catch (AggregateException ex)
             {
-                return null;
+                if (ex.InnerException is ApiException apiex)
+                {
+                    if (apiex.StatusCode == 204)
+                        return null;
+                }
+
+                throw ex;
             }
         }
 
-        public Card GetCurrentCard() => client.Current2Async(RoomId).Result;
+        public Card GetCurrentCard()
+        {
+            try
+            {
+                return client.Current2Async(RoomId).Result;
+            }
+            catch (AggregateException ex)
+            {
+                if (ex.InnerException is ApiException apiex)
+                {
+                    if (apiex.StatusCode == 204)
+                        return null;
+                }
+
+                throw ex;
+            }
+        }
+
         public List<Card> GetCards() => client.List3Async(RoomId).Result.ToList();
         public List<Card> GetActiveCards() => client.ActiveAsync(RoomId).Result.ToList();
         public Card GetCard(string cardName) => client.CardAsync(RoomId, cardName).Result;

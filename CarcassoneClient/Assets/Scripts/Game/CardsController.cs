@@ -26,24 +26,9 @@ namespace Assets.Scripts
             UpdateCardsView();
         }
 
-        public Card ReloadCurrentCard()
+        public void ReloadCurrentCard()
         {
-            try
-            {
-                CurrentCard = GameManager.Instance.RoomService.GetCurrentCard();
-                return CurrentCard;
-            }
-            catch (AggregateException ex)
-            {
-                if (((ApiException)ex.InnerException).StatusCode == 204)
-                {
-                    return null;
-                }
-                else
-                {
-                    throw ex;
-                }
-            }
+            CurrentCard = GameManager.Instance.RoomService.GetCurrentCard();
         }
 
         public void CreateCardsView()
