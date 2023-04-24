@@ -86,6 +86,7 @@ namespace Assets.Scripts
         public List<Field> GetNotAvailableFields() => client.NotAvailableFieldsAsync(RoomId).Result.ToList();
 
         public List<ObjectPart> GetAvailableObjectParts(string cardId) => client.AvailablePartsAsync(RoomId, cardId).Result.ToList();
+        public List<ObjectPart> GetActiveParts() => client.Active2Async(RoomId).Result.ToList();
         public void PutChip(string cardName, string partId, string playerName) => client.PutChipInCardAsync(RoomId, cardName, partId, playerName).Wait();
 
         public List<UserGameScore> GetGameScores() => client.GameAsync(RoomId).Result.ToList();

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Carcassone.Core;
+﻿using Carcassone.Core;
 using Carcassone.Core.Calculation;
 using Carcassone.Core.Calculation.Objects;
 using Carcassone.Core.Cards;
@@ -253,5 +250,9 @@ namespace CarcassoneServer.Controllers
         [HttpGet]
         [Route("{roomId}/objectPart/{partId}")]
         public ObjectPart GetPart(string roomId, string partId) => _service.GetRoom(roomId).CardsPool.GetPart(partId);
+
+        [HttpGet]
+        [Route("{roomId}/objectPart/active")]
+        public List<ObjectPart> GetActiveParts(string roomId) => _service.GetRoom(roomId).GetActiveParts();
     }
 }

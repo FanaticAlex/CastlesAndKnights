@@ -12,12 +12,24 @@ namespace Assets.Scripts
         public Dictionary<string, GameObject> _ownedPartsChips = new Dictionary<string, GameObject>();
         public Dictionary<string, GameObject> _ownedPartsFlags = new Dictionary<string, GameObject>();
 
+        public List<ObjectPart> PartsCache = new List<ObjectPart>();
+
         /// <summary>
         /// Расставляет флаги на захваченных объектах
         /// </summary>
         public void UpdatePartsOwnersUI()
         {
-            var roads = GameManager.Instance.RoomService.GetRoads();
+            var newParts = GameManager.Instance.RoomService.GetActiveParts();
+            var changedRoadParts = GetChangedParts(PartsCache, newParts);
+            PartsCache = newParts;
+
+            foreach (var part in changedRoadParts)
+            {
+                TryCreateChip(part, "Knight");
+                TryCreateFlag(part);
+            }
+
+            /*var roads = GameManager.Instance.RoomService.GetRoads();
             foreach (var road in roads)
                 SetOwnersToRoadParts(road);
 
@@ -31,14 +43,32 @@ namespace Assets.Scripts
 
             var churches = GameManager.Instance.RoomService.GetChurches();
             foreach (var church in churches)
-                SetOwnersToChurch(church);
+                SetOwnersToChurch(church);*/
+        }
+
+        public List<ObjectPart> GetChangedParts(List<ObjectPart> oldParts, List<ObjectPart> newParts)
+        {
+            var changed = new List<ObjectPart>();
+            foreach (var newPart in newParts)
+            {
+                var oldPart = oldParts.FirstOrDefault(p => p.PartId == newPart.PartId);
+                var isChanged =
+                    (oldPart == null) ||
+                    (oldPart.Chip?.OwnerName != newPart.Chip?.OwnerName) ||
+                    (oldPart.Flag?.OwnerName != newPart.Flag?.OwnerName);
+
+                if (isChanged)
+                    changed.Add(newPart);
+            }
+
+            return changed;
         }
 
         /// <summary>
         /// Заменяет фишки на флаги
         /// </summary>
         /// <param name="road"></param>
-        private void SetOwnersToRoadParts(Road road)
+        /*private void SetOwnersToRoadParts(Road road)
         {
             foreach (var partId in road.PartsIds)
             {
@@ -97,23 +127,23 @@ namespace Assets.Scripts
         {
             foreach (var partId in cornfield.PartsIds)
             {
-                // TEST
-                /*var partGO = _partToGameObject[part.PartId];
-                partGO.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
-                partGO.SetActive(true);
-                if (part.IsOwned)
-                {
-                    var color = Color.magenta;
-                    partGO.GetComponent<Renderer>().material.color = color;
-                }*/
-
                 TryCreateChip(partId, "Peasant");
             }
-        }
+        }*/
 
-        private void TryCreateFlag(string partId)
+        private void TryCreateFlag(ObjectPart part)
         {
-            var part = GameManager.Instance.RoomService.GetObjectPart(partId);
+            // TEST
+            /*var partGO = _partToGameObject[part.PartId];
+            partGO.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+            partGO.SetActive(true);
+            if (part.IsOwned)
+            {
+                var color = Color.magenta;
+                partGO.GetComponent<Renderer>().material.color = color;
+            }*/
+
+            //var part = GameManager.Instance.RoomService.GetObjectPart(partId);
             if (part.Flag == null)
                 return;
 
@@ -134,9 +164,9 @@ namespace Assets.Scripts
             _ownedPartsFlags[part.PartId] = flagObject;
         }
 
-        private void TryCreateChip(string partId, string type)
+        private void TryCreateChip(ObjectPart part, string type)
         {
-            var part = GameManager.Instance.RoomService.GetObjectPart(partId);
+            //var part = GameManager.Instance.RoomService.GetObjectPart(partId);
             if (part.Chip == null)
                 return;
 

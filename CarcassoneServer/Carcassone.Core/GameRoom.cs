@@ -174,6 +174,11 @@ namespace Carcassone.Core
                 .ToList();
         }
 
+        public List<ObjectPart> GetActiveParts()
+        {
+            return GetActiveCards().SelectMany(c => c.Parts).ToList();
+        }
+
         /// <summary>
         /// Return card from top if the card pool
         /// </summary>

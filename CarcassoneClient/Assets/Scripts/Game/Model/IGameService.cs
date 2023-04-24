@@ -41,6 +41,7 @@ namespace Assets.Scripts
         List<Field> GetNotAvailableFields();
 
         List<ObjectPart> GetAvailableObjectParts(string cardId);
+        List<ObjectPart> GetActiveParts();
         void PutChip(string cardName, string partId, string playerName);
 
         List<UserGameScore> GetGameScores();
