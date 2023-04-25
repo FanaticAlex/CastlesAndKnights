@@ -122,6 +122,19 @@ namespace Assets.Scripts
                 else
                     item.Value.transform.Find("SelectedBorder").gameObject.SetActive(false);
             }
+
+            foreach (var item in _playersScorePanels)
+            {
+                if (item.Key == currentPlayer?.Name
+                    && currentPlayer?.Name != GameManager.Instance.RoomService.User)
+                {
+                    item.Value.transform.Find("Spinner").gameObject.SetActive(true);
+                }
+                else
+                {
+                    item.Value.transform.Find("Spinner").gameObject.SetActive(false);
+                }
+            }
         }
 
         public void ShowEndGameWindow()

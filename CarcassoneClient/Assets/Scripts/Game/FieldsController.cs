@@ -10,7 +10,7 @@ namespace Assets.Scripts
     {
         public Dictionary<string, GameObject> _fieldsToGameObject = new Dictionary<string, GameObject>();
 
-        public HashSet<string> _createdFields = new HashSet<string>();
+        public List<Field> FieldsCache { get; set; } = new List<Field>();
 
         private GameObject _fieldPrefab;
         private GameObject _desk;
@@ -20,22 +20,6 @@ namespace Assets.Scripts
             _fieldPrefab = (GameObject)Resources.Load("Additional/FieldPrefab", typeof(GameObject));
             _desk = new GameObject("desk");
             CreateFieldsIfNotExistView();
-        }
-
-        private void CreateFieldsIfNotExistView()
-        {
-            var fields = GameManager.Instance.RoomService.GetFields();
-            foreach (var field in fields)
-            {
-                if (!_createdFields.Contains(field.Id))
-                {
-                    var fieldObject = GameObject.Instantiate(_fieldPrefab, _desk.transform);
-                    fieldObject.transform.position = new Vector3(field.X, field.Y, 0);
-                    fieldObject.name = field.Id;
-                    _fieldsToGameObject.Add(field.Id, fieldObject);
-                    _createdFields.Add(field.Id);
-                }
-            }
         }
 
         /// <summary>
@@ -65,11 +49,7 @@ namespace Assets.Scripts
             return selectedField;
         }
 
-        /// <summary>
-        /// Подсвечивает поля доступные для устновки карты игрока.
-        /// </summary>
-        /// <param name="player"></param>
-        public void UpdateAvailableFieldsView(Card card)
+        public void UpdateFieldsView(Card card)
         {
             CreateFieldsIfNotExistView();
 
@@ -93,6 +73,21 @@ namespace Assets.Scripts
                 else
                 {
                     SetFieldInvisible(field);
+                }
+            }
+        }
+
+        private void CreateFieldsIfNotExistView()
+        {
+            FieldsCache = GameManager.Instance.RoomService.GetFields();
+            foreach (var field in FieldsCache)
+            {
+                if (!_fieldsToGameObject.Keys.Contains(field.Id))
+                {
+                    var fieldObject = GameObject.Instantiate(_fieldPrefab, _desk.transform);
+                    fieldObject.transform.position = new Vector3(field.X, field.Y, 0);
+                    fieldObject.name = field.Id;
+                    _fieldsToGameObject.Add(field.Id, fieldObject);
                 }
             }
         }

@@ -105,15 +105,17 @@ namespace CarcassoneServer.Controllers
 
         [HttpGet]
         [Route("{roomId}/endTurn/{playerName}")]
-        public async Task EndTurn(string roomId, string playerName)
+        public IActionResult EndTurn(string roomId, string playerName)
         {
             var room = _service.GetRoom(roomId);
             var human = GetHumanPlayer(room, playerName);
             human.SetPlayerMove3(room);
 
-            // ходим за AI игроков
+            // AI players move
             var task = Task.Run(room.AllAiPlayersMove);
-            await task.ContinueWith((obj) => FinishingTheGame(room));
+            task.ContinueWith((obj) => FinishingTheGame(room));
+
+            return Ok();
         }
 
         private void FinishingTheGame(GameRoom room)

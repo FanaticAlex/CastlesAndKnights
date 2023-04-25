@@ -13,17 +13,15 @@ namespace Assets.Scripts
         public Dictionary<string, GameObject> _chipsToGameObject = new Dictionary<string, GameObject>();
 
         private PartsController _partsController;
-        private FieldsController _fieldsController;
 
         public Card? CurrentCard { get; set; }
 
         public CardsController(FieldsController fieldsController)
         {
             _partsController = new PartsController();
-            _fieldsController = fieldsController;
 
             CreateCardsView();
-            UpdateCardsView();
+            UpdateCardsView(fieldsController);
         }
 
         public void ReloadCurrentCard()
@@ -97,11 +95,13 @@ namespace Assets.Scripts
         /// Устанавливает правильную позицию карты и поворот.
         /// - обновление карт после хода игроков
         /// </summary>
-        public void UpdateCardsView()
+        public void UpdateCardsView(FieldsController fieldsController)
         {
-            var activeFields = GameManager.Instance.RoomService.GetFields().Where(f => f.CardName != null);
-            foreach (var field in activeFields)
+            foreach (var field in fieldsController.FieldsCache)
             {
+                if (field.CardName == null)
+                    continue;
+
                 var cardGameObject = _cardsToGameObject[field.CardName];
 
                 // поворот карты в нужную позицию
@@ -112,7 +112,7 @@ namespace Assets.Scripts
                 if (string.IsNullOrEmpty(fieldId))
                     continue;
 
-                var fieldGameObject = _fieldsController._fieldsToGameObject[fieldId];
+                var fieldGameObject = fieldsController._fieldsToGameObject[fieldId];
                 cardGameObject.transform.position = fieldGameObject.transform.position + new Vector3(0, 0, -1);
             }
 

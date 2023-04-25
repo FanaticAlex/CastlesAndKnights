@@ -51,7 +51,7 @@ namespace Assets.Scripts
             _timer -= Time.deltaTime;
             if (_timer <= 0.0f) // длительные операции, запросы к серверу
             {
-                _timer = 0.2f;
+                _timer = 0.5f;
                 await UpdateSpecial();
             }
         }
@@ -63,10 +63,6 @@ namespace Assets.Scripts
             if (isMyTurn)
             {
                 _playersController.HandlePlayerActions();
-            }
-            else
-            {
-                _playersController.ShowWaitingSpinner();
             }
 
             // поворот текущей карты
@@ -165,8 +161,8 @@ namespace Assets.Scripts
             if (_playersController._humanPlayerController.PlayerState != PlayerState.PlayerHoldChip)
                 _cardsController.ReloadCurrentCard();
 
-            _fieldsController.UpdateAvailableFieldsView(_cardsController.CurrentCard);
-            _cardsController.UpdateCardsView();
+            _fieldsController.UpdateFieldsView(_cardsController.CurrentCard);
+            _cardsController.UpdateCardsView(_fieldsController);
             _cardsController.UpdateCardRemainView();
             _playersController.UpdatePlayersView();
             _scoreController.UpdateScore();
@@ -177,11 +173,10 @@ namespace Assets.Scripts
             if (isFinished)
             {
                 // дополнительное обновление
-                _fieldsController.UpdateAvailableFieldsView(null); // подсвечивает все как недоступное
+                _fieldsController.UpdateFieldsView(null); // подсвечивает все как недоступное
 
                 this.enabled = false;
                 _scoreController.ShowEndGameWindow();
-                _playersController.HideWaitingSpinner();
                 return;
             }
         }

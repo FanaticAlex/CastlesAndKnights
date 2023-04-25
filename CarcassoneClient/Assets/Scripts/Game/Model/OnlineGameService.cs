@@ -6,7 +6,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace Assets.Scripts
 {
@@ -19,8 +18,8 @@ namespace Assets.Scripts
         public OnlineGameService()
         {
             _httpClient = new HttpClient() { Timeout = new TimeSpan(0, 0, 1) };
-            //client = new Client(@"http://192.168.1.65:82/", _httpClient);
-            client = new Client(@"https://localhost:7170/", _httpClient);
+            client = new Client(@"http://192.168.1.65:82/", _httpClient);
+            //client = new Client(@"https://localhost:7170/", _httpClient);
 
 
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
