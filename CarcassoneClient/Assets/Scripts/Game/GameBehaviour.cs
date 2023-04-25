@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using Carcassone.ApiClient;
+using System;
+using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -41,43 +44,48 @@ namespace Assets.Scripts
         /// Основоной цикл игры.
         /// Производит ход локального игрока и обновляет UI компоненты игры.
         /// </summary>
-        void Update()
+        async void Update()
         {
             _playersController._humanPlayerController.DoubleClick |= IsDoubleClick();
 
             _timer -= Time.deltaTime;
             if (_timer <= 0.0f) // длительные операции, запросы к серверу
             {
-                _timer = 0.1f;
-                var currentPlayer = GameManager.Instance.RoomService.GetCurrentPlayer();
-                var isMyTurn = (currentPlayer?.Name == GameManager.Instance.RoomService.User);
-                if (isMyTurn)
-                {
-                    _playersController.HandlePlayerActions();
-                }
-                else
-                {
-                    _playersController.ShowWaitingSpinner();
-                }
+                _timer = 0.2f;
+                await UpdateSpecial();
+            }
+        }
 
-                // установка рисунка карты в контрол текущей карты
-                if (_cardsController.CurrentCard != null)
-                {
-                    var cardGO = _cardsController._cardsToGameObject[_cardsController.CurrentCard.CardId];
-                    var currentCardImageGO = GameObject.Find("CurrentCardImage");
-                    currentCardImageGO.GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
-                    currentCardImageGO.transform.localRotation = Quaternion.Euler(0, 0, _cardsController.CurrentCard.RotationsCount * -90);
-                }
+        private async Task UpdateSpecial()
+        {
+            var currentPlayer = await GameManager.Instance.RoomService.GetCurrentPlayer();
+            var isMyTurn = (currentPlayer?.Name == GameManager.Instance.RoomService.User);
+            if (isMyTurn)
+            {
+                _playersController.HandlePlayerActions();
+            }
+            else
+            {
+                _playersController.ShowWaitingSpinner();
+            }
 
-                // это обновляем отображение карт только при смене хода,
-                // и при смене статуса хода, для оптимизации
-                var isTurnChanged = (currentPlayer?.Name != _currentPlayerName);
-                if (isTurnChanged || _playersController._humanPlayerController.StateChanged)
-                {
-                    _playersController._humanPlayerController.StateChanged = false;
-                    _currentPlayerName = currentPlayer?.Name;
-                    UpdateGameViewsFromServer();
-                }
+            // поворот текущей карты
+            if (_cardsController.CurrentCard != null)
+            {
+                var cardGO = _cardsController._cardsToGameObject[_cardsController.CurrentCard.CardId];
+                var currentCardImageGO = GameObject.Find("CurrentCardImage");
+                currentCardImageGO.GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
+                currentCardImageGO.transform.localRotation = Quaternion.Euler(0, 0, _cardsController.CurrentCard.RotationsCount * -90);
+            }
+
+            // это обновляем отображение карт только при смене хода,
+            // и при смене статуса хода, для оптимизации
+            var isTurnChanged = (currentPlayer?.Name != _currentPlayerName);
+            if (isTurnChanged || _playersController._humanPlayerController.StateChanged)
+            {
+                _playersController._humanPlayerController.StateChanged = false;
+                _currentPlayerName = currentPlayer?.Name;
+                UpdateGameViewsFromServer(currentPlayer);
             }
         }
 
@@ -152,7 +160,7 @@ namespace Assets.Scripts
             SceneManager.LoadScene("CreateRoom", LoadSceneMode.Single);
         }
 
-        private void UpdateGameViewsFromServer()
+        private void UpdateGameViewsFromServer(BasePlayer currentPlayer)
         {
             if (_playersController._humanPlayerController.PlayerState != PlayerState.PlayerHoldChip)
                 _cardsController.ReloadCurrentCard();
@@ -162,7 +170,7 @@ namespace Assets.Scripts
             _cardsController.UpdateCardRemainView();
             _playersController.UpdatePlayersView();
             _scoreController.UpdateScore();
-            _scoreController.UpdateCurrentPlayerMark();
+            _scoreController.UpdateCurrentPlayerMark(currentPlayer);
 
             // окончание игры
             var isFinished = GameManager.Instance.RoomService.GetRoom().IsFinished;

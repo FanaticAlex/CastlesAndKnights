@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Game;
 using Carcassone.ApiClient;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Assets.Scripts
 {
@@ -25,7 +26,7 @@ namespace Assets.Scripts
 
         BasePlayer GetPlayer(string playerName);
         List<BasePlayer> GetPlayers();
-        BasePlayer GetCurrentPlayer();
+        Task<BasePlayer> GetCurrentPlayer();
 
         Card GetCurrentCard();
         List<Card> GetCards();

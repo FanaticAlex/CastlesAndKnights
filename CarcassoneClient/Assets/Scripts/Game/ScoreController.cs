@@ -113,9 +113,8 @@ namespace Assets.Scripts
             }
         }
 
-        public void UpdateCurrentPlayerMark()
+        public void UpdateCurrentPlayerMark(BasePlayer currentPlayer)
         {
-            var currentPlayer = GameManager.Instance.RoomService.GetCurrentPlayer();
             foreach(var item in  _playersScorePanels)
             {
                 if (item.Key == currentPlayer?.Name)

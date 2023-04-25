@@ -13,16 +13,12 @@ namespace Assets.Scripts
         public HashSet<string> _createdFields = new HashSet<string>();
 
         private GameObject _fieldPrefab;
-        private Material _fieldPrefabMaterial;
         private GameObject _desk;
 
         public FieldsController()
         {
             _fieldPrefab = (GameObject)Resources.Load("Additional/FieldPrefab", typeof(GameObject));
-            _fieldPrefabMaterial = (Material)Resources.Load("Additional/FieldMaterial", typeof(GameObject));
-
             _desk = new GameObject("desk");
-
             CreateFieldsIfNotExistView();
         }
 
@@ -31,17 +27,13 @@ namespace Assets.Scripts
             var fields = GameManager.Instance.RoomService.GetFields();
             foreach (var field in fields)
             {
-                var x = field.X;
-                var y = field.Y;
-                var fieldName = "Field " + "X:" + x + " Y:" + y;
-
-                if (!_createdFields.Contains(fieldName))
+                if (!_createdFields.Contains(field.Id))
                 {
                     var fieldObject = GameObject.Instantiate(_fieldPrefab, _desk.transform);
-                    fieldObject.transform.position = new Vector3(x, y, 0);
-                    fieldObject.name = fieldName;
+                    fieldObject.transform.position = new Vector3(field.X, field.Y, 0);
+                    fieldObject.name = field.Id;
                     _fieldsToGameObject.Add(field.Id, fieldObject);
-                    _createdFields.Add(fieldName);
+                    _createdFields.Add(field.Id);
                 }
             }
         }
@@ -92,39 +84,34 @@ namespace Assets.Scripts
             {
                 if (availableFields.Select(f => f.Id).Contains(field))
                 {
-                    SetFieldAvailableUI(field);
+                    SetFieldAvailable(field);
                 }
                 else if (notAvailableFields.Select(f => f.Id).Contains(field))
                 {
-                    SetFieldNotAvailableUI(field);
+                    SetFieldNotAvailable(field);
                 }
                 else
                 {
-                    SetFieldPossibleUI(field);
+                    SetFieldInvisible(field);
                 }
             }
         }
 
-        private void SetFieldAvailableUI(string fieldId)
+        private void SetFieldAvailable(string fieldId)
         {
-            var material = (Material)Resources.Load("Additional/possibleMaterial", typeof(Material));
-            _fieldsToGameObject[fieldId].GetComponent<Renderer>().material = material;
+            var image = (Sprite)Resources.Load("Additional/possible", typeof(Sprite));
+            _fieldsToGameObject[fieldId].GetComponent<SpriteRenderer>().sprite = image;
         }
 
-        /// <summary>
-        /// Подсвечивает поля которые не доступны для устновки карт
-        /// </summary>
-        /// <param name="fieldId"></param>
-        private void SetFieldNotAvailableUI(string fieldId)
+        private void SetFieldNotAvailable(string fieldId)
         {
-            var material = (Material)Resources.Load("Additional/impossibleMaterial", typeof(Material));
-            _fieldsToGameObject[fieldId].GetComponent<Renderer>().material = material;
+            var image = (Sprite)Resources.Load("Additional/impossible", typeof(Sprite));
+            _fieldsToGameObject[fieldId].GetComponent<SpriteRenderer>().sprite = image;
         }
 
-        private void SetFieldPossibleUI(string fieldId)
+        private void SetFieldInvisible(string fieldId)
         {
-            var material = (Material)Resources.Load("Additional/FieldMaterial", typeof(Material));
-            _fieldsToGameObject[fieldId].GetComponent<Renderer>().material = material;
+            _fieldsToGameObject[fieldId].GetComponent<SpriteRenderer>().sprite = null;
         }
     }
 }
