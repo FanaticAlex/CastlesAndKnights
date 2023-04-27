@@ -80,12 +80,12 @@ namespace Carcassone.Core.Fields
                 bool isRightFree = neighbourRightCard == null;
 
                 // направелние реки должно быть строго сверху вниз, поворачивать реку наверх нельзя
-                bool isWaterDirectionCorrect = !(isTopFree && card.TopEdgeType == EdgeType.Water);
+                bool isWaterDirectionCorrect = !(isTopFree && card.TopEdgeType == CardEdgeType.Water);
 
-                bool connectWithTopWaterCard = (neighbourTopCard?.BottomEdgeType == card.TopEdgeType && card.TopEdgeType == EdgeType.Water);
-                bool connectWithLeftWaterCard = (neighbourLeftCard?.RightEdgeType == card.LeftEdgeType && card.LeftEdgeType == EdgeType.Water);
-                bool connectWithBottomWaterCard = (neighbourBottomCard?.TopEdgeType == card.BottomEdgeType && card.BottomEdgeType == EdgeType.Water);
-                bool connectWithRightWaterCard = (neighbourRightCard?.LeftEdgeType == card.RightEdgeType && card.RightEdgeType == EdgeType.Water);
+                bool connectWithTopWaterCard = (neighbourTopCard?.BottomEdgeType == card.TopEdgeType && card.TopEdgeType == CardEdgeType.Water);
+                bool connectWithLeftWaterCard = (neighbourLeftCard?.RightEdgeType == card.LeftEdgeType && card.LeftEdgeType == CardEdgeType.Water);
+                bool connectWithBottomWaterCard = (neighbourBottomCard?.TopEdgeType == card.BottomEdgeType && card.BottomEdgeType == CardEdgeType.Water);
+                bool connectWithRightWaterCard = (neighbourRightCard?.LeftEdgeType == card.RightEdgeType && card.RightEdgeType == CardEdgeType.Water);
 
                 // водную карту можно положить в поле, если в соседних с полем областях либо нет карт
                 // либо водные границы соседних карт совпадают

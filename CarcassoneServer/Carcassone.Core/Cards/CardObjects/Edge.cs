@@ -4,7 +4,7 @@ namespace Carcassone.Core.Cards
     /// <summary>
     /// Тип объекта границы карты
     /// </summary>
-    public enum EdgeType
+    public enum CardEdgeType
     {
         Road,
         Castle,

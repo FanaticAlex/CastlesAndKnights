@@ -41,6 +41,7 @@ namespace Carcassone.Core.Tests.Room
         {
             var room = new GameRoom();
             Assert.Single(room.FieldBoard.Fields);
+            room.FieldBoard.Fields[0].CardName = "CCCC";
             var save = room.Save();
             room.Load(save);
             Assert.Single(room.FieldBoard.Fields);

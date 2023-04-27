@@ -18,25 +18,17 @@ namespace Carcassone.Core.Cards
         public Dictionary<string, List<string>> FieldToCastleParts { get; set; } =
             new Dictionary<string, List<string>>();
 
-        /// <summary>
-        /// Части обьектов на этой карте
-        /// </summary>
         [JsonProperty(ItemConverterType = typeof(PartConverter), ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public List<ObjectPart> Parts { get; set; } = new List<ObjectPart>();
 
-        /// <summary>
-        /// Полное название карты (CardType+(CardNumber)), например СССС_1(0).
-        /// </summary>
         public string CardId { get; set; }
-
         public string CardType { get; set; }
-
         public int CardNumber { get; set; }
 
-        public EdgeType TopEdgeType { get; set; } = EdgeType.None;
-        public EdgeType RightEdgeType { get; set; } = EdgeType.None;
-        public EdgeType BottomEdgeType { get; set; } = EdgeType.None;
-        public EdgeType LeftEdgeType { get; set; } = EdgeType.None;
+        public CardEdgeType TopEdgeType { get; set; } = CardEdgeType.None;
+        public CardEdgeType RightEdgeType { get; set; } = CardEdgeType.None;
+        public CardEdgeType BottomEdgeType { get; set; } = CardEdgeType.None;
+        public CardEdgeType LeftEdgeType { get; set; } = CardEdgeType.None;
 
         public CenterType CenterType = CenterType.None;
 
@@ -44,15 +36,15 @@ namespace Carcassone.Core.Cards
 
         public Card(string cardType, int cardNumber)
         {
-            Dictionary<char, EdgeType> nameDict = new Dictionary<char, EdgeType>()
+            Dictionary<char, CardEdgeType> nameDict = new Dictionary<char, CardEdgeType>()
             {
-                { 'R', EdgeType.Road },
-                { 'C', EdgeType.Castle },
-                { 'F', EdgeType.Cornfield },
-                { 'W', EdgeType.Water }
+                { 'R', CardEdgeType.Road },
+                { 'C', CardEdgeType.Castle },
+                { 'F', CardEdgeType.Cornfield },
+                { 'W', CardEdgeType.Water }
             };
 
-            CardId = $"{cardType}({cardNumber})";
+            CardId = GetCardId(cardType, cardNumber);
             CardType = cardType;
             CardNumber = cardNumber;
             TopEdgeType = nameDict[cardType[0]];
@@ -61,10 +53,9 @@ namespace Carcassone.Core.Cards
             LeftEdgeType = nameDict[cardType[3]];
         }
 
-        public ObjectPart GetPart(string partName)
-        {
-            return Parts.Single(p => p.PartName == partName);
-        }
+        public static string GetCardId(string cardType, int cardNumber) => $"{cardType}({cardNumber})";
+
+        public ObjectPart GetPart(string partName) => Parts.Single(p => p.PartName == partName);
 
         public void AddBorderToPart(Field field, FieldSide side, ObjectPart part, FieldBoard fieldBoard)
         {
@@ -86,7 +77,9 @@ namespace Carcassone.Core.Cards
 
         public abstract void ConnectField(Field field, FieldBoard fieldBoard);
 
-        // поворачивает карту на 90 по часовой стрелке градусов счетчик поворотов увеличивается на 1
+        /// <summary>
+        /// Поворачивает карту на 90 по часовой стрелке градусов счетчик поворотов увеличивается на 1
+        /// </summary>
         public void RotateCard()
         {
             var tempTop = TopEdgeType;
