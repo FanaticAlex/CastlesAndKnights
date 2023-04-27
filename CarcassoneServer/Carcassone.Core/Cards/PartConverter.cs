@@ -11,11 +11,17 @@ namespace Carcassone.Core.Cards
             return typeof(ObjectPart).IsAssignableFrom(objectType);
         }
 
-        public override object ReadJson(JsonReader reader,
-            Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader,
+            Type objectType, object? existingValue, JsonSerializer serializer)
         {
             JToken part = JToken.Load(reader);
-            var partType = part["PartType"].ToString();
+            if (!part.HasValues)
+                return null;
+
+            var partType = part[nameof(ObjectPart.PartType)]?.ToString();
+            if (partType == null)
+                throw new Exception($"Part type is not set {part}");
+
             switch (partType)
             {
                 case "Castle": return part.ToObject<CastlePart>();

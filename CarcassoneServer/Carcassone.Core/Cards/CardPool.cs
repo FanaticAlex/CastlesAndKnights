@@ -1,18 +1,13 @@
 ﻿using Carcassone.Core.Extensions;
-using Carcassone.Core.Fields;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Carcassone.Core.Cards
 {
     public class CardPool
     {
-        /// <summary>
-        /// Конструктор. Создает колоду карт.
-        /// </summary>
         public CardPool(ExtensionsManager extensionsManager)
         {
             // речные карты кладем их поверх остальных в колоде
@@ -22,7 +17,6 @@ namespace Carcassone.Core.Cards
                 AllCards.AddRange(riverCards);
             }
 
-            // границы карт нумеруются с севера по часовой стрелке.
             var baseCards = new List<Card>();
             AddCardToPool(typeof(CCCC), 1, baseCards);
             AddCardToPool(typeof(CCFC), 3, baseCards);
@@ -51,7 +45,6 @@ namespace Carcassone.Core.Cards
             AddCardToPool(typeof(RFRF), 8, baseCards);
             AddCardToPool(typeof(RRRR), 1, baseCards);
 
-            // тасуем колоду
             Shaffle(baseCards);
 
             AllCards.AddRange(baseCards);
@@ -60,10 +53,7 @@ namespace Carcassone.Core.Cards
         [JsonProperty(ItemConverterType = typeof(CardConverter), ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public List<Card> AllCards { get; private set; } = new List<Card>();
 
-        public Card GetCard(string cardId)
-        {
-            return AllCards.FirstOrDefault(card => card.Id == cardId);
-        }
+        public Card GetCard(string cardId) => AllCards.FirstOrDefault(card => card.Id == cardId);
 
         public ObjectPart GetPart(string partId)
         {
@@ -92,7 +82,7 @@ namespace Carcassone.Core.Cards
                 var cardTypeStr = cardType.Name.Replace(cardType.Namespace ?? string.Empty, string.Empty);
                 var card = (Card?)Activator.CreateInstance(cardType, cardTypeStr, i);
                 if (card == null)
-                    throw new Exception($"Невозможно создать карту типа {cardTypeStr}: {i}");
+                    throw new Exception($"Can't create card of type {cardTypeStr}: {i}");
 
                 cardsPile.Add(card);
             }

@@ -1,11 +1,12 @@
 ﻿using Carcassone.Core.Cards;
 using Carcassone.Core.Extensions.River.Cards;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Carcassone.Core.Extensions.River
 {
+    /// <summary>
+    /// This extension is adding river cards to the game.
+    /// </summary>
     public class RiverExtension
     {
         public List<Card> GetCards()

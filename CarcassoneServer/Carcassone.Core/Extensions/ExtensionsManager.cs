@@ -2,19 +2,17 @@
 
 namespace Carcassone.Core.Extensions
 {
+    /// <summary>
+    /// Define extensions of the game rules and cards.
+    /// </summary>
     public class ExtensionsManager
     {
-        public bool EnableRiverExtension { get; set; }
-
         public ExtensionsManager(bool enableRiverExtension)
         {
             if (enableRiverExtension)
-            {
-                EnableRiverExtension = enableRiverExtension;
                 RiverExtension = new RiverExtension();
-            }
         }
 
-        public RiverExtension RiverExtension { get; private set; }
+        public RiverExtension? RiverExtension { get; private set; }
     }
 }
