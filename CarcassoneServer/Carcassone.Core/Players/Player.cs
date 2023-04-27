@@ -13,13 +13,13 @@ namespace Carcassone.Core.Players
         {
             var card = room.GetCard(cardId);
             var field = room.FieldBoard.GetField(fieldId);
-            LastCardId = card.CardId;
+            LastCardId = card.Id;
             room.PutCardInField(card, field);
         }
 
         public void SetPlayerMove2(GameRoom room, string cardId, string partId) // положить фишку
         {
-            var card = room.CardsPool.AllCards.First(_card => _card.CardId == cardId);
+            var card = room.CardsPool.AllCards.First(_card => _card.Id == cardId);
             var partObject = card.Parts.First(_part => _part.PartId == partId);
             room.PutChipInCard(partObject, Name);
         }

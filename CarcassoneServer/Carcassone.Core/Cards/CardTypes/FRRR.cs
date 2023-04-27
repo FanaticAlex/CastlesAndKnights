@@ -21,22 +21,22 @@ namespace Carcassone.Core.Cards
 
         public FRRR(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var roadPart1 = new RoadPart(roadPartName, CardId);
+            var roadPart1 = new RoadPart(roadPartName, Id);
             Parts.Add(roadPart1);
 
-            var roadPart3 = new RoadPart(roadPart1Name, CardId);
+            var roadPart3 = new RoadPart(roadPart1Name, Id);
             Parts.Add(roadPart3);
 
-            var roadPart4 = new RoadPart(roadPart2Name, CardId);
+            var roadPart4 = new RoadPart(roadPart2Name, Id);
             Parts.Add(roadPart4);
 
-            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, CardId);
+            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, Id);
             Parts.Add(cornfieldPart1);
 
-            var cornfieldPart2 = new CornfieldPart(cornfieldPart1Name, CardId);
+            var cornfieldPart2 = new CornfieldPart(cornfieldPart1Name, Id);
             Parts.Add(cornfieldPart2);
 
-            var cornfieldPart3 = new CornfieldPart(cornfieldPart2Name, CardId);
+            var cornfieldPart3 = new CornfieldPart(cornfieldPart2Name, Id);
             Parts.Add(cornfieldPart3);
         }
 

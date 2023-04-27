@@ -17,7 +17,7 @@ namespace Carcassone.Core.Cards
 
         public CCCC(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var castlePart = new CastlePart(castlePartName, CardId);
+            var castlePart = new CastlePart(castlePartName, Id);
             Parts.Add(castlePart);
         }
 

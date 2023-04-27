@@ -66,7 +66,7 @@ namespace Carcassone.Core.Fields
                 return false;
 
             // если есть граничные карты то границы должны совпадать иначе карту присоединить нельзя
-            var isRiverCard = card.CardId.Contains("W");
+            var isRiverCard = card.Id.Contains("W");
             if (isRiverCard)
             {
                 Card? neighbourTopCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, FieldSide.top)?.CardName);

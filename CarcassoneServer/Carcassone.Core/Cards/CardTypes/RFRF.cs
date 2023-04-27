@@ -18,13 +18,13 @@ namespace Carcassone.Core.Cards
 
         public RFRF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var roadPart1 = new RoadPart(roadPartName, CardId);
+            var roadPart1 = new RoadPart(roadPartName, Id);
             Parts.Add(roadPart1);
 
-            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, CardId);
+            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, Id);
             Parts.Add(cornfieldPart1);
 
-            var cornfieldPart2 = new CornfieldPart(cornfieldPart1Name, CardId);
+            var cornfieldPart2 = new CornfieldPart(cornfieldPart1Name, Id);
             Parts.Add(cornfieldPart2);
         }
 

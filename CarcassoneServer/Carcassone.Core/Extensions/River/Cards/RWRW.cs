@@ -20,19 +20,19 @@ namespace Carcassone.Core.Extensions.River.Cards
 
         public RWRW(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, CardId);
+            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, Id);
             Parts.Add(cornfieldPart1);
 
-            var cornfieldPart2 = new CornfieldPart(cornfieldPart1Name, CardId);
+            var cornfieldPart2 = new CornfieldPart(cornfieldPart1Name, Id);
             Parts.Add(cornfieldPart2);
 
-            var cornfieldPart3 = new CornfieldPart(cornfieldPart2Name, CardId);
+            var cornfieldPart3 = new CornfieldPart(cornfieldPart2Name, Id);
             Parts.Add(cornfieldPart3);
 
-            var cornfieldPart4 = new CornfieldPart(cornfieldPart3Name, CardId);
+            var cornfieldPart4 = new CornfieldPart(cornfieldPart3Name, Id);
             Parts.Add(cornfieldPart4);
 
-            var roadPart = new RoadPart(roadPartName, CardId);
+            var roadPart = new RoadPart(roadPartName, Id);
             Parts.Add(roadPart);
         }
         

@@ -17,13 +17,13 @@ namespace Carcassone.Core.Cards
 
         public FFRF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var roadPart3 = new RoadPart(roadPartName, CardId);
+            var roadPart3 = new RoadPart(roadPartName, Id);
             Parts.Add(roadPart3);
 
-            var churchPart = new ChurchPart(churchPartName, CardId);
+            var churchPart = new ChurchPart(churchPartName, Id);
             Parts.Add(churchPart);
 
-            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, CardId);
+            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, Id);
             Parts.Add(cornfieldPart1);
         }
 

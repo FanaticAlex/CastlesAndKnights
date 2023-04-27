@@ -73,14 +73,14 @@ namespace Carcassone.Core.Calculation.Objects
 
             if (distanceX <= 1 && distanceY <= 1)
             {
-                ChurchCardIds.Add(card.CardId);
+                ChurchCardIds.Add(card.Id);
             }
         }
 
         public void TryRemoveCard(Card card)
         {
-            if (ChurchCardIds.Contains(card.CardId))
-                ChurchCardIds.Remove(card.CardId);
+            if (ChurchCardIds.Contains(card.Id))
+                ChurchCardIds.Remove(card.Id);
         }
 
         /// <summary>

@@ -32,7 +32,7 @@ namespace Carcassone.Core.Fields
                 CreateField(field.X + 1, field.Y);
                 CreateField(field.X - 1, field.Y);
 
-                field.CardName = card.CardId;
+                field.CardName = card.Id;
                 card.ConnectField(field, this);
             }
         }

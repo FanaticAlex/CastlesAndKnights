@@ -36,7 +36,7 @@ namespace Carcassone.Core.Tests.River
             game.PutCardInField(card, game.FieldBoard.GetField(0, -1));
             game.EndTurn();
 
-            Assert.Equal(1, game.CardsPool.GetCard(card.CardId).RotationsCount);
+            Assert.Equal(1, game.CardsPool.GetCard(card.Id).RotationsCount);
         }
     }
 }

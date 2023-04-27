@@ -29,8 +29,8 @@ namespace Carcassone.Core.Players.AI
                 return; // игра уже окончена
 
             // where to put a card
-            var fields = room.GetAvailableFields(card.CardId).Select(f => f.Id).ToList();
-            List<GameMove> possibleMoves = GetPossibleMoves(room.Save(), card.CardId, fields);
+            var fields = room.GetAvailableFields(card.Id).Select(f => f.Id).ToList();
+            List<GameMove> possibleMoves = GetPossibleMoves(room.Save(), card.Id, fields);
 
             GameMove bestMove = GetBestMove(possibleMoves);
 
@@ -38,7 +38,7 @@ namespace Carcassone.Core.Players.AI
             var field = room.FieldBoard.GetField(bestMove.FieldId);
             field.RotateCardTilFit(card, room.FieldBoard, room.CardsPool);
             room.PutCardInField(card, field);
-            LastCardId = card.CardId;
+            LastCardId = card.Id;
             if (bestMove.PartName != null)
             {
                 var part = card.GetPart(bestMove.PartName);
@@ -79,7 +79,7 @@ namespace Carcassone.Core.Players.AI
                     gameCopy.PutCardInField(card, field);
 
                     // where to put a chip
-                    var partNames = gameCopy.GetAvailableParts(card.CardId).Select(p => p.PartName);
+                    var partNames = gameCopy.GetAvailableParts(card.Id).Select(p => p.PartName);
                     foreach (var partName in partNames)
                     {
                         var gameCopy1 = new GameRoom();

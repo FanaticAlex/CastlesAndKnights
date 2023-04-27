@@ -16,10 +16,10 @@ namespace Carcassone.Core.Cards
 
         public FFFF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var churchPart = new ChurchPart(churchPartName, CardId);
+            var churchPart = new ChurchPart(churchPartName, Id);
             Parts.Add(churchPart);
 
-            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, CardId);
+            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, Id);
             Parts.Add(cornfieldPart1);
         }
 

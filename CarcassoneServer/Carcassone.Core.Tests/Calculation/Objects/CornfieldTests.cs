@@ -28,8 +28,8 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             var player = room.PlayersPool.AddHumanPlayer("Jack");
 
             var card1 = room.GetCard("CRFR(0)");
-            room.RotateCard(card1.CardId);
-            room.RotateCard(card1.CardId);
+            room.RotateCard(card1.Id);
+            room.RotateCard(card1.Id);
             room.PutCardInField(card1, room.FieldBoard.GetField(0, 0));
             var cornfieldPart = card1.GetPart("Cornfield_0");
             room.PutChipInCard(cornfieldPart, "Jack");

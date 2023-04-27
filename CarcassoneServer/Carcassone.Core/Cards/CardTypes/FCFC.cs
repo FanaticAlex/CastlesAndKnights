@@ -19,13 +19,13 @@ namespace Carcassone.Core.Cards
 
         public FCFC(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var castlePart0 = new CastlePart(castlePart0Name, CardId);
+            var castlePart0 = new CastlePart(castlePart0Name, Id);
             Parts.Add(castlePart0);
 
-            var castlePart1 = new CastlePart(castlePart1Name, CardId);
+            var castlePart1 = new CastlePart(castlePart1Name, Id);
             Parts.Add(castlePart1);
 
-            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, CardId);
+            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, Id);
             Parts.Add(cornfieldPart1);
 
 

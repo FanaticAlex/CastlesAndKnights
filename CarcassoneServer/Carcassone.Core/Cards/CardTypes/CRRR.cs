@@ -23,25 +23,25 @@ namespace Carcassone.Core.Cards
 
         public CRRR(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var castlePart = new CastlePart(castlePartName, CardId);
+            var castlePart = new CastlePart(castlePartName, Id);
             Parts.Add(castlePart);
 
-            var roadPart0 = new RoadPart(roadPart0Name, CardId);
+            var roadPart0 = new RoadPart(roadPart0Name, Id);
             Parts.Add(roadPart0);
 
-            var roadPart1 = new RoadPart(roadPart1Name, CardId);
+            var roadPart1 = new RoadPart(roadPart1Name, Id);
             Parts.Add(roadPart1);
 
-            var roadPart2 = new RoadPart(roadPart2Name, CardId);
+            var roadPart2 = new RoadPart(roadPart2Name, Id);
             Parts.Add(roadPart2);
 
-            var cornfieldPart0 = new CornfieldPart(cornfieldPart0Name, CardId);
+            var cornfieldPart0 = new CornfieldPart(cornfieldPart0Name, Id);
             Parts.Add(cornfieldPart0);
 
-            var cornfieldPart1 = new CornfieldPart(cornfieldPart1Name, CardId);
+            var cornfieldPart1 = new CornfieldPart(cornfieldPart1Name, Id);
             Parts.Add(cornfieldPart1);
 
-            var cornfieldPart2 = new CornfieldPart(cornfieldPart2Name, CardId);
+            var cornfieldPart2 = new CornfieldPart(cornfieldPart2Name, Id);
             Parts.Add(cornfieldPart2);
 
 

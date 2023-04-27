@@ -22,11 +22,11 @@ namespace Carcassone.Core.Cards
         public Border(Field? first, Field? second, Card card)
         {
             if (first == null || second == null)
-                throw new System.Exception($"Field can not be null. Card: {card.CardId}, first: {first?.Id}, second: {second?.Id}");
+                throw new System.Exception($"Field can not be null. Card: {card.Id}, first: {first?.Id}, second: {second?.Id}");
 
             FirstFieldId = first.Id;
             SecondFieldId = second.Id;
-            CardName = card.CardId;
+            CardName = card.Id;
         }
 
         public static bool Equial(Border border1, Border border2)

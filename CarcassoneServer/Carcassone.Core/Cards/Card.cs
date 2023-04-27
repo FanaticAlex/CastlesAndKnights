@@ -21,7 +21,7 @@ namespace Carcassone.Core.Cards
         [JsonProperty(ItemConverterType = typeof(PartConverter), ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public List<ObjectPart> Parts { get; set; } = new List<ObjectPart>();
 
-        public string CardId { get; set; }
+        public string Id { get; set; }
         public string CardType { get; set; }
         public int CardNumber { get; set; }
 
@@ -44,7 +44,7 @@ namespace Carcassone.Core.Cards
                 { 'W', CardEdgeType.Water }
             };
 
-            CardId = GetCardId(cardType, cardNumber);
+            Id = GetCardId(cardType, cardNumber);
             CardType = cardType;
             CardNumber = cardNumber;
             TopEdgeType = nameDict[cardType[0]];

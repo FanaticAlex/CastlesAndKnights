@@ -204,8 +204,8 @@ namespace Carcassone.Core
 
         private List<Card> GetCardsRemainInPool()
         {
-            var activeCardsNames = GetActiveCards().Select(c => c.CardId);
-            return CardsPool.AllCards.Where(c => !activeCardsNames.Contains(c.CardId)).ToList();
+            var activeCardsNames = GetActiveCards().Select(c => c.Id);
+            return CardsPool.AllCards.Where(c => !activeCardsNames.Contains(c.Id)).ToList();
         }
     }
 }

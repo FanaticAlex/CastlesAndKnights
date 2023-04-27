@@ -20,16 +20,16 @@ namespace Carcassone.Core.Cards
 
         public CRRF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var castlePart = new CastlePart(castlePartName, CardId);
+            var castlePart = new CastlePart(castlePartName, Id);
             Parts.Add(castlePart);
 
-            var roadPart = new RoadPart(roadPartName, CardId);
+            var roadPart = new RoadPart(roadPartName, Id);
             Parts.Add(roadPart);
 
-            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, CardId);
+            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, Id);
             Parts.Add(cornfieldPart1);
 
-            var cornfieldPart2 = new CornfieldPart(cornfieldPart1Name, CardId);
+            var cornfieldPart2 = new CornfieldPart(cornfieldPart1Name, Id);
             Parts.Add(cornfieldPart2);
 
 

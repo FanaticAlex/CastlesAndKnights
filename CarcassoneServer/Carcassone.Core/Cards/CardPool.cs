@@ -62,7 +62,7 @@ namespace Carcassone.Core.Cards
 
         public Card GetCard(string cardId)
         {
-            return AllCards.FirstOrDefault(card => card.CardId == cardId);
+            return AllCards.FirstOrDefault(card => card.Id == cardId);
         }
 
         public ObjectPart GetPart(string partId)
