@@ -34,12 +34,12 @@ namespace Carcassone.Core.Extensions.River.Cards
         public override void ConnectField(Field field, FieldBoard fieldBoard)
         {
             // замок
-            AddBorderToPart(field, Side.right, GetPart(castlePart1Name), fieldBoard);
-            AddBorderToPart(field, Side.bottom, GetPart(castlePart1Name), fieldBoard);
+            AddBorderToPart(field, FieldSide.right, GetPart(castlePart1Name), fieldBoard);
+            AddBorderToPart(field, FieldSide.bottom, GetPart(castlePart1Name), fieldBoard);
 
             
             // поле 1
-            var cornfield1Side0 = Side.top;
+            var cornfield1Side0 = FieldSide.top;
             cornfield1Side0 = RotateSide(cornfield1Side0, RotationsCount);
             var cornfield1sidePart0 = CornfieldSide.side_0;
             cornfield1sidePart0 = RotateSidePart(cornfield1sidePart0, RotationsCount);
@@ -47,7 +47,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield1Border0.CornfieldSide = cornfield1sidePart0;
             GetPart(cornfieldPartName).Borders.Add(cornfield1Border0);
 
-            var cornfield1Side1 = Side.left;
+            var cornfield1Side1 = FieldSide.left;
             cornfield1Side1 = RotateSide(cornfield1Side1, RotationsCount);
             var cornfield1sidePart1 = CornfieldSide.side_5;
             cornfield1sidePart1 = RotateSidePart(cornfield1sidePart1, RotationsCount);
@@ -56,7 +56,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             GetPart(cornfieldPartName).Borders.Add(cornfield1Border1);
 
             // поле 1
-            var cornfield2Side0 = Side.top;
+            var cornfield2Side0 = FieldSide.top;
             cornfield2Side0 = RotateSide(cornfield2Side0, RotationsCount);
             var cornfield2sidePart0 = CornfieldSide.side_7;
             cornfield2sidePart0 = RotateSidePart(cornfield2sidePart0, RotationsCount);
@@ -64,7 +64,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield2Border0.CornfieldSide = cornfield2sidePart0;
             GetPart(cornfieldPart1Name).Borders.Add(cornfield2Border0);
 
-            var cornfield2Side1 = Side.left;
+            var cornfield2Side1 = FieldSide.left;
             cornfield2Side1 = RotateSide(cornfield2Side1, RotationsCount);
             var cornfield2sidePart1 = CornfieldSide.side_6;
             cornfield2sidePart1 = RotateSidePart(cornfield2sidePart1, RotationsCount);

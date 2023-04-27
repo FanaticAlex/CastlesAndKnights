@@ -10,7 +10,7 @@ namespace Carcassone.Core.Tests.Fields
         public void GetCenterTest()
         {
             var fieldBoard = new FieldBoard();
-            var center = fieldBoard.GetCenter();
+            var center = fieldBoard.GetField(0, 0);
             Assert.Single(fieldBoard.Fields);
             Assert.NotNull(center);
             Assert.Equal(0, center.X);

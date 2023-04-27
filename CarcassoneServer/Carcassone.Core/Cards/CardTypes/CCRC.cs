@@ -40,15 +40,15 @@ namespace Carcassone.Core.Cards
         public override void ConnectField(Field field, FieldBoard fieldBoard)
         {
             //замок
-            AddBorderToPart(field, Side.top, GetPart(castlePartName), fieldBoard);
-            AddBorderToPart(field, Side.right, GetPart(castlePartName), fieldBoard);
-            AddBorderToPart(field, Side.left, GetPart(castlePartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.top, GetPart(castlePartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.right, GetPart(castlePartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.left, GetPart(castlePartName), fieldBoard);
 
             // дорога
-            AddBorderToPart(field, Side.bottom, GetPart(roadPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.bottom, GetPart(roadPartName), fieldBoard);
 
             // поле 1
-            var side31 = Side.bottom;
+            var side31 = FieldSide.bottom;
             side31 = RotateSide(side31, RotationsCount);
             var sidePart31 = CornfieldSide.side_3;
             sidePart31 = RotateSidePart(sidePart31, RotationsCount);
@@ -58,7 +58,7 @@ namespace Carcassone.Core.Cards
 
 
             // поле 2
-            var side32 = Side.bottom;
+            var side32 = FieldSide.bottom;
             side32 = RotateSide(side32, RotationsCount);
             var sidePart32 = CornfieldSide.side_4;
             sidePart32 = RotateSidePart(sidePart32, RotationsCount);

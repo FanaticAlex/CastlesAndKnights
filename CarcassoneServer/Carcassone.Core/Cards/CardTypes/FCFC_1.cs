@@ -36,12 +36,12 @@ namespace Carcassone.Core.Cards
 
         public override void ConnectField(Field field, FieldBoard fieldBoard)
         {
-            AddBorderToPart(field, Side.right, GetPart(castlePartName), fieldBoard);
-            AddBorderToPart(field, Side.left, GetPart(castlePartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.right, GetPart(castlePartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.left, GetPart(castlePartName), fieldBoard);
 
-            AddBorderToPart(field, Side.top, GetPart(cornfieldPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.top, GetPart(cornfieldPartName), fieldBoard);
 
-            AddBorderToPart(field, Side.bottom, GetPart(cornfieldPart1Name), fieldBoard);
+            AddBorderToPart(field, FieldSide.bottom, GetPart(cornfieldPart1Name), fieldBoard);
         }
     }
 }

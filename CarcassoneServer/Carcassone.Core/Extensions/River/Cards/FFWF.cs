@@ -23,12 +23,12 @@ namespace Carcassone.Core.Extensions.River.Cards
 
         public override void ConnectField(Field field, FieldBoard fieldBoard)
         {
-            AddBorderToPart(field, Side.left, GetPart(cornfieldPartName), fieldBoard);
-            AddBorderToPart(field, Side.top, GetPart(cornfieldPartName), fieldBoard);
-            AddBorderToPart(field, Side.right, GetPart(cornfieldPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.left, GetPart(cornfieldPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.top, GetPart(cornfieldPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.right, GetPart(cornfieldPartName), fieldBoard);
 
 
-            var cornfield1Side0 = Side.bottom;
+            var cornfield1Side0 = FieldSide.bottom;
             cornfield1Side0 = RotateSide(cornfield1Side0, RotationsCount);
             var cornfield1sidePart0 = CornfieldSide.side_3;
             cornfield1sidePart0 = RotateSidePart(cornfield1sidePart0, RotationsCount);
@@ -36,7 +36,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield1Border0.CornfieldSide = cornfield1sidePart0;
             GetPart(cornfieldPartName).Borders.Add(cornfield1Border0);
 
-            var cornfield1Side1 = Side.bottom;
+            var cornfield1Side1 = FieldSide.bottom;
             cornfield1Side1 = RotateSide(cornfield1Side1, RotationsCount);
             var cornfield1sidePart1 = CornfieldSide.side_4;
             cornfield1sidePart1 = RotateSidePart(cornfield1sidePart1, RotationsCount);

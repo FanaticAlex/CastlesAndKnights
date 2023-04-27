@@ -27,10 +27,10 @@ namespace Carcassone.Core.Cards
         {
             ((ChurchPart)GetPart(churchPartName)).ChurchFieldId = field.Id;
 
-            AddBorderToPart(field, Side.top, GetPart(cornfieldPartName), fieldBoard);
-            AddBorderToPart(field, Side.right, GetPart(cornfieldPartName), fieldBoard);
-            AddBorderToPart(field, Side.bottom, GetPart(cornfieldPartName), fieldBoard);
-            AddBorderToPart(field, Side.left, GetPart(cornfieldPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.top, GetPart(cornfieldPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.right, GetPart(cornfieldPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.bottom, GetPart(cornfieldPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.left, GetPart(cornfieldPartName), fieldBoard);
         }
     }
 }

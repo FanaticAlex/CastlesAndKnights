@@ -38,38 +38,38 @@ namespace Carcassone.Core.Cards
 
         public override void ConnectField(Field field, FieldBoard fieldBoard)
         {
-            AddBorderToPart(field, Side.top, GetPart(castlePartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.top, GetPart(castlePartName), fieldBoard);
 
-            AddBorderToPart(field, Side.right, GetPart(roadPartName), fieldBoard);
-            AddBorderToPart(field, Side.bottom, GetPart(roadPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.right, GetPart(roadPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.bottom, GetPart(roadPartName), fieldBoard);
 
 
             // поле 1
-            var side21 = RotateSide(Side.right, RotationsCount);
+            var side21 = RotateSide(FieldSide.right, RotationsCount);
             var sidePart21 = RotateSidePart(CornfieldSide.side_1, RotationsCount);
             var cornfieldBorder21 = new Border(field, fieldBoard.GetNeighbour(field, side21), this);
             GetPart(cornfieldPartName).Borders.Add(cornfieldBorder21);
             cornfieldBorder21.CornfieldSide = sidePart21;
 
-            var side32 = RotateSide(Side.bottom, RotationsCount);
+            var side32 = RotateSide(FieldSide.bottom, RotationsCount);
             var sidePart32 = RotateSidePart(CornfieldSide.side_4, RotationsCount);
             var cornfieldBorder32 = new Border(field, fieldBoard.GetNeighbour(field, side32), this);
             GetPart(cornfieldPartName).Borders.Add(cornfieldBorder32);
             cornfieldBorder32.CornfieldSide = sidePart32;
 
-            var side4 = RotateSide(Side.left, RotationsCount);
+            var side4 = RotateSide(FieldSide.left, RotationsCount);
             var cornfieldBorder4 = new Border(field, fieldBoard.GetNeighbour(field, side4), this);
             GetPart(cornfieldPartName).Borders.Add(cornfieldBorder4);
 
 
             // поле 2
-            var side22 = RotateSide(Side.right, RotationsCount);
+            var side22 = RotateSide(FieldSide.right, RotationsCount);
             var sidePart22 = RotateSidePart(CornfieldSide.side_2, RotationsCount);
             var cornfieldBorder22 = new Border(field, fieldBoard.GetNeighbour(field, side22), this);
             GetPart(cornfieldPart1Name).Borders.Add(cornfieldBorder22);
             cornfieldBorder22.CornfieldSide = sidePart22;
 
-            var side31 = RotateSide(Side.bottom, RotationsCount);
+            var side31 = RotateSide(FieldSide.bottom, RotationsCount);
             var sidePart31 = RotateSidePart(CornfieldSide.side_3, RotationsCount);
             var cornfieldBorder31 = new Border(field, fieldBoard.GetNeighbour(field, side31), this);
             GetPart(cornfieldPart1Name).Borders.Add(cornfieldBorder31);

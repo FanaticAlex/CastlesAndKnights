@@ -1,9 +1,6 @@
 ﻿namespace Carcassone.Core.Fields
 {
-    /// <summary>
-    /// Сторона игрового поля.
-    /// </summary>
-    public enum Side
+    public enum FieldSide
     {
         top,
         right,

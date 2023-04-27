@@ -35,5 +35,16 @@ namespace Carcassone.Core.Tests.Room
             var count = room.GetCardsRemain();
             Assert.Equal(82, count);
         }
+
+        [Fact]
+        public void SaveLoadTest()
+        {
+            var room = new GameRoom();
+            Assert.Single(room.FieldBoard.Fields);
+            var save = room.Save();
+            room.Load(save);
+            Assert.Single(room.FieldBoard.Fields);
+            Assert.Equal("CCCC", room.FieldBoard.Fields[0].CardName);
+        }
     }
 }

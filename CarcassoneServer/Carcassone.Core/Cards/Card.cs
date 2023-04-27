@@ -66,7 +66,7 @@ namespace Carcassone.Core.Cards
             return Parts.Single(p => p.PartName == partName);
         }
 
-        public void AddBorderToPart(Field field, Side side, ObjectPart part, FieldBoard fieldBoard)
+        public void AddBorderToPart(Field field, FieldSide side, ObjectPart part, FieldBoard fieldBoard)
         {
             var rotatedSide = RotateSide(side, RotationsCount);
             var castleBorder = new Border(field, fieldBoard.GetNeighbour(field, rotatedSide), this);
@@ -109,10 +109,10 @@ namespace Carcassone.Core.Cards
         /// <param name="side"></param>
         /// <param name="rotationCount"></param>
         /// <returns></returns>
-        public static Side RotateSide(Side side, int rotationCount)
+        public static FieldSide RotateSide(FieldSide side, int rotationCount)
         {
             var result = ((byte)side + rotationCount) % 4;
-            return (Side)result;
+            return (FieldSide)result;
         }
 
         /// <summary>

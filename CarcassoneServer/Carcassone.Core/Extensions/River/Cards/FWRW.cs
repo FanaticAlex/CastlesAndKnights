@@ -42,12 +42,12 @@ namespace Carcassone.Core.Extensions.River.Cards
             ((ChurchPart)GetPart(churchPartName)).ChurchFieldId = field.Id;
 
             // поле 1
-            var cornfield1Side0 = Side.top;
+            var cornfield1Side0 = FieldSide.top;
             cornfield1Side0 = RotateSide(cornfield1Side0, RotationsCount);
             var cornfieldBorder0 = new Border(field, fieldBoard.GetNeighbour(field, cornfield1Side0), this);
             GetPart(cornfieldPart1Name).Borders.Add(cornfieldBorder0);
 
-            var cornfield1Side1 = Side.right;
+            var cornfield1Side1 = FieldSide.right;
             cornfield1Side1 = RotateSide(cornfield1Side1, RotationsCount);
             var cornfield1sidePart1 = CornfieldSide.side_1;
             cornfield1sidePart1 = RotateSidePart(cornfield1sidePart1, RotationsCount);
@@ -55,7 +55,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield1Border1.CornfieldSide = cornfield1sidePart1;
             GetPart(cornfieldPart1Name).Borders.Add(cornfield1Border1);
 
-            var cornfield1Side2 = Side.left;
+            var cornfield1Side2 = FieldSide.left;
             cornfield1Side2 = RotateSide(cornfield1Side2, RotationsCount);
             var cornfield1SidePart2 = CornfieldSide.side_6;
             cornfield1SidePart2 = RotateSidePart(cornfield1SidePart2, RotationsCount);
@@ -64,7 +64,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             GetPart(cornfieldPart1Name).Borders.Add(cornfield1Border2);
 
             // поле 2
-            var cornfield2Side1 = Side.right;
+            var cornfield2Side1 = FieldSide.right;
             cornfield2Side1 = RotateSide(cornfield2Side1, RotationsCount);
             var cornfield2sidePart1 = CornfieldSide.side_2;
             cornfield2sidePart1 = RotateSidePart(cornfield2sidePart1, RotationsCount);
@@ -72,7 +72,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield2Border1.CornfieldSide = cornfield2sidePart1;
             GetPart(cornfieldPart2Name).Borders.Add(cornfield2Border1);
 
-            var cornfield2Side2 = Side.bottom;
+            var cornfield2Side2 = FieldSide.bottom;
             cornfield2Side2 = RotateSide(cornfield2Side2, RotationsCount);
             var cornfield2SidePart2 = CornfieldSide.side_3;
             cornfield2SidePart2 = RotateSidePart(cornfield2SidePart2, RotationsCount);
@@ -81,10 +81,10 @@ namespace Carcassone.Core.Extensions.River.Cards
             GetPart(cornfieldPart2Name).Borders.Add(cornfield2Border2);
 
             // дорога
-            AddBorderToPart(field, Side.bottom, GetPart(roadPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.bottom, GetPart(roadPartName), fieldBoard);
 
             // поле 3
-            var cornfield3Side1 = Side.bottom;
+            var cornfield3Side1 = FieldSide.bottom;
             cornfield3Side1 = RotateSide(cornfield3Side1, RotationsCount);
             var cornfield3sidePart1 = CornfieldSide.side_4;
             cornfield3sidePart1 = RotateSidePart(cornfield3sidePart1, RotationsCount);
@@ -92,7 +92,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield3Border1.CornfieldSide = cornfield3sidePart1;
             GetPart(cornfieldPart3Name).Borders.Add(cornfield3Border1);
 
-            var cornfield3Side2 = Side.left;
+            var cornfield3Side2 = FieldSide.left;
             cornfield3Side2 = RotateSide(cornfield3Side2, RotationsCount);
             var cornfield3SidePart2 = CornfieldSide.side_5;
             cornfield3SidePart2 = RotateSidePart(cornfield3SidePart2, RotationsCount);

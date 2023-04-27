@@ -28,18 +28,18 @@ namespace Carcassone.Core.Calculation.Objects
 
             var centralField = fieldBoard.GetField(basePart.ChurchFieldId);
             fields.Add(centralField);
-            fields.Add(fieldBoard?.GetNeighbour(centralField, Side.left));
-            fields.Add(fieldBoard?.GetNeighbour(centralField, Side.right));
+            fields.Add(fieldBoard?.GetNeighbour(centralField, FieldSide.left));
+            fields.Add(fieldBoard?.GetNeighbour(centralField, FieldSide.right));
 
-            var topField = fieldBoard?.GetNeighbour(centralField, Side.top);
+            var topField = fieldBoard?.GetNeighbour(centralField, FieldSide.top);
             fields.Add(topField);
-            fields.Add(fieldBoard?.GetNeighbour(topField, Side.left));
-            fields.Add(fieldBoard?.GetNeighbour(topField, Side.right));
+            fields.Add(fieldBoard?.GetNeighbour(topField, FieldSide.left));
+            fields.Add(fieldBoard?.GetNeighbour(topField, FieldSide.right));
 
-            var bottomField = fieldBoard?.GetNeighbour(centralField, Side.bottom);
+            var bottomField = fieldBoard?.GetNeighbour(centralField, FieldSide.bottom);
             fields.Add(bottomField);
-            fields.Add(fieldBoard?.GetNeighbour(bottomField, Side.left));
-            fields.Add(fieldBoard?.GetNeighbour(bottomField, Side.right));
+            fields.Add(fieldBoard?.GetNeighbour(bottomField, FieldSide.left));
+            fields.Add(fieldBoard?.GetNeighbour(bottomField, FieldSide.right));
 
             foreach(var field in fields)
             {

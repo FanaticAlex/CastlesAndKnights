@@ -19,7 +19,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
             gameRoom.PlayersPool.MoveToNextPlayer();
 
             var churchCard = new FFFF("FFFF", 0);
-            gameRoom.PutCardInField(churchCard, gameRoom.FieldBoard.GetCenter());
+            gameRoom.PutCardInField(churchCard, gameRoom.FieldBoard.GetField(0, 0));
             gameRoom.PutChipInCard(churchCard.Parts[0], gameRoom.PlayersPool.GetCurrentPlayer().Name);
             gameRoom.EndTurn();
             Assert.Single(gameRoom.ScoreCalculator.Churches);

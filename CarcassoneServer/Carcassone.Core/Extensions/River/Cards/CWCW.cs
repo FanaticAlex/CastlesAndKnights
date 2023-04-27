@@ -40,12 +40,12 @@ namespace Carcassone.Core.Extensions.River.Cards
 
         public override void ConnectField(Field field, FieldBoard fieldBoard)
         {
-            AddBorderToPart(field, Side.top, GetPart(castlePart0Name), fieldBoard);
+            AddBorderToPart(field, FieldSide.top, GetPart(castlePart0Name), fieldBoard);
 
-            AddBorderToPart(field, Side.bottom, GetPart(castlePart1Name), fieldBoard);
+            AddBorderToPart(field, FieldSide.bottom, GetPart(castlePart1Name), fieldBoard);
 
             // поле 1
-            var cornfield1Side1 = Side.right;
+            var cornfield1Side1 = FieldSide.right;
             cornfield1Side1 = RotateSide(cornfield1Side1, RotationsCount);
             var cornfield1sidePart1 = CornfieldSide.side_1;
             cornfield1sidePart1 = RotateSidePart(cornfield1sidePart1, RotationsCount);
@@ -53,7 +53,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield1Border1.CornfieldSide = cornfield1sidePart1;
             GetPart(cornfieldPart0Name).Borders.Add(cornfield1Border1);
 
-            var cornfield1Side2 = Side.left;
+            var cornfield1Side2 = FieldSide.left;
             cornfield1Side2 = RotateSide(cornfield1Side2, RotationsCount);
             var cornfield1SidePart2 = CornfieldSide.side_6;
             cornfield1SidePart2 = RotateSidePart(cornfield1SidePart2, RotationsCount);
@@ -63,7 +63,7 @@ namespace Carcassone.Core.Extensions.River.Cards
 
 
             // поле 2
-            var cornfield2Side1 = Side.right;
+            var cornfield2Side1 = FieldSide.right;
             cornfield2Side1 = RotateSide(cornfield2Side1, RotationsCount);
             var cornfield2SidePart1 = CornfieldSide.side_2;
             cornfield2SidePart1 = RotateSidePart(cornfield2SidePart1, RotationsCount);
@@ -71,7 +71,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield2Border1.CornfieldSide = cornfield2SidePart1;
             GetPart(cornfieldPart1Name).Borders.Add(cornfield2Border1);
 
-            var cornfield2Side2 = Side.left;
+            var cornfield2Side2 = FieldSide.left;
             cornfield2Side2 = RotateSide(cornfield2Side2, RotationsCount);
             var cornfield2SidePart2 = CornfieldSide.side_5;
             cornfield2SidePart2 = RotateSidePart(cornfield2SidePart2, RotationsCount);

@@ -23,7 +23,7 @@ namespace Carcassone.Core.Extensions.River.Cards
         public override void ConnectField(Field field, FieldBoard fieldBoard)
         {
             // поле
-            var cornfield1Side0 = Side.top;
+            var cornfield1Side0 = FieldSide.top;
             cornfield1Side0 = RotateSide(cornfield1Side0, RotationsCount);
             var cornfield1sidePart0 = CornfieldSide.side_0;
             cornfield1sidePart0 = RotateSidePart(cornfield1sidePart0, RotationsCount);
@@ -31,7 +31,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield1Border0.CornfieldSide = cornfield1sidePart0;
             GetPart(cornfieldPartName).Borders.Add(cornfield1Border0);
 
-            var cornfield1Side1 = Side.top;
+            var cornfield1Side1 = FieldSide.top;
             cornfield1Side1 = RotateSide(cornfield1Side1, RotationsCount);
             var cornfield1sidePart1 = CornfieldSide.side_7;
             cornfield1sidePart1 = RotateSidePart(cornfield1sidePart1, RotationsCount);
@@ -39,9 +39,9 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield1Border1.CornfieldSide = cornfield1sidePart1;
             GetPart(cornfieldPartName).Borders.Add(cornfield1Border1);
 
-            AddBorderToPart(field, Side.right, GetPart(cornfieldPartName), fieldBoard);
-            AddBorderToPart(field, Side.bottom, GetPart(cornfieldPartName), fieldBoard);
-            AddBorderToPart(field, Side.left, GetPart(cornfieldPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.right, GetPart(cornfieldPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.bottom, GetPart(cornfieldPartName), fieldBoard);
+            AddBorderToPart(field, FieldSide.left, GetPart(cornfieldPartName), fieldBoard);
         }
     }
 }

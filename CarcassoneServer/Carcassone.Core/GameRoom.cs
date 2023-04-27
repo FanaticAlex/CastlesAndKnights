@@ -12,7 +12,7 @@ using System.Linq;
 namespace Carcassone.Core
 {
     /// <summary>
-    /// Store all game data.
+    /// Store all single game data.
     /// </summary>
     public class GameRoom
     {
@@ -47,7 +47,7 @@ namespace Carcassone.Core
 
             // инициализирующий ход
             var firstCard = GetCurrentCard() ?? throw new Exception("Ошибка. В колоде нет карт!");
-            var firstField = FieldBoard.GetCenter();
+            var firstField = FieldBoard.GetField(0, 0);
             PutCardInField(firstCard, firstField);
             EndTurn();
             AllAiPlayersMove();
