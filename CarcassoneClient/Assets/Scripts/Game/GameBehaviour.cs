@@ -15,7 +15,7 @@ namespace Assets.Scripts
     {
         private FieldsController _fieldsController;
         private CardsController _cardsController;
-        private PlayersController _playersController;
+        private PlayerController _playerController;
         private ScoreController _scoreController;
 
         private string _currentPlayerName;
@@ -35,7 +35,7 @@ namespace Assets.Scripts
         {
             _fieldsController = new FieldsController();
             _cardsController = new CardsController(_fieldsController);
-            _playersController = new PlayersController(_fieldsController, _cardsController);
+            _playerController = new PlayerController(_fieldsController, _cardsController);
 
             _scoreController = new ScoreController(FinalScoreUIPanel, FinalScoreUIPanelText, PlayerDetailScorePanel);
         }
@@ -46,7 +46,7 @@ namespace Assets.Scripts
         /// </summary>
         async void Update()
         {
-            _playersController._humanPlayerController.DoubleClick |= IsDoubleClick();
+            _playerController.DoubleClick |= IsDoubleClick();
 
             _timer -= Time.deltaTime;
             if (_timer <= 0.0f) // длительные операции, запросы к серверу
@@ -62,13 +62,13 @@ namespace Assets.Scripts
             var isMyTurn = (currentPlayer?.Name == GameManager.Instance.RoomService.User);
             if (isMyTurn)
             {
-                _playersController.HandlePlayerActions();
+                _playerController.HandlePlayerActions(_cardsController);
             }
 
             // поворот текущей карты
             if (_cardsController.CurrentCard != null)
             {
-                var cardGO = _cardsController._cardsToGameObject[_cardsController.CurrentCard.CardId];
+                var cardGO = _cardsController._cardsToGameObject[_cardsController.CurrentCard.Id];
                 var currentCardImageGO = GameObject.Find("CurrentCardImage");
                 currentCardImageGO.GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
                 currentCardImageGO.transform.localRotation = Quaternion.Euler(0, 0, _cardsController.CurrentCard.RotationsCount * -90);
@@ -77,9 +77,9 @@ namespace Assets.Scripts
             // это обновляем отображение карт только при смене хода,
             // и при смене статуса хода, для оптимизации
             var isTurnChanged = (currentPlayer?.Name != _currentPlayerName);
-            if (isTurnChanged || _playersController._humanPlayerController.StateChanged)
+            if (isTurnChanged || _playerController.StateChanged)
             {
-                _playersController._humanPlayerController.StateChanged = false;
+                _playerController.StateChanged = false;
                 _currentPlayerName = currentPlayer?.Name;
                 UpdateGameViewsFromServer(currentPlayer);
             }
@@ -133,12 +133,12 @@ namespace Assets.Scripts
 
         public void OnRotateButonClick()
         {
-            _playersController._humanPlayerController.Rotated = true;
+            _playerController.Rotated = true;
         }
 
         public void OnEndTurnButonClick()
         {
-            _playersController._humanPlayerController.TurnEnded = true;
+            _playerController.TurnEnded = true;
         }
 
         public void OnShowPlayerDetailedScore(Text playerNamePanel)
@@ -158,13 +158,13 @@ namespace Assets.Scripts
 
         private void UpdateGameViewsFromServer(BasePlayer currentPlayer)
         {
-            if (_playersController._humanPlayerController.PlayerState != PlayerState.PlayerHoldChip)
+            if (_playerController.PlayerState != PlayerState.PlayerHoldChip)
                 _cardsController.ReloadCurrentCard();
 
             _fieldsController.UpdateFieldsView(_cardsController.CurrentCard);
             _cardsController.UpdateCardsView(_fieldsController);
             _cardsController.UpdateCardRemainView();
-            _playersController.UpdatePlayersView();
+            _playerController.UpdatePlayersView();
             _scoreController.UpdateScore();
             _scoreController.UpdateCurrentPlayerMark(currentPlayer);
 

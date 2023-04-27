@@ -71,12 +71,11 @@
     <Compile Include="Assets\Scripts\Game\FieldsController.cs" />
     <Compile Include="Assets\Scripts\Game\PartsController.cs" />
     <Compile Include="Assets\Scripts\Menu\ChooseRoomWindowController.cs" />
-    <Compile Include="Assets\Scripts\Game\PlayersController.cs" />
+    <Compile Include="Assets\Scripts\Game\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Menu\LoginWindowController.cs" />
     <Compile Include="Assets\Scripts\Game\CardsController.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuManager.cs" />
     <Compile Include="Assets\Scripts\Game\GameBehaviour.cs" />
-    <Compile Include="Assets\Scripts\Game\HumanPlayerController.cs" />
     <Compile Include="Assets\Scripts\Menu\ProfileWindowController.cs" />
     <Compile Include="Assets\Scripts\CameraBehaviour.cs" />
     <Compile Include="Assets\Scripts\MusicPlayer.cs" />

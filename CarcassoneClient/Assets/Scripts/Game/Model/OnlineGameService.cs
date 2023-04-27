@@ -52,7 +52,7 @@ namespace Assets.Scripts
         public void AddHuman(string userName) => client.AddHumanAsync(RoomId, userName).Wait();
         public void AddAI() => client.AddAIAsync(RoomId).Wait();
         public void Start() => client.StartAsync(RoomId).Wait();
-        public void EndTurn(string userName) => client.EndTurnAsync(RoomId, userName);
+        public void EndTurn(string userName) => client.EndTurnAsync(RoomId, userName).Wait();
 
         public GameRoom GetRoom() => client.RoomGETAsync(RoomId).Result;
         public List<string> GetRoomsIds() => client.ListAsync().Result.ToList();

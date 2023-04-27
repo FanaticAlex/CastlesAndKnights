@@ -56,7 +56,7 @@ namespace Assets.Scripts
             // пересчитать доступные поля
             ICollection<Field> availableFields = new List<Field>();
             if (card != null)
-                availableFields = GameManager.Instance.RoomService.GetAvailableFields(card?.CardId);
+                availableFields = GameManager.Instance.RoomService.GetAvailableFields(card?.Id);
 
             var notAvailableFields = GameManager.Instance.RoomService.GetNotAvailableFields();
             var fields = _fieldsToGameObject.Keys;

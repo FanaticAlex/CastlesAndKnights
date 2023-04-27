@@ -43,7 +43,7 @@ namespace Assets.Scripts
                 if (cardObject == null)
                     throw new Exception();
 
-                _cardsToGameObject.Add(card.CardId, cardObject);
+                _cardsToGameObject.Add(card.Id, cardObject);
                 cardObject.GetComponent<BoxCollider>().enabled = false;
 
                 // Части
@@ -128,7 +128,7 @@ namespace Assets.Scripts
             if (card == null)
                 return;
 
-            var currentCardGameObject = _cardsToGameObject[card.CardId];
+            var currentCardGameObject = _cardsToGameObject[card.Id];
             currentCardGameObject.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + new Vector3(0, 0, 7);
         }
 
@@ -137,8 +137,8 @@ namespace Assets.Scripts
             if (card == null)
                 return;
 
-            var currentCardGameObject = _cardsToGameObject[card.CardId];
-            var currentCard = GameManager.Instance.RoomService.GetCard(card.CardId);
+            var currentCardGameObject = _cardsToGameObject[card.Id];
+            var currentCard = GameManager.Instance.RoomService.GetCard(card.Id);
             currentCardGameObject.transform.rotation = Quaternion.Euler(0, 0, -90 * currentCard.RotationsCount);
         }
     }
