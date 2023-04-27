@@ -61,6 +61,9 @@ namespace Carcassone.Core
         public void Load(string save)
         {
             var room = JsonConvert.DeserializeObject<GameRoom>(save);
+            if (room == null)
+                throw new Exception($"Can't load the game from save {save}");
+
             ExtensionsManager = room.ExtensionsManager;
             CardsPool = room.CardsPool;
             ScoreCalculator = room.ScoreCalculator;
@@ -131,6 +134,12 @@ namespace Carcassone.Core
 
         public void PutCardInField(Card card, Field field)
         {
+            if (card == null)
+                throw new Exception("Card can't be null");
+
+            if (field == null)
+                throw new Exception("Field can't be null");
+
             FieldBoard.PutCard(card, field);
             ScoreCalculator.AddCard(card, field, FieldBoard, CardsPool);
         }

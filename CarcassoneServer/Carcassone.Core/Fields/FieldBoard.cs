@@ -44,10 +44,10 @@ namespace Carcassone.Core.Fields
 
             return side switch
             {
-                FieldSide.top => GetField(field.X, field.Y + 1),
-                FieldSide.bottom => GetField(field.X, field.Y - 1),
-                FieldSide.right => GetField(field.X + 1, field.Y),
-                FieldSide.left => GetField(field.X - 1, field.Y),
+                FieldSide.top => GetFieldWithoutThrowing(field.X, field.Y + 1),
+                FieldSide.bottom => GetFieldWithoutThrowing(field.X, field.Y - 1),
+                FieldSide.right => GetFieldWithoutThrowing(field.X + 1, field.Y),
+                FieldSide.left => GetFieldWithoutThrowing(field.X - 1, field.Y),
                 _ => throw new KeyNotFoundException(),
             };
         }
@@ -57,15 +57,27 @@ namespace Carcassone.Core.Fields
             return Fields.ToList().Where(f => string.IsNullOrEmpty(f.CardName)).ToList();
         }
 
-        public Field? GetField(int x, int y) => GetField(Field.GetFieldID(x,y));
+        public Field GetField(int x, int y) => GetField(Field.GetFieldID(x,y));
 
-        public Field? GetField(string fieldId) => Fields.ToList().FirstOrDefault(field => field.Id == fieldId);
+        public Field GetField(string fieldId)
+        {
+            var field = Fields.FirstOrDefault(field => field.Id == fieldId);
+            if (field == null)
+                throw new Exception($"No field {fieldId} found");
+
+            return field;
+        }
 
         private void CreateField(int x, int y)
         {
-            var field = GetField(x, y);
+            var field = GetFieldWithoutThrowing(x, y);
             if (field == null)
                 Fields.Add(new Field(x, y));
+        }
+
+        private Field GetFieldWithoutThrowing(int x, int y)
+        {
+            return Fields.FirstOrDefault(field => field.Id == Field.GetFieldID(x, y));
         }
     }
 }

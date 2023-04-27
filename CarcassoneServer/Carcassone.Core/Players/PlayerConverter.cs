@@ -1,13 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Transactions;
-using System.Data.Common;
-using System.Reflection;
-using System.Linq;
-using Carcassone.Core.Cards;
 using Carcassone.Core.Players.AI;
 
 namespace Carcassone.Core.Players
@@ -19,12 +12,17 @@ namespace Carcassone.Core.Players
             return typeof(BasePlayer).IsAssignableFrom(objectType);
         }
 
-        public override object ReadJson(JsonReader reader,
-            Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader,
+            Type objectType, object? existingValue, JsonSerializer serializer)
         {
             JToken player = JToken.Load(reader);
-            var playerName = player["Name"].ToString();
-            
+            if (!player.HasValues)
+                return null;
+
+            var playerName = player[nameof(Player.Name)]?.ToString();
+            if (playerName == null)
+                throw new Exception($"Player has no name {player}");
+
             if (playerName.Contains(PlayersPool.EasyBotName))
                 return player.ToObject<PlayerAI>();
             else
@@ -34,7 +32,7 @@ namespace Carcassone.Core.Players
         }
 
         public override void WriteJson(JsonWriter writer,
-            object value, JsonSerializer serializer)
+            object? value, JsonSerializer serializer)
         {
             serializer.Serialize(writer, value);
         }
