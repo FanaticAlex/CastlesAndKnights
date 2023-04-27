@@ -54,7 +54,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield1Side0 = RotateSide(cornfield1Side0, RotationsCount);
             var cornfield1sidePart0 = CornfieldSide.side_0;
             cornfield1sidePart0 = RotateSidePart(cornfield1sidePart0, RotationsCount);
-            var cornfield1Border0 = new Border(field, fieldBoard.GetNeighbour(field, cornfield1Side0), this);
+            var cornfield1Border0 = new CardBorder(field, fieldBoard.GetNeighbour(field, cornfield1Side0), this);
             cornfield1Border0.CornfieldSide = cornfield1sidePart0;
             GetPart(cornfieldPart0Name).Borders.Add(cornfield1Border0);
 
@@ -63,7 +63,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield2Side0 = RotateSide(cornfield2Side0, RotationsCount);
             var cornfield2sidePart0 = CornfieldSide.side_3;
             cornfield2sidePart0 = RotateSidePart(cornfield2sidePart0, RotationsCount);
-            var cornfield2Border0 = new Border(field, fieldBoard.GetNeighbour(field, cornfield2Side0), this);
+            var cornfield2Border0 = new CardBorder(field, fieldBoard.GetNeighbour(field, cornfield2Side0), this);
             cornfield2Border0.CornfieldSide = cornfield2sidePart0;
             GetPart(cornfieldPart1Name).Borders.Add(cornfield2Border0);
 
@@ -72,7 +72,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield3Side0 = RotateSide(cornfield3Side0, RotationsCount);
             var cornfield3sidePart0 = CornfieldSide.side_4;
             cornfield3sidePart0 = RotateSidePart(cornfield3sidePart0, RotationsCount);
-            var cornfield3Border0 = new Border(field, fieldBoard.GetNeighbour(field, cornfield3Side0), this);
+            var cornfield3Border0 = new CardBorder(field, fieldBoard.GetNeighbour(field, cornfield3Side0), this);
             cornfield3Border0.CornfieldSide = cornfield3sidePart0;
             GetPart(cornfieldPart2Name).Borders.Add(cornfield3Border0);
 
@@ -80,7 +80,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield3Side1 = RotateSide(cornfield3Side1, RotationsCount);
             var cornfield3sidePart1 = CornfieldSide.side_5;
             cornfield3sidePart1 = RotateSidePart(cornfield3sidePart1, RotationsCount);
-            var cornfield3Border1 = new Border(field, fieldBoard.GetNeighbour(field, cornfield3Side1), this);
+            var cornfield3Border1 = new CardBorder(field, fieldBoard.GetNeighbour(field, cornfield3Side1), this);
             cornfield3Border1.CornfieldSide = cornfield3sidePart1;
             GetPart(cornfieldPart2Name).Borders.Add(cornfield3Border1);
 
@@ -89,7 +89,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield4Side0 = RotateSide(cornfield4Side0, RotationsCount);
             var cornfield4sidePart0 = CornfieldSide.side_6;
             cornfield4sidePart0 = RotateSidePart(cornfield4sidePart0, RotationsCount);
-            var cornfield4Border0 = new Border(field, fieldBoard.GetNeighbour(field, cornfield4Side0), this);
+            var cornfield4Border0 = new CardBorder(field, fieldBoard.GetNeighbour(field, cornfield4Side0), this);
             cornfield4Border0.CornfieldSide = cornfield4sidePart0;
             GetPart(cornfieldPart3Name).Borders.Add(cornfield4Border0);
 
@@ -97,7 +97,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield4Side1 = RotateSide(cornfield4Side1, RotationsCount);
             var cornfield4sidePart1 = CornfieldSide.side_7;
             cornfield4sidePart1 = RotateSidePart(cornfield4sidePart1, RotationsCount);
-            var cornfield4Border1 = new Border(field, fieldBoard.GetNeighbour(field, cornfield4Side1), this);
+            var cornfield4Border1 = new CardBorder(field, fieldBoard.GetNeighbour(field, cornfield4Side1), this);
             cornfield4Border1.CornfieldSide = cornfield4sidePart1;
             GetPart(cornfieldPart3Name).Borders.Add(cornfield4Border1);
 

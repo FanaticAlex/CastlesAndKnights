@@ -52,7 +52,7 @@ namespace Carcassone.Core.Cards
             side31 = RotateSide(side31, RotationsCount);
             var sidePart31 = CornfieldSide.side_3;
             sidePart31 = RotateSidePart(sidePart31, RotationsCount);
-            var cornfieldBorder31 = new Border(field, fieldBoard.GetNeighbour(field, side31), this);
+            var cornfieldBorder31 = new CardBorder(field, fieldBoard.GetNeighbour(field, side31), this);
             cornfieldBorder31.CornfieldSide = sidePart31;
             GetPart(cornfieldPartName).Borders.Add(cornfieldBorder31);
 
@@ -62,7 +62,7 @@ namespace Carcassone.Core.Cards
             side32 = RotateSide(side32, RotationsCount);
             var sidePart32 = CornfieldSide.side_4;
             sidePart32 = RotateSidePart(sidePart32, RotationsCount);
-            var cornfieldBorder32 = new Border(field, fieldBoard.GetNeighbour(field, side32), this);
+            var cornfieldBorder32 = new CardBorder(field, fieldBoard.GetNeighbour(field, side32), this);
             cornfieldBorder32.CornfieldSide = sidePart32;
             GetPart(cornfieldPart1Name).Borders.Add(cornfieldBorder32);
         }

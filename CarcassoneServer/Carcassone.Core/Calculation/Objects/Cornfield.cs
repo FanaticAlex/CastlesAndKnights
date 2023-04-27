@@ -9,7 +9,7 @@ namespace Carcassone.Core.Calculation.Objects
 {
     public class Cornfield : IMultipartObject
     {
-        public List<Border> OpenBorders = new List<Border>();
+        public List<CardBorder> OpenBorders = new List<CardBorder>();
 
         public List<string> PartsIds { get; set; } = new List<string>();
 
@@ -42,7 +42,7 @@ namespace Carcassone.Core.Calculation.Objects
             foreach (var partBorder in part.Borders)
             {
                 // ищем открытые границы этого поля которые совпадают с границами присоединяемой части
-                var adjacentCornfieldBorders = OpenBorders.FindAll(border2 => Border.Equial(partBorder, border2));
+                var adjacentCornfieldBorders = OpenBorders.FindAll(border2 => CardBorder.Equial(partBorder, border2));
                 foreach (var adjacentCornfieldBorder in adjacentCornfieldBorders)
                 {
                     // части поля одной карты не могут быть смежными.

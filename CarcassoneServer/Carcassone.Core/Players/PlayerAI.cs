@@ -1,7 +1,4 @@
 ﻿using Carcassone.Core.Calculation;
-using Carcassone.Core.Cards;
-using Carcassone.Core.Fields;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,8 +7,15 @@ namespace Carcassone.Core.Players.AI
     public class GameMove
     {
         public string FieldId { get; set; }
-        public string PartName { get; set; }
+        public string? PartName { get; set; }
         public PlayerScore ExpectedScore { get; set; }
+
+        public GameMove(string fieldId, string? partName, PlayerScore expectedScore)
+        {
+            FieldId = fieldId;
+            PartName = partName;
+            ExpectedScore = expectedScore;
+        }
     }
 
     public class PlayerAI : BasePlayer
@@ -93,19 +97,13 @@ namespace Carcassone.Core.Players.AI
                             gameCopy1.ScoreCalculator.CloseObjectsAndReturnChips(gameCopy1.PlayersPool, gameCopy1.CardsPool);
                         }
 
-                        var gameMove1 = new GameMove();
-                        gameMove1.FieldId = field.Id;
-                        gameMove1.PartName = part1.PartName;
-                        gameMove1.ExpectedScore = gameCopy1.GetPlayerScore(this);
+                        var gameMove1 = new GameMove(field.Id, part1.PartName, gameCopy1.GetPlayerScore(this));
                         possibleMoves.Add(gameMove1);
                     }
 
                     gameCopy.ScoreCalculator.CloseObjectsAndReturnChips(gameCopy.PlayersPool, gameCopy.CardsPool);
                     // ход без установки фишки
-                    var gameMove = new GameMove();
-                    gameMove.FieldId = field.Id;
-                    gameMove.PartName = null;
-                    gameMove.ExpectedScore = gameCopy.GetPlayerScore(this);
+                    var gameMove = new GameMove(field.Id, null, gameCopy.GetPlayerScore(this));
                     possibleMoves.Add(gameMove);
                 }
 

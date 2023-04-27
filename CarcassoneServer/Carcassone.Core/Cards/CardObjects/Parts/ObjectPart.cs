@@ -13,7 +13,7 @@ namespace Carcassone.Core.Cards
         /// граница определяется полем на котором лежит карта с частью и соседним полем
         /// Границы есть только частей присоединенных карт
         /// </summary>
-        public List<Border> Borders = new List<Border>();
+        public List<CardBorder> Borders = new List<CardBorder>();
 
         public Chip? Chip { get; set; }
         public Flag? Flag { get; set; }

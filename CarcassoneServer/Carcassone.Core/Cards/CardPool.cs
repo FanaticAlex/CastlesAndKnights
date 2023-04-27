@@ -53,7 +53,14 @@ namespace Carcassone.Core.Cards
         [JsonProperty(ItemConverterType = typeof(CardConverter), ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public List<Card> AllCards { get; private set; } = new List<Card>();
 
-        public Card GetCard(string cardId) => AllCards.FirstOrDefault(card => card.Id == cardId);
+        public Card GetCard(string cardId)
+        {
+            var card = AllCards.FirstOrDefault(card => card.Id == cardId);
+            if (card == null)
+                throw new Exception($"Card {cardId} not found");
+
+            return card;
+        }
 
         public ObjectPart GetPart(string partId)
         {

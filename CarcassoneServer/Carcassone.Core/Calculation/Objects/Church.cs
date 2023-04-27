@@ -91,8 +91,11 @@ namespace Carcassone.Core.Calculation.Objects
             if (IsFinished)
             {
                 var baseChurchPart = (ChurchPart)cardPool.GetPart(BaseChurchPartId);
-                var player = playersPool.GetPlayer(baseChurchPart.Chip?.OwnerName);
-                player?.ReturnChipAndSetFlag(baseChurchPart);
+                if (baseChurchPart.Chip?.OwnerName != null)
+                {
+                    var player = playersPool.GetPlayer(baseChurchPart.Chip.OwnerName);
+                    player.ReturnChipAndSetFlag(baseChurchPart);
+                }
             }
         }
 

@@ -22,7 +22,7 @@ namespace CarcassoneServer.Controllers
     {
         private readonly IGamesService _service;
         private readonly ILogger _logger;
-        private static IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
         public RoomController(
             ILogger<RoomController> logger,

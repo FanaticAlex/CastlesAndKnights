@@ -60,7 +60,7 @@ namespace Carcassone.Core.Cards
         public void AddBorderToPart(Field field, FieldSide side, ObjectPart part, FieldBoard fieldBoard)
         {
             var rotatedSide = RotateSide(side, RotationsCount);
-            var castleBorder = new Border(field, fieldBoard.GetNeighbour(field, rotatedSide), this);
+            var castleBorder = new CardBorder(field, fieldBoard.GetNeighbour(field, rotatedSide), this);
             part.Borders.Add(castleBorder);
         }
 

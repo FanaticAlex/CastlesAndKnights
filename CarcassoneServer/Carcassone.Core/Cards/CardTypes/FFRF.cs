@@ -40,13 +40,13 @@ namespace Carcassone.Core.Cards
 
             var side31 = RotateSide(FieldSide.bottom, RotationsCount);
             var sidePart31 = RotateSidePart(CornfieldSide.side_3, RotationsCount);
-            var cornfieldBorder31 = new Border(field, fieldBoard.GetNeighbour(field, side31), this);
+            var cornfieldBorder31 = new CardBorder(field, fieldBoard.GetNeighbour(field, side31), this);
             GetPart(cornfieldPartName).Borders.Add(cornfieldBorder31);
             cornfieldBorder31.CornfieldSide = sidePart31;
 
             var side32 = RotateSide(FieldSide.bottom, RotationsCount);
             var sidePart32 = RotateSidePart(CornfieldSide.side_4, RotationsCount);
-            var cornfieldBorder32 = new Border(field, fieldBoard.GetNeighbour(field, side32), this);
+            var cornfieldBorder32 = new CardBorder(field, fieldBoard.GetNeighbour(field, side32), this);
             GetPart(cornfieldPartName).Borders.Add(cornfieldBorder32);
             cornfieldBorder32.CornfieldSide = sidePart32;
         }

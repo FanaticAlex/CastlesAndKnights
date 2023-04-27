@@ -65,15 +65,19 @@ namespace Carcassone.Core.Fields
             if (!string.IsNullOrEmpty(CardName))
                 return false;
 
+            var neighbourTopCardName = fieldBoard.GetNeighbour(this, FieldSide.top)?.CardName;
+            Card? neighbourTopCard = neighbourTopCardName != null ? cardPool.GetCard(neighbourTopCardName) : null;
+            var neighbourLeftCardName = fieldBoard.GetNeighbour(this, FieldSide.left)?.CardName;
+            Card? neighbourLeftCard = neighbourLeftCardName != null ? cardPool.GetCard(neighbourLeftCardName) : null;
+            var neighbourBottomCardName = fieldBoard.GetNeighbour(this, FieldSide.bottom)?.CardName;
+            Card? neighbourBottomCard = neighbourBottomCardName != null ? cardPool.GetCard(neighbourBottomCardName) : null;
+            var neighbourRightCardName = fieldBoard.GetNeighbour(this, FieldSide.right)?.CardName;
+            Card? neighbourRightCard = neighbourRightCardName != null ? cardPool.GetCard(neighbourRightCardName) : null;
+
             // если есть граничные карты то границы должны совпадать иначе карту присоединить нельзя
             var isRiverCard = card.Id.Contains("W");
             if (isRiverCard)
             {
-                Card? neighbourTopCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, FieldSide.top)?.CardName);
-                Card? neighbourLeftCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, FieldSide.left)?.CardName);
-                Card? neighbourBottomCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, FieldSide.bottom)?.CardName);
-                Card? neighbourRightCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, FieldSide.right)?.CardName);
-
                 bool isTopFree = neighbourTopCard == null;
                 bool isLeftFree = neighbourLeftCard == null;
                 bool isBottomFree = neighbourBottomCard == null;
@@ -99,12 +103,7 @@ namespace Carcassone.Core.Fields
                 }
             }
             else
-            {
-                Card? neighbourTopCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, FieldSide.top)?.CardName);
-                Card? neighbourLeftCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, FieldSide.left)?.CardName);
-                Card? neighbourBottomCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, FieldSide.bottom)?.CardName);
-                Card? neighbourRightCard = cardPool.GetCard(fieldBoard.GetNeighbour(this, FieldSide.right)?.CardName);
-                
+            {                
                 // карту можно положить в поле, если в соседних с полем областях либо нет карт
                 // либо границы карты которую кладем и соседней карты совпадают
                 if ((neighbourTopCard == null || neighbourTopCard.BottomEdgeType == card.TopEdgeType) &&

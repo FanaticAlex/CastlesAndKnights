@@ -24,18 +24,25 @@ namespace Carcassone.Core.Players
         {
         }
 
-        public BasePlayer? GetPlayer(string? playerName) => Players.FirstOrDefault(_player => _player.Name == playerName);
+        public BasePlayer GetPlayer(string playerName)
+        {
+            var player = Players.FirstOrDefault(_player => _player.Name == playerName);
+            if (player == null)
+                throw new Exception($"Player {playerName} not found");
+
+            return player;
+        }
 
         public int CurrentPlayerIndex { get; set; } = -1;
 
-        public BasePlayer GetCurrentPlayer() => (CurrentPlayerIndex == -1) ? null : Players[CurrentPlayerIndex];
+        public BasePlayer? GetCurrentPlayer() => (CurrentPlayerIndex == -1) ? null : Players[CurrentPlayerIndex];
 
         [JsonProperty(ItemConverterType = typeof(PlayerConverter))]
         public List<BasePlayer> Players { get; } = new List<BasePlayer>();
 
         public void DeletePlayer(string name)
         {
-            var player = GetPlayer(name);
+            var player = Players.FirstOrDefault(_player => _player.Name == name);
             if (player == null)
                 return;
 
@@ -45,7 +52,7 @@ namespace Carcassone.Core.Players
         public Player AddHumanPlayer(string name)
         {
             // если этот игрок уже подключен
-            var player = GetPlayer(name);
+            var player = Players.FirstOrDefault(_player => _player.Name == name);
             if (player != null)
                 throw new Exception($"Игрок '{name}' уже подключен.");
 

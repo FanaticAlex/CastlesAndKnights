@@ -8,6 +8,13 @@ namespace Carcassone.Server1
     {
         public int StatusCode { get; set; }
         public string Message { get; set; }
+
+        public ErrorDetails(int statusCode, string message)
+        {
+            StatusCode = statusCode;
+            Message = message;
+        }
+
         public override string ToString()
         {
             return JsonSerializer.Serialize(this);
@@ -39,11 +46,12 @@ namespace Carcassone.Server1
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            await context.Response.WriteAsync(new ErrorDetails()
-            {
-                StatusCode = context.Response.StatusCode,
-                Message = "Internal Server Error from the custom middleware."
-            }.ToString());
+            await context.Response.WriteAsync(
+                new ErrorDetails(
+                    context.Response.StatusCode,
+                    "Internal Server Error from the custom middleware.")
+                .ToString()
+            );
         }
     }
 
@@ -61,11 +69,11 @@ namespace Carcassone.Server1
                     if (contextFeature != null)
                     {
                         logger.Error($"Something went wrong: {contextFeature.Error}");
-                        await context.Response.WriteAsync(new ErrorDetails()
-                        {
-                            StatusCode = context.Response.StatusCode,
-                            Message = "Internal Server Error."
-                        }.ToString());
+                        await context.Response.WriteAsync(
+                            new ErrorDetails(
+                                context.Response.StatusCode,
+                                "Internal Server Error.")
+                            .ToString());
                     }
                 });
             });

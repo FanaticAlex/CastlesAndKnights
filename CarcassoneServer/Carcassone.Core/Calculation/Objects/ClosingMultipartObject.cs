@@ -7,7 +7,7 @@ namespace Carcassone.Core.Calculation.Objects
 {
     public class ClosingMultipartObject: IClosingObject, IMultipartObject
     {
-        public List<Border> OpenBorders = new List<Border>();
+        public List<CardBorder> OpenBorders = new List<CardBorder>();
 
         public List<string> PartsIds { get; set; } = new List<string>();
 
@@ -28,9 +28,9 @@ namespace Carcassone.Core.Calculation.Objects
 
         public bool CanConnect(ObjectPart part)
         {
-            foreach (Border border in part.Borders)
+            foreach (CardBorder border in part.Borders)
             {
-                var sameBorder = OpenBorders.Find(border2 => Border.Equial(border, border2));
+                var sameBorder = OpenBorders.Find(border2 => CardBorder.Equial(border, border2));
                 if (sameBorder != null)
                     return true;
             }
@@ -48,8 +48,11 @@ namespace Carcassone.Core.Calculation.Objects
                 foreach (var partId in PartsIds)
                 {
                     var part = cardPool.GetPart(partId);
-                    var player = playersPool.GetPlayer(part.Chip?.OwnerName);
-                    player?.ReturnChipAndSetFlag(part);
+                    if (part.Chip?.OwnerName != null)
+                    {
+                        var player = playersPool.GetPlayer(part.Chip.OwnerName);
+                        player.ReturnChipAndSetFlag(part);
+                    }
                 }
             }
         }
@@ -57,9 +60,9 @@ namespace Carcassone.Core.Calculation.Objects
         private bool IsClosed()
         {
             var isClosed1 = true;
-            foreach (Border border in OpenBorders)
+            foreach (CardBorder border in OpenBorders)
             {
-                var isClosed = OpenBorders.FindAll(border2 => Border.Equial(border, border2)).Count == 2;
+                var isClosed = OpenBorders.FindAll(border2 => CardBorder.Equial(border, border2)).Count == 2;
                 if (!isClosed)
                 {
                     isClosed1 = false;

@@ -1,11 +1,9 @@
 ﻿using Carcassone.Core.Fields;
+using Newtonsoft.Json;
 
 namespace Carcassone.Core.Cards
 {
-    /// <summary>
-    /// Граница на карте
-    /// </summary>
-    public class Border
+    public class CardBorder
     {
         public string FirstFieldId { get; set; }
 
@@ -15,11 +13,10 @@ namespace Carcassone.Core.Cards
 
         public string CardName { get; set; }
 
-        public Border()
-        {
-        }
+        [JsonConstructor]
+        public CardBorder() { }
 
-        public Border(Field? first, Field? second, Card card)
+        public CardBorder(Field? first, Field? second, Card card)
         {
             if (first == null || second == null)
                 throw new System.Exception($"Field can not be null. Card: {card.Id}, first: {first?.Id}, second: {second?.Id}");
@@ -29,7 +26,7 @@ namespace Carcassone.Core.Cards
             CardName = card.Id;
         }
 
-        public static bool Equial(Border border1, Border border2)
+        public static bool Equial(CardBorder border1, CardBorder border2)
         {
             if (border1.FirstFieldId == null || border1.SecondFieldId == null)
                 return false;

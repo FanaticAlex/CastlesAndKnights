@@ -49,7 +49,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield1Side1 = RotateSide(cornfield1Side1, RotationsCount);
             var cornfield1sidePart1 = CornfieldSide.side_1;
             cornfield1sidePart1 = RotateSidePart(cornfield1sidePart1, RotationsCount);
-            var cornfield1Border1 = new Border(field, fieldBoard.GetNeighbour(field, cornfield1Side1), this);
+            var cornfield1Border1 = new CardBorder(field, fieldBoard.GetNeighbour(field, cornfield1Side1), this);
             cornfield1Border1.CornfieldSide = cornfield1sidePart1;
             GetPart(cornfieldPart0Name).Borders.Add(cornfield1Border1);
 
@@ -57,7 +57,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield1Side2 = RotateSide(cornfield1Side2, RotationsCount);
             var cornfield1SidePart2 = CornfieldSide.side_6;
             cornfield1SidePart2 = RotateSidePart(cornfield1SidePart2, RotationsCount);
-            var cornfield1Border2 = new Border(field, fieldBoard.GetNeighbour(field, cornfield1Side2), this);
+            var cornfield1Border2 = new CardBorder(field, fieldBoard.GetNeighbour(field, cornfield1Side2), this);
             cornfield1Border2.CornfieldSide = cornfield1SidePart2;
             GetPart(cornfieldPart0Name).Borders.Add(cornfield1Border2);
 
@@ -67,7 +67,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield2Side1 = RotateSide(cornfield2Side1, RotationsCount);
             var cornfield2SidePart1 = CornfieldSide.side_2;
             cornfield2SidePart1 = RotateSidePart(cornfield2SidePart1, RotationsCount);
-            var cornfield2Border1 = new Border(field, fieldBoard.GetNeighbour(field, cornfield2Side1), this);
+            var cornfield2Border1 = new CardBorder(field, fieldBoard.GetNeighbour(field, cornfield2Side1), this);
             cornfield2Border1.CornfieldSide = cornfield2SidePart1;
             GetPart(cornfieldPart1Name).Borders.Add(cornfield2Border1);
 
@@ -75,7 +75,7 @@ namespace Carcassone.Core.Extensions.River.Cards
             cornfield2Side2 = RotateSide(cornfield2Side2, RotationsCount);
             var cornfield2SidePart2 = CornfieldSide.side_5;
             cornfield2SidePart2 = RotateSidePart(cornfield2SidePart2, RotationsCount);
-            var cornfield2Border2 = new Border(field, fieldBoard.GetNeighbour(field, cornfield2Side2), this);
+            var cornfield2Border2 = new CardBorder(field, fieldBoard.GetNeighbour(field, cornfield2Side2), this);
             cornfield2Border2.CornfieldSide = cornfield2SidePart2;
             GetPart(cornfieldPart1Name).Borders.Add(cornfield2Border2);
         }
