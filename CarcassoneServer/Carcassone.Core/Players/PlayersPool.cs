@@ -1,10 +1,6 @@
-﻿using Carcassone.Core.Cards;
-using Carcassone.Core.Players.AI;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Carcassone.Core.Players
 {
@@ -13,10 +9,6 @@ namespace Carcassone.Core.Players
     /// </summary>
     public class PlayersPool
     {
-        public const string EasyBotName = "Esquire(Easy)";
-        public const string MiddleBotName = "Vikont(Middle)";
-        public const string HardBotName = "King(Hard)";
-
         private static readonly int _maximumPlayersCount = 5;
         private static readonly int _playerChipCount = 7;
 
@@ -37,7 +29,6 @@ namespace Carcassone.Core.Players
 
         public BasePlayer? GetCurrentPlayer() => (CurrentPlayerIndex == -1) ? null : Players[CurrentPlayerIndex];
 
-        [JsonProperty(ItemConverterType = typeof(PlayerConverter))]
         public List<BasePlayer> Players { get; } = new List<BasePlayer>();
 
         public void DeletePlayer(string name)
@@ -49,37 +40,20 @@ namespace Carcassone.Core.Players
             Players.Remove(player);
         }
 
-        public Player AddHumanPlayer(string name)
+        public BasePlayer AddPlayer(string name, PlayerType type)
         {
+            if (Players.Count >= _maximumPlayersCount)
+                throw new Exception($"Cant add player. Maximum player count is {_maximumPlayersCount}");
+
             // если этот игрок уже подключен
             var player = Players.FirstOrDefault(_player => _player.Name == name);
             if (player != null)
                 throw new Exception($"Игрок '{name}' уже подключен.");
 
             var color = GetFreeColor();
-            var player1 = new Player(name, color, _playerChipCount);
+            var player1 = new BasePlayer(name, color, _playerChipCount, type);
             Players.Add(player1);
             return player1;
-        }
-
-        public void AddAIPlayerEasy()
-        {
-            if (Players.Count == _maximumPlayersCount)
-                throw new Exception($"Cant add player. Maximum player count is {_maximumPlayersCount}");
-
-            var botName = string.Empty;
-            var botIndex = 0;
-            while(true)
-            {
-                botIndex++;
-                botName = $"{EasyBotName}_{botIndex}";
-                if (!Players.Select(player => player.Name).Contains(botName))
-                    break;
-            }
-
-            var color = GetFreeColor();
-            var player1 = new PlayerAI(botName, color, _playerChipCount);
-            Players.Add(player1);
         }
 
         public void MoveToNextPlayer()

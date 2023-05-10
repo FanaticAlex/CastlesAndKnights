@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Game;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -6,8 +7,6 @@ namespace Assets.Scripts.Menu
 {
     /// <summary>
     /// Контроллер окна информации об игроке
-    /// *новая игра
-    /// *подключиться к игре
     /// </summary>
     internal class ProfileWindowController : BaseMenuWindowController
     {
@@ -18,7 +17,7 @@ namespace Assets.Scripts.Menu
         {
             base.Enable();
 
-            var user = GameManager.Instance.RoomService.User;
+            var user = GameManager.Instance.RoomService.HumanUsers.Single();
             var statistic = GameManager.Instance.RoomService.GetUserStatistic(user);
             UserName.GetComponent<TMP_Text>().text = user;
             Statistic.GetComponent<TMP_Text>().text = 
@@ -36,9 +35,6 @@ namespace Assets.Scripts.Menu
         public void OnNewGameBtnClick()
         {
             GameManager.Instance.RoomService.Create();
-            var user = GameManager.Instance.RoomService.User;
-            GameManager.Instance.RoomService.AddHuman(user);
-
             MenuManager.IAmGameMaster = true;
             MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);
         }

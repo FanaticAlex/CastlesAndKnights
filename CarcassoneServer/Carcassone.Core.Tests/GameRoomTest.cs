@@ -1,6 +1,7 @@
 using Carcassone.Core.Cards;
 using Carcassone.Core.Extensions;
 using Carcassone.Core.Fields;
+using Carcassone.Core.Players;
 using Xunit;
 
 namespace Carcassone.Core.Tests.Room
@@ -11,8 +12,8 @@ namespace Carcassone.Core.Tests.Room
         public void WorkflowAI()
         {
             var room = new GameRoom();
-            room.PlayersPool.AddAIPlayerEasy();
-            room.PlayersPool.AddAIPlayerEasy();
+            room.PlayersPool.AddPlayer("AI_1", PlayerType.AI_Easy);
+            room.PlayersPool.AddPlayer("AI_2", PlayerType.AI_Easy);
             room.Start();
 
             Assert.True(room.IsFinished);

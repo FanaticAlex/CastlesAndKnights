@@ -38,7 +38,10 @@ namespace CarcassoneServer.Controllers
         public async Task<ActionResult<TokenResult>> Login(string login, [DataType(DataType.Password)] string password)
         {
             var user = await _userManager.FindByNameAsync(login);
-            if (user != null && await _userManager.CheckPasswordAsync(user, password))
+            if (user?.UserName == null)
+                return Unauthorized();
+
+            if (await _userManager.CheckPasswordAsync(user, password))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
 
@@ -53,7 +56,11 @@ namespace CarcassoneServer.Controllers
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
 
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+                var secret = _configuration["JWT:Secret"];
+                if (secret == null)
+                    return Problem();
+
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
 
                 var token = new JwtSecurityToken(
                     issuer: _configuration["JWT:ValidIssuer"],

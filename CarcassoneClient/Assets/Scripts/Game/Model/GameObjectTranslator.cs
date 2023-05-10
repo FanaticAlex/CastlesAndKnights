@@ -36,7 +36,7 @@ namespace Assets.Scripts
                 return null;
 
             var commonFlag = new Carcassone.ApiClient.Flag();
-            commonFlag.Owner = flag.Owner?.ToCommon();
+            commonFlag.OwnerName = flag.OwnerName;
             return commonFlag;
         }
 
@@ -60,7 +60,7 @@ namespace Assets.Scripts
                 return null;
 
             var commonChip = new Carcassone.ApiClient.Chip();
-            commonChip.Owner = chip.Owner?.ToCommon();
+            commonChip.OwnerName = chip.OwnerName;
             commonChip.Type = chip.Type.ToCommon();
             return commonChip;
         }
@@ -72,7 +72,7 @@ namespace Assets.Scripts
 
             var commonPart = new Carcassone.ApiClient.ObjectPart();
             commonPart.PartName = part.PartName;
-            commonPart.CardName = part.CardName;
+            commonPart.CardId = part.CardId;
             commonPart.PartId = part.PartId;
             commonPart.Chip = part.Chip?.ToCommon();
             commonPart.Flag = part.Flag?.ToCommon();
@@ -175,6 +175,5 @@ namespace Assets.Scripts
             commonChurch.BaseChurchPart = church.BaseChurchPart.ToCommon();
             return commonChurch;
         }
-    }
-    */
+    }*/
 }

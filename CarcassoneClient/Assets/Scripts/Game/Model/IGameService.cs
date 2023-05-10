@@ -10,16 +10,16 @@ namespace Assets.Scripts
     /// </summary>
     internal interface IGameService
     {
-        string User { get; }
+        List<string> HumanUsers { get; set; }
 
         void Login(SavedAuthData data); // этот метод не подхдит интерфейсу он только для сетевой игры
         void Login(string login, string password); // этот метод не подхдит интерфейсу он только для сетевой игры
         void Create();
         void Connect(string roomId); // этот метод не подхдит интерфейсу он только для сетевой игры
-        void AddHuman(string userName);
-        void AddAI();
+        void AddPlayer(string playerName, PlayerType type);
+        void DeletePlayer(string playerName);
         void Start();
-        void EndTurn(string userName);
+        void EndTurn(string playerName);
 
         GameRoom GetRoom();
         List<string> GetRoomsIds(); // этот метод не подхдит интерфейсу он только для сетевой игры
@@ -34,7 +34,7 @@ namespace Assets.Scripts
         Card GetCard(string cardName);
         ObjectPart GetObjectPart(string partId);
         bool CanPutCard(string fieldId, string cardName);
-        void PutCard(string fieldId, string cardName, string userName);
+        void PutCard(string fieldId, string cardName, string playerName);
         void RotateCard(string cardName);
 
         List<Field> GetFields();
@@ -56,6 +56,6 @@ namespace Assets.Scripts
 
         void Reset();
 
-        UserStatistic GetUserStatistic(string userName);
+        UserStatistic GetUserStatistic(string playerName);
     }
 }

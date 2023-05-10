@@ -21,7 +21,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         public void CalculationTest_CrossRoad()
         {
             var room = new GameRoom();
-            var bob = room.PlayersPool.AddHumanPlayer("bob");
+            var bob = room.PlayersPool.AddPlayer("bob", PlayerType.Human);
 
             var card0 = room.GetCard("RRRR(0)");
 
@@ -54,7 +54,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         public void CalculationTest_RoadRing()
         {
             var room = new GameRoom();
-            var bob = room.PlayersPool.AddHumanPlayer("bob");
+            var bob = room.PlayersPool.AddPlayer("bob", PlayerType.Human);
 
             var card0 = room.GetCard("FFRR(0)");
             card0.RotationsCount = 2;
@@ -103,7 +103,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         {
             var room = new GameRoom();
             var playerName = "bob";
-            room.PlayersPool.AddHumanPlayer(playerName);
+            room.PlayersPool.AddPlayer(playerName, PlayerType.Human);
 
             var card0 = room.GetCard("FFRF(0)");
             var card1 = room.GetCard("FRRR(0)");

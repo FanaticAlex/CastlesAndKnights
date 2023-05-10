@@ -1,7 +1,4 @@
-﻿using Carcassone.Core.Calculation.Objects;
-using Carcassone.Core.Cards;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Carcassone.Core.Players;
 using Xunit;
 
 namespace Carcassone.Core.Tests.Calculation.Objects
@@ -25,7 +22,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         public void GetScore()
         {
             var room = new GameRoom();
-            var player = room.PlayersPool.AddHumanPlayer("Jack");
+            var player = room.PlayersPool.AddPlayer("Jack", PlayerType.Human);
 
             var card1 = room.GetCard("CRFR(0)");
             room.RotateCard(card1.Id);
@@ -71,7 +68,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         public void GetScore1()
         {
             var room = new GameRoom();
-            var owner1 = room.PlayersPool.AddHumanPlayer("owner1");
+            var owner1 = room.PlayersPool.AddPlayer("owner1", PlayerType.Human);
 
             var card1 = room.GetCard("RRWW(0)");
             room.PutCardInField(card1, room.FieldBoard.GetField(0, 0));
@@ -111,7 +108,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         public void GetScore2()
         {
             var room = new GameRoom();
-            var owner1 = room.PlayersPool.AddHumanPlayer("owner1");
+            var owner1 = room.PlayersPool.AddPlayer("owner1", PlayerType.Human);
 
             var card1 = room.GetCard("FWWF(0)");
             var field1 = room.FieldBoard.GetField("0_0");
@@ -144,7 +141,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         public void GetScore3()
         {
             var room = new GameRoom();
-            var owner1 = room.PlayersPool.AddHumanPlayer("owner1");
+            var owner1 = room.PlayersPool.AddPlayer("owner1", PlayerType.Human);
 
             var card1 = room.GetCard("FFWF(0)");
             var field1 = room.FieldBoard.GetField("0_0");
@@ -178,7 +175,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         public void GetScore4()
         {
             var room = new GameRoom();
-            var owner1 = room.PlayersPool.AddHumanPlayer("owner1");
+            var owner1 = room.PlayersPool.AddPlayer("owner1", PlayerType.Human);
 
             var card1 = room.GetCard("FFWF(0)");
             var field1 = room.FieldBoard.GetField("0_0");
@@ -212,7 +209,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         public void GetScore5()
         {
             var room = new GameRoom();
-            var owner1 = room.PlayersPool.AddHumanPlayer("owner1");
+            var owner1 = room.PlayersPool.AddPlayer("owner1", PlayerType.Human);
 
             var card1 = room.GetCard("RRWW(0)");
             var field1 = room.FieldBoard.GetField("0_0");

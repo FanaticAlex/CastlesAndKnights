@@ -36,7 +36,6 @@ namespace Assets.Scripts
 
         public bool StateChanged { get; set; }
 
-        private string _playerName;
         private FieldsController _fieldsController;
 
         private GameObject EndTurnButton { get; set; }
@@ -45,7 +44,6 @@ namespace Assets.Scripts
             FieldsController fieldsController,
             CardsController cardsController)
         {
-            _playerName = GameManager.Instance.RoomService.User;
             _cardsController = cardsController;
             _fieldsController = fieldsController;
 
@@ -57,10 +55,10 @@ namespace Assets.Scripts
             UpdatePlayersLastMoveMarkerUI();
         }
 
-        public void HandlePlayerActions(CardsController cardsController)
+        public void HandlePlayerActions(CardsController cardsController, string playerName)
         {
             StartMyTurn();
-            MakingMove(cardsController);
+            MakingMove(cardsController, playerName);
         }
 
         /// <summary>
@@ -94,19 +92,19 @@ namespace Assets.Scripts
             }
         }
 
-        public void MakingMove(CardsController cardsController)
+        public void MakingMove(CardsController cardsController, string playerName)
         {
             if (PlayerState == PlayerState.PlayerHoldCard)
             {
                 EndTurnButton.GetComponent<Button>().interactable = false;
-                PlayerHoldCardProcess(_playerName, cardsController);
+                PlayerHoldCardProcess(playerName, cardsController);
                 return;
             }
 
             if (PlayerState == PlayerState.PlayerHoldChip)
             {
                 EndTurnButton.GetComponent<Button>().interactable = true;
-                HoldChipProcess(_playerName, cardsController);
+                HoldChipProcess(playerName, cardsController);
                 return;
             }
         }

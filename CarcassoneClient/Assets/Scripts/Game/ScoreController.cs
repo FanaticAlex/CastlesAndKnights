@@ -1,6 +1,7 @@
 ﻿using Carcassone.ApiClient;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -122,18 +123,37 @@ namespace Assets.Scripts
                 else
                     item.Value.transform.Find("SelectedBorder").gameObject.SetActive(false);
             }
+        }
 
+        public void UpdateWaitingSpinners(BasePlayer currentPlayer)
+        {
+            var isLocalPlayerMove = GameManager.Instance.RoomService.HumanUsers.Contains(currentPlayer?.Name);
+            if (isLocalPlayerMove)
+            {
+                SetSpinnersOff();
+            }
+            else
+            {
+                SetPlayerSpinnerOn(currentPlayer);
+            }
+        }
+
+        private void SetPlayerSpinnerOn(BasePlayer player)
+        {
             foreach (var item in _playersScorePanels)
             {
-                if (item.Key == currentPlayer?.Name
-                    && currentPlayer?.Name != GameManager.Instance.RoomService.User)
-                {
-                    item.Value.transform.Find("Spinner").gameObject.SetActive(true);
-                }
-                else
-                {
-                    item.Value.transform.Find("Spinner").gameObject.SetActive(false);
-                }
+                var spinner = item.Value.transform.Find("Spinner");
+                var isPlayerPanel = (item.Key == player?.Name);
+                spinner.gameObject.SetActive(isPlayerPanel);
+            }
+        }
+
+        private void SetSpinnersOff()
+        {
+            foreach (var item in _playersScorePanels)
+            {
+                var spinner = item.Value.transform.Find("Spinner");
+                spinner.gameObject.SetActive(false);
             }
         }
 

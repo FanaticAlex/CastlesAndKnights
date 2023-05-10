@@ -12,11 +12,11 @@ namespace Carcassone.Core.Tests.Players
         {
             var pool = new PlayersPool();
             
-            pool.AddHumanPlayer("bob");
+            pool.AddPlayer("bob", PlayerType.Human);
             Assert.True("bob" == pool.GetPlayer("bob")?.Name, "Игрок не добавляется");
             
-            pool.AddAIPlayerEasy();
-            Assert.True(pool.Players.OfType<PlayerAI>().Any(), "Игрок AI не добавляется");
+            pool.AddPlayer("AI_1", PlayerType.AI_Easy);
+            Assert.Single(pool.Players.Where(p => p.PlayerType == PlayerType.AI_Easy), "Игрок AI не добавляется");
 
             pool.MoveToNextPlayer();
             Assert.True("bob" == pool.GetCurrentPlayer().Name, "Неверно установлен первый игрок");

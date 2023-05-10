@@ -59,10 +59,10 @@ namespace Assets.Scripts
         private async Task UpdateSpecial()
         {
             var currentPlayer = await GameManager.Instance.RoomService.GetCurrentPlayer();
-            var isMyTurn = (currentPlayer?.Name == GameManager.Instance.RoomService.User);
-            if (isMyTurn)
+            var isLocalPlayerTurn = GameManager.Instance.RoomService.HumanUsers.Contains(currentPlayer?.Name);
+            if (isLocalPlayerTurn)
             {
-                _playerController.HandlePlayerActions(_cardsController);
+                _playerController.HandlePlayerActions(_cardsController, currentPlayer.Name);
             }
 
             // поворот текущей карты
@@ -167,6 +167,7 @@ namespace Assets.Scripts
             _playerController.UpdatePlayersView();
             _scoreController.UpdateScore();
             _scoreController.UpdateCurrentPlayerMark(currentPlayer);
+            _scoreController.UpdateWaitingSpinners(currentPlayer);
 
             // окончание игры
             var isFinished = GameManager.Instance.RoomService.GetRoom().IsFinished;

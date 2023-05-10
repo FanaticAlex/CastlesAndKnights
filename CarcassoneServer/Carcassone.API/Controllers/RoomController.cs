@@ -132,7 +132,7 @@ namespace CarcassoneServer.Controllers
             // записать результаты в базу
             foreach (var player in room.PlayersPool.Players)
             {
-                if (player is not Player) // не записываем в базу результаты AI игроков
+                if (player.IsAI()) // не записываем в базу результаты AI игроков
                     continue;
 
                 var playerScore = room.GetPlayerScore(player);
@@ -152,16 +152,16 @@ namespace CarcassoneServer.Controllers
             }
         }
 
-        private Player GetHumanPlayer(GameRoom room, string playerName)
+        private BasePlayer GetHumanPlayer(GameRoom room, string playerName)
         {
             var player = room.PlayersPool.GetCurrentPlayer();
             if (player.Name != playerName)
                 throw new Exception($"Its '{player.Name}' turn!");
 
-            if (player is not Player)
+            if (player.PlayerType != PlayerType.Human)
                 throw new Exception($"Its AI '{player.Name}' turn!");
 
-            return ((Player)player);
+            return player;
         }
 
         [HttpGet]
@@ -183,12 +183,8 @@ namespace CarcassoneServer.Controllers
 
 
         [HttpPost]
-        [Route("{roomId}/player/addAI")]
-        public void AddAIPlayer(string roomId) => _service.GetRoom(roomId).PlayersPool.AddAIPlayerEasy();
-
-        [HttpPost]
-        [Route("{roomId}/player/addHuman")]
-        public void AddHumanPlayer(string roomId, string playerName) => _service.GetRoom(roomId).PlayersPool.AddHumanPlayer(playerName);
+        [Route("{roomId}/player/add")]
+        public void AddPlayer(string roomId, string playerName, PlayerType type) => _service.GetRoom(roomId).PlayersPool.AddPlayer(playerName, type);
 
         [HttpGet]
         [Route("{roomId}/player/list")]

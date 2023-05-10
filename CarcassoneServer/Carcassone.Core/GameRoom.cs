@@ -168,9 +168,17 @@ namespace Carcassone.Core
 
         public void AllAiPlayersMove()
         {
-            while (PlayersPool.GetCurrentPlayer() is PlayerAI aI)
+            var currentPlayer = PlayersPool.GetCurrentPlayer();
+            if (currentPlayer == null)
+                return; // game over
+
+            while (currentPlayer.IsAI())
             {
-                aI.ProcessMove(this);
+                currentPlayer.ProcessMove(this);
+
+                currentPlayer = PlayersPool.GetCurrentPlayer();
+                if (currentPlayer == null)
+                    return; // game over
 
                 if (IsFinished)
                     break;

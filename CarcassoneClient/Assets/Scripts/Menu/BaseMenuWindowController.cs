@@ -4,7 +4,7 @@ namespace Assets.Scripts.Menu
 {
 
     /// <summary>
-    /// Базовый класс скрипта окна игрового меню
+    /// MenuWindow that can be enabled and disabled.
     /// </summary>
     public class BaseMenuWindowController : MonoBehaviour
     {

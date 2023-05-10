@@ -1,9 +1,4 @@
-﻿using Carcassone.Core.Extensions.River.Cards;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Carcassone.Core.Players;
 using Xunit;
 
 namespace Carcassone.Core.Tests.River
@@ -28,7 +23,7 @@ namespace Carcassone.Core.Tests.River
         public void RiverCardPut()
         {
             var game = new GameRoom();
-            game.PlayersPool.AddHumanPlayer("bob");
+            game.PlayersPool.AddPlayer("bob", PlayerType.Human);
             game.Start();
 
             var card = game.CardsPool.GetCard("FWRW(0)");

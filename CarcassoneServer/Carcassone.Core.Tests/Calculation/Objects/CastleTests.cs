@@ -28,7 +28,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         {
             var room = new GameRoom();
             var playerName = "bob";
-            room.PlayersPool.AddHumanPlayer(playerName);
+            room.PlayersPool.AddPlayer(playerName, PlayerType.Human);
 
             var card0 = room.GetCard("CFFF(0)");
             card0.RotationsCount = 2;
@@ -82,7 +82,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         {
             var room = new GameRoom();
             var playerName = "bob";
-            room.PlayersPool.AddHumanPlayer(playerName);
+            room.PlayersPool.AddPlayer(playerName, PlayerType.Human);
 
             var card0 = room.GetCard("CFFF(0)");
             card0.RotationsCount = 2;

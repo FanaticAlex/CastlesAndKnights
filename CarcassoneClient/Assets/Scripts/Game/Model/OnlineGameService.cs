@@ -21,11 +21,10 @@ namespace Assets.Scripts
             client = new Client(@"http://192.168.1.65:82/", _httpClient);
             //client = new Client(@"https://localhost:7170/", _httpClient);
 
-
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
         }
 
-        public string User { get; private set; }
+        public List<string> HumanUsers { get; set; } = new List<string>();
 
         public void Create() => RoomId = client.CreateAsync().Result.Id;
         public void Connect(string roomId) => RoomId = client.RoomGETAsync(roomId).Result.Id;
@@ -36,7 +35,7 @@ namespace Assets.Scripts
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", data.Token);
             client.StatisticAsync(data.Login).Wait();
 
-            User = data.Login;
+            HumanUsers.Add(data.Login);
         }
 
         public void Login(string login, string password)
@@ -44,13 +43,13 @@ namespace Assets.Scripts
             var tokenResult = client.LoginAsync(login, password).Result;
             _httpClient.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenResult.Token);
-            User = login;
+            HumanUsers.Add(login);
 
             CarcassonePrefs.SetSavedAuthData(login, tokenResult.Token);
         }
 
-        public void AddHuman(string userName) => client.AddHumanAsync(RoomId, userName).Wait();
-        public void AddAI() => client.AddAIAsync(RoomId).Wait();
+        public void AddPlayer(string userName, PlayerType type) => client.AddAsync(RoomId, userName, type).Wait();
+        public void DeletePlayer(string userName) { client.PlayerDELETEAsync(RoomId, userName).Wait(); }
         public void Start() => client.StartAsync(RoomId).Wait();
         public void EndTurn(string userName) => client.EndTurnAsync(RoomId, userName).Wait();
 
@@ -123,7 +122,7 @@ namespace Assets.Scripts
 
         public void Reset()
         {
-            User = null;
+            HumanUsers.Clear();
             RoomId = null;
         }
 

@@ -1,28 +1,63 @@
-﻿using System;
+﻿using Carcassone.ApiClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.Menu
 {
+    class PlayerTypeHelper
+    {
+        public static PlayerType ToPlayerType(string typeStr)
+        {
+            switch (typeStr.ToLower())
+            {
+                case "human": return PlayerType._0;
+                case "ai_easy": return PlayerType._1;
+                case "ai_normal": return PlayerType._2;
+                case "ai_hard": return PlayerType._3;
+                default: throw new Exception($"type {typeStr} does not exist");
+            }
+        }
+
+        public static string ToString(PlayerType type)
+        {
+            switch (type)
+            {
+                case PlayerType._0: return "Human";
+                case PlayerType._1: return "AI_easy";
+                case PlayerType._2: return "AI_normal";
+                case PlayerType._3: return "AI_hard";
+                default: throw new Exception($"type {type} does not exist");
+            }
+        }
+    }
+
     /// <summary>
     /// Контроллер окна создания новой игры.
-    /// *Список игроков
-    /// *добавить AI
-    /// *начать игру
+    /// * создание сетевой игры
+    /// * подключение к сетевой игре
+    /// * создание локальной игры
     /// </summary>
     internal class SetupRoomWindowController : BaseMenuWindowController
     {
-        public GameObject AddAIPlayerBtn;
+        public GameObject AddPlayerBtn;
         public GameObject StartGameBtn;
+        public GameObject NewPlayerPanel;
+
+        public GameObject PlayerName;
+        public GameObject PlayerType;
 
         private float _timer;
         private float _delta = 0.5f;
+
+        private Dictionary<string, GameObject> _rows = new Dictionary<string, GameObject>();
 
         public override MenuWindowType MenuPanelType => MenuWindowType.SetupRoom;
 
@@ -30,10 +65,40 @@ namespace Assets.Scripts.Menu
         {
             base.Enable();
 
-            var canIAddAiPLayers = MenuManager.IAmGameMaster;
-            AddAIPlayerBtn.GetComponent<Button>().interactable = canIAddAiPLayers;
-            StartGameBtn.GetComponent<Button>().interactable = false;
-            InitPlayersListGO();
+            if (AddPlayerBtn == null || StartGameBtn == null || NewPlayerPanel == null
+                || PlayerName == null || PlayerType == null)
+            {
+                throw new Exception("Set GameObject in script SetupRoomWindowController!");
+            }
+
+            if (GameManager.Instance.RoomService is OnlineGameService)
+            {
+                GameManager.Instance.RoomService.AddPlayer(GameManager.Instance.RoomService.HumanUsers.Single(), Carcassone.ApiClient.PlayerType._0);
+                AddPlayerBtn.GetComponent<Button>().interactable = MenuManager.IAmGameMaster;
+                StartGameBtn.GetComponent<Button>().interactable = false;
+
+                PlayerType.GetComponent<TMP_Dropdown>().options.Clear();
+                var option1 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(Carcassone.ApiClient.PlayerType._1));
+                var option2 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(Carcassone.ApiClient.PlayerType._2));
+                var option3 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(Carcassone.ApiClient.PlayerType._3));
+                var list = new List<TMP_Dropdown.OptionData> { option1, option2, option3 };
+                PlayerType.GetComponent<TMP_Dropdown>().AddOptions(list);
+            }
+            else
+            {
+                AddPlayerBtn.GetComponent<Button>().interactable = true;
+
+                PlayerType.GetComponent<TMP_Dropdown>().options.Clear();
+                var option0 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(Carcassone.ApiClient.PlayerType._0));
+                var option1 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(Carcassone.ApiClient.PlayerType._1));
+                var option2 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(Carcassone.ApiClient.PlayerType._2));
+                var option3 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(Carcassone.ApiClient.PlayerType._3));
+                var list = new List<TMP_Dropdown.OptionData> { option0, option1, option2, option3 };
+                PlayerType.GetComponent<TMP_Dropdown>().AddOptions(list);
+            }
+
+            NewPlayerPanel.SetActive(false);
+            ClearPlayersList();
         }
 
         void Update()
@@ -41,32 +106,63 @@ namespace Assets.Scripts.Menu
             _timer += Time.deltaTime;
             if (_timer > _delta)
             {
-                if (!MenuManager.IAmGameMaster)
+                if (!MenuManager.IAmGameMaster) // для подключившихся игроков
                 {
-                    WaitingForStart();
+                    // ждем пока игра стартует
+                    var room = GameManager.Instance.RoomService.GetRoom();
+                    if (room.IsStarted)
+                        SceneManager.LoadScene("RoomScene");
                 }
 
-                UpdatePlayerList();
+                UpdatePlayerListFromServer();
                 _timer = 0;
             }
         }
 
-        public void OnAddAIBtnClick()
+        public void OnShowAddPlayerPanelBtnClick()
         {
-            GameManager.Instance.RoomService.AddAI();
+            if (_rows.Count >= 5)
+                throw new Exception("Cant create player, 5 players max");
+
+            NewPlayerPanel.SetActive(true);
+
+            PlayerName.GetComponent<TMP_InputField>().text = GetUniqPlayerName();
+            PlayerType.GetComponent<TMP_Dropdown>().SetValueWithoutNotify(0);
+        }
+
+        public void OnAddPlayerBtnClick()
+        {
+            NewPlayerPanel.SetActive(false);
+
+            if (_rows.Count >= 5)
+                return;
+
+            var newName = PlayerName.GetComponent<TMP_InputField>().text;
+            var newType = PlayerTypeHelper.ToPlayerType(PlayerType.GetComponent<TMP_Dropdown>().captionText.text);
+            GameManager.Instance.RoomService.AddPlayer(newName, newType);
+        }
+
+        public void OnAddPlayerCancelBtnClick()
+        {
+            NewPlayerPanel.SetActive(false);
+        }
+
+        private static string GetUniqPlayerName()
+        {
+            var playersNames = GameManager.Instance.RoomService.GetPlayers().Select(p => p.Name);
+            for (var i = 0; i < 5; i++)
+            {
+                var name = $"Player_{i}";
+                if (!playersNames.Contains(name))
+                    return name;
+            }
+
+            throw new Exception("No free names left");
         }
 
         public void OnDeletePlayerBtn(string name)
         {
-            //RemoteRoom.DeletePlayer(name);
-        }
-
-        private void WaitingForStart()
-        {
-            // тут мы подключились к игре и ждем пока она стартает
-            var room = GameManager.Instance.RoomService.GetRoom();
-            if (room.IsStarted)
-                SceneManager.LoadScene("RoomScene");
+            GameManager.Instance.RoomService.DeletePlayer(name);
         }
 
         public void OnStartGameBtnClick()
@@ -77,45 +173,77 @@ namespace Assets.Scripts.Menu
 
         public void OnBackBtnClick()
         {
-            MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
+            if (GameManager.Instance.RoomService is OnlineGameService)
+                MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
+
+            if (GameManager.Instance.RoomService is OfflineGameService)
+                MenuManager.SwitchToMenuPanel(MenuWindowType.Login);
         }
 
-        private void UpdatePlayerList()
+        private void UpdatePlayerListFromServer()
         {
-            Transform playersListGO = InitPlayersListGO();
+            Transform playersListGO = GetPlayersList();
 
-            var pos = 0.0f;
             var playersList = GameManager.Instance.RoomService.GetPlayers();
-            foreach (var player in playersList)
+            RemoveDeletedPlayers(playersList);
+            for (var i = 0; i < playersList.Count; i++)
             {
-                var rowPrefab = (GameObject)Resources.Load("UI/PlayersListRow", typeof(GameObject));
-                var row = GameObject.Instantiate(rowPrefab);
-                row.transform.Find("NameText").GetComponent<Text>().text = player.Name;
-                row.transform.Find("DeleteBtn").GetComponentInChildren<Button>().onClick.AddListener(delegate { OnDeletePlayerBtn(player.Name); });
+                var player = playersList[i];
+                if (!_rows.Keys.Contains(player.Name)) // Add row
+                {
+                    var rowPrefab = (GameObject)Resources.Load("UI/PlayersListRow", typeof(GameObject));
+                    var row = GameObject.Instantiate(rowPrefab);
+                    row.transform.Find("NameText").GetComponent<Text>().text = player.Name;
+                    row.transform.Find("DeleteBtn").GetComponentInChildren<Button>().onClick.AddListener(delegate { OnDeletePlayerBtn(player.Name); });
+                    if (player.PlayerType == Carcassone.ApiClient.PlayerType._0)
+                        row.transform.Find("PlayerType").GetComponent<Text>().text = "human";
+                    if (player.PlayerType == Carcassone.ApiClient.PlayerType._1) 
+                        row.transform.Find("PlayerType").GetComponent<Text>().text = "AI_easy";
+                    if (player.PlayerType == Carcassone.ApiClient.PlayerType._2)
+                        row.transform.Find("PlayerType").GetComponent<Text>().text = "AI_normal";
+                    if (player.PlayerType == Carcassone.ApiClient.PlayerType._3)
+                        row.transform.Find("PlayerType").GetComponent<Text>().text = "AI_hard";
 
-                row.transform.parent = playersListGO;
-                row.transform.localScale = Vector3.one;
-                row.transform.localPosition = new Vector3(0, pos, 0);
+                    row.transform.parent = playersListGO;
+                    row.transform.localScale = Vector3.one;
+                    var rowHight = row.GetComponent<RectTransform>().rect.height;
+                    row.transform.localPosition = new Vector3(0, - rowHight * i, 0);
 
-                var rowHight = row.GetComponent<RectTransform>().rect.height;
-
-                pos -= rowHight;
+                    _rows.Add(player.Name, row);
+                }
             }
 
             var canStart = MenuManager.IAmGameMaster && (playersList.Count() > 1);
             StartGameBtn.GetComponent<Button>().interactable = canStart;
         }
 
-        private static Transform InitPlayersListGO()
+        private void RemoveDeletedPlayers(List<BasePlayer> playersList)
+        {
+            var names = playersList.Select(p => p.Name).ToList();
+            foreach (var row in _rows.ToList())
+            {
+                if (!names.Contains(row.Key))
+                {
+                    GameObject.Destroy(row.Value);
+                    _rows.Remove(row.Key);
+                }
+            }
+        }
+
+        private static Transform GetPlayersList()
         {
             var playersListGO = GameObject.Find("PlayersList")?.transform?.Find("Viewport")?.Find("Content");
             if (playersListGO == null)
                 throw new Exception("PlayersList GameObject Not Found");
+            
+            return playersListGO;
+        }
 
+        private static void ClearPlayersList()
+        {
+            var playersListGO = GetPlayersList();
             foreach (Transform child in playersListGO.transform)
                 GameObject.Destroy(child.gameObject);
-
-            return playersListGO;
         }
     }
 }

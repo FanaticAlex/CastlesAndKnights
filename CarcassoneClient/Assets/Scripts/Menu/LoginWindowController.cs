@@ -5,9 +5,6 @@ using UnityEngine;
 
 namespace Assets.Scripts.Menu
 {
-    /// <summary>
-    /// Контроллер окна логина
-    /// </summary>
     public class LoginWindowController : BaseMenuWindowController
     {
         public GameObject ErrorText;
@@ -18,7 +15,11 @@ namespace Assets.Scripts.Menu
         {
             base.Enable();
             ErrorText.SetActive(false);
+            ConnectToServer();
+        }
 
+        private static void ConnectToServer()
+        {
             try
             {
                 var data = CarcassonePrefs.GetSavedAuthData();
@@ -82,7 +83,7 @@ namespace Assets.Scripts.Menu
         public void OnOfflineGameBtnClick()
         {
             GameManager.Instance.SetOfflineMode();
-            MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
+            MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);
         }
 
         public void OnExitBtnClick()

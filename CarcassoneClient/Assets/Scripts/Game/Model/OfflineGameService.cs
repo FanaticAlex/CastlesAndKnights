@@ -1,86 +1,109 @@
 ﻿using Assets.Scripts.Game;
 using Carcassone.ApiClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-
+using System.Threading.Tasks;
 
 namespace Assets.Scripts
 {
-    /*internal class OfflineGameService : IGameService
+    internal class OfflineGameService : IGameService
     {
-        private Carcassone.Core.GameRoom room;
+        private Carcassone.Core.GameRoom _room;
 
         public OfflineGameService()
         {
-            User = "LocalPlayerMe";
-
             Create();
-            AddHuman(User);
+            MenuManager.IAmGameMaster = true;
         }
 
-        public String User { get; private set; }
+        public List<string> HumanUsers { get; set; } = new List<string>();
 
-        public void Create() { room = new Carcassone.Core.GameRoom(); }
+        public void Create() { _room = new Carcassone.Core.GameRoom(); }
         public void Connect(string roomId) => throw new NotImplementedException();
         public void Login(string login, string password) => throw new NotImplementedException();
-        public void AddHuman(string userName) => room.AddHumanPlayer(userName);
-        public void AddAI() => room.AddAIPlayer();
-        public void Start() => room.Start();
-        public void EndTurn(string userName) => room.EndTurn();
+        public void Login(SavedAuthData data) => throw new NotImplementedException();
+        public void AddPlayer(string playerName, PlayerType type)
+        {
+            _room.PlayersPool.AddPlayer(playerName, (Carcassone.Core.Players.PlayerType)type);
+            HumanUsers.Add(playerName);
+        }
 
-        public Carcassone.ApiClient.GameRoom GetRoom() => room.ToCommon();
+        public void Start() => _room.Start();
+
+        public GameRoom GetRoom() => ToCommon<GameRoom>(_room);
+
         public List<string> GetRoomsIds() => throw new NotImplementedException();
 
-        public Carcassone.ApiClient.BasePlayer GetPlayer(string playerName) => room.GetPlayer(playerName).ToCommon();
-        public List<Carcassone.ApiClient.BasePlayer> GetPlayers() => room.GetPlayers().Select(p => p.ToCommon()).ToList();
-        public Carcassone.ApiClient.BasePlayer GetCurrentPlayer() => room.GetCurrentPlayer().ToCommon();
-
-        public Carcassone.ApiClient.Card GetCurrentCard() => room.GetCurrentCard().ToCommon();
-        public List<Carcassone.ApiClient.Card> GetCards() => room.GetAllCards().Select(c => c.ToCommon()).ToList();
-        public List<Carcassone.ApiClient.Card> GetActiveCards() => room.GetFields().Where(f => f.Card != null).Select(f => f.Card.ToCommon()).ToList();
-        public Carcassone.ApiClient.Card GetCard(string cardName) => room.GetCard(cardName).ToCommon();
-        public bool CanPutCard(string fieldId, string cardName) => room.CanPutCard(fieldId, cardName);
-        public void PutCard(string fieldId, string cardName, string userName) => room.PutCardInField(room.GetCard(cardName), room.GetField(fieldId));
-        public void RotateCard(string cardName) => room.RotateCard(cardName);
-
-        public List<Field> GetFields() => room.GetFields().Select(f => f.ToCommon()).ToList();
-        public List<Field> GetAvailableFields(string cardName) => room.GetAvailableFields(cardName).Select(f => f.ToCommon()).ToList();
-        public List<Field> GetNotAvailableFields() => room.GetNotAvailableFields().Select(f => f.ToCommon()).ToList();
-
-        public List<Carcassone.ApiClient.ObjectPart> GetAvailableObjectParts(string cardId) => room.GetAvailableParts(cardId).Select(p => p.ToCommon()).ToList();
-        public void PutChip(string cardName, string partId, string playerName)
+        public BasePlayer GetPlayer(string playerName) => ToCommon<BasePlayer>(_room.PlayersPool.GetPlayer(playerName));
+        public List<BasePlayer> GetPlayers() => ToCommon<List<BasePlayer>>(_room.PlayersPool.Players);
+        Task<BasePlayer> IGameService.GetCurrentPlayer()
         {
-            var card = room.GetCard(cardName);
-            var part = card.Parts.FirstOrDefault(p => p.PartId == partId);
-            var player = room.GetPlayer(playerName);
-            room.PutChipInCard(part, player);
+            return Task.FromResult(ToCommon<BasePlayer>(_room.PlayersPool.GetCurrentPlayer()));
         }
+        public void DeletePlayer(string userName)
+        {
+            _room.PlayersPool.DeletePlayer(userName);
+            if (HumanUsers.Contains(userName))
+                HumanUsers.Remove(userName);
+        }
+
+        public Card GetCurrentCard() => ToCommon<Card>(_room.GetCurrentCard());
+        public List<Card> GetCards() => ToCommon<List<Card>>(_room.CardsPool.AllCards);
+        public List<Card> GetActiveCards() => ToCommon<List<Card>>(_room.GetActiveCards());
+        public Card GetCard(string cardName) => ToCommon<Card>(_room.GetCard(cardName));
+        public bool CanPutCard(string fieldId, string cardName) => _room.CanPutCard(fieldId, cardName);
+
+        public void RotateCard(string cardName) => _room.RotateCard(cardName);
+
+        public List<Field> GetFields() => ToCommon<List<Field>>(_room.FieldBoard.Fields);
+        public List<Field> GetAvailableFields(string cardName) => ToCommon<List<Field>>(_room.GetAvailableFields(cardName));
+
+        public List<Field> GetNotAvailableFields() => ToCommon<List<Field>>(_room.GetNotAvailableFields());
+
+        public List<ObjectPart> GetAvailableObjectParts(string cardId) => ToCommon<List<ObjectPart>>(_room.GetAvailableParts(cardId));
+        
+        public List<ObjectPart> GetActiveParts() => ToCommon<List<ObjectPart>>(_room.GetActiveParts());
+
+        public ObjectPart GetObjectPart(string partId) => ToCommon<ObjectPart>(_room.CardsPool.GetPart(partId));
 
         public List<UserGameScore> GetGameScores() => throw new NotImplementedException();
-        public PlayerScore GetScore(string playerName) => room.GetPlayerScore(room.GetPlayer(playerName)).ToCommon();
-        public List<Road> GetRoads() => room.GetRoads().Select(r => r.ToCommon()).ToList();
-        public List<Castle> GetCastles() => room.GetCastles().Select(c => c.ToCommon()).ToList();
-        public List<Cornfield> GetCornfields() => room.GetCornfields().Select(c => c.ToCommon()).ToList();
-        public List<Church> GetChurches() => room.GetChurches().Select(c => c.ToCommon()).ToList();
+        public PlayerScore GetScore(string playerName) => ToCommon<PlayerScore>(_room.GetPlayerScore(_room.PlayersPool.GetPlayer(playerName)));
+        public List<Road> GetRoads() => ToCommon<List<Road>>(_room.ScoreCalculator.Roads);
+        public List<Castle> GetCastles() => ToCommon<List<Castle>>(_room.ScoreCalculator.Castles);
+        public List<Cornfield> GetCornfields() => ToCommon<List<Cornfield>>(_room.ScoreCalculator.Cornfields);
+        public List<Church> GetChurches() => ToCommon<List<Church>>(_room.ScoreCalculator.Churches);
 
-        public int GetCardsRemain() => room.GetCardsRemain();
+        public int GetCardsRemain() => _room.GetCardsRemain();
 
-        public void Reset()
-        {
-            User = null;
-        }
+        public void Reset() => HumanUsers.Clear();
 
         public UserStatistic GetUserStatistic(string userName) => new UserStatistic();
 
-        public void LoginWithSavedToken(string login, string token)
+        public void PutCard(string fieldId, string cardName, string playerName)
         {
-            throw new NotImplementedException();
+            var human = _room.PlayersPool.GetPlayer(playerName);
+            human.SetPlayerMove1(_room, cardName, fieldId);
         }
 
-        public void Login(SavedAuthData data)
+        public void PutChip(string cardName, string partId, string playerName)
         {
-            throw new NotImplementedException();
+            var human = _room.PlayersPool.GetPlayer(playerName);
+            human.SetPlayerMove2(_room, cardName, partId);
         }
-    }*/
+
+        public void EndTurn(string playerName)
+        {
+            var human = _room.PlayersPool.GetPlayer(playerName);
+            human.SetPlayerMove3(_room);
+
+            // AI players move
+            Task.Run(_room.AllAiPlayersMove);
+        }
+
+        private T ToCommon<T>(object obj)
+        {
+            return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(obj));
+        }
+    }
 }

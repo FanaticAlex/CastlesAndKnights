@@ -1,4 +1,5 @@
 ﻿using Carcassone.Core.Cards;
+using Carcassone.Core.Players;
 using Xunit;
 
 namespace Carcassone.Core.Tests.Calculation.Objects
@@ -31,7 +32,7 @@ namespace Carcassone.Core.Tests.Calculation.Objects
         public void GetPointsTest()
         {
             var gameRoom = new GameRoom();
-            gameRoom.PlayersPool.AddHumanPlayer("Jack");
+            gameRoom.PlayersPool.AddPlayer("Jack", PlayerType.Human);
             gameRoom.PlayersPool.MoveToNextPlayer();
 
             var churchCard = gameRoom.CardsPool.GetCard(Card.GetCardId("FFFF", 0));

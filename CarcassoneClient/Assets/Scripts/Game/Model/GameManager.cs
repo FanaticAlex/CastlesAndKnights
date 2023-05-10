@@ -22,8 +22,8 @@ namespace Assets.Scripts
 
         public void SetOfflineMode()
         {
-            /*if (RoomService is not OfflineGameService)
-                RoomService = new OfflineGameService();*/
+            if (RoomService is not OfflineGameService)
+                RoomService = new OfflineGameService();
         }
 
         public void SetOnlineMode()
