@@ -7,14 +7,11 @@ namespace Assets.Scripts.Menu
 {
     public class LoginWindowController : BaseMenuWindowController
     {
-        public GameObject ErrorText;
-
         public override MenuWindowType MenuPanelType => MenuWindowType.Login;
 
         public override void Enable()
         {
             base.Enable();
-            ErrorText.SetActive(false);
             ConnectToServer();
         }
 
@@ -29,7 +26,7 @@ namespace Assets.Scripts.Menu
             }
             catch (Exception e)
             {
-                Debug.LogException(e); // token expired
+                Logger.Info(e.Message); // token expired
             }
         }
 
@@ -47,15 +44,12 @@ namespace Assets.Scripts.Menu
                 if (TryLogin(login, password, out errorMessage))
                 {
                     MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
-                    ErrorText.GetComponent<TMP_Text>().text = string.Empty;
-                    ErrorText.SetActive(false);
                     break;
                 }
 
                 if (tryNumber >= maxTryCount)
                 {
-                    ErrorText.GetComponent<TMP_Text>().text = $"Error: {errorMessage}";
-                    ErrorText.SetActive(true);
+                    Logger.Info($"Error: {errorMessage}");
                     break;
                 }
 
@@ -74,7 +68,6 @@ namespace Assets.Scripts.Menu
             }
             catch (Exception e)
             {
-                Debug.LogException(e);
                 message = e.InnerException?.Message ?? e.Message;
                 return false;
             }
