@@ -61,7 +61,7 @@ namespace Carcassone.Core.Fields
 
         public Field GetField(string fieldId)
         {
-            var field = Fields.FirstOrDefault(field => field.Id == fieldId);
+            var field = Fields.ToList().FirstOrDefault(field => field.Id == fieldId);
             if (field == null)
                 throw new Exception($"No field {fieldId} found");
 
@@ -77,7 +77,7 @@ namespace Carcassone.Core.Fields
 
         private Field GetFieldWithoutThrowing(int x, int y)
         {
-            return Fields.FirstOrDefault(field => field.Id == Field.GetFieldID(x, y));
+            return Fields.ToList().FirstOrDefault(field => field.Id == Field.GetFieldID(x, y));
         }
     }
 }

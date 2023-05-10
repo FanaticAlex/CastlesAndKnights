@@ -166,8 +166,6 @@ namespace Assets.Scripts
 
         private void HoldChipProcess(string playerName, CardsController cardsController)
         {
-            //HilightSelectedCardMark(_currentCard.CardName);
-
             // клик на поле левой кнопкой помещает в него Фишку
             if (DoubleClick)
             {
@@ -177,10 +175,10 @@ namespace Assets.Scripts
                 if (playerHaveChip.ChipCount != 0)
                 {
                     // установка фишки
-                    var partObject = GetSelectedPartUI(cardsController.CurrentCard.Id);
-                    if (partObject != null)
+                    var partId = GetSelectedPartUI(cardsController.CurrentCard.Id);
+                    if (partId != null)
                     {
-                        GameManager.Instance.RoomService.PutChip(cardsController.CurrentCard.Id, partObject, playerName);
+                        GameManager.Instance.RoomService.PutChip(cardsController.CurrentCard.Id, partId, playerName);
                         EndTurn(playerName, cardsController);
                     }
                 }
@@ -202,30 +200,6 @@ namespace Assets.Scripts
             return hit.collider;
         }
 
-        /*private void HilightSelectedCardMark(string cardId)
-        {
-            var collider = GetHitCollider();
-
-            var cardGameObject = _cardsController._cardsToGameObject[cardId];
-            var partsGameObjects = cardGameObject.GetComponentsInChildren<Transform>().Select(child => child.gameObject);
-            foreach (var partGameObject in partsGameObjects)
-            {
-                if (partGameObject.gameObject == cardGameObject)
-                {
-                    continue;
-                }
-
-                if (collider != null && collider.gameObject == partGameObject)
-                {
-                    partGameObject.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
-                }
-                else
-                {
-                    partGameObject.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
-                }
-            }
-        }*/
-
         private string GetSelectedPartUI(string cardId)
         {
             var collider = GetHitCollider();
@@ -235,14 +209,13 @@ namespace Assets.Scripts
             foreach (var partGameObject in partsGameObjects)
             {
                 if (partGameObject.gameObject == cardGameObject)
-                {
                     continue;
-                }
 
-                if (collider != null && collider.gameObject == partGameObject)
-                {
+                if (collider == null)
+                    continue;
+
+                if (collider.gameObject == partGameObject)
                     return cardId + partGameObject.name;
-                }
             }
 
             return null;

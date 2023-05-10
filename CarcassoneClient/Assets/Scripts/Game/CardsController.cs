@@ -11,7 +11,7 @@ namespace Assets.Scripts
     {
         public Dictionary<string, GameObject> _cardsToGameObject = new Dictionary<string, GameObject>();
 
-        private PartsController _partsController;
+        public PartsController _partsController;
 
         public Card? CurrentCard { get; set; }
 
@@ -71,7 +71,6 @@ namespace Assets.Scripts
             {
                 var partGameObject = _partsController._partToGameObject[part.PartId];
                 partGameObject.SetActive(true);
-                partGameObject.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
             }
         }
 
@@ -81,12 +80,10 @@ namespace Assets.Scripts
             var partsGameObjects = cardGameObject.GetComponentsInChildren<Transform>().Select(child => child.gameObject);
             foreach (var partGameObject in partsGameObjects)
             {
-                if (partGameObject.gameObject == cardGameObject)
-                {
+                if (partGameObject.gameObject == cardGameObject) // с самой картой ничего делать не надо
                     continue;
-                }
 
-                partGameObject.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+                partGameObject.SetActive(false);
             }
         }
 

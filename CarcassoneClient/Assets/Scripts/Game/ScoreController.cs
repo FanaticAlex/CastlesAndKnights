@@ -100,11 +100,10 @@ namespace Assets.Scripts
                 nameUI.text = score.PlayerName;
 
                 var chipUI = playerScoreUI.transform.Find("ChipCount").GetComponent<Text>();
-                chipUI.text = "Chip: " + score.ChipCount;
+                chipUI.text = $"Chip: {score.ChipCount}";
 
                 var overall = SumScore(score).ToString();
-                playerScoreUI.transform.Find("InfoText").GetComponentInChildren<Text>().text = overall;
-                
+                playerScoreUI.transform.Find("InfoText").GetComponentInChildren<Text>().text = $"Score: {overall}";
             }
         }
 
@@ -154,8 +153,6 @@ namespace Assets.Scripts
         public void ShowEndGameWindow()
         {
             _finalScoreUIPanel.SetActive(true);
-
-            ////var scores = GameManager.Instance.RoomService.GetGameScores();
 
             var players = GameManager.Instance.RoomService.GetPlayers();
             var scores = players.Select(p => GameManager.Instance.RoomService.GetScore(p.Name));

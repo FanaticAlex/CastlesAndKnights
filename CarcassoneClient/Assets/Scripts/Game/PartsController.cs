@@ -60,7 +60,6 @@ namespace Assets.Scripts
                 partGO.GetComponent<Renderer>().material.color = color;
             }*/
 
-            //var part = GameManager.Instance.RoomService.GetObjectPart(partId);
             if (part.Flag == null)
                 return;
 
@@ -75,15 +74,14 @@ namespace Assets.Scripts
             var flagPrefab = Constants.Flags[player.Color];
             var flagObject = GameObject.Instantiate(flagPrefab);
             var partGameObject = _partToGameObject[part.PartId];
-            partGameObject.SetActive(true);
-            flagObject.transform.parent = partGameObject.transform;
-            flagObject.transform.localPosition = Vector3.zero + new Vector3(0, 0, -1.3f);
+            //partGameObject.SetActive(true);
+            flagObject.transform.parent = partGameObject.transform.parent;
+            flagObject.transform.localPosition = partGameObject.transform.localPosition + new Vector3(0, 0, -1.3f);
             _ownedPartsFlags[part.PartId] = flagObject;
         }
 
         private void TryCreateChip(ObjectPart part, string type)
         {
-            //var part = GameManager.Instance.RoomService.GetObjectPart(partId);
             if (part.Chip == null)
                 return;
 
@@ -96,9 +94,9 @@ namespace Assets.Scripts
             var player = GameManager.Instance.RoomService.GetPlayer(part.Chip.OwnerName);
             chipObject.GetComponent<Renderer>().material.color = Constants.Colors[player.Color];
             var partGameObject = _partToGameObject[part.PartId];
-            partGameObject.SetActive(true);
-            chipObject.transform.parent = partGameObject.transform;
-            chipObject.transform.localPosition = Vector3.zero + new Vector3(0, 0, -1.3f);
+            //partGameObject.SetActive(true);
+            chipObject.transform.parent = partGameObject.transform.parent;
+            chipObject.transform.localPosition = partGameObject.transform.localPosition + new Vector3(0, 0, -1.3f);
             _ownedPartsChips.Add(part.PartId, chipObject);
         }
     }
