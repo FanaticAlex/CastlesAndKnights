@@ -73,12 +73,12 @@ namespace Assets.Scripts
             {
                 _playerDetailScorePanel.SetActive(true);
                 var textComp = GameObject.Find("DetailedPlayerScore").GetComponent<TMP_Text>();
-                textComp.text = "Очки игрока " + playerName + "\r\n";
+                textComp.text = "Player score " + playerName + "\r\n";
                 var score = GameManager.Instance.RoomService.GetScore(playerName);
-                textComp.text += $"Замки: {score.CastlesScore}({score.CastlesCount})\r\n";
-                textComp.text += $"Поля: {score.CornfieldsScore}({score.CornfieldsCount})\r\n";
-                textComp.text += $"Аббатства: {score.ChurchesScore}({score.ChurchesCount})\r\n";
-                textComp.text += $"Дороги: {score.RoadsScore}({score.RoadsCount})\r\n";
+                textComp.text += $"Castles: {score.CastlesScore}({score.CastlesCount})\r\n";
+                textComp.text += $"Fields: {score.CornfieldsScore}({score.CornfieldsCount})\r\n";
+                textComp.text += $"Churches: {score.ChurchesScore}({score.ChurchesCount})\r\n";
+                textComp.text += $"Roads: {score.RoadsScore}({score.RoadsCount})\r\n";
             }
         }
 
@@ -100,16 +100,10 @@ namespace Assets.Scripts
                 nameUI.text = score.PlayerName;
 
                 var chipUI = playerScoreUI.transform.Find("ChipCount").GetComponent<Text>();
-                chipUI.text = " Фишек:" + score.ChipCount;
+                chipUI.text = "Chip: " + score.ChipCount;
 
-                var overall = SumScore(score);
-                var result = overall + " / " +
-                             " З:" + score.CastlesScore +
-                             " П:" + score.CornfieldsScore +
-                             " А:" + score.ChurchesScore +
-                             " Д:" + score.RoadsScore;
-
-                playerScoreUI.transform.Find("InfoText").GetComponentInChildren<Text>().text = result;
+                var overall = SumScore(score).ToString();
+                playerScoreUI.transform.Find("InfoText").GetComponentInChildren<Text>().text = overall;
                 
             }
         }
