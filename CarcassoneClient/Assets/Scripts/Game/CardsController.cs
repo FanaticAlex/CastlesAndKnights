@@ -10,7 +10,6 @@ namespace Assets.Scripts
     internal class CardsController
     {
         public Dictionary<string, GameObject> _cardsToGameObject = new Dictionary<string, GameObject>();
-        public Dictionary<string, GameObject> _chipsToGameObject = new Dictionary<string, GameObject>();
 
         private PartsController _partsController;
 

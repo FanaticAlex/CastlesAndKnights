@@ -20,30 +20,14 @@ namespace Assets.Scripts
         public void UpdatePartsOwnersUI()
         {
             var newParts = GameManager.Instance.RoomService.GetActiveParts();
-            var changedRoadParts = GetChangedParts(PartsCache, newParts);
+            var changedParts = GetChangedParts(PartsCache, newParts);
             PartsCache = newParts;
 
-            foreach (var part in changedRoadParts)
+            foreach (var part in changedParts)
             {
                 TryCreateChip(part, "Knight");
                 TryCreateFlag(part);
             }
-
-            /*var roads = GameManager.Instance.RoomService.GetRoads();
-            foreach (var road in roads)
-                SetOwnersToRoadParts(road);
-
-            var castles = GameManager.Instance.RoomService.GetCastles();
-            foreach (var castle in castles)
-                SetOwnersToCastleParts(castle);
-
-            var cornfields = GameManager.Instance.RoomService.GetCornfields();
-            foreach (var cornfield in cornfields)
-                SetOwnersToCornfieldParts(cornfield);
-
-            var churches = GameManager.Instance.RoomService.GetChurches();
-            foreach (var church in churches)
-                SetOwnersToChurch(church);*/
         }
 
         public List<ObjectPart> GetChangedParts(List<ObjectPart> oldParts, List<ObjectPart> newParts)
@@ -63,73 +47,6 @@ namespace Assets.Scripts
 
             return changed;
         }
-
-        /// <summary>
-        /// Заменяет фишки на флаги
-        /// </summary>
-        /// <param name="road"></param>
-        /*private void SetOwnersToRoadParts(Road road)
-        {
-            foreach (var partId in road.PartsIds)
-            {
-                TryCreateChip(partId, "Thief");
-                TryCreateFlag(partId);
-            }
-        }
-
-        private void SetOwnersToChurch(Church church)
-        {
-            // если церковь никому не принадлежит
-            var baseChurchPart = GameManager.Instance.RoomService.GetObjectPart(church.BaseChurchPartId);
-            if ((baseChurchPart.Chip == null) && (baseChurchPart.Flag == null))
-                return;
-
-            if (church.IsFinished)
-            {
-                if (_ownedPartsFlags.Keys.Contains(baseChurchPart.PartId))
-                    return;
-
-                // заменяем на флаг
-                if (_ownedPartsChips.Keys.Contains(baseChurchPart.PartId))
-                    GameObject.Destroy(_ownedPartsChips[baseChurchPart.PartId]);
-
-                var player = GameManager.Instance.RoomService.GetPlayer(baseChurchPart.Flag.OwnerName);
-                var flagPrefab = Constants.Flags[player.Color];
-                var flagObject = GameObject.Instantiate(flagPrefab);
-                flagObject.transform.position = _partToGameObject[baseChurchPart.PartId].transform.position + new Vector3(0, 0, -1.3f);
-                _ownedPartsFlags.Add(baseChurchPart.PartId, flagObject);
-            }
-            else
-            {
-                if (_ownedPartsChips.Keys.Contains(baseChurchPart.PartId))
-                    return;
-
-                var chipPrefab = Constants.Chip["Priest"];
-                var chipObject = GameObject.Instantiate(chipPrefab);
-                var player = GameManager.Instance.RoomService.GetPlayer(baseChurchPart.Chip.OwnerName);
-                chipObject.GetComponent<Renderer>().material.color = Constants.Colors[player.Color];
-                var partGameObject = _partToGameObject[baseChurchPart.PartId];
-                chipObject.transform.position = partGameObject.transform.position + new Vector3(0, 0, -1.3f);
-                _ownedPartsChips.Add(baseChurchPart.PartId, chipObject);
-            }
-        }
-
-        private void SetOwnersToCastleParts(Castle castle)
-        {
-            foreach (var partId in castle.PartsIds)
-            {
-                TryCreateChip(partId, "Knight");
-                TryCreateFlag(partId);
-            }
-        }
-
-        private void SetOwnersToCornfieldParts(Cornfield cornfield)
-        {
-            foreach (var partId in cornfield.PartsIds)
-            {
-                TryCreateChip(partId, "Peasant");
-            }
-        }*/
 
         private void TryCreateFlag(ObjectPart part)
         {
