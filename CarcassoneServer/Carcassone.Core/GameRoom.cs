@@ -105,12 +105,13 @@ namespace Carcassone.Core
 
         public List<Field> GetNotAvailableFields()
         {
-            var list = new List<Field>();
-            var fields = FieldBoard.Fields.ToList();
+            var notAvailableCards = new List<Field>();
+            var fields = FieldBoard.GetAvailableFields();
+            var cards = GetCardsRemainInPool();
             foreach (var field in fields)
             {
                 var canPut = false;
-                foreach (var card in GetCardsRemainInPool())
+                foreach (var card in cards)
                 {
                     if (field.CanPutCardInThisFieldWithRotation(card, FieldBoard, CardsPool))
                     {
@@ -119,10 +120,10 @@ namespace Carcassone.Core
                 }
 
                 if (!canPut)
-                    list.Add(field);
+                    notAvailableCards.Add(field);
             }
 
-            return list;
+            return notAvailableCards;
         }
 
         public List<ObjectPart> GetAvailableParts(string cardName)

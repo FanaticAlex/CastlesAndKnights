@@ -26,7 +26,8 @@ namespace Assets.Scripts
         public void AddPlayer(string playerName, PlayerType type)
         {
             _room.PlayersPool.AddPlayer(playerName, (Carcassone.Core.Players.PlayerType)type);
-            HumanUsers.Add(playerName);
+            if (type == PlayerType._0)
+                HumanUsers.Add(playerName);
         }
 
         public void Start() => _room.Start();

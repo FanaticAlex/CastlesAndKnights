@@ -1,6 +1,7 @@
 ﻿using Carcassone.ApiClient;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 
@@ -51,8 +52,6 @@ namespace Assets.Scripts
 
         public void UpdateFieldsView(Card card)
         {
-            CreateFieldsIfNotExistView();
-
             // пересчитать доступные поля
             ICollection<Field> availableFields = new List<Field>();
             if (card != null)
@@ -77,7 +76,7 @@ namespace Assets.Scripts
             }
         }
 
-        private void CreateFieldsIfNotExistView()
+        public void CreateFieldsIfNotExistView()
         {
             FieldsCache = GameManager.Instance.RoomService.GetFields();
             foreach (var field in FieldsCache)

@@ -1,5 +1,6 @@
 ﻿using Carcassone.ApiClient;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -161,7 +162,11 @@ namespace Assets.Scripts
             if (_playerController.PlayerState != PlayerState.PlayerHoldChip)
                 _cardsController.ReloadCurrentCard();
 
-            _fieldsController.UpdateFieldsView(_cardsController.CurrentCard);
+            _fieldsController.CreateFieldsIfNotExistView();
+
+            if (_playerController.PlayerState == PlayerState.PlayerHoldCard) // оптимизируем
+                _fieldsController.UpdateFieldsView(_cardsController.CurrentCard);
+
             _cardsController.UpdateCardsView(_fieldsController);
             _cardsController.UpdateCardRemainView();
             _playerController.UpdatePlayersView();
