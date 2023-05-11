@@ -29,6 +29,4 @@ public class MenuManager : MonoBehaviour
         menuManagers.ForEach(manager => { manager.Disable(); });
         menuManagers.Single(manager => (manager.MenuPanelType == menu)).Enable();
     }
-
-    
 }

@@ -17,7 +17,7 @@ namespace Assets.Scripts
 
         public OnlineGameService()
         {
-            _httpClient = new HttpClient() { Timeout = new TimeSpan(0, 0, 1) };
+            _httpClient = new HttpClient() { Timeout = new TimeSpan(0, 0, 0, 0, 500) };
             client = new Client(@"http://192.168.1.65:82/", _httpClient);
             //client = new Client(@"https://localhost:7170/", _httpClient);
 

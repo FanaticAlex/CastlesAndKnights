@@ -12,21 +12,26 @@ namespace Assets.Scripts.Menu
         public override void Enable()
         {
             base.Enable();
-            ConnectToServer();
+            Logger.Clear();
+            TryLoginWithSavedToken();
         }
 
-        private static void ConnectToServer()
+        private static void TryLoginWithSavedToken()
         {
             try
             {
                 var data = CarcassonePrefs.GetSavedAuthData();
+                if (data.Login == null || data.Token == null)
+                    return;
+
                 GameManager.Instance.SetOnlineMode();
                 GameManager.Instance.RoomService.Login(data);
                 MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
             }
             catch (Exception e)
             {
-                Logger.Info(e.Message); // token expired
+                // token expired
+                CarcassonePrefs.DeleteSavedAuthData();
             }
         }
 
@@ -87,6 +92,11 @@ namespace Assets.Scripts.Menu
         public void OnRegisterBtnClick()
         {
             Application.OpenURL("http://192.168.1.65/Identity/Account/Register");
+        }
+
+        public void OnPatreonBtnClick()
+        {
+            Application.OpenURL("http://patreon.com/FanaticAlex");
         }
 
         public void OnEyeBtnClick()
