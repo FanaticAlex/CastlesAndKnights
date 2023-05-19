@@ -21,7 +21,6 @@ public class MenuManager : MonoBehaviour
     {
         menuManagers = GetMenuControllers();
         SwitchToMenuPanel(MenuWindowType.Login);
-        GameManager.Instance.SetOnlineMode();
     }
 
     public static void SwitchToMenuPanel(MenuWindowType menu)

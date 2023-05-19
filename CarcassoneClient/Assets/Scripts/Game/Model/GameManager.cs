@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Carcassone.ApiClient;
 
 namespace Assets.Scripts
 {
@@ -28,8 +23,15 @@ namespace Assets.Scripts
 
         public void SetOnlineMode()
         {
-            if (RoomService is not OnlineGameService)
-                RoomService = new OnlineGameService();
+            try
+            {
+                if (RoomService is not OnlineGameService)
+                    RoomService = new OnlineGameService();
+            }
+            catch (Exception ex)
+            {
+                Logger.Info($"No connection. {ex.Message}");
+            }
         }
     }
 }

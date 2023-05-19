@@ -13,7 +13,7 @@ namespace Assets.Scripts.Menu
         {
             base.Enable();
             Logger.Clear();
-            TryLoginWithSavedToken();
+            // TryLoginWithSavedToken();
         }
 
         private static void TryLoginWithSavedToken()
@@ -62,6 +62,17 @@ namespace Assets.Scripts.Menu
             }
         }
 
+        public void OnEyeBtnClick()
+        {
+            var passwordField = GameObject.Find("Password").GetComponent<TMP_InputField>();
+            if (passwordField.contentType == TMP_InputField.ContentType.Password)
+                passwordField.contentType = TMP_InputField.ContentType.Standard;
+            else
+                passwordField.contentType = TMP_InputField.ContentType.Password;
+
+            passwordField.Select();
+        }
+
         private bool TryLogin(string login, string password, out string message)
         {
             try
@@ -84,11 +95,6 @@ namespace Assets.Scripts.Menu
             MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);
         }
 
-        public void OnExitBtnClick()
-        {
-            Application.Quit();
-        }
-
         public void OnRegisterBtnClick()
         {
             Application.OpenURL("http://192.168.1.65/Identity/Account/Register");
@@ -99,15 +105,14 @@ namespace Assets.Scripts.Menu
             Application.OpenURL("http://patreon.com/FanaticAlex");
         }
 
-        public void OnEyeBtnClick()
+        public void OnTutorialBtnClick()
         {
-            var passwordField = GameObject.Find("Password").GetComponent<TMP_InputField>();
-            if (passwordField.contentType == TMP_InputField.ContentType.Password)
-                passwordField.contentType = TMP_InputField.ContentType.Standard;
-            else
-                passwordField.contentType = TMP_InputField.ContentType.Password;
+            MenuManager.SwitchToMenuPanel(MenuWindowType.Tutorial);
+        }
 
-            passwordField.Select();
+        public void OnExitBtnClick()
+        {
+            Application.Quit();
         }
     }
 }

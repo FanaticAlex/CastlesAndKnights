@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Assets.Scripts
@@ -33,7 +34,8 @@ namespace Assets.Scripts
         {
             _httpClient.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", data.Token);
-            client.StatisticAsync(data.Login).Wait();
+            var cancelSource = new CancellationTokenSource(500);
+            client.StatisticAsync(data.Login, cancelSource.Token).Wait();
 
             HumanUsers.Add(data.Login);
         }

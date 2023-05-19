@@ -134,6 +134,14 @@ namespace Carcassone.Core.Players
 
         private List<GameMove> GetPossibleMoves(string roomSave, string cardId, List<string> fieldIds)
         {
+            var maxCalculations = 10;
+            switch (PlayerType)
+            {
+                case PlayerType.AI_Easy: maxCalculations = 5; break;
+                case PlayerType.AI_Normal: maxCalculations = 25; break;
+                case PlayerType.AI_Hard: maxCalculations = 200; break;
+            }
+
             var possibleMoves = new List<GameMove>();
             foreach (var fieldId in fieldIds)
             {
@@ -170,7 +178,8 @@ namespace Carcassone.Core.Players
                     possibleMoves.Add(gameMove);
                 }
 
-
+                if (possibleMoves.Count >= maxCalculations)
+                    return possibleMoves;
             }
 
             return possibleMoves;

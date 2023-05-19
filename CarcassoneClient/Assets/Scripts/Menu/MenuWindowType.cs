@@ -5,6 +5,7 @@
         Login,
         Profile,
         ChooseRoom,
-        SetupRoom
+        SetupRoom,
+        Tutorial
     }
 }

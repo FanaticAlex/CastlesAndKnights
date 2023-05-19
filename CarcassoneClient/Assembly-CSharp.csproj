@@ -78,6 +78,7 @@
     <Compile Include="Assets\Scripts\Game\GameBehaviour.cs" />
     <Compile Include="Assets\Scripts\Menu\ProfileWindowController.cs" />
     <Compile Include="Assets\Scripts\CameraBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Menu\TutorialWindowController.cs" />
     <Compile Include="Assets\Scripts\MusicPlayer.cs" />
     <Compile Include="Assets\Scripts\Game\Constants.cs" />
     <Compile Include="Assets\Scripts\Menu\SetupRoomWindowController.cs" />
