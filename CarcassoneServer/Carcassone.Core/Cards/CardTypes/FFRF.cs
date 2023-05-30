@@ -31,24 +31,13 @@ namespace Carcassone.Core.Cards
         {
             AddBorderToPart(field, FieldSide.bottom, GetPart(roadPartName), fieldBoard);
 
-            // церковь
             ((ChurchPart)GetPart(churchPartName)).ChurchFieldId = field.Id;
 
             AddBorderToPart(field, FieldSide.top, GetPart(cornfieldPartName), fieldBoard);
             AddBorderToPart(field, FieldSide.right, GetPart(cornfieldPartName), fieldBoard);
             AddBorderToPart(field, FieldSide.left, GetPart(cornfieldPartName), fieldBoard);
-
-            var side31 = RotateSide(FieldSide.bottom, RotationsCount);
-            var sidePart31 = RotateSidePart(CornfieldSide.side_3, RotationsCount);
-            var cornfieldBorder31 = new CardBorder(field, fieldBoard.GetNeighbour(field, side31), this);
-            GetPart(cornfieldPartName).Borders.Add(cornfieldBorder31);
-            cornfieldBorder31.CornfieldSide = sidePart31;
-
-            var side32 = RotateSide(FieldSide.bottom, RotationsCount);
-            var sidePart32 = RotateSidePart(CornfieldSide.side_4, RotationsCount);
-            var cornfieldBorder32 = new CardBorder(field, fieldBoard.GetNeighbour(field, side32), this);
-            GetPart(cornfieldPartName).Borders.Add(cornfieldBorder32);
-            cornfieldBorder32.CornfieldSide = sidePart32;
+            AddCornfieldSplittedBorder(field, FieldSide.bottom, CornfieldSide.side_3, GetPart(cornfieldPartName), fieldBoard);
+            AddCornfieldSplittedBorder(field, FieldSide.bottom, CornfieldSide.side_4, GetPart(cornfieldPartName), fieldBoard);
         }
     }
 }

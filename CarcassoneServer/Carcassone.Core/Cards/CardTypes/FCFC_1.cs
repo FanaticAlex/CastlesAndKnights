@@ -28,11 +28,9 @@ namespace Carcassone.Core.Cards
             var cornfieldPart2 = new CornfieldPart(cornfieldPart1Name, Id);
             Parts.Add(cornfieldPart2);
 
-
             FieldToCastleParts.Add(cornfieldPart1.PartId, new List<string>() { castlePart.PartId });
             FieldToCastleParts.Add(cornfieldPart2.PartId, new List<string>() { castlePart.PartId });
         }
-
 
         public override void ConnectField(Field field, FieldBoard fieldBoard)
         {

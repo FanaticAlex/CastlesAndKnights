@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Carcassone.Core.Fields;
 using Newtonsoft.Json;
@@ -65,12 +66,20 @@ namespace Carcassone.Core.Cards
         }
 
         public void AddCornfieldSplittedBorder(
-            Field field, FieldSide cornfieldSide, CornfieldSide cornfieldSidePart, ObjectPart part, FieldBoard fieldBoard)
+            Field field, FieldSide side, CornfieldSide sidePart, ObjectPart part, FieldBoard fieldBoard)
         {
-            cornfieldSide = RotateSide(cornfieldSide, RotationsCount);
-            cornfieldSidePart = RotateSidePart(cornfieldSidePart, RotationsCount);
-            var cornfield1Border0 = new CardBorder(field, fieldBoard.GetNeighbour(field, cornfieldSide), this);
-            cornfield1Border0.CornfieldSide = cornfieldSidePart;
+            if ((side == FieldSide.top && sidePart != CornfieldSide.side_0 && sidePart != CornfieldSide.side_7) ||
+                (side == FieldSide.right && sidePart != CornfieldSide.side_1 && sidePart != CornfieldSide.side_2) ||
+                (side == FieldSide.bottom && sidePart != CornfieldSide.side_3 && sidePart != CornfieldSide.side_4) ||
+                (side == FieldSide.left && sidePart != CornfieldSide.side_5 && sidePart != CornfieldSide.side_6))
+            {
+                throw new Exception($"Wrong side order in part {part.PartId}");
+            }
+
+            side = RotateSide(side, RotationsCount);
+            sidePart = RotateSidePart(sidePart, RotationsCount);
+            var cornfield1Border0 = new CardBorder(field, fieldBoard.GetNeighbour(field, side), this);
+            cornfield1Border0.CornfieldSide = sidePart;
             part.Borders.Add(cornfield1Border0);
         }
 
