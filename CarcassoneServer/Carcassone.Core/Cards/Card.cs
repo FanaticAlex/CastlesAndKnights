@@ -64,6 +64,16 @@ namespace Carcassone.Core.Cards
             part.Borders.Add(castleBorder);
         }
 
+        public void AddCornfieldSplittedBorder(
+            Field field, FieldSide cornfieldSide, CornfieldSide cornfieldSidePart, ObjectPart part, FieldBoard fieldBoard)
+        {
+            cornfieldSide = RotateSide(cornfieldSide, RotationsCount);
+            cornfieldSidePart = RotateSidePart(cornfieldSidePart, RotationsCount);
+            var cornfield1Border0 = new CardBorder(field, fieldBoard.GetNeighbour(field, cornfieldSide), this);
+            cornfield1Border0.CornfieldSide = cornfieldSidePart;
+            part.Borders.Add(cornfield1Border0);
+        }
+
         public List<string> GetConnectedCastleParts(CornfieldPart part)
         {
             var castleParts = new List<string>();

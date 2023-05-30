@@ -1,9 +1,9 @@
 ﻿using Carcassone.Core.Players;
 using Xunit;
 
-namespace Carcassone.Core.Tests.Calculation.Objects
+namespace Carcassone.Core.Tests.Buisness
 {
-    public class CornfieldTests
+    public class Buisness_2_CornfieldTests
     {
         /// <summary>
         ///       F

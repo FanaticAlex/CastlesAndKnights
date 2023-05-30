@@ -2,9 +2,9 @@
 using Carcassone.Core.Players;
 using Xunit;
 
-namespace Carcassone.Core.Tests.Calculation.Objects
+namespace Carcassone.Core.Tests.Buisness
 {
-    public class ChurchTests
+    public class Buisness_3_ChurchTests
     {
         /// <summary>
         /// 9 полей с картой церкви в центальной фишка игрока.

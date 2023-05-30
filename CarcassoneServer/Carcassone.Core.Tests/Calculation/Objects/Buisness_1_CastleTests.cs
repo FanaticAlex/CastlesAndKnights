@@ -4,9 +4,9 @@ using Carcassone.Core.Players;
 using System.Linq;
 using Xunit;
 
-namespace Carcassone.Core.Tests.Calculation.Objects
+namespace Carcassone.Core.Tests.Buisness
 {
-    public class CastleTests
+    public class Buisness_1_CastleTests
     {
 
         /// <summary>

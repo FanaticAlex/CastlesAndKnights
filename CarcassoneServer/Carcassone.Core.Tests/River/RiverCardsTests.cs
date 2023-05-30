@@ -1,9 +1,9 @@
 ﻿using Carcassone.Core.Players;
 using Xunit;
 
-namespace Carcassone.Core.Tests.River
+namespace Carcassone.Core.Tests.Buisness
 {
-    public class RiverCardsTests
+    public class Buisness_5_RiverCardsTests
     {
         /// <summary>
         ///       F

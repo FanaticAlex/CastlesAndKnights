@@ -5,9 +5,9 @@ using Carcassone.Core.Players;
 using System.Linq;
 using Xunit;
 
-namespace Carcassone.Core.Tests.Calculation.Objects
+namespace Carcassone.Core.Tests.Buisness
 {
-    public class RoadTests
+    public class Buisness_4_RoadTests
     {
 
         /// <summary>
