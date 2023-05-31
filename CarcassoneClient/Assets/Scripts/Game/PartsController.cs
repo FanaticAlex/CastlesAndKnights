@@ -71,8 +71,9 @@ namespace Assets.Scripts
                 return;
 
             var player = GameManager.Instance.RoomService.GetPlayer(part.Flag.OwnerName);
-            var flagPrefab = Constants.Flags[player.Color];
+            var flagPrefab = Constants.Flag;
             var flagObject = GameObject.Instantiate(flagPrefab);
+            flagObject.GetComponent<SpriteRenderer>().color = Constants.Colors[player.Color];
             var partGameObject = _partToGameObject[part.PartId];
             flagObject.transform.parent = partGameObject.transform.parent;
             flagObject.transform.localPosition = partGameObject.transform.localPosition + new Vector3(0, 0, -1.3f);

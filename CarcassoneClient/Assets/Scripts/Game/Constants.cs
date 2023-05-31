@@ -5,23 +5,9 @@ namespace Assets.Scripts
 {
     public static class Constants
     {
-        /// <summary>
-        /// Фишки игроков.
-        /// </summary>
         public static GameObject Chip => (GameObject)Resources.Load("Chip/Chip", typeof(GameObject));
 
-        /// <summary>
-        /// Флажки законченных объектов.
-        /// </summary>
-        public static Dictionary<string, GameObject> Flags = new Dictionary<string, GameObject>()
-        {
-            {"Blue", (GameObject)Resources.Load("Flags/Flag_Blue", typeof(GameObject))},
-            {"Green", (GameObject)Resources.Load("Flags/Flag_Green", typeof(GameObject))},
-            {"Red", (GameObject)Resources.Load("Flags/Flag_Red", typeof(GameObject))},
-            //{"White", (GameObject)Resources.Load("Flags/Flag_White", typeof(GameObject))},
-            {"Yellow", (GameObject)Resources.Load("Flags/Flag_Yellow", typeof(GameObject))},
-            {"Gray", (GameObject)Resources.Load("Flags/Flag_Gray", typeof(GameObject))}
-        };
+        public static GameObject Flag => (GameObject)Resources.Load("Flags/Flag", typeof(GameObject));
 
         /// <summary>
         /// Рамочки игроков обозначающие последний ход
