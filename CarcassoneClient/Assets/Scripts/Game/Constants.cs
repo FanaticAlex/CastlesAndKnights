@@ -8,13 +8,7 @@ namespace Assets.Scripts
         /// <summary>
         /// Фишки игроков.
         /// </summary>
-        public static Dictionary<string, GameObject> Chip = new Dictionary<string, GameObject>()
-        {
-            {"Knight", (GameObject)Resources.Load("Chip/Knight", typeof(GameObject))},
-            {"Peasant", (GameObject)Resources.Load("Chip/Peasant", typeof(GameObject))},
-            {"Priest", (GameObject)Resources.Load("Chip/Priest", typeof(GameObject))},
-            {"Thief", (GameObject)Resources.Load("Chip/Thief", typeof(GameObject))},
-        };
+        public static GameObject Chip => (GameObject)Resources.Load("Chip/Chip", typeof(GameObject));
 
         /// <summary>
         /// Флажки законченных объектов.

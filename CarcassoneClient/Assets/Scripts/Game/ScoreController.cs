@@ -52,9 +52,7 @@ namespace Assets.Scripts
                 if (player != null)
                 {
                     _playersScorePanels.Add(player.Name, playerPanel);
-
-                    Color userColor;
-                    ColorUtility.TryParseHtmlString(player.Color, out userColor);
+                    Color userColor = Constants.Colors[player.Color];
                     playerPanel.transform.Find("ColorPanel").GetComponentInChildren<Image>().color = userColor;
 
                     remainPlayers.Remove(player);

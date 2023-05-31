@@ -25,7 +25,7 @@ namespace Assets.Scripts
 
             foreach (var part in changedParts)
             {
-                TryCreateChip(part, "Knight");
+                TryCreateChip(part);
                 TryCreateFlag(part);
             }
         }
@@ -79,7 +79,7 @@ namespace Assets.Scripts
             _ownedPartsFlags[part.PartId] = flagObject;
         }
 
-        private void TryCreateChip(ObjectPart part, string type)
+        private void TryCreateChip(ObjectPart part)
         {
             if (part.Chip == null)
                 return;
@@ -87,10 +87,12 @@ namespace Assets.Scripts
             if (_ownedPartsChips.Keys.Contains(part.PartId))
                 return;
 
-            var chipPrefab = Constants.Chip[type];
-            var chipObject = GameObject.Instantiate(chipPrefab);
-
             var player = GameManager.Instance.RoomService.GetPlayer(part.Chip.OwnerName);
+
+            var chipPrefab = Constants.Chip;
+            var chipObject = GameObject.Instantiate(chipPrefab);
+            chipObject.GetComponent<SpriteRenderer>().color = Constants.Colors[player.Color];
+
             chipObject.GetComponent<Renderer>().material.color = Constants.Colors[player.Color];
             var partGameObject = _partToGameObject[part.PartId];
             chipObject.transform.parent = partGameObject.transform.parent;
