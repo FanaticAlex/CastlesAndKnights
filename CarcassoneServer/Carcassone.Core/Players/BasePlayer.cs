@@ -89,7 +89,7 @@ namespace Carcassone.Core.Players
         public void ProcessMove(GameRoom room)
         {
             if (room == null)
-                return;
+                throw new Exception("The room cannot be null.");
 
             var card = room.GetCurrentCard();
             if (card == null)
@@ -116,6 +116,9 @@ namespace Carcassone.Core.Players
 
         private GameMove GetBestMove(List<GameMove> possibleMoves)
         {
+            if (possibleMoves == null || possibleMoves.Count == 0)
+                throw new Exception("AI cant make a move. No possible moves.");
+
             // ходы возвращающие фишки
             var maxReturnChips = possibleMoves.Max(m => (m.ExpectedScore.ChipCount - ChipCount));
             var returnChipsMove = possibleMoves
@@ -178,7 +181,7 @@ namespace Carcassone.Core.Players
                     possibleMoves.Add(gameMove);
                 }
 
-                if (possibleMoves.Count >= maxCalculations)
+                if (possibleMoves.Count >= maxCalculations) // ограничение по времени выполнения
                     return possibleMoves;
             }
 

@@ -112,10 +112,22 @@ namespace CarcassoneServer.Controllers
             human.SetPlayerMove3(room);
 
             // AI players move
-            var task = Task.Run(room.AllAiPlayersMove);
+            var task = Task.Run(() => AIPlayersMove(room));
             task.ContinueWith((obj) => FinishingTheGame(room));
 
             return Ok();
+        }
+
+        private void AIPlayersMove(GameRoom room)
+        {
+            try
+            {
+                room.AllAiPlayersMove();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while ai move.");
+            }
         }
 
         private void FinishingTheGame(GameRoom room)

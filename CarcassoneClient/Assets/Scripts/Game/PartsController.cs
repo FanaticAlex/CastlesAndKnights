@@ -77,6 +77,7 @@ namespace Assets.Scripts
             var partGameObject = _partToGameObject[part.PartId];
             flagObject.transform.parent = partGameObject.transform.parent;
             flagObject.transform.localPosition = partGameObject.transform.localPosition + new Vector3(0, 0, -1.3f);
+            flagObject.transform.rotation = Quaternion.identity;
             _ownedPartsFlags[part.PartId] = flagObject;
         }
 
@@ -98,6 +99,7 @@ namespace Assets.Scripts
             var partGameObject = _partToGameObject[part.PartId];
             chipObject.transform.parent = partGameObject.transform.parent;
             chipObject.transform.localPosition = partGameObject.transform.localPosition + new Vector3(0, 0, -1.3f);
+            chipObject.transform.rotation = Quaternion.identity;
             _ownedPartsChips.Add(part.PartId, chipObject);
         }
     }
