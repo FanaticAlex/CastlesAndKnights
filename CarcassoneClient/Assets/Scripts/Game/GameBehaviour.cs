@@ -47,13 +47,20 @@ namespace Assets.Scripts
         /// </summary>
         async void Update()
         {
-            _playerController.DoubleClick |= IsDoubleClick();
-
-            _timer -= Time.deltaTime;
-            if (_timer <= 0.0f) // длительные операции, запросы к серверу
+            try
             {
-                _timer = 0.5f;
-                await UpdateSpecial();
+                _playerController.DoubleClick |= IsDoubleClick();
+
+                _timer -= Time.deltaTime;
+                if (_timer <= 0.0f) // длительные операции, запросы к серверу
+                {
+                    _timer = 0.5f;
+                    await UpdateSpecial();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Info(ex.ToString());
             }
         }
 

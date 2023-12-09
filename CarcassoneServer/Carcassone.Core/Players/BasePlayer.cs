@@ -93,7 +93,10 @@ namespace Carcassone.Core.Players
 
             var card = room.GetCurrentCard();
             if (card == null)
+            {
+                room.EndTurn();
                 return; // игра уже окончена
+            }
 
             // where to put a card
             var fields = room.GetAvailableFields(card.Id).Select(f => f.Id).ToList();
@@ -111,6 +114,7 @@ namespace Carcassone.Core.Players
                 var part = card.GetPart(bestMove.PartName);
                 room.PutChipInCard(part, this.Name);
             }
+
             room.EndTurn();
         }
 
