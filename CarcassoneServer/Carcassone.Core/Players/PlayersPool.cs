@@ -33,6 +33,18 @@ namespace Carcassone.Core.Players
 
         public BasePlayer? GetCurrentPlayer() => (CurrentPlayerIndex == -1) ? null : Players[CurrentPlayerIndex];
 
+        public BasePlayer GetHumanPlayer(GameRoom room, string playerName)
+        {
+            var player = GetCurrentPlayer();
+            if (player.Name != playerName)
+                throw new Exception($"Its '{player.Name}' turn!");
+
+            if (player.PlayerType != PlayerType.Human)
+                throw new Exception($"Its AI '{player.Name}' turn!");
+
+            return player;
+        }
+
         public List<BasePlayer> Players { get; } = new List<BasePlayer>();
 
         public void DeletePlayer(string name)

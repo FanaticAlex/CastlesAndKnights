@@ -1,6 +1,5 @@
 using Carcassone.DAL;
 using Carcassone.Server.Services;
-using Carcassone.Server1;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -54,26 +53,23 @@ var logger = new LoggerConfiguration()
                  .CreateLogger();
 
 builder.Logging.ClearProviders().AddConsole().AddSerilog(logger);
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Маппинг
+app.Map("/", () => "Hello World");
+
 //if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.ConfigureExceptionHandler(logger);
-
+app.UseExceptionHandler("/error-development");
+//app.ConfigureExceptionHandler(logger);
 //app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
-
 
 void SetupSwagger(SwaggerGenOptions opt)
 {
@@ -81,28 +77,30 @@ void SetupSwagger(SwaggerGenOptions opt)
 
     opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Carcassone API", Version = "v1" });
 
-    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "bearer"
-    });
+    opt.AddSecurityDefinition("Bearer",
+        new OpenApiSecurityScheme
+        {
+            In = ParameterLocation.Header,
+            Description = "Please enter token",
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            BearerFormat = "JWT",
+            Scheme = "bearer"
+        });
 
-    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    opt.AddSecurityRequirement(
+        new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
                 {
+                    Reference = new OpenApiReference
                     {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type=ReferenceType.SecurityScheme,
-                                Id="Bearer"
-                            }
-                        },
-                        new string[]{}
+                        Type=ReferenceType.SecurityScheme,
+                        Id="Bearer"
                     }
-                });
+                },
+                new string[]{}
+            }
+        });
 }

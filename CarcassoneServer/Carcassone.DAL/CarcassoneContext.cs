@@ -8,7 +8,7 @@ namespace Carcassone.DAL
     {
         public CarcassoneContext(DbContextOptions options) : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         public DbSet<UserGameScore> Scores { get; set; }

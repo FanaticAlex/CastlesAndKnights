@@ -37,46 +37,43 @@ namespace CarcassoneServer.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<TokenResult>> Login(string login, [DataType(DataType.Password)] string password)
         {
+            /* временно убрано пока нет авторизации
             var user = await _userManager.FindByNameAsync(login);
             if (user?.UserName == null)
                 return Unauthorized();
 
-            if (await _userManager.CheckPasswordAsync(user, password))
-            {
-                var userRoles = await _userManager.GetRolesAsync(user);
+            if (!await _userManager.CheckPasswordAsync(user, password))
+                return Unauthorized();
 
-                var authClaims = new List<Claim>
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
-                foreach (var userRole in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
+            foreach (var userRole in userRoles)
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            */
 
-                var secret = _configuration["JWT:Secret"];
-                if (secret == null)
-                    return Problem();
+            var secret = _configuration["JWT:Secret"];
+            if (secret == null)
+                return Problem();
 
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JWT:ValidIssuer"],
+                audience: _configuration["JWT:ValidAudience"],
+                expires: DateTime.Now.AddHours(3),
+                claims: null,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
 
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["JWT:ValidIssuer"],
-                    audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(3),
-                    claims: null, // authClaims,
-                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                    );
-
-                return Ok(new TokenResult
-                {
-                    Token = new JwtSecurityTokenHandler().WriteToken(token),
-                    Expiration = token.ValidTo
-                });
-            }
-            return Unauthorized();
+            return Ok(new TokenResult
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                Expiration = token.ValidTo
+            });
         }
     }
 }

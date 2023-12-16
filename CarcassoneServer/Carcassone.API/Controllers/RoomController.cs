@@ -38,9 +38,8 @@ namespace CarcassoneServer.Controllers
         [Route("create")]
         public GameRoom CreateRoom()
         {
-            var room = _service.CreateRoom();
-            _logger.LogInformation("RoomCreated");
-            return room;
+            _logger.LogInformation("Called CreateRoom");
+            return _service.CreateRoom();
         }
 
         [HttpGet]
@@ -90,7 +89,7 @@ namespace CarcassoneServer.Controllers
         public void PutCardInField(string roomId, string fieldId, string cardName, string playerName)
         {
             var room = _service.GetRoom(roomId);
-            var human = GetHumanPlayer(room, playerName);
+            var human = room.PlayersPool.GetHumanPlayer(room, playerName);
             human.SetPlayerMove1(room, cardName, fieldId);
         }
 
@@ -99,7 +98,7 @@ namespace CarcassoneServer.Controllers
         public void PutChipInCard(string roomId, string cardName, string partId, string playerName)
         {
             var room = _service.GetRoom(roomId);
-            var human = GetHumanPlayer(room, playerName);
+            var human = room.PlayersPool.GetHumanPlayer(room, playerName);
             human.SetPlayerMove2(room, cardName, partId);
         }
 
@@ -108,26 +107,14 @@ namespace CarcassoneServer.Controllers
         public IActionResult EndTurn(string roomId, string playerName)
         {
             var room = _service.GetRoom(roomId);
-            var human = GetHumanPlayer(room, playerName);
+            var human = room.PlayersPool.GetHumanPlayer(room, playerName);
             human.SetPlayerMove3(room);
 
             // AI players move
-            var task = Task.Run(() => AIPlayersMove(room));
+            var task = Task.Run(() => room.AllAiPlayersMove());
             task.ContinueWith((obj) => FinishingTheGame(room));
 
             return Ok();
-        }
-
-        private void AIPlayersMove(GameRoom room)
-        {
-            try
-            {
-                room.AllAiPlayersMove();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while ai move.");
-            }
         }
 
         private void FinishingTheGame(GameRoom room)
@@ -162,18 +149,6 @@ namespace CarcassoneServer.Controllers
                 var scoreService = new GameScoreService(context);
                 scoreService.SaveUserGameScore(userScore);
             }
-        }
-
-        private BasePlayer GetHumanPlayer(GameRoom room, string playerName)
-        {
-            var player = room.PlayersPool.GetCurrentPlayer();
-            if (player.Name != playerName)
-                throw new Exception($"Its '{player.Name}' turn!");
-
-            if (player.PlayerType != PlayerType.Human)
-                throw new Exception($"Its AI '{player.Name}' turn!");
-
-            return player;
         }
 
         [HttpGet]
@@ -236,8 +211,7 @@ namespace CarcassoneServer.Controllers
 
         [HttpGet]
         [Route("{roomId}/card/active")]
-        public List<Card> GetActiveCards(string roomId) =>
-            _service.GetRoom(roomId).GetActiveCards();
+        public List<Card> GetActiveCards(string roomId) => _service.GetRoom(roomId).GetActiveCards();
 
         [HttpGet]
         [Route("{roomId}/card/remain")]

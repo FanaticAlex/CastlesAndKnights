@@ -776,11 +776,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: 91d9561e-5e1e-4434-abf2-52c37b9bbb1e
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: CarcassoneClient
+  organizationId: fanaticalex
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 

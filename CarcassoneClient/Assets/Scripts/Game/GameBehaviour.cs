@@ -10,7 +10,7 @@ namespace Assets.Scripts
 {
 
     /// <summary>
-    /// Содержит данные об игре и управляет ходами одного игрока.
+    /// Содержит данные об игре и управляет ходами одного игрока, а так же обновлением игры
     /// </summary>
     public class GameBehaviour : MonoBehaviour
     {
@@ -21,11 +21,13 @@ namespace Assets.Scripts
 
         private string _currentPlayerName;
 
-        float _timer;
+        private Timer _updateTimer;
+        private DoubleClickController _doubleClickController;
 
         public GameObject FinalScoreUIPanel;
         public GameObject FinalScoreUIPanelText;
         public GameObject PlayerDetailScorePanel;
+        public GameObject currentCardImageGO;
 
         /// <summary>
         /// Инициализация сцены комнаты игры.
@@ -37,8 +39,12 @@ namespace Assets.Scripts
             _fieldsController = new FieldsController();
             _cardsController = new CardsController(_fieldsController);
             _playerController = new PlayerController(_fieldsController, _cardsController);
-
             _scoreController = new ScoreController(FinalScoreUIPanel, FinalScoreUIPanelText, PlayerDetailScorePanel);
+
+            _updateTimer = new Timer(0.5f);
+            _updateTimer.Elapsed += async (s, e) => await UpdateSpecial();
+
+            _doubleClickController = new DoubleClickController();
         }
 
         /// <summary>
@@ -49,14 +55,8 @@ namespace Assets.Scripts
         {
             try
             {
-                _playerController.DoubleClick |= IsDoubleClick();
-
-                _timer -= Time.deltaTime;
-                if (_timer <= 0.0f) // длительные операции, запросы к серверу
-                {
-                    _timer = 0.5f;
-                    await UpdateSpecial();
-                }
+                _playerController.DoubleClick |= _doubleClickController.IsDoubleClick();
+                await _updateTimer.Update(Time.deltaTime); // длительные операции, запросы к серверу
             }
             catch (Exception ex)
             {
@@ -77,7 +77,6 @@ namespace Assets.Scripts
             if (_cardsController.CurrentCard != null)
             {
                 var cardGO = _cardsController._cardsToGameObject[_cardsController.CurrentCard.Id];
-                var currentCardImageGO = GameObject.Find("CurrentCardImage");
                 currentCardImageGO.GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
                 currentCardImageGO.transform.localRotation = Quaternion.Euler(0, 0, _cardsController.CurrentCard.RotationsCount * -90);
             }
@@ -91,52 +90,6 @@ namespace Assets.Scripts
                 _currentPlayerName = currentPlayer?.Name;
                 UpdateGameViewsFromServer(currentPlayer);
             }
-        }
-
-        private float _timer1 = 0;
-        private bool _rememberedButtonClick;
-        private Vector3 _rememberedCoursorPosition;
-
-        private bool IsDoubleClick()
-        {
-            // first click setup timer and remember click
-            if (Input.GetMouseButtonUp(0) && _timer1 <= 0)
-            {
-                _timer1 = 0.3f; // time to make doubleclick
-                _rememberedButtonClick = true;
-                _rememberedCoursorPosition = Input.mousePosition;
-                return false;
-            }
-
-            // second click is doubleclick
-            if (_rememberedButtonClick && Input.GetMouseButtonUp(0) && _timer1 > 0)
-            {
-                var isNear = Vector3.Magnitude(Input.mousePosition - _rememberedCoursorPosition) < 30;
-                if (isNear)
-                {
-                    _timer1 = 0;
-                    _rememberedButtonClick = false;
-                    _rememberedCoursorPosition = Vector3.zero;
-                    return true;
-                }
-                else
-                {
-                    Logger.Info("Not near second click!");
-                }
-            }
-
-            // just waiting second click
-            if (_timer1 > 0)
-            {
-                _timer1 -= Time.deltaTime;
-            }
-            else // timer dropped
-            {
-                _rememberedButtonClick = false;
-                _rememberedCoursorPosition = Vector3.zero;
-            }
-
-            return false;
         }
 
         public void OnRotateButonClick()

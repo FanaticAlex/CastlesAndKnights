@@ -2,6 +2,7 @@
 using Carcassone.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography.Xml;
 
 namespace Carcassone.Server.Controllers
 {
@@ -25,46 +26,27 @@ namespace Carcassone.Server.Controllers
         [Route("user/{userName}")]
         public ActionResult<List<UserGameScore>> GetScoreByUser(string userName)
         {
-            try
-            {
-                _logger.LogWarning("GetScoreByUser Called");
-                return _service.GetUserScores(userName).ToList();
-            }
-            catch(Exception e)
-            {
-                _logger.LogError(e.Message);
-                return Problem(e.Message);
-            }
+            _logger.LogInformation("GetScoreByUser Called");
+            //return _service.GetUserScores(userName).ToList();
+            return new List<UserGameScore>();
         }
 
         [HttpGet]
         [Route("game/{gameId}")]
         public ActionResult<List<UserGameScore>> GetScoreByGame(string gameId)
         {
-            try
-            {
-                return _service.GetGameScores(gameId).ToList();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                return Problem(e.Message);
-            }
+            _logger.LogInformation("GetScoreByGame Called");
+            //return _service.GetGameScores(gameId).ToList();
+            return new List<UserGameScore>();
         }
 
         [HttpGet]
         [Route("user/{userName}/statistic")]
         public ActionResult<UserStatistic> GetUserStatistic(string userName)
         {
-            try
-            {
-                return _service.GetUserStatistic(userName);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                return Problem(e.Message);
-            }
+            _logger.LogInformation("GetUserStatistic Called");
+            //return _service.GetUserStatistic(userName);
+            return new UserStatistic();
         }
     }
 }

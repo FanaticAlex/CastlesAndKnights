@@ -1338,6 +1338,7 @@ MonoBehaviour:
   FinalScoreUIPanel: {fileID: 1999436163}
   FinalScoreUIPanelText: {fileID: 2093555123}
   PlayerDetailScorePanel: {fileID: 1792329625}
+  currentCardImageGO: {fileID: 1315583835}
 --- !u!4 &844414330
 Transform:
   m_ObjectHideFlags: 0
