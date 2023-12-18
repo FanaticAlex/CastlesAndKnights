@@ -53,7 +53,7 @@ namespace Assets.Scripts
             try
             {
                 _playerController.DoubleClick |= _doubleClickController.IsDoubleClick();
-                await _updateTimer.Update(Time.deltaTime); // длительные операции, запросы к серверу
+                await _updateTimer.Update(Time.deltaTime); // затратные операции, запросы к серверу
             }
             catch (Exception ex)
             {

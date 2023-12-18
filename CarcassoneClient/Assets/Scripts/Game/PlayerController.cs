@@ -51,7 +51,6 @@ namespace Assets.Scripts
         {
             if (PlayerState == PlayerState.PlayerWait)
             {
-                // это обновляем отображение карт один раз только когда все остальные игроки сходят и снова начнется наш ход
                 UpdateGameViewsFromServer(player);
                 PlayerState = PlayerState.PlayerHoldCard;
                 return;
