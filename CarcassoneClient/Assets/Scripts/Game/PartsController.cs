@@ -8,20 +8,20 @@ namespace Assets.Scripts
 {
     internal class PartsController
     {
-        public Dictionary<string, GameObject> _partToGameObject = new Dictionary<string, GameObject>();
-        public Dictionary<string, GameObject> _ownedPartsChips = new Dictionary<string, GameObject>();
-        public Dictionary<string, GameObject> _ownedPartsFlags = new Dictionary<string, GameObject>();
+        public Dictionary<string, GameObject> _partToGameObject = new();
+        public Dictionary<string, GameObject> _ownedPartsChips = new();
+        public Dictionary<string, GameObject> _ownedPartsFlags = new();
 
-        public List<ObjectPart> PartsCache = new List<ObjectPart>();
+        public List<ObjectPart> ActivePartsCache = new();
 
         /// <summary>
         /// Расставляет флаги на захваченных объектах
         /// </summary>
-        public void UpdatePartsOwnersUI()
+        public void UpdateParts()
         {
-            var newParts = GameManager.Instance.RoomService.GetActiveParts();
-            var changedParts = GetChangedParts(PartsCache, newParts);
-            PartsCache = newParts;
+            var activeParts = GameManager.Instance.RoomService.GetActiveParts();
+            var changedParts = GetChangedParts(ActivePartsCache, activeParts);
+            ActivePartsCache = activeParts;
 
             foreach (var part in changedParts)
             {
@@ -94,7 +94,6 @@ namespace Assets.Scripts
             var chipPrefab = Constants.Chip;
             var chipObject = GameObject.Instantiate(chipPrefab);
             chipObject.GetComponent<SpriteRenderer>().color = Constants.Colors[player.Color];
-
             chipObject.GetComponent<Renderer>().material.color = Constants.Colors[player.Color];
             var partGameObject = _partToGameObject[part.PartId];
             chipObject.transform.parent = partGameObject.transform.parent;

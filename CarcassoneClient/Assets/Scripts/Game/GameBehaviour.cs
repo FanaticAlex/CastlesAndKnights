@@ -19,15 +19,12 @@ namespace Assets.Scripts
         private PlayerController _playerController;
         private ScoreController _scoreController;
 
-        private string _currentPlayerName;
-
         private Timer _updateTimer;
         private DoubleClickController _doubleClickController;
 
         public GameObject FinalScoreUIPanel;
         public GameObject FinalScoreUIPanelText;
         public GameObject PlayerDetailScorePanel;
-        public GameObject currentCardImageGO;
 
         /// <summary>
         /// Инициализация сцены комнаты игры.
@@ -38,8 +35,8 @@ namespace Assets.Scripts
         {
             _fieldsController = new FieldsController();
             _cardsController = new CardsController(_fieldsController);
-            _playerController = new PlayerController(_fieldsController, _cardsController);
             _scoreController = new ScoreController(FinalScoreUIPanel, FinalScoreUIPanelText, PlayerDetailScorePanel);
+            _playerController = new PlayerController(_fieldsController, _cardsController, _scoreController);
 
             _updateTimer = new Timer(0.5f);
             _updateTimer.Elapsed += async (s, e) => await UpdateSpecial();
@@ -67,28 +64,22 @@ namespace Assets.Scripts
         private async Task UpdateSpecial()
         {
             var currentPlayer = await GameManager.Instance.RoomService.GetCurrentPlayer();
-            var isLocalPlayerTurn = GameManager.Instance.RoomService.HumanUsers.Contains(currentPlayer?.Name);
+
+            // наш ход
+            var isLocalPlayerTurn = GameManager.Instance.RoomService.HumanUser == currentPlayer?.Name;
             if (isLocalPlayerTurn)
             {
-                _playerController.HandlePlayerActions(_cardsController, currentPlayer.Name);
+                _playerController.HandlePlayerActions(_cardsController, currentPlayer);
             }
 
-            // поворот текущей карты
-            if (_cardsController.CurrentCard != null)
+            // окончание игры
+            var isFinished = GameManager.Instance.RoomService.GetRoom().IsFinished;
+            if (isFinished)
             {
-                var cardGO = _cardsController._cardsToGameObject[_cardsController.CurrentCard.Id];
-                currentCardImageGO.GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
-                currentCardImageGO.transform.localRotation = Quaternion.Euler(0, 0, _cardsController.CurrentCard.RotationsCount * -90);
-            }
-
-            // это обновляем отображение карт только при смене хода,
-            // и при смене статуса хода, для оптимизации
-            var isTurnChanged = (currentPlayer?.Name != _currentPlayerName);
-            if (isTurnChanged || _playerController.StateChanged)
-            {
-                _playerController.StateChanged = false;
-                _currentPlayerName = currentPlayer?.Name;
-                UpdateGameViewsFromServer(currentPlayer);
+                _playerController.UpdateGameViewsFromServer(currentPlayer);
+                this.enabled = false;
+                _scoreController.ShowEndGameWindow();
+                return;
             }
         }
 
@@ -115,36 +106,6 @@ namespace Assets.Scripts
         public void OnEndGameBtn()
         {
             SceneManager.LoadScene("CreateRoom", LoadSceneMode.Single);
-        }
-
-        private void UpdateGameViewsFromServer(BasePlayer currentPlayer)
-        {
-            if (_playerController.PlayerState != PlayerState.PlayerHoldChip)
-                _cardsController.ReloadCurrentCard();
-
-            _fieldsController.CreateFieldsIfNotExistView();
-
-            if (_playerController.PlayerState == PlayerState.PlayerHoldCard) // оптимизируем
-                _fieldsController.UpdateFieldsView(_cardsController.CurrentCard);
-
-            _cardsController.UpdateCardsView(_fieldsController);
-            _cardsController.UpdateCardRemainView();
-            _playerController.UpdatePlayersView();
-            _scoreController.UpdateScore();
-            _scoreController.UpdateCurrentPlayerMark(currentPlayer);
-            _scoreController.UpdateWaitingSpinners(currentPlayer);
-
-            // окончание игры
-            var isFinished = GameManager.Instance.RoomService.GetRoom().IsFinished;
-            if (isFinished)
-            {
-                // дополнительное обновление
-                _fieldsController.UpdateFieldsView(null); // подсвечивает все как недоступное
-
-                this.enabled = false;
-                _scoreController.ShowEndGameWindow();
-                return;
-            }
         }
     }
 }

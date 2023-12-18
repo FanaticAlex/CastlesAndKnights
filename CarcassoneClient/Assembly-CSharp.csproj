@@ -62,8 +62,10 @@
     <Compile Include="Assets\Scripts\Game\Model\GameManager.cs" />
     <Compile Include="Assets\Scripts\Game\Model\IGameService.cs" />
     <Compile Include="Assets\Scripts\Menu\ChooseRoomWindowController.cs" />
+    <Compile Include="Assets\Scripts\Timer.cs" />
     <Compile Include="Assets\Scripts\Game\ScoreController.cs" />
     <Compile Include="Assets\Scripts\Menu\LoginWindowController.cs" />
+    <Compile Include="Assets\Scripts\DoubleClickController.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuManager.cs" />
     <Compile Include="Assets\Scripts\Game\CardsController.cs" />
     <Compile Include="Assets\Scripts\Logger.cs" />
@@ -81,8 +83,6 @@
     <Compile Include="Assets\Scripts\Game\Prefs.cs" />
     <Compile Include="Assets\Scripts\Menu\SetupRoomWindowController.cs" />
     <Compile Include="Assets\Scripts\Game\PartsController.cs" />
-    <Compile Include="Assets\Scripts\Timer.cs" />
-    <Compile Include="Assets\Scripts\DoubleClickController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

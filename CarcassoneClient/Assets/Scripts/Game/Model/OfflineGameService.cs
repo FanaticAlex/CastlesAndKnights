@@ -17,7 +17,7 @@ namespace Assets.Scripts
             MenuManager.IAmGameMaster = true;
         }
 
-        public List<string> HumanUsers { get; set; } = new List<string>();
+        public string HumanUser { get; set; }
 
         public void Create() { _room = new Carcassone.Core.GameRoom(); }
         public void Connect(string roomId) => throw new NotImplementedException();
@@ -27,7 +27,7 @@ namespace Assets.Scripts
         {
             _room.PlayersPool.AddPlayer(playerName, (Carcassone.Core.Players.PlayerType)type);
             if (type == PlayerType._0)
-                HumanUsers.Add(playerName);
+                HumanUser = playerName;
         }
 
         public void Start() => _room.Start();
@@ -45,8 +45,6 @@ namespace Assets.Scripts
         public void DeletePlayer(string userName)
         {
             _room.PlayersPool.DeletePlayer(userName);
-            if (HumanUsers.Contains(userName))
-                HumanUsers.Remove(userName);
         }
 
         public Card GetCurrentCard() => ToCommon<Card>(_room.GetCurrentCard());
@@ -77,9 +75,9 @@ namespace Assets.Scripts
 
         public int GetCardsRemain() => _room.GetCardsRemain();
 
-        public void Reset() => HumanUsers.Clear();
+        public void Reset() => HumanUser = string.Empty;
 
-        public UserStatistic GetUserStatistic(string userName) => new UserStatistic();
+        public UserStatistic GetUserStatistic(string userName) => new();
 
         public void PutCard(string fieldId, string cardName, string playerName)
         {

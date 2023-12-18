@@ -9,23 +9,35 @@ namespace Assets.Scripts
 {
     internal class CardsController
     {
-        public Dictionary<string, GameObject> _cardsToGameObject = new Dictionary<string, GameObject>();
+        public Dictionary<string, GameObject> _cardsToGameObject = new();
 
         public PartsController _partsController;
+        public FieldsController _fieldsController;
 
-        public Card? CurrentCard { get; set; }
+        public Card CurrentCard { get; set; }
+        public GameObject currentCardImageGO;
 
         public CardsController(FieldsController fieldsController)
         {
             _partsController = new PartsController();
+            _fieldsController = fieldsController;
 
             CreateCardsView();
-            UpdateCardsView(fieldsController);
+            PutAllCardsInFields(); // установка стартовой карты на поле
+            currentCardImageGO = GameObject.Find("CurrentCardImage");
         }
 
         public void ReloadCurrentCard()
         {
             CurrentCard = GameManager.Instance.RoomService.GetCurrentCard();
+            
+            // поворот текущей карты игрока 
+            if (CurrentCard != null)
+            {
+                var cardGO = _cardsToGameObject[CurrentCard.Id];
+                currentCardImageGO.GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
+                currentCardImageGO.transform.localRotation = Quaternion.Euler(0, 0, CurrentCard.RotationsCount * -90);
+            }
         }
 
         public void CreateCardsView()
@@ -38,10 +50,7 @@ namespace Assets.Scripts
                 if (prefab == null)
                     prefab = (GameObject)Resources.Load(subfolderCards + "River/" + card.CardType, typeof(GameObject));
 
-                var cardObject = GameObject.Instantiate(prefab);
-                if (cardObject == null)
-                    throw new Exception();
-
+                var cardObject = GameObject.Instantiate(prefab) ?? throw new Exception();
                 _cardsToGameObject.Add(card.Id, cardObject);
                 cardObject.GetComponent<BoxCollider>().enabled = false;
 
@@ -64,9 +73,9 @@ namespace Assets.Scripts
             cardsRemainText.text = $"{cardsRemain}";
         }
 
-        public void ShowCardMarks(string cardId)
+        public void ShowCardMarks()
         {
-            var parts = GameManager.Instance.RoomService.GetAvailableObjectParts(cardId);
+            var parts = GameManager.Instance.RoomService.GetAvailableObjectParts(CurrentCard.Id);
             foreach (var part in parts)
             {
                 var partGameObject = _partsController._partToGameObject[part.PartId];
@@ -74,68 +83,49 @@ namespace Assets.Scripts
             }
         }
 
-        public void HideCardMarks(string cardId)
+        public void HideCardMarks()
         {
-            var cardGameObject = _cardsToGameObject[cardId];
-            var partsGameObjects = cardGameObject.GetComponentsInChildren<Transform>().Select(child => child.gameObject);
-            foreach (var partGameObject in partsGameObjects)
-            {
-                if (partGameObject.gameObject == cardGameObject) // с самой картой ничего делать не надо
-                    continue;
-
-                partGameObject.SetActive(false);
-            }
+            foreach (var part in _partsController.ActivePartsCache)
+                _partsController._partToGameObject[part.PartId].SetActive(false);
         }
 
         /// <summary>
         /// Устанавливает правильную позицию карты и поворот.
         /// - обновление карт после хода игроков
         /// </summary>
-        public void UpdateCardsView(FieldsController fieldsController)
+        public void PutAllCardsInFields()
         {
-            foreach (var field in fieldsController.FieldsCache)
+            foreach (var field in _fieldsController.FieldsCache)
             {
                 if (field.CardName == null)
                     continue;
 
                 var cardGameObject = _cardsToGameObject[field.CardName];
 
-                // поворот карты в нужную позицию
+                // поворот 
                 var card = GameManager.Instance.RoomService.GetCard(field.CardName);
                 cardGameObject.transform.rotation = Quaternion.Euler(0, 0, -90 * card.RotationsCount);
-
-                var fieldId = field.Id;
-                if (string.IsNullOrEmpty(fieldId))
-                    continue;
-
-                var fieldGameObject = fieldsController._fieldsToGameObject[fieldId];
+                // позиция
+                var fieldGameObject = _fieldsController._fieldsToGameObject[field.Id];
                 cardGameObject.transform.position = fieldGameObject.transform.position + new Vector3(0, 0, -1);
             }
-
-            _partsController.UpdatePartsOwnersUI();
         }
 
-        /// <summary>
-        /// Перемещает карту в руке игрока (игрок держит карту).
-        /// </summary>
-        /// <param name="player"></param>
-        public void UpdateCardPositionByCursor(Card card)
+        public void PutCardInField(Card card)
         {
-            if (card == null)
-                return;
+            foreach (var field in _fieldsController.FieldsCache)
+            {
+                if (field.CardName == null)
+                    continue;
 
-            var currentCardGameObject = _cardsToGameObject[card.Id];
-            currentCardGameObject.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + new Vector3(0, 0, 7);
-        }
+                if (field.CardName != card.Id)
+                    continue;
 
-        public void UpdateCardRotationUI(Card card)
-        {
-            if (card == null)
-                return;
-
-            var currentCardGameObject = _cardsToGameObject[card.Id];
-            var currentCard = GameManager.Instance.RoomService.GetCard(card.Id);
-            currentCardGameObject.transform.rotation = Quaternion.Euler(0, 0, -90 * currentCard.RotationsCount);
+                var cardGameObject = _cardsToGameObject[field.CardName];
+                var fieldGameObject = _fieldsController._fieldsToGameObject[field.Id];
+                cardGameObject.transform.position = fieldGameObject.transform.position + new Vector3(0, 0, -1);
+                cardGameObject.transform.rotation = Quaternion.Euler(0, 0, -90 * card.RotationsCount);
+            }
         }
     }
 }

@@ -9,12 +9,12 @@ namespace Assets.Scripts
 {
     internal class FieldsController
     {
-        public Dictionary<string, GameObject> _fieldsToGameObject = new Dictionary<string, GameObject>();
+        public Dictionary<string, GameObject> _fieldsToGameObject = new();
 
         public List<Field> FieldsCache { get; set; } = new List<Field>();
 
-        private GameObject _fieldPrefab;
-        private GameObject _desk;
+        private readonly GameObject _fieldPrefab;
+        private readonly GameObject _desk;
 
         public FieldsController()
         {
@@ -30,10 +30,9 @@ namespace Assets.Scripts
         public string GetSelectedFieldId()
         {
             string selectedField = null;
-            RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             // если мы навели мышкой на поле
-            if (Physics.Raycast(ray, out hit, 100.0F))
+            if (Physics.Raycast(ray, out RaycastHit hit, 100.0F))
             {
                 foreach (var item in _fieldsToGameObject)
                 {
@@ -50,13 +49,21 @@ namespace Assets.Scripts
             return selectedField;
         }
 
-        public void UpdateFieldsView(Card card)
+        /// <summary>
+        /// Пересчитать доступные поля
+        /// </summary>
+        /// <param name="card"></param>
+        public void ShowAvailableFields(Card card)
         {
-            // пересчитать доступные поля
-            ICollection<Field> availableFields = new List<Field>();
-            if (card != null)
-                availableFields = GameManager.Instance.RoomService.GetAvailableFields(card?.Id);
+            if (card == null)
+            {
+                foreach (var field in _fieldsToGameObject.Keys)
+                    SetFieldNotAvailable(field);
 
+                return;
+            }
+
+            var availableFields = GameManager.Instance.RoomService.GetAvailableFields(card?.Id);
             var notAvailableFields = GameManager.Instance.RoomService.GetNotAvailableFields();
             var fields = _fieldsToGameObject.Keys;
             foreach (var field in fields)

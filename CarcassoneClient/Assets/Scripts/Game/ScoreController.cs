@@ -14,7 +14,7 @@ namespace Assets.Scripts
     /// </summary>
     class ScoreController
     {
-        private Dictionary<string, GameObject> _playersScorePanels = new Dictionary<string, GameObject>();
+        private readonly Dictionary<string, GameObject> _playersScorePanels = new();
 
         public GameObject _finalScoreUIPanel;
         public GameObject _finalScoreUIPanelText;
@@ -38,12 +38,14 @@ namespace Assets.Scripts
             _finalScoreUIPanel.SetActive(false);
             _playerDetailScorePanel.SetActive(false);
 
-            var panels = new List<GameObject>();
-            panels.Add(GameObject.Find("PlayerScorePanel_1"));
-            panels.Add(GameObject.Find("PlayerScorePanel_2"));
-            panels.Add(GameObject.Find("PlayerScorePanel_3"));
-            panels.Add(GameObject.Find("PlayerScorePanel_4"));
-            panels.Add(GameObject.Find("PlayerScorePanel_5"));
+            var panels = new List<GameObject>
+            {
+                GameObject.Find("PlayerScorePanel_1"),
+                GameObject.Find("PlayerScorePanel_2"),
+                GameObject.Find("PlayerScorePanel_3"),
+                GameObject.Find("PlayerScorePanel_4"),
+                GameObject.Find("PlayerScorePanel_5")
+            };
 
             var remainPlayers = players.ToList();
             foreach (var playerPanel in panels)
@@ -118,15 +120,11 @@ namespace Assets.Scripts
 
         public void UpdateWaitingSpinners(BasePlayer currentPlayer)
         {
-            var isLocalPlayerMove = GameManager.Instance.RoomService.HumanUsers.Contains(currentPlayer?.Name);
+            var isLocalPlayerMove = GameManager.Instance.RoomService.HumanUser == currentPlayer?.Name;
             if (isLocalPlayerMove)
-            {
                 SetSpinnersOff();
-            }
             else
-            {
                 SetPlayerSpinnerOn(currentPlayer);
-            }
         }
 
         private void SetPlayerSpinnerOn(BasePlayer player)

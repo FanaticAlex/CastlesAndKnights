@@ -18,10 +18,6 @@ public class CameraBehaviour : MonoBehaviour {
 
     private TouchState _state;
 
-    void Start ()
-    {
-    }
-
     void Update ()
     {
         if (Input.touchCount > 0)
@@ -73,7 +69,7 @@ public class CameraBehaviour : MonoBehaviour {
         transform.position = move;
     }
 
-    private float _zoomModifierSpeed = 0.025f;
+    private readonly float _zoomModifierSpeed = 0.025f;
     private void ZoomByTouch()
     {
         if (Input.touchCount == 2)

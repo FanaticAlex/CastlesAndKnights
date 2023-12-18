@@ -10,7 +10,7 @@ namespace Assets.Scripts
     /// </summary>
     internal interface IGameService
     {
-        List<string> HumanUsers { get; set; }
+        string HumanUser { get; set; }
 
         void Login(SavedAuthData data); // этот метод не подхдит интерфейсу он только для сетевой игры
         void Login(string login, string password); // этот метод не подхдит интерфейсу он только для сетевой игры

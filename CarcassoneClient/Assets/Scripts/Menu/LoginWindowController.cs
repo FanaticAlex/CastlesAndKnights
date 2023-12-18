@@ -28,7 +28,7 @@ namespace Assets.Scripts.Menu
                 GameManager.Instance.RoomService.Login(data);
                 MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
             }
-            catch (Exception e)
+            catch
             {
                 // token expired
                 CarcassonePrefs.DeleteSavedAuthData();
@@ -45,8 +45,7 @@ namespace Assets.Scripts.Menu
             var tryNumber = 1;
             while (true)
             {
-                var errorMessage = string.Empty;
-                if (TryLogin(login, password, out errorMessage))
+                if (TryLogin(login, password, out string errorMessage))
                 {
                     MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
                     break;

@@ -31,10 +31,8 @@ namespace Assets.Scripts.Menu
         public void OnConnectToGameBtnClick(string roomId)
         {
             GameManager.Instance.RoomService.Connect(roomId);
-            foreach (var user in GameManager.Instance.RoomService.HumanUsers)
-            {
-                GameManager.Instance.RoomService.AddPlayer(user, Carcassone.ApiClient.PlayerType._0);
-            }
+            var user = GameManager.Instance.RoomService.HumanUser;
+            GameManager.Instance.RoomService.AddPlayer(user, Carcassone.ApiClient.PlayerType._0);
 
             // мы подключились к игре, но добавлять игроков и начинать игру мы не можем
             MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);

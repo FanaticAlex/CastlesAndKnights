@@ -16,26 +16,26 @@ namespace Assets.Scripts.Menu
     {
         public static PlayerType ToPlayerType(string typeStr)
         {
-            switch (typeStr.ToLower())
+            return typeStr.ToLower() switch
             {
-                case "human": return PlayerType._0;
-                case "ai_easy": return PlayerType._1;
-                case "ai_normal": return PlayerType._2;
-                case "ai_hard": return PlayerType._3;
-                default: throw new Exception($"type {typeStr} does not exist");
-            }
+                "human" => PlayerType._0,
+                "ai_easy" => PlayerType._1,
+                "ai_normal" => PlayerType._2,
+                "ai_hard" => PlayerType._3,
+                _ => throw new Exception($"type {typeStr} does not exist"),
+            };
         }
 
         public static string ToString(PlayerType type)
         {
-            switch (type)
+            return type switch
             {
-                case PlayerType._0: return "Human";
-                case PlayerType._1: return "AI_easy";
-                case PlayerType._2: return "AI_normal";
-                case PlayerType._3: return "AI_hard";
-                default: throw new Exception($"type {type} does not exist");
-            }
+                PlayerType._0 => "Human",
+                PlayerType._1 => "AI_easy",
+                PlayerType._2 => "AI_normal",
+                PlayerType._3 => "AI_hard",
+                _ => throw new Exception($"type {type} does not exist"),
+            };
         }
     }
 
@@ -55,9 +55,9 @@ namespace Assets.Scripts.Menu
         public GameObject PlayerType;
 
         private float _timer;
-        private float _delta = 0.5f;
+        private readonly float _delta = 0.5f;
 
-        private Dictionary<string, GameObject> _rows = new Dictionary<string, GameObject>();
+        private readonly Dictionary<string, GameObject> _rows = new();
 
         public override MenuWindowType MenuPanelType => MenuWindowType.SetupRoom;
 
@@ -73,7 +73,7 @@ namespace Assets.Scripts.Menu
 
             if (GameManager.Instance.RoomService is OnlineGameService)
             {
-                GameManager.Instance.RoomService.AddPlayer(GameManager.Instance.RoomService.HumanUsers.Single(), Carcassone.ApiClient.PlayerType._0);
+                GameManager.Instance.RoomService.AddPlayer(GameManager.Instance.RoomService.HumanUser, Carcassone.ApiClient.PlayerType._0);
                 AddPlayerBtn.GetComponent<Button>().interactable = MenuManager.IAmGameMaster;
                 StartGameBtn.GetComponent<Button>().interactable = false;
 

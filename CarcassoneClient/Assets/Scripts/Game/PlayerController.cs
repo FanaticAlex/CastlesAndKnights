@@ -15,37 +15,29 @@ namespace Assets.Scripts
 
     internal class PlayerController
     {
-        public Dictionary<string, GameObject> _playerToMarkers = new Dictionary<string, GameObject>();
+        public Dictionary<string, GameObject> _playerToMarkers = new();
 
-        private CardsController _cardsController;
+        private readonly CardsController _cardsController;
+        private readonly FieldsController _fieldsController;
+        private readonly ScoreController _scoreController;
 
         // это не надо хранить, это надо получить с сервера
-        private PlayerState _playerState;
-        public PlayerState PlayerState
-        {
-            get { return _playerState; }
-            private set { _playerState = value; StateChanged = true; }
-        }
-
-        private string _selectedFieldId;
+        public PlayerState PlayerState { get; set; }
 
         public bool DoubleClick { get; set; }
-
         public bool Rotated { get; set; }
         public bool TurnEnded { get; set; }
-
-        public bool StateChanged { get; set; }
-
-        private FieldsController _fieldsController;
 
         private GameObject EndTurnButton { get; set; }
 
         public PlayerController(
             FieldsController fieldsController,
-            CardsController cardsController)
+            CardsController cardsController,
+            ScoreController scoreController)
         {
             _cardsController = cardsController;
             _fieldsController = fieldsController;
+            _scoreController = scoreController;
 
             EndTurnButton = GameObject.Find("EndTurnBtn");
         }
@@ -55,10 +47,134 @@ namespace Assets.Scripts
             UpdatePlayersLastMoveMarkerUI();
         }
 
-        public void HandlePlayerActions(CardsController cardsController, string playerName)
+        public void HandlePlayerActions(CardsController cardsController, BasePlayer player)
         {
-            StartMyTurn();
-            MakingMove(cardsController, playerName);
+            if (PlayerState == PlayerState.PlayerWait)
+            {
+                // это обновляем отображение карт один раз только когда все остальные игроки сходят и снова начнется наш ход
+                UpdateGameViewsFromServer(player);
+                PlayerState = PlayerState.PlayerHoldCard;
+                return;
+            }
+
+            if (PlayerState == PlayerState.PlayerHoldCard)
+            {
+                PlayerHoldCardProcess(player.Name, cardsController);
+                return;
+            }
+
+            if (PlayerState == PlayerState.PlayerHoldChip)
+            {
+                HoldChipProcess(player.Name, cardsController);
+                return;
+            }
+        }
+
+        public void UpdateGameViewsFromServer(BasePlayer currentPlayer)
+        {
+            _fieldsController.CreateFieldsIfNotExistView();
+            _cardsController.PutAllCardsInFields();
+            _cardsController._partsController.UpdateParts();
+            _cardsController.UpdateCardRemainView();
+            UpdatePlayersView();
+            _scoreController.UpdateScore();
+            _scoreController.UpdateCurrentPlayerMark(currentPlayer);
+            _scoreController.UpdateWaitingSpinners(currentPlayer);
+            _cardsController.ReloadCurrentCard();
+            _fieldsController.ShowAvailableFields(_cardsController.CurrentCard);
+        }
+
+        private void PlayerHoldCardProcess(string playerName, CardsController cardsController)
+        {
+            EndTurnButton.GetComponent<Button>().interactable = false;
+
+            if (cardsController.CurrentCard == null)
+                return;
+
+            if (Rotated) // действие поворот карты
+            {
+                Rotated = false;
+                GameManager.Instance.RoomService.RotateCard(cardsController.CurrentCard.Id);
+                _cardsController.ReloadCurrentCard(); // отображаем поворот
+                return;
+            }
+
+            if (DoubleClick) // действие установка карты
+            {
+                DoubleClick = false;
+
+                var selectedFieldId = _fieldsController.GetSelectedFieldId();
+                if (selectedFieldId == null)
+                {
+                    Logger.Info("No field selected");
+                    return;
+                }
+
+                var canPutCard = GameManager.Instance.RoomService.CanPutCard(selectedFieldId, cardsController.CurrentCard.Id);
+                if (!canPutCard)
+                {
+                    Logger.Info("Cant put card!");
+                    return;
+                }
+
+                GameManager.Instance.RoomService.PutCard(selectedFieldId, cardsController.CurrentCard.Id, playerName);
+
+                var parts = GameManager.Instance.RoomService.GetAvailableObjectParts(cardsController.CurrentCard.Id);
+                if (!parts.Any())
+                {
+                    Logger.Info("Card has no free parts!");
+                    EndTurn(playerName);
+                    return;
+                }
+
+                var player = GameManager.Instance.RoomService.GetPlayer(playerName);
+                if (player.ChipCount == 0)
+                {
+                    Logger.Info("Player has no chip!");
+                    EndTurn(playerName);
+                    return;
+                }
+
+                _fieldsController.CreateFieldsIfNotExistView();
+                _cardsController.PutCardInField(cardsController.CurrentCard);
+                _cardsController.ShowCardMarks();
+                PlayerState = PlayerState.PlayerHoldChip;
+            }
+        }
+
+        private void HoldChipProcess(string playerName, CardsController cardsController)
+        {
+            EndTurnButton.GetComponent<Button>().interactable = true;
+
+            if (DoubleClick)
+            {
+                DoubleClick = false;
+
+                var playerHaveChip = GameManager.Instance.RoomService.GetPlayer(playerName);
+                if (playerHaveChip.ChipCount == 0)
+                {
+                    Logger.Info("Clicked. But player has no chip!");
+                    return;
+                }
+
+                // установка фишки
+                var partId = GetSelectedPartName(cardsController.CurrentCard.Id);
+                if (partId == null)
+                {
+                    Logger.Info("Clicked. But no selected part!");
+                    return;
+                }
+
+                GameManager.Instance.RoomService.PutChip(cardsController.CurrentCard.Id, partId, playerName);
+                _cardsController._partsController.UpdateParts();
+                EndTurn(playerName);
+            }
+
+            if (TurnEnded)
+            {
+                TurnEnded = false;
+                EndTurn(playerName);
+            }
         }
 
         /// <summary>
@@ -84,147 +200,41 @@ namespace Assets.Scripts
             }
         }
 
-        public void StartMyTurn()
-        {
-            if (PlayerState == PlayerState.PlayerWait)
-            {
-                PlayerState = PlayerState.PlayerHoldCard;
-            }
-        }
-
-        public void MakingMove(CardsController cardsController, string playerName)
-        {
-            if (PlayerState == PlayerState.PlayerHoldCard)
-            {
-                EndTurnButton.GetComponent<Button>().interactable = false;
-                PlayerHoldCardProcess(playerName, cardsController);
-                return;
-            }
-
-            if (PlayerState == PlayerState.PlayerHoldChip)
-            {
-                EndTurnButton.GetComponent<Button>().interactable = true;
-                HoldChipProcess(playerName, cardsController);
-                return;
-            }
-        }
-
-        private void PlayerHoldCardProcess(string playerName, CardsController cardsController)
-        {
-            if (cardsController.CurrentCard == null)
-                return;
-
-            if (DoubleClick)
-            {
-                DoubleClick = false;
-
-                _selectedFieldId = _fieldsController.GetSelectedFieldId();
-                if (_selectedFieldId == null)
-                {
-                    Logger.Info("No field selected");
-                    return;
-                }
-
-                // клик на поле левой кнопкой помещает в него карту
-                var canPutCard = GameManager.Instance.RoomService.CanPutCard(_selectedFieldId, cardsController.CurrentCard.Id);
-                if (canPutCard)
-                {
-                    GameManager.Instance.RoomService.PutCard(_selectedFieldId, cardsController.CurrentCard.Id, playerName);
-                    var player = GameManager.Instance.RoomService.GetPlayer(playerName);
-
-                    var parts = GameManager.Instance.RoomService.GetAvailableObjectParts(cardsController.CurrentCard.Id);
-                    if (!parts.Any())
-                    {
-                        // если нет вариантов установки фишки сразу завершаем ход
-                        EndTurn(playerName, cardsController);
-                        return;
-                    }
-
-                    if (player.ChipCount == 0)
-                    {
-                        // если фишек нет сразу завершаем ход
-                        EndTurn(playerName, cardsController);
-                        return;
-                    }
-
-                    _cardsController.ShowCardMarks(cardsController.CurrentCard.Id);
-                    PlayerState = PlayerState.PlayerHoldChip;
-                }
-                else
-                {
-                    Logger.Info("Cant put card!");
-                }
-            }
-            else if (Rotated)
-            {
-                Rotated = false;
-                // поворот поля если нажата правая кнопка поворачиваем карту и кладем на поле
-                GameManager.Instance.RoomService.RotateCard(cardsController.CurrentCard.Id);
-                _cardsController.ReloadCurrentCard();
-            }
-        }
-
-        private void HoldChipProcess(string playerName, CardsController cardsController)
-        {
-            // клик на поле левой кнопкой помещает в него Фишку
-            if (DoubleClick)
-            {
-                DoubleClick = false;
-
-                var playerHaveChip = GameManager.Instance.RoomService.GetPlayer(playerName);
-                if (playerHaveChip.ChipCount != 0)
-                {
-                    // установка фишки
-                    var partId = GetSelectedPartUI(cardsController.CurrentCard.Id);
-                    if (partId != null)
-                    {
-                        GameManager.Instance.RoomService.PutChip(cardsController.CurrentCard.Id, partId, playerName);
-                        EndTurn(playerName, cardsController);
-                    }
-                }
-            }
-
-            // клик на поле правой кнопкой означает что игрок не хочет устанавливать фишку.
-            if (TurnEnded)
-            {
-                TurnEnded = false;
-                EndTurn(playerName, cardsController);
-            }
-        }
-
         private Collider GetHitCollider()
         {
-            RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Physics.Raycast(ray, out hit, 100.0F);
+            Physics.Raycast(ray, out RaycastHit hit, 100.0F);
             return hit.collider;
         }
 
-        private string GetSelectedPartUI(string cardId)
+        private string GetSelectedPartName(string cardId)
         {
             var collider = GetHitCollider();
+            if (collider == null)
+                return null;
+
+            var clickedObject = collider.gameObject;
+            if (clickedObject == null)
+                return null;
 
             var cardGameObject = _cardsController._cardsToGameObject[cardId];
-            var partsGameObjects = cardGameObject.GetComponentsInChildren<Transform>().Select(child => child.gameObject);
-            foreach (var partGameObject in partsGameObjects)
+            var cardChildrenObjects = cardGameObject.GetComponentsInChildren<Transform>().Select(child => child.gameObject);
+            foreach (var childObject in cardChildrenObjects)
             {
-                if (partGameObject.gameObject == cardGameObject)
+                if (childObject.gameObject == cardGameObject) // это обьект самой карты
                     continue;
 
-                if (collider == null)
-                    continue;
-
-                if (collider.gameObject == partGameObject)
-                    return cardId + partGameObject.name;
+                if (clickedObject == childObject) // кликнутый дочерний обьект карты
+                    return cardId + childObject.name;
             }
 
             return null;
         }
 
-        private void EndTurn(string userName, CardsController cardsController)
+        private void EndTurn(string userName)
         {
             GameManager.Instance.RoomService.EndTurn(userName);
-            _cardsController.HideCardMarks(cardsController.CurrentCard.Id);
+            _cardsController.HideCardMarks();
             PlayerState = PlayerState.PlayerWait;
             EndTurnButton.GetComponent<Button>().interactable = false;
         }

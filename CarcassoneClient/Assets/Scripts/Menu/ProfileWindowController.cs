@@ -17,7 +17,7 @@ namespace Assets.Scripts.Menu
         {
             base.Enable();
 
-            var user = GameManager.Instance.RoomService.HumanUsers.Single();
+            var user = GameManager.Instance.RoomService.HumanUser;
             var statistic = GameManager.Instance.RoomService.GetUserStatistic(user);
             UserName.GetComponent<TMP_Text>().text = user;
             Statistic.GetComponent<TMP_Text>().text = 
