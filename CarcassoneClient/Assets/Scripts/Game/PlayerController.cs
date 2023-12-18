@@ -25,8 +25,8 @@ namespace Assets.Scripts
         public PlayerState PlayerState { get; set; }
 
         public bool DoubleClick { get; set; }
-        public bool Rotated { get; set; }
-        public bool TurnEnded { get; set; }
+        public bool RotateClicked { get; set; }
+        public bool TurnEndClicked { get; set; }
 
         private GameObject EndTurnButton { get; set; }
 
@@ -73,7 +73,7 @@ namespace Assets.Scripts
         {
             _fieldsController.CreateFieldsIfNotExistView();
             _cardsController.PutAllCardsInFields();
-            _cardsController._partsController.UpdateParts();
+            _cardsController._partsController.ShowFlagsAndChips();
             _cardsController.UpdateCardRemainView();
             UpdatePlayersView();
             _scoreController.UpdateScore();
@@ -87,12 +87,9 @@ namespace Assets.Scripts
         {
             EndTurnButton.GetComponent<Button>().interactable = false;
 
-            if (cardsController.CurrentCard == null)
-                return;
-
-            if (Rotated) // действие поворот карты
+            if (RotateClicked) // действие поворот карты
             {
-                Rotated = false;
+                RotateClicked = false;
                 GameManager.Instance.RoomService.RotateCard(cardsController.CurrentCard.Id);
                 _cardsController.ReloadCurrentCard(); // отображаем поворот
                 return;
@@ -165,13 +162,14 @@ namespace Assets.Scripts
                 }
 
                 GameManager.Instance.RoomService.PutChip(cardsController.CurrentCard.Id, partId, playerName);
-                _cardsController._partsController.UpdateParts();
+                _cardsController._partsController.ShowFlagsAndChips();
                 EndTurn(playerName);
             }
 
-            if (TurnEnded)
+            if (TurnEndClicked)
             {
-                TurnEnded = false;
+                TurnEndClicked = false;
+                _cardsController._partsController.ShowFlagsAndChips();
                 EndTurn(playerName);
             }
         }

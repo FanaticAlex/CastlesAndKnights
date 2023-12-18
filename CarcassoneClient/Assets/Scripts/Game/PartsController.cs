@@ -17,20 +17,21 @@ namespace Assets.Scripts
         /// <summary>
         /// Расставляет флаги на захваченных объектах
         /// </summary>
-        public void UpdateParts()
+        public void ShowFlagsAndChips()
         {
+            var players = GameManager.Instance.RoomService.GetPlayers();
             var activeParts = GameManager.Instance.RoomService.GetActiveParts();
             var changedParts = GetChangedParts(ActivePartsCache, activeParts);
             ActivePartsCache = activeParts;
 
             foreach (var part in changedParts)
             {
-                TryCreateChip(part);
-                TryCreateFlag(part);
+                TryCreateChip(part, players);
+                TryCreateFlag(part, players);
             }
         }
 
-        public List<ObjectPart> GetChangedParts(List<ObjectPart> oldParts, List<ObjectPart> newParts)
+        private List<ObjectPart> GetChangedParts(List<ObjectPart> oldParts, List<ObjectPart> newParts)
         {
             var changed = new List<ObjectPart>();
             foreach (var newPart in newParts)
@@ -48,7 +49,7 @@ namespace Assets.Scripts
             return changed;
         }
 
-        private void TryCreateFlag(ObjectPart part)
+        private void TryCreateFlag(ObjectPart part, List<BasePlayer> players)
         {
             // TEST
             /*var partGO = _partToGameObject[part.PartId];
@@ -70,7 +71,8 @@ namespace Assets.Scripts
             if (_ownedPartsFlags.Keys.Contains(part.PartId)) // такой флаг уже есть
                 return;
 
-            var player = GameManager.Instance.RoomService.GetPlayer(part.Flag.OwnerName);
+            var player = players.FirstOrDefault(pl => pl.Name == part.Flag.OwnerName);
+
             var flagPrefab = Constants.Flag;
             var flagObject = GameObject.Instantiate(flagPrefab);
             flagObject.GetComponent<SpriteRenderer>().color = Constants.Colors[player.Color];
@@ -81,7 +83,7 @@ namespace Assets.Scripts
             _ownedPartsFlags[part.PartId] = flagObject;
         }
 
-        private void TryCreateChip(ObjectPart part)
+        private void TryCreateChip(ObjectPart part, List<BasePlayer> players)
         {
             if (part.Chip == null)
                 return;
@@ -89,7 +91,7 @@ namespace Assets.Scripts
             if (_ownedPartsChips.Keys.Contains(part.PartId))
                 return;
 
-            var player = GameManager.Instance.RoomService.GetPlayer(part.Chip.OwnerName);
+            var player = players.FirstOrDefault(pl => pl.Name == part.Chip.OwnerName);
 
             var chipPrefab = Constants.Chip;
             var chipObject = GameObject.Instantiate(chipPrefab);

@@ -1,7 +1,9 @@
 ﻿using Assets.Scripts;
 using Assets.Scripts.Menu;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -21,6 +23,7 @@ public class MenuManager : MonoBehaviour
     {
         menuManagers = GetMenuControllers();
         SwitchToMenuPanel(MenuWindowType.Login);
+        GameObject.Find("Version").GetComponent<TMP_Text>().text = "Version : " + Application.version;
     }
 
     public static void SwitchToMenuPanel(MenuWindowType menu)

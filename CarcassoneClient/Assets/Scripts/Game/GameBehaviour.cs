@@ -85,12 +85,12 @@ namespace Assets.Scripts
 
         public void OnRotateButonClick()
         {
-            _playerController.Rotated = true;
+            _playerController.RotateClicked = true;
         }
 
         public void OnEndTurnButonClick()
         {
-            _playerController.TurnEnded = true;
+            _playerController.TurnEndClicked = true;
         }
 
         public void OnShowPlayerDetailedScore(Text playerNamePanel)
