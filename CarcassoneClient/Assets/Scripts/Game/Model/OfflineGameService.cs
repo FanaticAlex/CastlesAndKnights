@@ -32,7 +32,7 @@ namespace Assets.Scripts
 
         public void Start() => _room.Start();
 
-        public GameRoom GetRoom() => ToCommon<GameRoom>(_room);
+        public GameRoomDto GetRoom() => ToCommon<GameRoomDto>(_room);
 
         public List<string> GetRoomsIds() => throw new NotImplementedException();
 
@@ -49,7 +49,6 @@ namespace Assets.Scripts
 
         public Card GetCurrentCard() => ToCommon<Card>(_room.GetCurrentCard());
         public List<Card> GetCards() => ToCommon<List<Card>>(_room.CardsPool.AllCards);
-        public List<Card> GetActiveCards() => ToCommon<List<Card>>(_room.GetActiveCards());
         public Card GetCard(string cardName) => ToCommon<Card>(_room.GetCard(cardName));
         public bool CanPutCard(string fieldId, string cardName) => _room.CanPutCard(fieldId, cardName);
 
@@ -63,8 +62,6 @@ namespace Assets.Scripts
         public List<ObjectPart> GetAvailableObjectParts(string cardId) => ToCommon<List<ObjectPart>>(_room.GetAvailableParts(cardId));
         
         public List<ObjectPart> GetActiveParts() => ToCommon<List<ObjectPart>>(_room.GetActiveParts());
-
-        public ObjectPart GetObjectPart(string partId) => ToCommon<ObjectPart>(_room.CardsPool.GetPart(partId));
 
         public List<UserGameScore> GetGameScores() => throw new NotImplementedException();
         public PlayerScore GetScore(string playerName) => ToCommon<PlayerScore>(_room.GetPlayerScore(_room.PlayersPool.GetPlayer(playerName)));

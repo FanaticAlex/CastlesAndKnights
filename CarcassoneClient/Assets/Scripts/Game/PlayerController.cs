@@ -42,11 +42,6 @@ namespace Assets.Scripts
             EndTurnButton = GameObject.Find("EndTurnBtn");
         }
 
-        public void UpdatePlayersView()
-        {
-            UpdatePlayersLastMoveMarkerUI();
-        }
-
         public void HandlePlayerActions(CardsController cardsController, BasePlayer player)
         {
             if (PlayerState == PlayerState.PlayerWait)
@@ -71,16 +66,41 @@ namespace Assets.Scripts
 
         public void UpdateGameViewsFromServer(BasePlayer currentPlayer)
         {
-            _fieldsController.CreateFieldsIfNotExistView();
-            _cardsController.PutAllCardsInFields();
-            _cardsController._partsController.ShowFlagsAndChips();
-            _cardsController.UpdateCardRemainView();
-            UpdatePlayersView();
-            _scoreController.UpdateScore();
-            _scoreController.UpdateCurrentPlayerMark(currentPlayer);
-            _scoreController.UpdateWaitingSpinners(currentPlayer);
-            _cardsController.ReloadCurrentCard();
-            _fieldsController.ShowAvailableFields(_cardsController.CurrentCard);
+            // обновление позиции/поворота карт изменивщихся на предыдущих ходах
+            _fieldsController.CreateFieldsIfNotExistView(); // -- скачивание всех полей!!!
+            _cardsController.PutAllCardsInFields(); // -- скачивает карту для каждого поля с картой!
+            _cardsController._partsController.ShowFlagsAndChips(); // -- скачивание всех частей! и всех игроков
+
+            _cardsController.ReloadCurrentCard(); // ok
+            _fieldsController.ShowAvailableFields(_cardsController.CurrentCard); // ok
+
+            _cardsController.UpdateCardRemainView(); // ок
+
+            UpdatePlayersLastMoveMarkerUI(); // скачивает всех игрков
+            _scoreController.UpdateScore(); // снова скачивает всех игроков!
+            _scoreController.UpdateCurrentPlayerMark(currentPlayer); // нет сетевых вызовов
+            _scoreController.UpdateWaitingSpinners(currentPlayer); // нет сетевых вызовов
+        }
+
+        public void UpdatePlayersLastMoveMarkerUI()
+        {
+            // обновить маркеры игроков
+            var players = GameManager.Instance.RoomService.GetPlayers();
+            foreach (var player in players)
+            {
+                var playerHaveMark = _playerToMarkers.ContainsKey(player.Name);
+                if (!playerHaveMark)
+                {
+                    var marksPrefab = Constants.Marks[player.Color];
+                    _playerToMarkers[player.Name] = GameObject.Instantiate(marksPrefab);
+                }
+
+                if (player.LastCardId != null)
+                {
+                    var markObject = _playerToMarkers[player.Name];
+                    markObject.transform.position = _cardsController._cardsToGameObject[player.LastCardId].transform.position + new Vector3(0, 0, -1.3f);
+                }
+            }
         }
 
         private void PlayerHoldCardProcess(string playerName, CardsController cardsController)
@@ -91,7 +111,7 @@ namespace Assets.Scripts
             {
                 RotateClicked = false;
                 GameManager.Instance.RoomService.RotateCard(cardsController.CurrentCard.Id);
-                _cardsController.ReloadCurrentCard(); // отображаем поворот
+                _cardsController.ReloadCurrentCard();
                 return;
             }
 
@@ -171,29 +191,6 @@ namespace Assets.Scripts
                 TurnEndClicked = false;
                 _cardsController._partsController.ShowFlagsAndChips();
                 EndTurn(playerName);
-            }
-        }
-
-        /// <summary>
-        /// Отображаем маркер игроков (рамочку) на поле
-        /// </summary>
-        public void UpdatePlayersLastMoveMarkerUI()
-        {
-            var players = GameManager.Instance.RoomService.GetPlayers();
-            foreach (var player in players)
-            {
-                var playerHaveMark = _playerToMarkers.ContainsKey(player.Name);
-                if (!playerHaveMark)
-                {
-                    var marksPrefab = Constants.Marks[player.Color];
-                    _playerToMarkers[player.Name] = GameObject.Instantiate(marksPrefab);
-                }
-
-                if (player.LastCardId != null)
-                {
-                    var markObject = _playerToMarkers[player.Name];
-                    markObject.transform.position = _cardsController._cardsToGameObject[player.LastCardId].transform.position + new Vector3(0, 0, -1.3f);
-                }
             }
         }
 

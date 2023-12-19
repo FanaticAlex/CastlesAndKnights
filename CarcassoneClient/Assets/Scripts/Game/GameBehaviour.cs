@@ -57,7 +57,7 @@ namespace Assets.Scripts
             }
             catch (Exception ex)
             {
-                Logger.Info(ex.ToString());
+                Logger.Info(ex.Message);
             }
         }
 

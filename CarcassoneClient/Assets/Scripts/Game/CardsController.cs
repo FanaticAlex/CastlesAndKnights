@@ -85,8 +85,8 @@ namespace Assets.Scripts
 
         public void HideCardMarks()
         {
-            foreach (var part in _partsController.ActivePartsCache)
-                _partsController._partToGameObject[part.PartId].SetActive(false);
+            foreach (var part in _partsController._partToGameObject)
+                part.Value.SetActive(false);
         }
 
         /// <summary>

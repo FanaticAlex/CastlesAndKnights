@@ -9,10 +9,8 @@ namespace Assets.Scripts
     internal class PartsController
     {
         public Dictionary<string, GameObject> _partToGameObject = new();
-        public Dictionary<string, GameObject> _ownedPartsChips = new();
-        public Dictionary<string, GameObject> _ownedPartsFlags = new();
-
-        public List<ObjectPart> ActivePartsCache = new();
+        private readonly Dictionary<string, GameObject> _ownedPartsChips = new();
+        private readonly Dictionary<string, GameObject> _ownedPartsFlags = new();
 
         /// <summary>
         /// Расставляет флаги на захваченных объектах
@@ -21,32 +19,12 @@ namespace Assets.Scripts
         {
             var players = GameManager.Instance.RoomService.GetPlayers();
             var activeParts = GameManager.Instance.RoomService.GetActiveParts();
-            var changedParts = GetChangedParts(ActivePartsCache, activeParts);
-            ActivePartsCache = activeParts;
 
-            foreach (var part in changedParts)
+            foreach (var part in activeParts)
             {
                 TryCreateChip(part, players);
                 TryCreateFlag(part, players);
             }
-        }
-
-        private List<ObjectPart> GetChangedParts(List<ObjectPart> oldParts, List<ObjectPart> newParts)
-        {
-            var changed = new List<ObjectPart>();
-            foreach (var newPart in newParts)
-            {
-                var oldPart = oldParts.FirstOrDefault(p => p.PartId == newPart.PartId);
-                var isChanged =
-                    (oldPart == null) ||
-                    (oldPart.Chip?.OwnerName != newPart.Chip?.OwnerName) ||
-                    (oldPart.Flag?.OwnerName != newPart.Flag?.OwnerName);
-
-                if (isChanged)
-                    changed.Add(newPart);
-            }
-
-            return changed;
         }
 
         private void TryCreateFlag(ObjectPart part, List<BasePlayer> players)

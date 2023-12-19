@@ -8,10 +8,10 @@ namespace Carcassone.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     public class GameScoreController : ControllerBase
     {
-        private IGameScoreService _service;
+        private readonly IGameScoreService _service;
         private readonly ILogger _logger;
 
         public GameScoreController(

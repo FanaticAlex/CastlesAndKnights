@@ -22,6 +22,7 @@ namespace Assets.Scripts
             //client = new Client(@"http://192.168.1.68:82/", _httpClient);
             //client = new Client(@"https://localhost:7170/", _httpClient);
             _client = new Client(@"http://192.168.1.68:32772/", _httpClient);
+            //_client = new Client(@"https://bbar1kdlh5grqc4fuer5.containers.yandexcloud.net/", _httpClient);
 
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
         }
@@ -52,7 +53,7 @@ namespace Assets.Scripts
         public void Start() => _client.StartAsync(RoomId).Wait();
         public void EndTurn(string userName) => _client.EndTurnAsync(RoomId, userName).Wait();
 
-        public GameRoom GetRoom() => _client.RoomGETAsync(RoomId).Result;
+        public GameRoomDto GetRoom() => _client.RoomGETAsync(RoomId).Result;
         public List<string> GetRoomsIds() => _client.ListAsync().Result.ToList();
 
         public BasePlayer GetPlayer(string playerName) => _client.PlayerGETAsync(RoomId, playerName).Result;
@@ -94,20 +95,17 @@ namespace Assets.Scripts
         }
 
         public List<Card> GetCards() => _client.List3Async(RoomId).Result.ToList();
-        public List<Card> GetActiveCards() => _client.ActiveAsync(RoomId).Result.ToList();
         public Card GetCard(string cardName) => _client.CardAsync(RoomId, cardName).Result;
         public bool CanPutCard(string fieldId, string cardName) => _client.CanPutCardAsync(RoomId, fieldId, cardName).Result;
         public void PutCard(string fieldId, string cardName, string userName) => _client.PutCardInFieldAsync(RoomId, fieldId, cardName, userName).Wait();
         public void RotateCard(string cardName) => _client.RotateCardAsync(RoomId, cardName).Wait();
-
-        public ObjectPart GetObjectPart(string partId) => _client.ObjectPartAsync(RoomId, partId).Result;
 
         public List<Field> GetFields() => _client.AllAsync(RoomId).Result.ToList();
         public List<Field> GetAvailableFields(string cardName) => _client.AvailableFieldsAsync(RoomId, cardName).Result.ToList();
         public List<Field> GetNotAvailableFields() => _client.NotAvailableFieldsAsync(RoomId).Result.ToList();
 
         public List<ObjectPart> GetAvailableObjectParts(string cardId) => _client.AvailablePartsAsync(RoomId, cardId).Result.ToList();
-        public List<ObjectPart> GetActiveParts() => _client.Active2Async(RoomId).Result.ToList();
+        public List<ObjectPart> GetActiveParts() => _client.ActiveAsync(RoomId).Result.ToList();
         public void PutChip(string cardName, string partId, string playerName) => _client.PutChipInCardAsync(RoomId, cardName, partId, playerName).Wait();
 
         public List<UserGameScore> GetGameScores() => _client.GameAsync(RoomId).Result.ToList();

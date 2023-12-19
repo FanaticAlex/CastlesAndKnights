@@ -12,12 +12,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarcassoneServer.Controllers
 {
+    public class GameRoomDto
+    {
+        public string Id { get; set; }
+        public bool IsStarted { get; set; }
+        public bool IsFinished { get; set; }
+    }
+
     /// <summary>
     /// Контроллер игры.
     /// </summary>
     [ApiController]
     [Route("[controller]")]
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     public class RoomController : ControllerBase
     {
         private readonly IGamesService _service;
@@ -36,10 +43,11 @@ namespace CarcassoneServer.Controllers
 
         [HttpPost]
         [Route("create")]
-        public GameRoom CreateRoom()
+        public GameRoomDto CreateRoom()
         {
             _logger.LogInformation("Called CreateRoom");
-            return _service.CreateRoom();
+            var room = _service.CreateRoom();
+            return new GameRoomDto() { Id = room.Id, IsFinished = room.IsFinished, IsStarted = room.IsStarted };
         }
 
         [HttpGet]
@@ -52,7 +60,11 @@ namespace CarcassoneServer.Controllers
 
         [HttpGet]
         [Route("{roomId}")]
-        public GameRoom GetRoom(string roomId) => _service.GetRoom(roomId);
+        public GameRoomDto GetRoom(string roomId)
+        {
+            var room = _service.GetRoom(roomId);
+            return new GameRoomDto() { Id = room.Id, IsFinished = room.IsFinished, IsStarted = room.IsStarted };
+        }
 
         [HttpGet]
         [Route("{roomId}/start")]
@@ -210,10 +222,6 @@ namespace CarcassoneServer.Controllers
         public List<Card> GetAllCards(string roomId) => _service.GetRoom(roomId).CardsPool.AllCards;
 
         [HttpGet]
-        [Route("{roomId}/card/active")]
-        public List<Card> GetActiveCards(string roomId) => _service.GetRoom(roomId).GetActiveCards();
-
-        [HttpGet]
         [Route("{roomId}/card/remain")]
         public int GetCardsRemain(string roomId) => _service.GetRoom(roomId).GetCardsRemain();
 
@@ -230,10 +238,6 @@ namespace CarcassoneServer.Controllers
         [Route("{roomId}/card/rotateCard/{cardId}")]
         public void RotateCard(string roomId, string cardId) => _service.GetRoom(roomId).RotateCard(cardId);
 
-
-        [HttpGet]
-        [Route("{roomId}/objectPart/{partId}")]
-        public ObjectPart GetPart(string roomId, string partId) => _service.GetRoom(roomId).CardsPool.GetPart(partId);
 
         [HttpGet]
         [Route("{roomId}/objectPart/active")]

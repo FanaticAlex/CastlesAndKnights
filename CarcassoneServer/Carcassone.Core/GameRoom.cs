@@ -3,7 +3,6 @@ using Carcassone.Core.Cards;
 using Carcassone.Core.Extensions;
 using Carcassone.Core.Fields;
 using Carcassone.Core.Players;
-using Carcassone.Core.Players.AI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -60,10 +59,7 @@ namespace Carcassone.Core
 
         public void Load(string save)
         {
-            var room = JsonConvert.DeserializeObject<GameRoom>(save);
-            if (room == null)
-                throw new Exception($"Can't load the game from save {save}");
-
+            var room = JsonConvert.DeserializeObject<GameRoom>(save) ?? throw new Exception($"Can't load the game from save {save}");
             ExtensionsManager = room.ExtensionsManager;
             CardsPool = room.CardsPool;
             ScoreCalculator = room.ScoreCalculator;
@@ -196,7 +192,10 @@ namespace Carcassone.Core
 
         public List<ObjectPart> GetActiveParts()
         {
-            return GetActiveCards().SelectMany(c => c.Parts).ToList();
+            return GetActiveCards()
+                .SelectMany(c => c.Parts)
+                .Where(p => p.Chip != null || p.Flag != null)
+                .ToList();
         }
 
         /// <summary>

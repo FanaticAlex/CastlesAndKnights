@@ -21,7 +21,7 @@ namespace Assets.Scripts
         void Start();
         void EndTurn(string playerName);
 
-        GameRoom GetRoom();
+        GameRoomDto GetRoom();
         List<string> GetRoomsIds(); // этот метод не подхдит интерфейсу он только для сетевой игры
 
         BasePlayer GetPlayer(string playerName);
@@ -30,9 +30,7 @@ namespace Assets.Scripts
 
         Card GetCurrentCard();
         List<Card> GetCards();
-        List<Card> GetActiveCards();
         Card GetCard(string cardName);
-        ObjectPart GetObjectPart(string partId);
         bool CanPutCard(string fieldId, string cardName);
         void PutCard(string fieldId, string cardName, string playerName);
         void RotateCard(string cardName);
