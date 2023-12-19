@@ -64,7 +64,6 @@ app.Map("/", () => "Hello World");
 }
 
 app.UseExceptionHandler("/error-development");
-//app.ConfigureExceptionHandler(logger);
 //app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

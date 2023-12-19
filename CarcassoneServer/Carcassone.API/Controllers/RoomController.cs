@@ -24,7 +24,7 @@ namespace CarcassoneServer.Controllers
     /// </summary>
     [ApiController]
     [Route("[controller]")]
-    //[Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class RoomController : ControllerBase
     {
         private readonly IGamesService _service;

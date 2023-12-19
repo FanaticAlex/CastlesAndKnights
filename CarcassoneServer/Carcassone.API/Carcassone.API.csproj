@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-Carcassone.API-01aeee7a-1639-4582-9754-6d54092f727d</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileRunArguments>-v "D:\Carcassone:/etc/MyDatabase:ro"</DockerfileRunArguments>
   </PropertyGroup>
 
   <ItemGroup>

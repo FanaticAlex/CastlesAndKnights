@@ -19,9 +19,8 @@ namespace Assets.Scripts
         public OnlineGameService()
         {
             _httpClient = new HttpClient() { Timeout = new TimeSpan(0, 0, 0, 0, 500) };
-            //client = new Client(@"http://192.168.1.68:82/", _httpClient);
-            //client = new Client(@"https://localhost:7170/", _httpClient);
-            _client = new Client(@"http://192.168.1.68:32772/", _httpClient);
+            //_client = new Client(@"http://192.168.1.68:32772/", _httpClient);
+            _client = new Client(@"http://192.168.1.68:32774/", _httpClient);
             //_client = new Client(@"https://bbar1kdlh5grqc4fuer5.containers.yandexcloud.net/", _httpClient);
 
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;

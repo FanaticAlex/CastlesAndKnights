@@ -37,7 +37,6 @@ namespace CarcassoneServer.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<TokenResult>> Login(string login, [DataType(DataType.Password)] string password)
         {
-            /* временно убрано пока нет авторизации
             var user = await _userManager.FindByNameAsync(login);
             if (user?.UserName == null)
                 return Unauthorized();
@@ -54,7 +53,6 @@ namespace CarcassoneServer.Controllers
 
             foreach (var userRole in userRoles)
                 authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            */
 
             var secret = _configuration["JWT:Secret"];
             if (secret == null)
