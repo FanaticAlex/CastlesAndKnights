@@ -1,10 +1,12 @@
 using Carcassone.DAL;
+using Carcassone.DAL.Data;
+using Carcassone.DAL.Services;
 using Carcassone.Server.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -29,35 +31,35 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-var _dbConnectionString = configuration["DbConnectionString"];
-builder.Services.AddDbContext<CarcassoneContext>(options => options.UseSqlite(_dbConnectionString));
+//builder.Services.AddDbContext<CarcassoneContext>(options => options.UseSqlite(configuration["DbConnectionString"]));
+builder.Services.AddDbContext<CarcassoneContext>(options => options.UseSqlServer(configuration["DbConnectionString"]));
 
 builder.Services
-    .AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddIdentityCore<CarcassoneUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<CarcassoneContext>()
+    .AddSignInManager()
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IGamesService, GamesService>();
-builder.Services.AddScoped<IGameScoreService, GameScoreService>();
-
+builder.Services.AddScoped<IPlayedGameStore, PlayedGameStore>();
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(SetupSwagger);
 
+// инициализация логгера
 var logger = new LoggerConfiguration()
                  .ReadFrom.Configuration(configuration)
                  .Enrich.FromLogContext()
                  .CreateLogger();
-
 builder.Logging.ClearProviders().AddConsole().AddSerilog(logger);
+
 var app = builder.Build();
 
-// Маппинг
-app.Map("/", () => "Hello World");
+EnshureCreateDatabase(app);
 
-//if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -69,10 +71,20 @@ app.UseAuthorization();
 app.MapControllers();
 app.Run();
 
+// создаем базу данных
+static void EnshureCreateDatabase(WebApplication app)
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var dbContext = services.GetRequiredService<CarcassoneContext>();
+        dbContext.Database.EnsureCreated();
+    }
+}
+
 static void SetupSwagger(SwaggerGenOptions opt)
 {
     opt.UseAllOfToExtendReferenceSchemas();
-
     opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Carcassone API", Version = "v1" });
 
     opt.AddSecurityDefinition("Bearer",

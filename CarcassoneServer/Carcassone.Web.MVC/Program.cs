@@ -1,4 +1,5 @@
 using Carcassone.DAL;
+using Carcassone.DAL.Data;
 using Carcassone.Server.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -10,7 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DbConnectionString") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<CarcassoneContext>(options => options.UseSqlite(connectionString));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<CarcassoneContext>();
+builder.Services.AddDefaultIdentity<CarcassoneUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<CarcassoneContext>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

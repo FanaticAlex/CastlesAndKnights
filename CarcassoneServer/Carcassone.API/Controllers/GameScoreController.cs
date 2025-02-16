@@ -1,8 +1,8 @@
-﻿using Carcassone.DAL;
-using Carcassone.Server.Services;
+﻿using Carcassone.DAL.Data;
+using Carcassone.DAL.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography.Xml;
 
 namespace Carcassone.Server.Controllers
 {
@@ -11,42 +11,34 @@ namespace Carcassone.Server.Controllers
     [Authorize(AuthenticationSchemes = "Bearer")]
     public class GameScoreController : ControllerBase
     {
-        private readonly IGameScoreService _service;
+        private readonly IPlayedGameStore _service;
         private readonly ILogger _logger;
+        private readonly UserManager<CarcassoneUser> _userManager;
 
         public GameScoreController(
             ILogger<GameScoreController> logger,
-            IGameScoreService userService)
+            IPlayedGameStore userService)
         {
             _service = userService;
             _logger = logger;
         }
 
         [HttpGet]
-        [Route("user/{userName}")]
-        public ActionResult<List<UserGameScore>> GetScoreByUser(string userName)
+        [Route("")]
+        public async Task<ActionResult<List<PlayedGame>>> GetPlayedGameList()
         {
             _logger.LogInformation("GetScoreByUser Called");
-            //return _service.GetUserScores(userName).ToList();
-            return new List<UserGameScore>();
-        }
-
-        [HttpGet]
-        [Route("game/{gameId}")]
-        public ActionResult<List<UserGameScore>> GetScoreByGame(string gameId)
-        {
-            _logger.LogInformation("GetScoreByGame Called");
-            //return _service.GetGameScores(gameId).ToList();
-            return new List<UserGameScore>();
+            var user = await _userManager.GetUserAsync(User);
+            return _service.GetPlayedGameList(user).ToList();
         }
 
         [HttpGet]
         [Route("user/{userName}/statistic")]
-        public ActionResult<UserStatistic> GetUserStatistic(string userName)
+        public async Task<ActionResult<UserStatistic>> GetUserStatisticAsync(string userName)
         {
             _logger.LogInformation("GetUserStatistic Called");
-            //return _service.GetUserStatistic(userName);
-            return new UserStatistic();
+            var user = await _userManager.GetUserAsync(User);
+            return _service.GetStatistic(user);
         }
     }
 }

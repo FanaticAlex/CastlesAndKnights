@@ -5,6 +5,7 @@ using Carcassone.Core.Cards;
 using Carcassone.Core.Fields;
 using Carcassone.Core.Players;
 using Carcassone.DAL;
+using Carcassone.DAL.Services;
 using Carcassone.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,15 +31,18 @@ namespace CarcassoneServer.Controllers
         private readonly IGamesService _service;
         private readonly ILogger _logger;
         private readonly IConfiguration _configuration;
+        private readonly PlayedGameStore _playedGameStore;
 
         public RoomController(
             ILogger<RoomController> logger,
             IGamesService service,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            PlayedGameStore playedGameStore)
         {
             _logger = logger;
             _service = service;
             _configuration = configuration;
+            _playedGameStore = playedGameStore;
         }
 
         [HttpPost]
@@ -134,32 +138,7 @@ namespace CarcassoneServer.Controllers
             if (room.IsFinished)
             {
                 _logger.LogInformation("Game Finished");
-                SaveGameResults(room);
-            }
-        }
-
-        private void SaveGameResults(GameRoom room)
-        {
-            // записать результаты в базу
-            foreach (var player in room.PlayersPool.Players)
-            {
-                if (player.IsAI()) // не записываем в базу результаты AI игроков
-                    continue;
-
-                var playerScore = room.GetPlayerScore(player);
-                var userScore = new UserGameScore()
-                {
-                    UserName = player.Name,
-                    RoomId = room.Id,
-                    FinalScore = playerScore.GetOverallScore(),
-                    Rank = playerScore.Rank
-                };
-
-                var optionsBuilder = new DbContextOptionsBuilder<CarcassoneContext>();
-                optionsBuilder.UseSqlite(_configuration["DbConnectionString"]);
-                var context = new CarcassoneContext(optionsBuilder.Options);
-                var scoreService = new GameScoreService(context);
-                scoreService.SaveUserGameScore(userScore);
+                _playedGameStore.AddGameResults(room);
             }
         }
 

@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Carcassone.DAL.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Carcassone.DAL
 {
-    public class CarcassoneContext : IdentityDbContext<IdentityUser>
+    public class CarcassoneContext : IdentityDbContext<CarcassoneUser>
     {
+        public CarcassoneContext() { }
+
         public CarcassoneContext(DbContextOptions options) : base(options)
         {
-            //Database.EnsureCreated();
         }
 
-        public DbSet<UserGameScore> Scores { get; set; }
+        public DbSet<PlayedGame> PlayedGameList { get; set; }
+        public DbSet<PlayerFinalResult> PlayerFinalResultList { get; set; }
     }
 }
