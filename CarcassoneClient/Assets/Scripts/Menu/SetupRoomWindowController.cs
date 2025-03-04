@@ -1,4 +1,4 @@
-﻿using Carcassone.ApiClient;
+﻿using Carcassone.Core.Players;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +18,10 @@ namespace Assets.Scripts.Menu
         {
             return typeStr.ToLower() switch
             {
-                "human" => PlayerType._0,
-                "ai_easy" => PlayerType._1,
-                "ai_normal" => PlayerType._2,
-                "ai_hard" => PlayerType._3,
+                "human" => PlayerType.Human,
+                "ai_easy" => PlayerType.AI_Easy,
+                "ai_normal" => PlayerType.AI_Normal,
+                "ai_hard" => PlayerType.AI_Hard,
                 _ => throw new Exception($"type {typeStr} does not exist"),
             };
         }
@@ -30,10 +30,10 @@ namespace Assets.Scripts.Menu
         {
             return type switch
             {
-                PlayerType._0 => "Human",
-                PlayerType._1 => "AI_easy",
-                PlayerType._2 => "AI_normal",
-                PlayerType._3 => "AI_hard",
+                PlayerType.Human => "Human",
+                PlayerType.AI_Easy => "AI_easy",
+                PlayerType.AI_Normal => "AI_normal",
+                PlayerType.AI_Hard => "AI_hard",
                 _ => throw new Exception($"type {type} does not exist"),
             };
         }
@@ -51,8 +51,8 @@ namespace Assets.Scripts.Menu
         public GameObject StartGameBtn;
         public GameObject NewPlayerPanel;
 
-        public GameObject PlayerName;
-        public GameObject PlayerType;
+        public GameObject PlayerNameGO;
+        public GameObject PlayerTypeGO;
 
         private float _timer;
         private readonly float _delta = 0.5f;
@@ -66,35 +66,35 @@ namespace Assets.Scripts.Menu
             base.Enable();
 
             if (AddPlayerBtn == null || StartGameBtn == null || NewPlayerPanel == null
-                || PlayerName == null || PlayerType == null)
+                || PlayerNameGO == null || PlayerTypeGO == null)
             {
                 throw new Exception("Set GameObject in script SetupRoomWindowController!");
             }
 
-            if (GameManager.Instance.RoomService is OnlineGameService)
+            /*if (GameManager.Instance.RoomService is OnlineGameService)
             {
-                GameManager.Instance.RoomService.AddPlayer(GameManager.Instance.RoomService.HumanUser, Carcassone.ApiClient.PlayerType._0);
+                GameManager.Instance.RoomService.AddPlayer(GameManager.Instance.RoomService.HumanUser, PlayerType.Human);
                 AddPlayerBtn.GetComponent<Button>().interactable = MenuManager.IAmGameMaster;
                 StartGameBtn.GetComponent<Button>().interactable = false;
 
-                PlayerType.GetComponent<TMP_Dropdown>().options.Clear();
-                var option1 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(Carcassone.ApiClient.PlayerType._1));
-                var option2 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(Carcassone.ApiClient.PlayerType._2));
-                var option3 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(Carcassone.ApiClient.PlayerType._3));
+                PlayerTypeGO.GetComponent<TMP_Dropdown>().options.Clear();
+                var option1 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Easy));
+                var option2 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Normal));
+                var option3 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Hard));
                 var list = new List<TMP_Dropdown.OptionData> { option1, option2, option3 };
-                PlayerType.GetComponent<TMP_Dropdown>().AddOptions(list);
+                PlayerTypeGO.GetComponent<TMP_Dropdown>().AddOptions(list);
             }
-            else
+            else*/
             {
                 AddPlayerBtn.GetComponent<Button>().interactable = true;
 
-                PlayerType.GetComponent<TMP_Dropdown>().options.Clear();
-                var option0 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(Carcassone.ApiClient.PlayerType._0));
-                var option1 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(Carcassone.ApiClient.PlayerType._1));
-                var option2 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(Carcassone.ApiClient.PlayerType._2));
-                var option3 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(Carcassone.ApiClient.PlayerType._3));
+                PlayerTypeGO.GetComponent<TMP_Dropdown>().options.Clear();
+                var option0 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.Human));
+                var option1 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Easy));
+                var option2 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Normal));
+                var option3 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Hard));
                 var list = new List<TMP_Dropdown.OptionData> { option0, option1, option2, option3 };
-                PlayerType.GetComponent<TMP_Dropdown>().AddOptions(list);
+                PlayerTypeGO.GetComponent<TMP_Dropdown>().AddOptions(list);
             }
 
             NewPlayerPanel.SetActive(false);
@@ -126,8 +126,8 @@ namespace Assets.Scripts.Menu
 
             NewPlayerPanel.SetActive(true);
 
-            PlayerName.GetComponent<TMP_InputField>().text = GetUniqPlayerName();
-            PlayerType.GetComponent<TMP_Dropdown>().SetValueWithoutNotify(0);
+            PlayerNameGO.GetComponent<TMP_InputField>().text = GetUniqPlayerName();
+            PlayerTypeGO.GetComponent<TMP_Dropdown>().SetValueWithoutNotify(0);
         }
 
         public void OnAddPlayerBtnClick()
@@ -137,8 +137,8 @@ namespace Assets.Scripts.Menu
             if (_rows.Count >= 5)
                 return;
 
-            var newName = PlayerName.GetComponent<TMP_InputField>().text;
-            var newType = PlayerTypeHelper.ToPlayerType(PlayerType.GetComponent<TMP_Dropdown>().captionText.text);
+            var newName = PlayerNameGO.GetComponent<TMP_InputField>().text;
+            var newType = PlayerTypeHelper.ToPlayerType(PlayerTypeGO.GetComponent<TMP_Dropdown>().captionText.text);
             GameManager.Instance.RoomService.AddPlayer(newName, newType);
         }
 
@@ -173,8 +173,8 @@ namespace Assets.Scripts.Menu
 
         public void OnBackBtnClick()
         {
-            if (GameManager.Instance.RoomService is OnlineGameService)
-                MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
+            //if (GameManager.Instance.RoomService is OnlineGameService)
+            //    MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
 
             if (GameManager.Instance.RoomService is OfflineGameService)
                 MenuManager.SwitchToMenuPanel(MenuWindowType.Login);
@@ -195,13 +195,14 @@ namespace Assets.Scripts.Menu
                     var row = GameObject.Instantiate(rowPrefab);
                     row.transform.Find("NameText").GetComponent<Text>().text = player.Name;
                     row.transform.Find("DeleteBtn").GetComponentInChildren<Button>().onClick.AddListener(delegate { OnDeletePlayerBtn(player.Name); });
-                    if (player.PlayerType == Carcassone.ApiClient.PlayerType._0)
+                    
+                    if (player.PlayerType == PlayerType.Human)
                         row.transform.Find("PlayerType").GetComponent<Text>().text = "human";
-                    if (player.PlayerType == Carcassone.ApiClient.PlayerType._1) 
+                    if (player.PlayerType == PlayerType.AI_Easy) 
                         row.transform.Find("PlayerType").GetComponent<Text>().text = "AI_easy";
-                    if (player.PlayerType == Carcassone.ApiClient.PlayerType._2)
+                    if (player.PlayerType == PlayerType.AI_Normal)
                         row.transform.Find("PlayerType").GetComponent<Text>().text = "AI_normal";
-                    if (player.PlayerType == Carcassone.ApiClient.PlayerType._3)
+                    if (player.PlayerType == PlayerType.AI_Hard)
                         row.transform.Find("PlayerType").GetComponent<Text>().text = "AI_hard";
 
                     row.transform.parent = playersListGO;

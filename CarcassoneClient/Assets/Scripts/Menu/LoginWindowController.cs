@@ -25,7 +25,7 @@ namespace Assets.Scripts.Menu
                     return;
 
                 GameManager.Instance.SetOnlineMode();
-                GameManager.Instance.RoomService.Login(data);
+                //GameManager.Instance.RoomService.Login(data);
                 MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
             }
             catch
@@ -77,7 +77,7 @@ namespace Assets.Scripts.Menu
             try
             {
                 GameManager.Instance.SetOnlineMode();
-                GameManager.Instance.RoomService.Login(login, password);
+                //GameManager.Instance.RoomService.Login(login, password);
                 message = String.Empty;
                 return true;
             }

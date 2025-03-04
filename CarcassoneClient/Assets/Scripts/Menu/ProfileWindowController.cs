@@ -18,7 +18,7 @@ namespace Assets.Scripts.Menu
             base.Enable();
 
             var user = GameManager.Instance.RoomService.HumanUser;
-            var statistic = GameManager.Instance.RoomService.GetUserStatistic(user);
+            var statistic = GameManager.Instance.RoomService.GetUserInfo(user);
             UserName.GetComponent<TMP_Text>().text = user;
             Statistic.GetComponent<TMP_Text>().text = 
                 $"GamesCount: {statistic.GamesCount} \r\n" +

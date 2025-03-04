@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Carcassone.Core.Players;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.Menu
@@ -30,9 +31,9 @@ namespace Assets.Scripts.Menu
 
         public void OnConnectToGameBtnClick(string roomId)
         {
-            GameManager.Instance.RoomService.Connect(roomId);
+            //GameManager.Instance.RoomService.Connect(roomId);
             var user = GameManager.Instance.RoomService.HumanUser;
-            GameManager.Instance.RoomService.AddPlayer(user, Carcassone.ApiClient.PlayerType._0);
+            GameManager.Instance.RoomService.AddPlayer(user, PlayerType.Human);
 
             // мы подключились к игре, но добавлять игроков и начинать игру мы не можем
             MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);
@@ -49,7 +50,7 @@ namespace Assets.Scripts.Menu
                 GameObject.Destroy(child.gameObject);
 
             var pos = 0;
-            var roomsList = GameManager.Instance.RoomService.GetRoomsIds();
+            /*var roomsList = GameManager.Instance.RoomService.GetRoomsIds();
             foreach (var roomId in roomsList)
             {
                 var rowPrefab = (GameObject)Resources.Load("UI/RoomsListRow", typeof(GameObject));
@@ -60,7 +61,7 @@ namespace Assets.Scripts.Menu
                 row.transform.localScale = Vector3.one;
                 row.transform.localPosition = new Vector3(0, pos, 0);
                 pos -= 30;
-            }
+            }*/
         }
     }
 }
