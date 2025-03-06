@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 32e6228f412bb7c498aa2bd1e081e178
+guid: d4c4ba20a9fa57743b13bb31429714e7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3494711012663759484
-    second: background-tiled_old_0
+      213: -6948708936245511061
+    second: MenuBackgroundVertical_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -97,6 +97,19 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -113,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: background-tiled_old_0
+      name: MenuBackgroundVertical_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 200
-        height: 200
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c7218767625bf7030800000000000000
-      internalID: 3494711012663759484
+      spriteID: b6cf08fc90a319f90800000000000000
+      internalID: -6948708936245511061
       vertices: []
       indices: 
       edges: []
@@ -148,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      background-tiled_old_0: 3494711012663759484
+      MenuBackgroundVertical_0: -6948708936245511061
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

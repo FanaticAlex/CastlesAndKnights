@@ -7,38 +7,12 @@ using System.Threading.Tasks;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.Menu
 {
-    class PlayerTypeHelper
-    {
-        public static PlayerType ToPlayerType(string typeStr)
-        {
-            return typeStr.ToLower() switch
-            {
-                "human" => PlayerType.Human,
-                "ai_easy" => PlayerType.AI_Easy,
-                "ai_normal" => PlayerType.AI_Normal,
-                "ai_hard" => PlayerType.AI_Hard,
-                _ => throw new Exception($"type {typeStr} does not exist"),
-            };
-        }
-
-        public static string ToString(PlayerType type)
-        {
-            return type switch
-            {
-                PlayerType.Human => "Human",
-                PlayerType.AI_Easy => "AI_easy",
-                PlayerType.AI_Normal => "AI_normal",
-                PlayerType.AI_Hard => "AI_hard",
-                _ => throw new Exception($"type {type} does not exist"),
-            };
-        }
-    }
-
     /// <summary>
     /// Контроллер окна создания новой игры.
     /// * создание сетевой игры
@@ -55,7 +29,7 @@ namespace Assets.Scripts.Menu
         public GameObject PlayerTypeGO;
 
         private float _timer;
-        private readonly float _delta = 0.5f;
+        private readonly float _delta = 1.0f;
 
         private readonly Dictionary<string, GameObject> _rows = new();
 
@@ -64,49 +38,29 @@ namespace Assets.Scripts.Menu
         public override void Enable()
         {
             base.Enable();
+            Assert.IsNotNull(AddPlayerBtn);
+            Assert.IsNotNull(StartGameBtn);
+            Assert.IsNotNull(NewPlayerPanel);
+            Assert.IsNotNull(PlayerNameGO);
+            Assert.IsNotNull(PlayerTypeGO);
 
-            if (AddPlayerBtn == null || StartGameBtn == null || NewPlayerPanel == null
-                || PlayerNameGO == null || PlayerTypeGO == null)
-            {
-                throw new Exception("Set GameObject in script SetupRoomWindowController!");
-            }
-
-            /*if (GameManager.Instance.RoomService is OnlineGameService)
-            {
-                GameManager.Instance.RoomService.AddPlayer(GameManager.Instance.RoomService.HumanUser, PlayerType.Human);
-                AddPlayerBtn.GetComponent<Button>().interactable = MenuManager.IAmGameMaster;
-                StartGameBtn.GetComponent<Button>().interactable = false;
-
-                PlayerTypeGO.GetComponent<TMP_Dropdown>().options.Clear();
-                var option1 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Easy));
-                var option2 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Normal));
-                var option3 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Hard));
-                var list = new List<TMP_Dropdown.OptionData> { option1, option2, option3 };
-                PlayerTypeGO.GetComponent<TMP_Dropdown>().AddOptions(list);
-            }
-            else*/
-            {
-                AddPlayerBtn.GetComponent<Button>().interactable = true;
-
-                PlayerTypeGO.GetComponent<TMP_Dropdown>().options.Clear();
-                var option0 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.Human));
-                var option1 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Easy));
-                var option2 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Normal));
-                var option3 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Hard));
-                var list = new List<TMP_Dropdown.OptionData> { option0, option1, option2, option3 };
-                PlayerTypeGO.GetComponent<TMP_Dropdown>().AddOptions(list);
-            }
-
-            NewPlayerPanel.SetActive(false);
+            AddPlayerBtn.GetComponent<Button>().interactable = true;
+            StartGameBtn.GetComponent<Button>().interactable = false;
+            InitAddPlayerPanel();
             ClearPlayersList();
+
+            // добавляем себя
+            GameManager.Instance.RoomService.AddPlayer(UserManager.Instance.User.Name, PlayerType.Human);
+            UpdatePlayerListFromServer();
         }
 
+        // обновляем интерфейс если есть игроки подключенные по сети
         void Update()
         {
             _timer += Time.deltaTime;
             if (_timer > _delta)
             {
-                if (!MenuManager.IAmGameMaster) // для подключившихся игроков
+                //if (!MenuManager.IAmGameMaster) // для подключившихся игроков
                 {
                     // ждем пока игра стартует
                     var room = GameManager.Instance.RoomService.GetRoom();
@@ -126,10 +80,11 @@ namespace Assets.Scripts.Menu
 
             NewPlayerPanel.SetActive(true);
 
-            PlayerNameGO.GetComponent<TMP_InputField>().text = GetUniqPlayerName();
-            PlayerTypeGO.GetComponent<TMP_Dropdown>().SetValueWithoutNotify(0);
+            PlayerNameGO.GetComponent<TMP_InputField>().text = GenratePlayerName();
+            PlayerTypeGO.GetComponent<TMP_Dropdown>().SetValueWithoutNotify(0); // вручную можно добавлять только игроков компьютеров
         }
 
+        // добавляем нового игрока
         public void OnAddPlayerBtnClick()
         {
             NewPlayerPanel.SetActive(false);
@@ -147,19 +102,6 @@ namespace Assets.Scripts.Menu
             NewPlayerPanel.SetActive(false);
         }
 
-        private static string GetUniqPlayerName()
-        {
-            var playersNames = GameManager.Instance.RoomService.GetPlayers().Select(p => p.Name);
-            for (var i = 0; i < 5; i++)
-            {
-                var name = $"Player_{i}";
-                if (!playersNames.Contains(name))
-                    return name;
-            }
-
-            throw new Exception("No free names left");
-        }
-
         public void OnDeletePlayerBtn(string name)
         {
             GameManager.Instance.RoomService.DeletePlayer(name);
@@ -173,11 +115,7 @@ namespace Assets.Scripts.Menu
 
         public void OnBackBtnClick()
         {
-            //if (GameManager.Instance.RoomService is OnlineGameService)
-            //    MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
-
-            if (GameManager.Instance.RoomService is OfflineGameService)
-                MenuManager.SwitchToMenuPanel(MenuWindowType.Login);
+            MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
         }
 
         private void UpdatePlayerListFromServer()
@@ -214,7 +152,7 @@ namespace Assets.Scripts.Menu
                 }
             }
 
-            var canStart = MenuManager.IAmGameMaster && (playersList.Count() > 1);
+            var canStart = (playersList.Count() > 1);
             StartGameBtn.GetComponent<Button>().interactable = canStart;
         }
 
@@ -245,6 +183,31 @@ namespace Assets.Scripts.Menu
             var playersListGO = GetPlayersList();
             foreach (Transform child in playersListGO.transform)
                 GameObject.Destroy(child.gameObject);
+        }
+
+        private void InitAddPlayerPanel()
+        {
+            PlayerTypeGO.GetComponent<TMP_Dropdown>().options.Clear();
+            var option1 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Easy));
+            var option2 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Normal));
+            var option3 = new TMP_Dropdown.OptionData(PlayerTypeHelper.ToString(PlayerType.AI_Hard));
+            var list = new List<TMP_Dropdown.OptionData> { option1, option2, option3 };
+            PlayerTypeGO.GetComponent<TMP_Dropdown>().AddOptions(list);
+
+            NewPlayerPanel.SetActive(false);
+        }
+
+        private string GenratePlayerName()
+        {
+            var playersNames = GameManager.Instance.RoomService.GetPlayers().Select(p => p.Name);
+            for (var i = 0; i < 5; i++)
+            {
+                var name = $"Player_{i}";
+                if (!playersNames.Contains(name))
+                    return name;
+            }
+
+            throw new Exception("No free names left");
         }
     }
 }

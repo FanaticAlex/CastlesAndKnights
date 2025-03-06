@@ -121,7 +121,7 @@ namespace Assets.Scripts
 
         public void UpdateWaitingSpinners(BasePlayer currentPlayer)
         {
-            var isLocalPlayerMove = GameManager.Instance.RoomService.HumanUser == currentPlayer?.Name;
+            var isLocalPlayerMove = UserManager.Instance.User.Name == currentPlayer?.Name;
             if (isLocalPlayerMove)
                 SetSpinnersOff();
             else

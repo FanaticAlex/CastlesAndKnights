@@ -32,12 +32,12 @@ namespace Assets.Scripts.Menu
         public void OnConnectToGameBtnClick(string roomId)
         {
             //GameManager.Instance.RoomService.Connect(roomId);
-            var user = GameManager.Instance.RoomService.HumanUser;
-            GameManager.Instance.RoomService.AddPlayer(user, PlayerType.Human);
+            //var user = GameManager.Instance.RoomService.HumanUser;
+            //GameManager.Instance.RoomService.AddPlayer(user, PlayerType.Human);
 
             // мы подключились к игре, но добавлять игроков и начинать игру мы не можем
             MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);
-            MenuManager.IAmGameMaster = false;
+            //MenuManager.IAmGameMaster = false;
         }
 
         private void UpdateRoomsList()

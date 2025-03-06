@@ -7,14 +7,13 @@ namespace Assets.Scripts
     /// </summary>
     internal sealed class GameManager
     {
-        private static readonly Lazy<GameManager> instanceHolder =
-            new Lazy<GameManager>(() => new GameManager());
+        private static readonly Lazy<GameManager> _instance = new Lazy<GameManager>(() => new GameManager());
 
         private GameManager()
         {
         }
 
-        public static GameManager Instance => instanceHolder.Value;
+        public static GameManager Instance => _instance.Value;
 
         public IGameService RoomService { get; private set; }
 

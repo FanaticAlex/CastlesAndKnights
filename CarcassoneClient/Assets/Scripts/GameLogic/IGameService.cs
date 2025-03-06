@@ -9,14 +9,11 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts
 {
-
     /// <summary>
     /// Provide functons to access game logic
     /// </summary>
     internal interface IGameService
     {
-        string HumanUser { get; set; }
-        void Create();
         void AddPlayer(string playerName, PlayerType type);
         void DeletePlayer(string playerName);
         void Start();
@@ -53,7 +50,5 @@ namespace Assets.Scripts
         int GetCardsRemain();
 
         void Reset();
-
-        UserInfo GetUserInfo(string playerName);
     }
 }

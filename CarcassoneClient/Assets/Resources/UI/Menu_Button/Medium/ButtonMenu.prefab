@@ -33,7 +33,6 @@ RectTransform:
   m_Children:
   - {fileID: 2638235603359570456}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -109,7 +108,7 @@ MonoBehaviour:
   m_SpriteState:
     m_HighlightedSprite: {fileID: 21300000, guid: 868c03adf28064941a8619216b52afc6, type: 3}
     m_PressedSprite: {fileID: 21300000, guid: 08030024a76309f459c4c4072518a237, type: 3}
-    m_SelectedSprite: {fileID: 21300000, guid: 868c03adf28064941a8619216b52afc6, type: 3}
+    m_SelectedSprite: {fileID: 21300000, guid: 60aece54cf3d8ea499290f41d0d567df, type: 3}
     m_DisabledSprite: {fileID: 21300000, guid: 1938a9eebd33b1a4cb51b8464cbafb37, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
@@ -153,7 +152,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2861986389973585944}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -231,15 +229,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0

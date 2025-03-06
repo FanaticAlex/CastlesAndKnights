@@ -12,17 +12,16 @@ using UnityEngine;
 public class MenuManager : MonoBehaviour
 {
     private static List<BaseMenuWindowController> menuManagers;
-    public static bool IAmGameMaster { get; set; }
 
     private List<BaseMenuWindowController> GetMenuControllers()
     {
-        return GameObject.FindObjectsOfType<BaseMenuWindowController>(true).ToList();
+        return FindObjectsByType<BaseMenuWindowController>(FindObjectsInactive.Include, FindObjectsSortMode.None).ToList();
     }
 
     void Awake()
     {
         menuManagers = GetMenuControllers();
-        SwitchToMenuPanel(MenuWindowType.Login);
+        SwitchToMenuPanel(MenuWindowType.Profile);
         GameObject.Find("Version").GetComponent<TMP_Text>().text = "Version : " + Application.version;
     }
 

@@ -65,7 +65,7 @@ namespace Assets.Scripts
             var currentPlayer = await GameManager.Instance.RoomService.GetCurrentPlayer();
 
             // наш ход
-            var isLocalPlayerTurn = GameManager.Instance.RoomService.HumanUser == currentPlayer?.Name;
+            var isLocalPlayerTurn = UserManager.Instance.User.Name == currentPlayer?.Name;
             if (isLocalPlayerTurn)
             {
                 _playerController.HandlePlayerActions(_cardsController, currentPlayer);

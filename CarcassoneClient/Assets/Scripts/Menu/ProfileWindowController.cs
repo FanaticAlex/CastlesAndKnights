@@ -11,18 +11,18 @@ namespace Assets.Scripts.Menu
     internal class ProfileWindowController : BaseMenuWindowController
     {
         public GameObject UserName;
-        public GameObject Statistic;
+        public GameObject UserInfo;
 
         public override void Enable()
         {
             base.Enable();
 
-            var user = GameManager.Instance.RoomService.HumanUser;
-            var statistic = GameManager.Instance.RoomService.GetUserInfo(user);
-            UserName.GetComponent<TMP_Text>().text = user;
-            Statistic.GetComponent<TMP_Text>().text = 
-                $"GamesCount: {statistic.GamesCount} \r\n" +
-                $"WinCount: {statistic.WinCount}";
+            var user = new User();
+            var userInfo = user.GetUserInfo();
+            UserName.GetComponent<TMP_Text>().text = user.Name;
+            UserInfo.GetComponent<TMP_Text>().text = 
+                $"GamesCount: {userInfo.GamesCount} \r\n" +
+                $"WinCount: {userInfo.WinCount}";
         }
 
         public override MenuWindowType MenuPanelType => MenuWindowType.Profile;
@@ -32,10 +32,9 @@ namespace Assets.Scripts.Menu
             MenuManager.SwitchToMenuPanel(MenuWindowType.ChooseRoom);
         }
 
-        public void OnNewGameBtnClick()
+        public void OnSingleGameBtnClick()
         {
-            GameManager.Instance.RoomService.Create();
-            MenuManager.IAmGameMaster = true;
+            GameManager.Instance.SetOfflineMode();
             MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);
         }
 
