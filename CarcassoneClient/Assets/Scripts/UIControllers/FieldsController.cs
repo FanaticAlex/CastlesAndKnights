@@ -1,4 +1,5 @@
-﻿using Carcassone.Core.Cards;
+﻿using Carcassone.Core;
+using Carcassone.Core.Cards;
 using Carcassone.Core.Fields;
 using System;
 using System.Collections.Generic;
@@ -8,46 +9,43 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
+    /// <summary>
+    /// Отвечает за создание игровых полей из префабов
+    /// и управление анимацией и эффектами этих обьектов.
+    /// </summary>
     internal class FieldsController
     {
-        public Dictionary<string, GameObject> _fieldsToGameObject = new();
-
-        public List<Field> FieldsCache { get; set; } = new List<Field>();
-
+        private Dictionary<string, GameObject> _fieldsToGameObject = new();
         private readonly GameObject _fieldPrefab;
         private readonly GameObject _desk;
 
-        public FieldsController()
+        private GameRoom _room;
+
+        public FieldsController(GameRoom room)
         {
+            _room = room;
             _fieldPrefab = (GameObject)Resources.Load("Additional/FieldPrefab", typeof(GameObject));
             _desk = new GameObject("desk");
-            CreateFieldsIfNotExistView();
         }
 
-        /// <summary>
-        /// Возвращает поле на которое указывает курсор.
-        /// </summary>
-        /// <returns></returns>
-        public string GetSelectedFieldId()
+        public GameObject GetFieldGameObject(string fieldId)
         {
-            string selectedField = null;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            // если мы навели мышкой на поле
-            if (Physics.Raycast(ray, out RaycastHit hit, 100.0F))
+            return _fieldsToGameObject[fieldId];
+        }
+
+        public string GetFieldByGameObject(GameObject go)
+        {
+            if (go == null) { return null; }
+
+            foreach (var item in _fieldsToGameObject)
             {
-                foreach (var item in _fieldsToGameObject)
-                {
-                    var fieldObject = item.Value;
-                    var field = item.Key;
-                    var hitedField = hit.collider.gameObject;
-                    if (hitedField == fieldObject)
-                    {
-                        selectedField = field;
-                    }
-                }
+                var fieldObject = item.Value;
+                var field = item.Key;
+                if (go == fieldObject)
+                    return field;
             }
 
-            return selectedField;
+            return null;
         }
 
         /// <summary>
@@ -86,8 +84,7 @@ namespace Assets.Scripts
 
         public void CreateFieldsIfNotExistView()
         {
-            FieldsCache = GameManager.Instance.RoomService.GetFields();
-            foreach (var field in FieldsCache)
+            foreach (var field in _room.FieldBoard.Fields)
             {
                 if (!_fieldsToGameObject.Keys.Contains(field.Id))
                 {

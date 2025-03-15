@@ -169,7 +169,7 @@ namespace Assets.Scripts
                     $"{score.PlayerName} : {SumScore(score)} \r\n";
             }
 
-            GameManager.Instance.RoomService.Reset();
+            //GameManager.Instance.RoomService.Reset();
         }
 
         private int SumScore(PlayerScore score)

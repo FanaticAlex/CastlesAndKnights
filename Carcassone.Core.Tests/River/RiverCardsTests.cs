@@ -22,16 +22,21 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void RiverCardPut()
         {
-            var game = new GameRoom();
-            game.PlayersPool.AddPlayer("bob", PlayerType.Human);
-            game.Start();
+            var room = new GameRoom();
+            room.PlayersPool.AddPlayer("bob", PlayerType.Human);
+            room.Start();
 
-            var card = game.CardsPool.GetCard("FWRW(0)");
-            card.RotateCard();
-            game.PutCardInField(card, game.FieldBoard.GetField(0, -1));
-            game.EndTurn();
+            var gameMove1 = new GameMove()
+            {
+                PlayerName = "bob",
+                CardId = "FWRW(0)",
+                CardRotation = 1,
+                FieldId = $"{0}_{-1}",
+                PartName = "Cornfield_0"
+            };
+            room.MakeMove(gameMove1);
 
-            Assert.Equal(1, game.CardsPool.GetCard(card.Id).RotationsCount);
+            Assert.Equal(1, room.CardsPool.GetCard("FWRW(0)").RotationsCount);
         }
     }
 }

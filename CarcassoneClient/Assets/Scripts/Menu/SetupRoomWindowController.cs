@@ -63,9 +63,9 @@ namespace Assets.Scripts.Menu
                 //if (!MenuManager.IAmGameMaster) // для подключившихся игроков
                 {
                     // ждем пока игра стартует
-                    var room = GameManager.Instance.RoomService.GetRoom();
-                    if (room.IsStarted)
-                        SceneManager.LoadScene("RoomScene");
+                    //var room = GameManager.Instance.RoomService.GetRoom();
+                    //if (room.IsStarted)
+                    //    SceneManager.LoadScene("RoomScene");
                 }
 
                 UpdatePlayerListFromServer();

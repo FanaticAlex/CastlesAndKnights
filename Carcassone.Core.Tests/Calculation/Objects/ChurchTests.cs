@@ -31,74 +31,119 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void GetPointsTest()
         {
-            var gameRoom = new GameRoom();
-            gameRoom.PlayersPool.AddPlayer("Jack", PlayerType.Human);
-            gameRoom.PlayersPool.MoveToNextPlayer();
+            var room = new GameRoom();
+            room.PlayersPool.AddPlayer("Jack", PlayerType.Human);
+            room.PlayersPool.MoveToNextPlayer();
 
-            var churchCard = gameRoom.CardsPool.GetCard(Card.GetCardId("FFFF", 0));
-            gameRoom.PutCardInField(churchCard, gameRoom.FieldBoard.GetField(0, 0));
-            gameRoom.PutChipInCard(churchCard.Parts[0], gameRoom.PlayersPool.GetCurrentPlayer().Name);
-            gameRoom.EndTurn();
-            Assert.Single(gameRoom.ScoreCalculator.Churches);
-            Assert.Equal(1, gameRoom.GetPlayerScore(gameRoom.PlayersPool.GetCurrentPlayer()).ChurchesScore);
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = "Jack",
+                CardId = "FFFF(0)",
+                CardRotation = 0,
+                FieldId = $"{0}_{0}",
+                PartName = "Church_0"
+            };
+            room.MakeMove(gameMove0);
+            Assert.Single(room.ScoreCalculator.Churches);
+            Assert.Equal(1, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer()).ChurchesScore);
 
-            var churchCard1 = gameRoom.CardsPool.GetCard(Card.GetCardId("RFRF", 0));
-            churchCard1.RotateCard();
-            gameRoom.PutCardInField(churchCard1, gameRoom.FieldBoard.GetField(0, 1)); // top center
-            gameRoom.EndTurn();
-            Assert.Single(gameRoom.ScoreCalculator.Churches);
-            Assert.Equal(2, gameRoom.GetPlayerScore(gameRoom.PlayersPool.GetCurrentPlayer()).ChurchesScore);
+            var gameMove1 = new GameMove()
+            {
+                PlayerName = "Jack",
+                CardId = "RFRF(0)",
+                CardRotation = 1,
+                FieldId = $"{0}_{1}",
+                PartName = null
+            };
+            room.MakeMove(gameMove1);
+            Assert.Single(room.ScoreCalculator.Churches);
+            Assert.Equal(2, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer()).ChurchesScore);
 
-            var churchCard2 = gameRoom.CardsPool.GetCard(Card.GetCardId("FFRR", 0));
-            gameRoom.PutCardInField(churchCard2, gameRoom.FieldBoard.GetField(1, 1)); // top right
-            gameRoom.EndTurn();
-            Assert.Single(gameRoom.ScoreCalculator.Churches);
-            Assert.Equal(3, gameRoom.GetPlayerScore(gameRoom.PlayersPool.GetCurrentPlayer()).ChurchesScore);
+            var gameMove2 = new GameMove()
+            {
+                PlayerName = "Jack",
+                CardId = "FFRR(0)",
+                CardRotation = 0,
+                FieldId = $"{1}_{1}",
+                PartName = null
+            };
+            room.MakeMove(gameMove2);
+            Assert.Single(room.ScoreCalculator.Churches);
+            Assert.Equal(3, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer()).ChurchesScore);
 
-            var churchCard3 = gameRoom.CardsPool.GetCard(Card.GetCardId("FFRR", 1));
-            churchCard3.RotateCard();
-            churchCard3.RotateCard();
-            churchCard3.RotateCard();
-            gameRoom.PutCardInField(churchCard3, gameRoom.FieldBoard.GetField(-1, 1)); // top left
-            gameRoom.EndTurn();
-            Assert.Single(gameRoom.ScoreCalculator.Churches);
-            Assert.Equal(4, gameRoom.GetPlayerScore(gameRoom.PlayersPool.GetCurrentPlayer()).ChurchesScore);
+            var gameMove3 = new GameMove()
+            {
+                PlayerName = "Jack",
+                CardId = "FFRR(1)",
+                CardRotation = 3,
+                FieldId = $"{-1}_{1}",
+                PartName = null
+            };
+            room.MakeMove(gameMove3);
+            Assert.Single(room.ScoreCalculator.Churches);
+            Assert.Equal(4, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer()).ChurchesScore);
 
-            var churchCard4 = gameRoom.CardsPool.GetCard(Card.GetCardId("RFRF", 1));
-            gameRoom.PutCardInField(churchCard4, gameRoom.FieldBoard.GetField(-1, 0)); // mid left
-            gameRoom.EndTurn();
-            Assert.Single(gameRoom.ScoreCalculator.Churches);
-            Assert.Equal(5, gameRoom.GetPlayerScore(gameRoom.PlayersPool.GetCurrentPlayer()).ChurchesScore);
+            var gameMove4 = new GameMove()
+            {
+                PlayerName = "Jack",
+                CardId = "RFRF(1)",
+                CardRotation = 0,
+                FieldId = $"{-1}_{0}",
+                PartName = null
+            };
+            room.MakeMove(gameMove4);
+            Assert.Single(room.ScoreCalculator.Churches);
+            Assert.Equal(5, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer()).ChurchesScore);
 
-            var churchCard5 = gameRoom.CardsPool.GetCard(Card.GetCardId("RFRF", 2));
-            gameRoom.PutCardInField(churchCard5, gameRoom.FieldBoard.GetField(1, 0)); // mid right
-            gameRoom.EndTurn();
-            Assert.Single(gameRoom.ScoreCalculator.Churches);
-            Assert.Equal(6, gameRoom.GetPlayerScore(gameRoom.PlayersPool.GetCurrentPlayer()).ChurchesScore);
+            var gameMove5 = new GameMove()
+            {
+                PlayerName = "Jack",
+                CardId = "RFRF(2)",
+                CardRotation = 0,
+                FieldId = $"{1}_{0}",
+                PartName = null
+            };
+            room.MakeMove(gameMove5);
+            Assert.Single(room.ScoreCalculator.Churches);
+            Assert.Equal(6, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer()).ChurchesScore);
 
-            var churchCard6 = gameRoom.CardsPool.GetCard(Card.GetCardId("RFRF", 3));
-            churchCard6.RotateCard();
-            gameRoom.PutCardInField(churchCard6, gameRoom.FieldBoard.GetField(0, -1)); // bot center
-            gameRoom.EndTurn();
-            Assert.Single(gameRoom.ScoreCalculator.Churches);
-            Assert.Equal(7, gameRoom.GetPlayerScore(gameRoom.PlayersPool.GetCurrentPlayer()).ChurchesScore);
+            var gameMove6 = new GameMove()
+            {
+                PlayerName = "Jack",
+                CardId = "RFRF(3)",
+                CardRotation = 1,
+                FieldId = $"{0}_{-1}",
+                PartName = null
+            };
+            room.MakeMove(gameMove6);
+            Assert.Single(room.ScoreCalculator.Churches);
+            Assert.Equal(7, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer()).ChurchesScore);
 
-            var churchCard7 = gameRoom.CardsPool.GetCard(Card.GetCardId("FFRR", 2));
-            churchCard7.RotateCard();
-            gameRoom.PutCardInField(churchCard7, gameRoom.FieldBoard.GetField(1, -1)); // bot right
-            gameRoom.EndTurn();
-            Assert.Single(gameRoom.ScoreCalculator.Churches);
-            Assert.Equal(8, gameRoom.GetPlayerScore(gameRoom.PlayersPool.GetCurrentPlayer()).ChurchesScore);
+            var gameMove7 = new GameMove()
+            {
+                PlayerName = "Jack",
+                CardId = "FFRR(2)",
+                CardRotation = 1,
+                FieldId = $"{1}_{-1}",
+                PartName = null
+            };
+            room.MakeMove(gameMove7);
+            Assert.Single(room.ScoreCalculator.Churches);
+            Assert.Equal(8, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer()).ChurchesScore);
 
-            var churchCard8 = gameRoom.CardsPool.GetCard(Card.GetCardId("FFRR", 3));
-            churchCard8.RotateCard();
-            churchCard8.RotateCard();
-            gameRoom.PutCardInField(churchCard8, gameRoom.FieldBoard.GetField(-1, -1)); // bot left
-            gameRoom.EndTurn();
-            Assert.Single(gameRoom.ScoreCalculator.Churches);
-            Assert.Equal(18, gameRoom.GetPlayerScore(gameRoom.PlayersPool.GetCurrentPlayer()).ChurchesScore);
+            var gameMove8 = new GameMove()
+            {
+                PlayerName = "Jack",
+                CardId = "FFRR(3)",
+                CardRotation = 2,
+                FieldId = $"{-1}_{-1}",
+                PartName = null
+            };
+            room.MakeMove(gameMove8);
+            Assert.Single(room.ScoreCalculator.Churches);
+            Assert.Equal(18, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer()).ChurchesScore);
 
-            Assert.True(gameRoom.ScoreCalculator.Churches[0].IsFinished);
+            Assert.True(room.ScoreCalculator.Churches[0].IsFinished);
         }
     }
 }

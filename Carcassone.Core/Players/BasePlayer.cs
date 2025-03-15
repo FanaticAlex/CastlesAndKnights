@@ -1,7 +1,7 @@
 ﻿using Carcassone.Core.Cards;
-using Carcassone.Core.Players.AI;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Carcassone.Core.Players
@@ -11,7 +11,8 @@ namespace Carcassone.Core.Players
         Human,
         AI_Easy,
         AI_Normal,
-        AI_Hard
+        AI_Hard,
+        NetworkPlayer
     }
 
     public class BasePlayer
@@ -79,13 +80,6 @@ namespace Carcassone.Core.Players
             room.PutChipInCard(partObject, Name);
         }
 
-        public void SetPlayerMove3(GameRoom room) // завершить ход
-        {
-            room.EndTurn();
-        }
-
-        public bool IsAI() => PlayerType != PlayerType.Human;
-
         public void ProcessMove(GameRoom room)
         {
             if (room == null)
@@ -93,29 +87,13 @@ namespace Carcassone.Core.Players
 
             var card = room.GetCurrentCard();
             if (card == null)
-            {
-                room.EndTurn();
                 return; // игра уже окончена
-            }
 
             // where to put a card
             var fields = room.GetAvailableFields(card.Id).Select(f => f.Id).ToList();
             List<GameMove> possibleMoves = GetPossibleMoves(room.Save(), card.Id, fields);
-
             GameMove bestMove = GetBestMove(possibleMoves);
-
-            // ход
-            var field = room.FieldBoard.GetField(bestMove.FieldId);
-            field.RotateCardTilFit(card, room.FieldBoard, room.CardsPool);
-            room.PutCardInField(card, field);
-            LastCardId = card.Id;
-            if (bestMove.PartName != null)
-            {
-                var part = card.GetPart(bestMove.PartName);
-                room.PutChipInCard(part, this.Name);
-            }
-
-            room.EndTurn();
+            room.MakeMove(bestMove);
         }
 
         private GameMove GetBestMove(List<GameMove> possibleMoves)
@@ -175,13 +153,31 @@ namespace Carcassone.Core.Players
                             gameCopy1.ScoreCalculator.CloseObjectsAndReturnChips(gameCopy1.PlayersPool, gameCopy1.CardsPool);
                         }
 
-                        var gameMove1 = new GameMove(field.Id, part1.PartName, gameCopy1.GetPlayerScore(this));
+                        var gameMove1 = new GameMove()
+                        {
+                            CardId = card.Id,
+                            CardRotation = card.RotationsCount,
+                            PlayerName = Name,
+                            FieldId = field.Id,
+                            PartName = part1.PartName,
+                            ExpectedScore = gameCopy1.GetPlayerScore(this)
+                        };
+
                         possibleMoves.Add(gameMove1);
                     }
 
                     gameCopy.ScoreCalculator.CloseObjectsAndReturnChips(gameCopy.PlayersPool, gameCopy.CardsPool);
                     // ход без установки фишки
-                    var gameMove = new GameMove(field.Id, null, gameCopy.GetPlayerScore(this));
+                    var gameMove = new GameMove()
+                    {
+                        CardId = card.Id,
+                        CardRotation = card.RotationsCount,
+                        PlayerName = Name,
+                        FieldId = field.Id,
+                        PartName = null,
+                        ExpectedScore =  gameCopy.GetPlayerScore(this)
+                    };
+
                     possibleMoves.Add(gameMove);
                 }
 

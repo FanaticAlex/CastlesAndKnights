@@ -5,6 +5,7 @@ using Carcassone.Core.Calculation.Objects;
 using Carcassone.Core.Cards;
 using Carcassone.Core.Fields;
 using Carcassone.Core.Players;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,11 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts
 {
+    //private T ToCommon<T>(object obj)
+    //{
+    //    return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(obj));
+    //}
+
     /*internal class OnlineGameService : IGameService, IOnlineGame
     {
         private readonly Carcassone.ApiClient.Client _client;

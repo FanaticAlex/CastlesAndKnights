@@ -30,18 +30,25 @@ namespace Carcassone.Core.Tests.Buisness
             var playerName = "bob";
             room.PlayersPool.AddPlayer(playerName, PlayerType.Human);
 
-            var card0 = room.GetCard("CFFF(0)");
-            card0.RotationsCount = 2;
-            var card1 = room.GetCard("CFFF(1)");
-            card1.RotationsCount = 0;
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = playerName,
+                CardId = "CFFF(0)",
+                CardRotation = 2,
+                FieldId = $"{0}_{0}",
+                PartName = null
+            };
+            room.MakeMove(gameMove0);
 
-            room.PutCardInField(card0, room.FieldBoard.GetField($"{0}_{0}"));
-            room.EndTurn();
-
-            room.PutCardInField(card1, room.FieldBoard.GetField($"{0}_{-1}"));
-            var part = card1.Parts.Single(p => p is CastlePart);
-            room.PutChipInCard(part, playerName);
-            room.EndTurn();
+            var gameMove1 = new GameMove()
+            {
+                PlayerName = playerName,
+                CardId = "CFFF(1)",
+                CardRotation = 0,
+                FieldId = $"{0}_{-1}",
+                PartName = "Castle_0"
+            };
+            room.MakeMove(gameMove1);
 
             var castles = room.ScoreCalculator.Castles;
             Assert.Single(castles);
@@ -84,24 +91,35 @@ namespace Carcassone.Core.Tests.Buisness
             var playerName = "bob";
             room.PlayersPool.AddPlayer(playerName, PlayerType.Human);
 
-            var card0 = room.GetCard("CFFF(0)");
-            card0.RotationsCount = 2;
-            var card1 = room.GetCard("CWCW(0)");
-            card1.RotationsCount = 0;
-            var card2 = room.GetCard("CFFF(1)");
-            card2.RotationsCount = 0;
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = playerName,
+                CardId = "CWCW(0)",
+                CardRotation = 0,
+                FieldId = $"{0}_{0}",
+                PartName = null
+            };
+            room.MakeMove(gameMove0);
 
+            var gameMove1 = new GameMove()
+            {
+                PlayerName = playerName,
+                CardId = "CFFF(0)",
+                CardRotation = 2,
+                FieldId = $"{0}_{1}",
+                PartName = null
+            };
+            room.MakeMove(gameMove1);
 
-            room.PutCardInField(card1, room.FieldBoard.GetField($"{0}_{0}"));
-            room.EndTurn();
-
-            room.PutCardInField(card0, room.FieldBoard.GetField($"{0}_{1}"));
-            room.EndTurn();
-
-            room.PutCardInField(card2, room.FieldBoard.GetField($"{0}_{-1}"));
-            var part = card2.Parts.Single(p => p is CastlePart);
-            room.PutChipInCard(part, playerName);
-            room.EndTurn();
+            var gameMove2 = new GameMove()
+            {
+                PlayerName = playerName,
+                CardId = "CFFF(1)",
+                CardRotation = 0,
+                FieldId = $"{0}_{-1}",
+                PartName = "Castle_0"
+            };
+            room.MakeMove(gameMove2);
 
             var castles = room.ScoreCalculator.Castles;
             Assert.Equal(2, castles.Count);

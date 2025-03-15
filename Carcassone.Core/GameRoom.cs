@@ -10,11 +10,14 @@ using System.Linq;
 
 namespace Carcassone.Core
 {
+
     /// <summary>
     /// Store all single game data.
     /// </summary>
     public class GameRoom
     {
+        public List<GameMove> Moves { get; set; } = new List<GameMove>();
+
         public ExtensionsManager ExtensionsManager { get; set; }
         public CardPool CardsPool { get; set; }
         public ScoreCalculator ScoreCalculator { get; set; }
@@ -48,8 +51,16 @@ namespace Carcassone.Core
             var firstCard = GetCurrentCard() ?? throw new Exception("Ошибка. В колоде нет карт!");
             var firstField = FieldBoard.GetField(0, 0);
             PutCardInField(firstCard, firstField);
-            EndTurn();
-            AllAiPlayersMove();
+            var initMove = new GameMove()
+            {
+                PlayerName = null,
+                CardId = firstCard.Id,
+                CardRotation = 0,
+                FieldId = firstField.Id,
+                PartName = null,
+            };
+
+            MakeMove(initMove);
         }
 
         public string Save()
@@ -71,8 +82,9 @@ namespace Carcassone.Core
             ScoreCalculator.GetPlayerScore(player, PlayersPool, CardsPool);
 
         public int GetCardsRemain() => GetCardsRemainInPool().Count();
-        public void RotateCard(string cardId) => GetCard(cardId).RotateCard();
+
         public Card GetCard(string cardId) => CardsPool.GetCard(cardId);
+
         public bool CanPutCard(string fieldId, string cardId)
         {
             var field = FieldBoard.GetField(fieldId);
@@ -80,6 +92,11 @@ namespace Carcassone.Core
             return field.CanPutCardInThisField(card, FieldBoard, CardsPool);
         }
 
+        /// <summary>
+        /// Возвращает поля пригодные для установки карты
+        /// </summary>
+        /// <param name="cardName"></param>
+        /// <returns></returns>
         public List<Field> GetAvailableFields(string cardName)
         {
             var list = new List<Field>();
@@ -99,6 +116,10 @@ namespace Carcassone.Core
             return list;
         }
 
+        /// <summary>
+        /// Возвращает поля в которые уже не могут быть поставлены карты по ходу игры.
+        /// </summary>
+        /// <returns></returns>
         public List<Field> GetNotAvailableFields()
         {
             var notAvailableCards = new List<Field>();
@@ -147,8 +168,21 @@ namespace Carcassone.Core
             partObject.Chip = player.TakeChip();
         }
 
-        public void EndTurn()
+        public void MakeMove(GameMove gameMove)
         {
+            var field = FieldBoard.GetField(gameMove.FieldId);
+            var card = CardsPool.GetCard(gameMove.CardId);
+            card.RotateCard(gameMove.CardRotation);
+            PutCardInField(card, field);
+
+            var player = PlayersPool.GetPlayer(gameMove.PlayerName);
+            var part = card.GetPart(gameMove.PartName);
+            if ((player != null) && (part != null))
+              PutChipInCard(part, gameMove.PlayerName);
+
+            Moves.Add(gameMove);
+
+            // расчеты
             ScoreCalculator.CloseObjectsAndReturnChips(PlayersPool, CardsPool);
 
             var isGameOver = (GetCurrentCard() == null);
@@ -160,25 +194,6 @@ namespace Carcassone.Core
             else
             {
                 PlayersPool.MoveToNextPlayer();
-            }
-        }
-
-        public void AllAiPlayersMove()
-        {
-            var currentPlayer = PlayersPool.GetCurrentPlayer();
-            if (currentPlayer == null)
-                return; // game over
-
-            while (currentPlayer.IsAI())
-            {
-                currentPlayer.ProcessMove(this);
-
-                currentPlayer = PlayersPool.GetCurrentPlayer();
-                if (currentPlayer == null)
-                    return; // game over
-
-                if (IsFinished)
-                    break;
             }
         }
 

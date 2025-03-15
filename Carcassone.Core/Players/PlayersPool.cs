@@ -16,12 +16,11 @@ namespace Carcassone.Core.Players
         {
         }
 
-        public BasePlayer GetPlayer(string playerName)
+        public BasePlayer? GetPlayer(string playerName)
         {
             var playerItems = Players.Where(_player => _player.Name == playerName);
-
             if (playerItems.Count() == 0)
-                throw new Exception($"Player {playerName} not found");
+                return null;
 
             if (playerItems.Count() > 1)
                 throw new Exception($"Duplicate players {playerName} in PlayersPool");

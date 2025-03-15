@@ -1,5 +1,4 @@
 ﻿using Carcassone.Core.Players;
-using Carcassone.Core.Players.AI;
 using System.Linq;
 using Xunit;
 

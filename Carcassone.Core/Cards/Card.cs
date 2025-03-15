@@ -33,7 +33,7 @@ namespace Carcassone.Core.Cards
 
         public CenterType CenterType = CenterType.None;
 
-        public int RotationsCount { get; set; }
+        public int RotationsCount { get; private set; }
 
         public Card(string cardType, int cardNumber)
         {
@@ -56,7 +56,15 @@ namespace Carcassone.Core.Cards
 
         public static string GetCardId(string cardType, int cardNumber) => $"{cardType}({cardNumber})";
 
-        public ObjectPart GetPart(string partName) => Parts.Single(p => p.PartName == partName);
+        public ObjectPart? GetPart(string partName)
+        {
+            var list = Parts.Where(p => p.PartName == partName);
+            if (list.Count() == 0) return null;
+
+            if (list.Count() > 1) throw new InvalidOperationException("Не может быть два обьекта с одним названием");
+
+            return list.Single();
+        }
 
         public void AddBorderToPart(Field field, FieldSide side, ObjectPart part, FieldBoard fieldBoard)
         {
@@ -95,6 +103,16 @@ namespace Carcassone.Core.Cards
         }
 
         public abstract void ConnectField(Field field, FieldBoard fieldBoard);
+
+        public void RotateCard(int rotation)
+        {
+            if (rotation < 0) throw new ArgumentOutOfRangeException("неверное число поворотов");
+            if (rotation >= 4) throw new ArgumentOutOfRangeException("неверное число поворотов");
+
+            do
+                RotateCard();
+            while (RotationsCount != rotation);
+        }
 
         /// <summary>
         /// Поворачивает карту на 90 по часовой стрелке градусов счетчик поворотов увеличивается на 1

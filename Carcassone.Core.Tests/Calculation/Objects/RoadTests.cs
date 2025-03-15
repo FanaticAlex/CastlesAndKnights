@@ -23,10 +23,15 @@ namespace Carcassone.Core.Tests.Buisness
             var room = new GameRoom();
             var bob = room.PlayersPool.AddPlayer("bob", PlayerType.Human);
 
-            var card0 = room.GetCard("RRRR(0)");
-
-            room.PutCardInField(card0, room.FieldBoard.GetField($"{0}_{0}"));
-            room.EndTurn();
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = "bob",
+                CardId = "RRRR(0)",
+                CardRotation = 0,
+                FieldId = $"{0}_{0}",
+                PartName = null
+            };
+            room.MakeMove(gameMove0);
                 
             var roads = room.ScoreCalculator.Roads;
             Assert.Equal(4, roads.Count);
@@ -56,26 +61,45 @@ namespace Carcassone.Core.Tests.Buisness
             var room = new GameRoom();
             var bob = room.PlayersPool.AddPlayer("bob", PlayerType.Human);
 
-            var card0 = room.GetCard("FFRR(0)");
-            card0.RotationsCount = 2;
-            var card1 = room.GetCard("FFRR(1)");
-            card1.RotationsCount = 3;
-            var card2 = room.GetCard("FFRR(2)");
-            card2.RotationsCount = 0;
-            var card3 = room.GetCard("FFRR(3)");
-            card3.RotationsCount = 1;
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = "bob",
+                CardId = "FFRR(0)",
+                CardRotation = 2,
+                FieldId = $"{0}_{0}",
+                PartName = "Road_0"
+            };
+            room.MakeMove(gameMove0);
 
-            var chip = new Chip(bob);
-            card0.Parts.First(p => p is RoadPart).Chip = chip;
+            var gameMove1 = new GameMove()
+            {
+                PlayerName = "bob",
+                CardId = "FFRR(1)",
+                CardRotation = 3,
+                FieldId = $"{0}_{1}",
+                PartName = null
+            };
+            room.MakeMove(gameMove1);
 
-            room.PutCardInField(card0, room.FieldBoard.GetField($"{0}_{0}"));
-            room.EndTurn();
-            room.PutCardInField(card1, room.FieldBoard.GetField($"{0}_{1}"));
-            room.EndTurn();
-            room.PutCardInField(card2, room.FieldBoard.GetField($"{1}_{1}"));
-            room.EndTurn();
-            room.PutCardInField(card3, room.FieldBoard.GetField($"{1}_{0}"));
-            room.EndTurn();
+            var gameMove2 = new GameMove()
+            {
+                PlayerName = "bob",
+                CardId = "FFRR(2)",
+                CardRotation = 0,
+                FieldId = $"{1}_{1}",
+                PartName = null
+            };
+            room.MakeMove(gameMove2);
+
+            var gameMove3 = new GameMove()
+            {
+                PlayerName = "bob",
+                CardId = "FFRR(3)",
+                CardRotation = 1,
+                FieldId = $"{1}_{0}",
+                PartName = null
+            };
+            room.MakeMove(gameMove3);
 
             var roads = room.ScoreCalculator.Roads;
             Assert.Single(roads);
@@ -105,17 +129,25 @@ namespace Carcassone.Core.Tests.Buisness
             var playerName = "bob";
             room.PlayersPool.AddPlayer(playerName, PlayerType.Human);
 
-            var card0 = room.GetCard("FFRF(0)");
-            var card1 = room.GetCard("FRRR(0)");
-            card1.RotationsCount = 2;
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = playerName,
+                CardId = "FFRF(0)",
+                CardRotation = 0,
+                FieldId = $"{0}_{0}",
+                PartName = "Road_0"
+            };
+            room.MakeMove(gameMove0);
 
-            var chip = new Chip(room.PlayersPool.GetPlayer(playerName));
-            card0.Parts.First(p => p is RoadPart).Chip = chip;
-
-            room.PutCardInField(card0, room.FieldBoard.GetField($"{0}_{0}"));
-            room.EndTurn();
-            room.PutCardInField(card1, room.FieldBoard.GetField($"{0}_{-1}"));
-            room.EndTurn();
+            var gameMove1 = new GameMove()
+            {
+                PlayerName = playerName,
+                CardId = "FRRR(0)",
+                CardRotation = 2,
+                FieldId = $"{0}_{-1}",
+                PartName = null
+            };
+            room.MakeMove(gameMove1);
 
             var roads = room.ScoreCalculator.Roads;
             Assert.Equal(3, roads.Count);

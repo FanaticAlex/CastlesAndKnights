@@ -14,31 +14,25 @@ namespace Assets.Scripts
     /// </summary>
     internal interface IGameService
     {
+        GameRoom Room { get; }
+
         void AddPlayer(string playerName, PlayerType type);
         void DeletePlayer(string playerName);
         void Start();
-        void EndTurn(string playerName);
-
-        GameRoom GetRoom();
 
         BasePlayer GetPlayer(string playerName);
         List<BasePlayer> GetPlayers();
-        Task<BasePlayer> GetCurrentPlayer();
+        BasePlayer GetCurrentPlayer();
 
         Card GetCurrentCard();
-        List<Card> GetCards();
         Card GetCard(string cardName);
         bool CanPutCard(string fieldId, string cardName);
-        void PutCard(string fieldId, string cardName, string playerName);
-        void RotateCard(string cardName);
 
         List<Field> GetFields();
         List<Field> GetAvailableFields(string cardName);
         List<Field> GetNotAvailableFields();
 
-        List<ObjectPart> GetAvailableObjectParts(string cardId);
         List<ObjectPart> GetActiveParts();
-        void PutChip(string cardName, string partId, string playerName);
 
         List<PlayerScore> GetGameScores();
         PlayerScore GetScore(string playerName);
@@ -46,9 +40,5 @@ namespace Assets.Scripts
         List<Castle> GetCastles();
         List<Cornfield> GetCornfields();
         List<Church> GetChurches();
-
-        int GetCardsRemain();
-
-        void Reset();
     }
 }

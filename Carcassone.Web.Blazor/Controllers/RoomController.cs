@@ -89,57 +89,6 @@ namespace CarcassoneServer.Web.Blazor.Controllers
         [Route("{roomId}/field/{fieldId}")]
         public Field GetField(string roomId, string fieldId) => _service.GetRoom(roomId).FieldBoard.GetField(fieldId);
 
-
-
-        [HttpGet]
-        [Route("{roomId}/canPutCard/{fieldId}/{cardName}")]
-        public bool CanPutCard(string roomId, string fieldId, string cardName)
-        {
-            return _service.GetRoom(roomId).CanPutCard(fieldId, cardName);
-        }
-
-        [HttpGet]
-        [Route("{roomId}/putCardInField/{fieldId}/{cardName}/{playerName}")]
-        public void PutCardInField(string roomId, string fieldId, string cardName, string playerName)
-        {
-            var room = _service.GetRoom(roomId);
-            var human = room.PlayersPool.GetHumanPlayer(room, playerName);
-            human.SetPlayerMove1(room, cardName, fieldId);
-        }
-
-        [HttpGet]
-        [Route("{roomId}/putChipInCard/{cardName}/{partId}/{playerName}")]
-        public void PutChipInCard(string roomId, string cardName, string partId, string playerName)
-        {
-            var room = _service.GetRoom(roomId);
-            var human = room.PlayersPool.GetHumanPlayer(room, playerName);
-            human.SetPlayerMove2(room, cardName, partId);
-        }
-
-        [HttpGet]
-        [Route("{roomId}/endTurn/{playerName}")]
-        public IActionResult EndTurn(string roomId, string playerName)
-        {
-            var room = _service.GetRoom(roomId);
-            var human = room.PlayersPool.GetHumanPlayer(room, playerName);
-            human.SetPlayerMove3(room);
-
-            // AI players move
-            var task = Task.Run(() => room.AllAiPlayersMove());
-            task.ContinueWith((obj) => FinishingTheGame(room));
-
-            return Ok();
-        }
-
-        private void FinishingTheGame(GameRoom room)
-        {
-            if (room.IsFinished)
-            {
-                _logger.LogInformation("Game Finished");
-                _playedGameStore.AddGameResults(room);
-            }
-        }
-
         [HttpGet]
         [Route("{roomId}/roads")]
         public List<Road> GetRoads(string roomId) => _service.GetRoom(roomId).ScoreCalculator.Roads;
@@ -210,10 +159,6 @@ namespace CarcassoneServer.Web.Blazor.Controllers
         [Route("{roomId}/card/current")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Card))]
         public Task<Card?> GetCurrentCard(string roomId) => Task.FromResult(_service.GetRoom(roomId).GetCurrentCard());
-
-        [HttpGet]
-        [Route("{roomId}/card/rotateCard/{cardId}")]
-        public void RotateCard(string roomId, string cardId) => _service.GetRoom(roomId).RotateCard(cardId);
 
 
         [HttpGet]
