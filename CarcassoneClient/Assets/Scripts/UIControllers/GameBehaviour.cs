@@ -70,13 +70,13 @@ namespace Assets.Scripts
             var card = _room.CardsPool.GetCard(gameMove.CardId);
             var part = card.GetPart(gameMove.PartName);
 
-            PreliminaryPutCardInField(card, field, gameMove.CardRotation);
+            PutCardInField_OnlyUI(card, field, gameMove.CardRotation);
             _playerController.UpdatePlayerLastMoveMarkerUI(card, player);
             _cardsController._partsController.ShowFlagsAndChips();
 
             _cardsController.ReloadCurrentCard();
             _cardsController.UpdateCardRemainView();
-            _fieldsController.ShowAvailableFields(GameManager.Instance.RoomService.GetCurrentCard());
+            _fieldsController.ShowAvailableFields(_room.GetCurrentCard());
 
             _scoreController.UpdateScore();
             _scoreController.UpdateCurrentPlayerMark(player);
@@ -127,7 +127,8 @@ namespace Assets.Scripts
 
         public void OnRotateButonClick()
         {
-            _room.GetCurrentCard().RotateCard();
+            var currentCard = _room.GetCurrentCard();
+            PutCardInField_Preliminary(currentCard, _selectedField);
             _cardsController.ReloadCurrentCard();
         }
 
@@ -135,7 +136,7 @@ namespace Assets.Scripts
         {
             var currentCard = _room.GetCurrentCard();
             // у всех частей обьекта анимацию убираем
-            _cardsController.HideAllCardMarks();
+            _cardsController.HideAllCardMarks(currentCard);
 
             // у выбранного включаем
             _selectedPart = GetSelectedPart(currentCard);
@@ -149,25 +150,30 @@ namespace Assets.Scripts
 
         public void OnEndTurnButonClick()
         {
-            var card = _room.GetCurrentCard();
+            var currentCard = _room.GetCurrentCard();
             var currentPlayer = GameManager.Instance.RoomService.GetCurrentPlayer();
 
-            _selectedPart = GetSelectedPart(card);
+            _selectedPart = GetSelectedPart(currentCard);
 
             var gameMove = new GameMove()
             {
                 PlayerName = currentPlayer.Name,
-                CardId = card.Id,
-                CardRotation = card.RotationsCount,
+                CardId = currentCard.Id,
+                CardRotation = currentCard.RotationsCount,
                 FieldId = _selectedField.Id,
                 PartName = _selectedPart?.PartName
             };
             _room.MakeMove(gameMove);
+            VisualizeTurn(gameMove);
 
             // TODO: отправить ход на сервер для сетевой игры
 
-            _cardsController.HideAllCardMarks();
+            // ход окончен
+            _cardsController.HideAllCardMarks(currentCard);
+            _selectedField = null;
+            _selectedPart = null;
             SelectPartPanel.SetActive(false);
+
         }
 
         public void OnShowPlayerDetailedScore(Text playerNamePanel)
@@ -187,6 +193,9 @@ namespace Assets.Scripts
 
         private void TryToPutCardInField(string playerName, CardsController cardsController)
         {
+            if (_selectedField != null) // если мы в состоянии выбора чати то не кликам на поля
+                return;
+
             // устанавливаем карту в поле
             var hittedGO = GetHitedGameObject();
             var selectedFieldId = _fieldsController.GetFieldByGameObject(hittedGO);
@@ -195,45 +204,52 @@ namespace Assets.Scripts
                 Logger.Info("No field selected");
                 return;
             }
+            _selectedField = _room.FieldBoard.GetField(selectedFieldId);
 
             var currentCard = _room.GetCurrentCard();
-            var canPutCard = _room.CanPutCard(selectedFieldId, currentCard.Id);
+            var canPutCard = _room.CanPutCardInFieldWithRotation(_selectedField, currentCard);
             if (!canPutCard)
             {
                 Logger.Info("Cant put a card!");
                 return;
             }
 
-            _selectedField = _room.FieldBoard.GetField(selectedFieldId);
-            PreliminaryPutCardInField(currentCard, _selectedField, currentCard.RotationsCount);
+            PutCardInField_Preliminary(currentCard, _selectedField);
+        }
 
-            ShowSelectPartPanel();
-
+        private void PutCardInField_Preliminary(Card card, Field field)
+        {
             // клик по полю для установки карты
             // при нажатии карта предварительно ставится в поле
             // камера приближается к карте
             // отображается UI для установки фишек/поворота карты
 
-            // пробная установка карты
-            //GameManager.Instance.RoomService.PutCard(selectedFieldId, GameManager.Instance.RoomService.GetCurrentCard().Id, playerName);
-            //_fieldsController.CreateFieldsIfNotExistView();
-            //_cardsController.PutCardInField(GameManager.Instance.RoomService.GetCurrentCard());
+            _room.RotateCardTilFit(field, card);
+
+            _preliminaryGameRoomWithNewCard = new GameRoom();
+            _preliminaryGameRoomWithNewCard.Load(_room.Save());
+
+            var fieldGO = _fieldsController.GetFieldGameObject(field.Id);
+            var field_Temp = _preliminaryGameRoomWithNewCard.FieldBoard.GetField(field.Id);
+            var card_Temp = _preliminaryGameRoomWithNewCard.CardsPool.GetCard(card.Id);
+            _preliminaryGameRoomWithNewCard.RotateCardTilFit(field_Temp, card_Temp);
+            var cardGO = _cardsController.GetCardGO(card.Id);
+            cardGO.transform.position = fieldGO.transform.position + new Vector3(0, 0, -1);
+            cardGO.transform.rotation = Quaternion.Euler(0, 0, -90 * card.RotationsCount);
+            _preliminaryGameRoomWithNewCard.PutCardInField(card, field_Temp);
+
+            ShowSelectPartPanel();
         }
 
-        private void PreliminaryPutCardInField(Card card, Field field, int rotation)
+        private void PutCardInField_OnlyUI(Card card, Field field, int rotation)
         {
             _fieldsController.CreateFieldsIfNotExistView();
-
             var fieldGO = _fieldsController.GetFieldGameObject(field.Id);
             card.RotateCard(rotation);
             var cardGO = _cardsController.GetCardGO(card.Id);
             cardGO.transform.position = fieldGO.transform.position + new Vector3(0, 0, -1);
             cardGO.transform.rotation = Quaternion.Euler(0, 0, -90 * card.RotationsCount);
-
             _fieldsController.CreateFieldsIfNotExistView();
-
-            _preliminaryGameRoomWithNewCard = new GameRoom();
-            _preliminaryGameRoomWithNewCard.Load(_room.Save());
         }
 
         private GameObject GetHitedGameObject()
@@ -247,7 +263,7 @@ namespace Assets.Scripts
         {
             // дальше устанавливаем part
             var currentCard = _room.GetCurrentCard();
-            var parts = _room.GetAvailableParts(currentCard.Id);
+            var parts = _preliminaryGameRoomWithNewCard.GetAvailableParts(currentCard.Id);
             if (!parts.Any())
             {
                 Logger.Info("Card has no free parts!");
@@ -308,9 +324,10 @@ namespace Assets.Scripts
                 var toggleName = "Toggle" + i;
                 var toggle = toggleGroup.Find(toggleName);
                 var toggleComponent = toggle.GetComponent<Toggle>();
+                var toggleLabel = toggle.Find("Label").GetComponent<Text>();
 
                 if (toggleComponent.isOn)
-                    return card.Parts[i];
+                    return card.Parts.Single(p => p.PartName == toggleLabel.text);
             }
 
             return null;

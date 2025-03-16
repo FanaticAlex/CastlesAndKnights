@@ -1,4 +1,5 @@
 ﻿using Carcassone.Core.Cards;
+using Carcassone.Core.Fields;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -65,21 +66,6 @@ namespace Carcassone.Core.Players
             part.Flag = new Flag(this);
         }
 
-        public void SetPlayerMove1(GameRoom room, string cardId, string fieldId) // положить карту
-        {
-            var card = room.GetCard(cardId);
-            var field = room.FieldBoard.GetField(fieldId);
-            LastCardId = card.Id;
-            room.PutCardInField(card, field);
-        }
-
-        public void SetPlayerMove2(GameRoom room, string cardId, string partId) // положить фишку
-        {
-            var card = room.CardsPool.AllCards.First(_card => _card.Id == cardId);
-            var partObject = card.Parts.First(_part => _part.PartId == partId);
-            room.PutChipInCard(partObject, Name);
-        }
-
         public void ProcessMove(GameRoom room)
         {
             if (room == null)
@@ -134,7 +120,7 @@ namespace Carcassone.Core.Players
                 gameCopy.Load(roomSave);
                 var card = gameCopy.CardsPool.GetCard(cardId);
                 var field = gameCopy.FieldBoard.GetField(fieldId);
-                if (field.RotateCardTilFit(card, gameCopy.FieldBoard, gameCopy.CardsPool))
+                if (gameCopy.RotateCardTilFit(field, card))
                 {
                     gameCopy.PutCardInField(card, field);
 

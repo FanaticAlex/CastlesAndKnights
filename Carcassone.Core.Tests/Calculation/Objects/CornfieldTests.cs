@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Carcassone.Core.Tests.Buisness
 {
-    public class Buisness_2_CornfieldTests
+    public class CornfieldTests
     {
         /// <summary>
         ///       F

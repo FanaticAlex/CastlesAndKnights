@@ -24,10 +24,6 @@ namespace Assets.Scripts
         List<BasePlayer> GetPlayers();
         BasePlayer GetCurrentPlayer();
 
-        Card GetCurrentCard();
-        Card GetCard(string cardName);
-        bool CanPutCard(string fieldId, string cardName);
-
         List<Field> GetFields();
         List<Field> GetAvailableFields(string cardName);
         List<Field> GetNotAvailableFields();

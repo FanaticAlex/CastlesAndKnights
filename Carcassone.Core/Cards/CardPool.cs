@@ -8,13 +8,19 @@ namespace Carcassone.Core.Cards
 {
     public class CardPool
     {
+        [JsonProperty(ItemConverterType = typeof(CardConverter), ObjectCreationHandling = ObjectCreationHandling.Replace)]
+        public List<Card> CardsDeck { get; private set; } = new List<Card>();
+
+        [JsonProperty(ItemConverterType = typeof(CardConverter), ObjectCreationHandling = ObjectCreationHandling.Replace)]
+        public List<Card> DiscardedCards { get; private set; } = new List<Card>();
+
         public CardPool(ExtensionsManager extensionsManager)
         {
             // речные карты кладем их поверх остальных в колоде
             if (extensionsManager.RiverExtension != null)
             {
                 var riverCards = extensionsManager.RiverExtension.GetCards();
-                AllCards.AddRange(riverCards);
+                CardsDeck.AddRange(riverCards);
             }
 
             var baseCards = new List<Card>();
@@ -47,24 +53,47 @@ namespace Carcassone.Core.Cards
 
             Shaffle(baseCards);
 
-            AllCards.AddRange(baseCards);
+            CardsDeck.AddRange(baseCards);
         }
 
-        [JsonProperty(ItemConverterType = typeof(CardConverter), ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        public List<Card> AllCards { get; private set; } = new List<Card>();
+        public List<Card> GetAllCards()
+        {
+            var allCards = new List<Card>();
+            allCards.AddRange(CardsDeck);
+            allCards.AddRange(DiscardedCards);
+            return allCards;
+        }
 
         public Card GetCard(string cardId)
         {
-            var card = AllCards.FirstOrDefault(card => card.Id == cardId);
+            var card = GetAllCards().FirstOrDefault(card => card.Id == cardId);
             if (card == null)
                 throw new Exception($"Card {cardId} not found");
 
             return card;
         }
 
+        public bool IsEmpty()
+        {
+            return CardsDeck.Count == 0;
+        }
+
+        public Card? GetTopCard()
+        {
+            return CardsDeck.FirstOrDefault();
+        }
+
+        public void DiscardCard(Card? card)
+        {
+            if (card == null) return;
+
+            CardsDeck.Remove(card);
+            DiscardedCards.Add(card);
+        }
+
         public ObjectPart GetPart(string partId)
         {
-            return AllCards.SelectMany(c => c.Parts).FirstOrDefault(p => p.PartId == partId);
+            return GetAllCards().SelectMany(c => c.Parts).FirstOrDefault(p => p.PartId == partId);
         }
 
         public static void Shaffle(List<Card> cardsPile)

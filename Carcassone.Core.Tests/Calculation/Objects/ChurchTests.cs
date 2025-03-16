@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Carcassone.Core.Tests.Buisness
 {
-    public class Buisness_3_ChurchTests
+    public class ChurchTests
     {
         /// <summary>
         /// 9 полей с картой церкви в центальной фишка игрока.

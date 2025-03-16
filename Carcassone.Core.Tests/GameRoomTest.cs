@@ -33,8 +33,7 @@ namespace Carcassone.Core.Tests.Room
         public void GetCardsRemainInPoolTest()
         {
             var room = new GameRoom();
-            var count = room.GetCardsRemain();
-            Assert.Equal(82, count);
+            Assert.Equal(82, room.CardsPool.CardsDeck.Count);
         }
 
         [Fact]

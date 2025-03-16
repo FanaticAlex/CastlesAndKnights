@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Carcassone.Core.Tests.Buisness
 {
-    public class Buisness_5_RiverCardsTests
+    public class RiverCardsTests
     {
         /// <summary>
         ///       F

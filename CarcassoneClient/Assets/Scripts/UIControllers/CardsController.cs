@@ -39,6 +39,10 @@ namespace Assets.Scripts
             var currentCard = _room.GetCurrentCard(); 
             if (currentCard != null)
             {
+
+
+
+                // изображение на панели
                 var cardGO = _cardsToGameObject[currentCard.Id];
                 currentCardImageGO.GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
                 currentCardImageGO.transform.localRotation = Quaternion.Euler(0, 0, currentCard.RotationsCount * -90);
@@ -47,7 +51,7 @@ namespace Assets.Scripts
 
         public void UpdateCardRemainView()
         {
-            var cardsRemain = _room.GetCardsRemain();
+            var cardsRemain = _room.CardsPool.CardsDeck.Count;
             var cardsRemainText = GameObject.Find("CardsRemain").GetComponent<Text>();
             cardsRemainText.text = $"{cardsRemain}";
         }
@@ -60,9 +64,9 @@ namespace Assets.Scripts
             partGameObject.SetActive(true);
         }
 
-        public void HideAllCardMarks()
+        public void HideAllCardMarks(Card card)
         {
-            foreach (var part in _room.GetCurrentCard().Parts)
+            foreach (var part in card.Parts)
                 HidePartMark(part);
         }
 
@@ -77,7 +81,7 @@ namespace Assets.Scripts
         private void CreateCardsView()
         {
             var subfolderCards = "Cards/";
-            foreach (var card in _room.CardsPool.AllCards)
+            foreach (var card in _room.CardsPool.GetAllCards())
             {
                 var prefab = (GameObject)Resources.Load(subfolderCards + card.CardType, typeof(GameObject));
                 if (prefab == null)

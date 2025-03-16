@@ -145,11 +145,7 @@ namespace CarcassoneServer.Web.Blazor.Controllers
 
         [HttpGet]
         [Route("{roomId}/card/list")]
-        public List<Card> GetAllCards(string roomId) => _service.GetRoom(roomId).CardsPool.AllCards;
-
-        [HttpGet]
-        [Route("{roomId}/card/remain")]
-        public int GetCardsRemain(string roomId) => _service.GetRoom(roomId).GetCardsRemain();
+        public List<Card> GetAllCards(string roomId) => _service.GetRoom(roomId).CardsPool.CardsDeck;
 
         [HttpGet]
         [Route("{roomId}/card/{cardId}/availableParts")]

@@ -6,8 +6,43 @@ using Xunit;
 
 namespace Carcassone.Core.Tests.Buisness
 {
-    public class Buisness_1_CastleTests
+    public class CastleTests
     {
+
+        /// <summary>
+        ///       C
+        ///   |\-----/|
+        /// W |+++++++| W
+        ///   |/-----\|
+        ///       C
+        /// </summary>
+        [Fact]
+        public void CalculationTest_NotClosedCastle()
+        {
+            var room = new GameRoom();
+            var playerName = "bob";
+            room.PlayersPool.AddPlayer(playerName, PlayerType.Human);
+
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = playerName,
+                CardId = "CWCW(0)",
+                CardRotation = 0,
+                FieldId = $"{0}_{0}",
+                PartName = "Castle_0"
+            };
+            room.MakeMove(gameMove0);
+
+            var castles = room.ScoreCalculator.Castles;
+            Assert.True(castles.Count == 2);
+            Assert.False(castles[0].IsFinished);
+            Assert.False(castles[1].IsFinished);
+            Assert.True(castles[0].IsPlayerOwner(room.PlayersPool.GetPlayer(playerName), room.CardsPool));
+            
+            var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(playerName));
+            Assert.Equal(1, score.CastlesScore);
+            Assert.Equal(6, room.PlayersPool.GetPlayer(playerName).ChipCount);
+        }
 
         /// <summary>
         /// 

@@ -36,11 +36,6 @@ namespace Assets.Scripts
         }
         public void DeletePlayer(string userName) => Room.PlayersPool.DeletePlayer(userName);
 
-        public Card GetCurrentCard() => Room.GetCurrentCard();
-        public List<Card> GetCards() => Room.CardsPool.AllCards;
-        public Card GetCard(string cardName) => Room.GetCard(cardName);
-        public bool CanPutCard(string fieldId, string cardName) => Room.CanPutCard(fieldId, cardName);
-
         public List<Field> GetFields() => Room.FieldBoard.Fields;
         public List<Field> GetAvailableFields(string cardName) => Room.GetAvailableFields(cardName);
         public List<Field> GetNotAvailableFields() => Room.GetNotAvailableFields();

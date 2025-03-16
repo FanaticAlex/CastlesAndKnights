@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Carcassone.Core.Tests.Buisness
 {
-    public class Buisness_4_RoadTests
+    public class RoadTests
     {
 
         /// <summary>

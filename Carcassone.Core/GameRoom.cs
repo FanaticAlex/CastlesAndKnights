@@ -6,6 +6,7 @@ using Carcassone.Core.Players;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Carcassone.Core
@@ -50,7 +51,6 @@ namespace Carcassone.Core
             // инициализирующий ход
             var firstCard = GetCurrentCard() ?? throw new Exception("Ошибка. В колоде нет карт!");
             var firstField = FieldBoard.GetField(0, 0);
-            PutCardInField(firstCard, firstField);
             var initMove = new GameMove()
             {
                 PlayerName = null,
@@ -81,16 +81,7 @@ namespace Carcassone.Core
         public PlayerScore GetPlayerScore(BasePlayer player) =>
             ScoreCalculator.GetPlayerScore(player, PlayersPool, CardsPool);
 
-        public int GetCardsRemain() => GetCardsRemainInPool().Count();
-
         public Card GetCard(string cardId) => CardsPool.GetCard(cardId);
-
-        public bool CanPutCard(string fieldId, string cardId)
-        {
-            var field = FieldBoard.GetField(fieldId);
-            var card = GetCard(cardId);
-            return field.CanPutCardInThisField(card, FieldBoard, CardsPool);
-        }
 
         /// <summary>
         /// Возвращает поля пригодные для установки карты
@@ -107,7 +98,7 @@ namespace Carcassone.Core
             var fields = FieldBoard.Fields;
             foreach (var field in fields)
             {
-                if (field.CanPutCardInThisFieldWithRotation(card, FieldBoard, CardsPool))
+                if (CanPutCardInFieldWithRotation(field, card))
                 {
                     list.Add(field);
                 }
@@ -124,16 +115,13 @@ namespace Carcassone.Core
         {
             var notAvailableCards = new List<Field>();
             var fields = FieldBoard.GetAvailableFields();
-            var cards = GetCardsRemainInPool();
             foreach (var field in fields)
             {
                 var canPut = false;
-                foreach (var card in cards)
+                foreach (var card in CardsPool.CardsDeck)
                 {
-                    if (field.CanPutCardInThisFieldWithRotation(card, FieldBoard, CardsPool))
-                    {
+                    if (CanPutCardInFieldWithRotation(field, card))
                         canPut = true;
-                    }
                 }
 
                 if (!canPut)
@@ -157,6 +145,9 @@ namespace Carcassone.Core
 
             if (field == null)
                 throw new Exception("Field can't be null");
+
+            if (!CanPutCardInField(field, card))
+                throw new Exception("Card can't be put");
 
             FieldBoard.PutCard(card, field);
             ScoreCalculator.AddCard(card, field, FieldBoard, CardsPool);
@@ -185,16 +176,9 @@ namespace Carcassone.Core
             // расчеты
             ScoreCalculator.CloseObjectsAndReturnChips(PlayersPool, CardsPool);
 
-            var isGameOver = (GetCurrentCard() == null);
-            if (isGameOver)
-            {
-                IsFinished = true;
-                PlayersPool.CurrentPlayerIndex = -1;
-            }
-            else
-            {
-                PlayersPool.MoveToNextPlayer();
-            }
+            CardsPool.DiscardCard(card);
+            IsFinished = (GetCurrentCard() == null);
+            PlayersPool.MoveToNextPlayer();
         }
 
         public List<Card> GetActiveCards()
@@ -219,25 +203,123 @@ namespace Carcassone.Core
         /// <returns></returns>
         public Card? GetCurrentCard()
         {
-            List<Field> fields = FieldBoard.GetAvailableFields();
-            var cardsRemainInPool = GetCardsRemainInPool();
-            foreach (var card in cardsRemainInPool)
+            do
             {
-                // проверяем можно ли эту карту сыграть, если нет берем следующую
-                foreach (var field in fields)
-                {
-                    if (field.CanPutCardInThisFieldWithRotation(card, FieldBoard, CardsPool))
-                        return card;
-                }
-            }
+                var topCard = CardsPool.GetTopCard();
+                if (CanPlayCard(topCard))
+                    return topCard;
+                else
+                    CardsPool.DiscardCard(topCard);
+            } 
+            while (!CardsPool.IsEmpty());
 
             return null;
         }
 
-        private List<Card> GetCardsRemainInPool()
+        private bool CanPlayCard(Card? card)
         {
-            var activeCardsNames = GetActiveCards().Select(c => c.Id);
-            return CardsPool.AllCards.Where(c => !activeCardsNames.Contains(c.Id)).ToList();
+            if (card == null) return false;
+
+            List<Field> fields = FieldBoard.GetAvailableFields();
+            // проверяем можно ли эту карту сыграть, если нет берем следующую
+            foreach (var field in fields)
+            {
+                if (CanPutCardInFieldWithRotation(field, card))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public bool CanPutCardInField(Field field, Card card)
+        {
+            // if there is another card in field then false
+            if (!string.IsNullOrEmpty(field.CardName))
+                return false;
+
+            var neighbourTopCardName = FieldBoard.GetNeighbour(field, FieldSide.top)?.CardName;
+            Card? neighbourTopCard = neighbourTopCardName != null ? CardsPool.GetCard(neighbourTopCardName) : null;
+            var neighbourLeftCardName = FieldBoard.GetNeighbour(field, FieldSide.left)?.CardName;
+            Card? neighbourLeftCard = neighbourLeftCardName != null ? CardsPool.GetCard(neighbourLeftCardName) : null;
+            var neighbourBottomCardName = FieldBoard.GetNeighbour(field, FieldSide.bottom)?.CardName;
+            Card? neighbourBottomCard = neighbourBottomCardName != null ? CardsPool.GetCard(neighbourBottomCardName) : null;
+            var neighbourRightCardName = FieldBoard.GetNeighbour(field, FieldSide.right)?.CardName;
+            Card? neighbourRightCard = neighbourRightCardName != null ? CardsPool.GetCard(neighbourRightCardName) : null;
+
+            // если есть граничные карты то границы должны совпадать иначе карту присоединить нельзя
+            var isRiverCard = card.Id.Contains("W");
+            if (isRiverCard)
+            {
+                bool isTopFree = neighbourTopCard == null;
+                bool isLeftFree = neighbourLeftCard == null;
+                bool isBottomFree = neighbourBottomCard == null;
+                bool isRightFree = neighbourRightCard == null;
+
+                // направелние реки должно быть строго сверху вниз, поворачивать реку наверх нельзя
+                bool isWaterDirectionCorrect = !(isTopFree && card.TopEdgeType == CardEdgeType.Water);
+
+                bool connectWithTopWaterCard = (neighbourTopCard?.BottomEdgeType == card.TopEdgeType && card.TopEdgeType == CardEdgeType.Water);
+                bool connectWithLeftWaterCard = (neighbourLeftCard?.RightEdgeType == card.LeftEdgeType && card.LeftEdgeType == CardEdgeType.Water);
+                bool connectWithBottomWaterCard = (neighbourBottomCard?.TopEdgeType == card.BottomEdgeType && card.BottomEdgeType == CardEdgeType.Water);
+                bool connectWithRightWaterCard = (neighbourRightCard?.LeftEdgeType == card.RightEdgeType && card.RightEdgeType == CardEdgeType.Water);
+
+                // водную карту можно положить в поле, если в соседних с полем областях либо нет карт
+                // либо водные границы соседних карт совпадают
+                if ((isTopFree || connectWithTopWaterCard) &&
+                    (isLeftFree || connectWithLeftWaterCard) &&
+                    (isBottomFree || connectWithBottomWaterCard) &&
+                    (isRightFree || connectWithRightWaterCard) &&
+                    isWaterDirectionCorrect)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                // карту можно положить в поле, если в соседних с полем областях либо нет карт
+                // либо границы карты которую кладем и соседней карты совпадают
+                if ((neighbourTopCard == null || neighbourTopCard.BottomEdgeType == card.TopEdgeType) &&
+                    (neighbourLeftCard == null || neighbourLeftCard.RightEdgeType == card.LeftEdgeType) &&
+                    (neighbourBottomCard == null || neighbourBottomCard.TopEdgeType == card.BottomEdgeType) &&
+                    (neighbourRightCard == null || neighbourRightCard.LeftEdgeType == card.RightEdgeType))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool RotateCardTilFit(Field field, Card card)
+        {
+            for (int i = 1; i < 4; i++) // можно сделать до 3х поворотов 4й - исходное положение
+            {
+                card.RotateCard();
+                if (CanPutCardInField(field, card))
+                    return true;
+            }
+
+            // доворачиваем до исходного положения если не подходит
+            card.RotateCard();
+            return false;
+        }
+
+        public bool CanPutCardInFieldWithRotation(Field field, Card? card)
+        {
+            if (!string.IsNullOrEmpty(field.CardName))
+                return false;
+
+            if (card == null)
+                return false;
+
+            var type = card.GetType();
+            var copy = (Card)Activator.CreateInstance(type, card.CardType, card.CardNumber);
+            copy.TopEdgeType = card.TopEdgeType;
+            copy.LeftEdgeType = card.LeftEdgeType;
+            copy.BottomEdgeType = card.BottomEdgeType;
+            copy.RightEdgeType = card.RightEdgeType;
+
+            return RotateCardTilFit(field, copy);
         }
     }
 }
