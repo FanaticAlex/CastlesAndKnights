@@ -49,7 +49,7 @@ namespace Carcassone.Core
             IsStarted = true;
 
             // инициализирующий ход
-            var firstCard = GetCurrentCard() ?? throw new Exception("Ошибка. В колоде нет карт!");
+            var firstCard = GetNextCard() ?? throw new Exception("Ошибка. В колоде нет карт!");
             var firstField = FieldBoard.GetField(0, 0);
             var initMove = new GameMove()
             {
@@ -177,7 +177,8 @@ namespace Carcassone.Core
             ScoreCalculator.CloseObjectsAndReturnChips(PlayersPool, CardsPool);
 
             CardsPool.DiscardCard(card);
-            IsFinished = (GetCurrentCard() == null);
+            CardsPool.CurrentCard = GetNextCard();
+            IsFinished = (CardsPool.CurrentCard == null);
             PlayersPool.MoveToNextPlayer();
         }
 
@@ -197,11 +198,7 @@ namespace Carcassone.Core
                 .ToList();
         }
 
-        /// <summary>
-        /// Return card from top if the card pool
-        /// </summary>
-        /// <returns></returns>
-        public Card? GetCurrentCard()
+        private Card? GetNextCard()
         {
             do
             {
@@ -255,8 +252,9 @@ namespace Carcassone.Core
                 bool isBottomFree = neighbourBottomCard == null;
                 bool isRightFree = neighbourRightCard == null;
 
-                // направелние реки должно быть строго сверху вниз, поворачивать реку наверх нельзя
-                bool isWaterDirectionCorrect = !(isTopFree && card.TopEdgeType == CardEdgeType.Water);
+                // проверям направление реки
+                bool isWaterDirectionTop = (isTopFree && card.TopEdgeType == CardEdgeType.Water);
+                bool isWaterDirectionRight = (isRightFree && card.RightEdgeType == CardEdgeType.Water);
 
                 bool connectWithTopWaterCard = (neighbourTopCard?.BottomEdgeType == card.TopEdgeType && card.TopEdgeType == CardEdgeType.Water);
                 bool connectWithLeftWaterCard = (neighbourLeftCard?.RightEdgeType == card.LeftEdgeType && card.LeftEdgeType == CardEdgeType.Water);
@@ -269,7 +267,8 @@ namespace Carcassone.Core
                     (isLeftFree || connectWithLeftWaterCard) &&
                     (isBottomFree || connectWithBottomWaterCard) &&
                     (isRightFree || connectWithRightWaterCard) &&
-                    isWaterDirectionCorrect)
+                    !isWaterDirectionTop &&
+                    !isWaterDirectionRight)
                 {
                     return true;
                 }
@@ -292,15 +291,13 @@ namespace Carcassone.Core
 
         public bool RotateCardTilFit(Field field, Card card)
         {
-            for (int i = 1; i < 4; i++) // можно сделать до 3х поворотов 4й - исходное положение
+            for (int i = 1; i < 5; i++) // можно сделать до 3х поворотов 4й - исходное положение (в конце)
             {
                 card.RotateCard();
                 if (CanPutCardInField(field, card))
                     return true;
             }
 
-            // доворачиваем до исходного положения если не подходит
-            card.RotateCard();
             return false;
         }
 

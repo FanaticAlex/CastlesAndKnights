@@ -71,7 +71,7 @@ namespace Carcassone.Core.Players
             if (room == null)
                 throw new Exception("The room cannot be null.");
 
-            var card = room.GetCurrentCard();
+            var card = room.CardsPool.CurrentCard;
             if (card == null)
                 return; // игра уже окончена
 

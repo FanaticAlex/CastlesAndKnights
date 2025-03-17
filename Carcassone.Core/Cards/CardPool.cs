@@ -14,6 +14,9 @@ namespace Carcassone.Core.Cards
         [JsonProperty(ItemConverterType = typeof(CardConverter), ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public List<Card> DiscardedCards { get; private set; } = new List<Card>();
 
+        [JsonConverter(typeof(CardConverter))]
+        public Card? CurrentCard { get; set; }
+
         public CardPool(ExtensionsManager extensionsManager)
         {
             // речные карты кладем их поверх остальных в колоде

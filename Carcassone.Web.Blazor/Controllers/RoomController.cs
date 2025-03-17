@@ -151,11 +151,6 @@ namespace CarcassoneServer.Web.Blazor.Controllers
         [Route("{roomId}/card/{cardId}/availableParts")]
         public List<ObjectPart> GetAvailableParts(string roomId, string cardId) => _service.GetRoom(roomId).GetAvailableParts(cardId);
 
-        [HttpGet]
-        [Route("{roomId}/card/current")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Card))]
-        public Task<Card?> GetCurrentCard(string roomId) => Task.FromResult(_service.GetRoom(roomId).GetCurrentCard());
-
 
         [HttpGet]
         [Route("{roomId}/objectPart/active")]

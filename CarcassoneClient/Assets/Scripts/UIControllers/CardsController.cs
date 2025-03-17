@@ -36,7 +36,7 @@ namespace Assets.Scripts
         /// </summary>
         public void ReloadCurrentCard()
         {
-            var currentCard = _room.GetCurrentCard(); 
+            var currentCard = _room.CardsPool.CurrentCard; 
             if (currentCard != null)
             {
 

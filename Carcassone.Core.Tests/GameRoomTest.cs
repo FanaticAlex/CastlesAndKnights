@@ -25,7 +25,7 @@ namespace Carcassone.Core.Tests.Room
         public void GetCurrentCardTest()
         {
             var room = new GameRoom();
-            var card = room.GetCurrentCard();
+            var card = room.CardsPool.CurrentCard;
             Assert.NotNull(card);
         }
 

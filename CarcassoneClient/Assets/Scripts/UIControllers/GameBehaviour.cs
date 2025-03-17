@@ -76,7 +76,7 @@ namespace Assets.Scripts
 
             _cardsController.ReloadCurrentCard();
             _cardsController.UpdateCardRemainView();
-            _fieldsController.ShowAvailableFields(_room.GetCurrentCard());
+            _fieldsController.ShowAvailableFields(_room.CardsPool.CurrentCard);
 
             _scoreController.UpdateScore();
             _scoreController.UpdateCurrentPlayerMark(player);
@@ -127,14 +127,14 @@ namespace Assets.Scripts
 
         public void OnRotateButonClick()
         {
-            var currentCard = _room.GetCurrentCard();
+            var currentCard = _room.CardsPool.CurrentCard;
             PutCardInField_Preliminary(currentCard, _selectedField);
             _cardsController.ReloadCurrentCard();
         }
 
         public void OnPartSelected()
         {
-            var currentCard = _room.GetCurrentCard();
+            var currentCard = _room.CardsPool.CurrentCard;
             // у всех частей обьекта анимацию убираем
             _cardsController.HideAllCardMarks(currentCard);
 
@@ -150,7 +150,7 @@ namespace Assets.Scripts
 
         public void OnEndTurnButonClick()
         {
-            var currentCard = _room.GetCurrentCard();
+            var currentCard = _room.CardsPool.CurrentCard;
             var currentPlayer = GameManager.Instance.RoomService.GetCurrentPlayer();
 
             _selectedPart = GetSelectedPart(currentCard);
@@ -193,7 +193,7 @@ namespace Assets.Scripts
 
         private void TryToPutCardInField(string playerName, CardsController cardsController)
         {
-            if (_selectedField != null) // если мы в состоянии выбора чати то не кликам на поля
+            if (SelectPartPanel.activeSelf) // если мы в состоянии выбора чати то не кликам на поля
                 return;
 
             // находим поле по которому был клик
@@ -207,7 +207,7 @@ namespace Assets.Scripts
             _selectedField = _room.FieldBoard.GetField(selectedFieldId);
 
             // можно ли в это поле ставить текущую карту
-            var currentCard = _room.GetCurrentCard();
+            var currentCard = _room.CardsPool.CurrentCard;
             var canPutCard = _room.CanPutCardInFieldWithRotation(_selectedField, currentCard);
             if (!canPutCard)
             {
@@ -264,7 +264,7 @@ namespace Assets.Scripts
         private void ShowSelectPartPanel()
         {
             // дальше устанавливаем part
-            var currentCard = _room.GetCurrentCard();
+            var currentCard = _room.CardsPool.CurrentCard;
             var parts = _preliminaryGameRoomWithNewCard.GetAvailableParts(currentCard.Id);
             if (!parts.Any())
             {
