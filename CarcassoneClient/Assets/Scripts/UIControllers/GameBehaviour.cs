@@ -288,8 +288,8 @@ namespace Assets.Scripts
                 return;
             }
 
-            InitToggles(parts);
             SelectPartPanel.SetActive(true);
+            InitToggles(parts);
         }
 
         private void InitToggles(List<ObjectPart> parts)
@@ -319,6 +319,8 @@ namespace Assets.Scripts
 
         private ObjectPart GetSelectedPart(Card card)
         {
+            if (!SelectPartPanel.activeSelf) return null; // окно не активно потому что нет вариантов для установки фишки
+
             var toggleGroup = SelectPartPanel.transform.Find("ToggleGroup");
 
             // не устанавливать фишку

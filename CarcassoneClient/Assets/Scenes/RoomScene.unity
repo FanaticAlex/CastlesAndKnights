@@ -1830,7 +1830,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1933610501954039468, guid: 549420c21f184774c833723d12d0e102, type: 3}
       propertyPath: m_text
-      value: Assept
+      value: Accept
       objectReference: {fileID: 0}
     - target: {fileID: 1933610501954039468, guid: 549420c21f184774c833723d12d0e102, type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
