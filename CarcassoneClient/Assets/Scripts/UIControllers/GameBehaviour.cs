@@ -196,7 +196,7 @@ namespace Assets.Scripts
             if (_selectedField != null) // если мы в состоянии выбора чати то не кликам на поля
                 return;
 
-            // устанавливаем карту в поле
+            // находим поле по которому был клик
             var hittedGO = GetHitedGameObject();
             var selectedFieldId = _fieldsController.GetFieldByGameObject(hittedGO);
             if (selectedFieldId == null)
@@ -206,6 +206,7 @@ namespace Assets.Scripts
             }
             _selectedField = _room.FieldBoard.GetField(selectedFieldId);
 
+            // можно ли в это поле ставить текущую карту
             var currentCard = _room.GetCurrentCard();
             var canPutCard = _room.CanPutCardInFieldWithRotation(_selectedField, currentCard);
             if (!canPutCard)
@@ -219,26 +220,27 @@ namespace Assets.Scripts
 
         private void PutCardInField_Preliminary(Card card, Field field)
         {
-            // клик по полю для установки карты
-            // при нажатии карта предварительно ставится в поле
-            // камера приближается к карте
-            // отображается UI для установки фишек/поворота карты
+            // TODO: камера приближается к карте при установке в поле
 
             _room.RotateCardTilFit(field, card);
+            SetCardGOTransform(field, card);
 
+            // сохраняем временную(предварительную) позицию игры с установленной картой для определния того куда ставить фишки
             _preliminaryGameRoomWithNewCard = new GameRoom();
             _preliminaryGameRoomWithNewCard.Load(_room.Save());
-
-            var fieldGO = _fieldsController.GetFieldGameObject(field.Id);
             var field_Temp = _preliminaryGameRoomWithNewCard.FieldBoard.GetField(field.Id);
             var card_Temp = _preliminaryGameRoomWithNewCard.CardsPool.GetCard(card.Id);
-            _preliminaryGameRoomWithNewCard.RotateCardTilFit(field_Temp, card_Temp);
-            var cardGO = _cardsController.GetCardGO(card.Id);
-            cardGO.transform.position = fieldGO.transform.position + new Vector3(0, 0, -1);
-            cardGO.transform.rotation = Quaternion.Euler(0, 0, -90 * card.RotationsCount);
-            _preliminaryGameRoomWithNewCard.PutCardInField(card, field_Temp);
+            _preliminaryGameRoomWithNewCard.PutCardInField(card_Temp, field_Temp);
 
             ShowSelectPartPanel();
+        }
+
+        private void SetCardGOTransform(Field field, Card card_Temp)
+        {
+            var fieldGO = _fieldsController.GetFieldGameObject(field.Id);
+            var cardGO = _cardsController.GetCardGO(card_Temp.Id);
+            cardGO.transform.position = fieldGO.transform.position + new Vector3(0, 0, -1);
+            cardGO.transform.rotation = Quaternion.Euler(0, 0, -90 * card_Temp.RotationsCount);
         }
 
         private void PutCardInField_OnlyUI(Card card, Field field, int rotation)

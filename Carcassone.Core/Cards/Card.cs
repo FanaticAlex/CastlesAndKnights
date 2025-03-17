@@ -13,11 +13,10 @@ namespace Carcassone.Core.Cards
     {
         /// <summary>
         /// Вручную соединенные замки и поля,
-        /// это нужно для подсчета какие замки присоденены к полямм при подсчете очков за поля
+        /// это нужно для подсчета какие замки присоденены к полям при подсчете очков за поля
         /// </summary>
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        public Dictionary<string, List<string>> FieldToCastleParts { get; set; } =
-            new Dictionary<string, List<string>>();
+        public Dictionary<string, List<string>> FieldToCastleParts { get; set; } = new Dictionary<string, List<string>>();
 
         [JsonProperty(ItemConverterType = typeof(PartConverter), ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public List<ObjectPart> Parts { get; set; } = new List<ObjectPart>();
@@ -33,7 +32,7 @@ namespace Carcassone.Core.Cards
 
         public CenterType CenterType = CenterType.None;
 
-        public int RotationsCount { get; private set; }
+        public int RotationsCount { get; set; }
 
         public Card(string cardType, int cardNumber)
         {
