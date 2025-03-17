@@ -1,5 +1,6 @@
 ﻿using Carcassone.Core;
 using Carcassone.Core.Cards;
+using Carcassone.Core.Fields;
 using System;
 using System.Collections.Generic;
 using System.Linq;

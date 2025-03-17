@@ -145,7 +145,10 @@ namespace Assets.Scripts
 
         public void OnPutCardCancel()
         {
-            // TODO: при отмене карта убирается из поля
+            // при отмене карта убирается из поля
+            _selectedField = null;
+            ResetCardGOTransform(_room.CardsPool.CurrentCard);
+            SelectPartPanel.SetActive(false);
         }
 
         public void OnEndTurnButonClick()
@@ -235,6 +238,14 @@ namespace Assets.Scripts
             ShowSelectPartPanel();
         }
 
+        private void PutCardInField_OnlyUI(Card card, Field field, int rotation)
+        {
+            card.RotateCard(rotation);
+            _fieldsController.CreateFieldsIfNotExistView();
+            SetCardGOTransform(field, card);
+            _fieldsController.CreateFieldsIfNotExistView();
+        }
+
         private void SetCardGOTransform(Field field, Card card_Temp)
         {
             var fieldGO = _fieldsController.GetFieldGameObject(field.Id);
@@ -243,15 +254,11 @@ namespace Assets.Scripts
             cardGO.transform.rotation = Quaternion.Euler(0, 0, -90 * card_Temp.RotationsCount);
         }
 
-        private void PutCardInField_OnlyUI(Card card, Field field, int rotation)
+        public void ResetCardGOTransform(Card card)
         {
-            _fieldsController.CreateFieldsIfNotExistView();
-            var fieldGO = _fieldsController.GetFieldGameObject(field.Id);
-            card.RotateCard(rotation);
             var cardGO = _cardsController.GetCardGO(card.Id);
-            cardGO.transform.position = fieldGO.transform.position + new Vector3(0, 0, -1);
-            cardGO.transform.rotation = Quaternion.Euler(0, 0, -90 * card.RotationsCount);
-            _fieldsController.CreateFieldsIfNotExistView();
+            cardGO.transform.position = new Vector3(0, 0, 0);
+            cardGO.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
 
         private GameObject GetHitedGameObject()
