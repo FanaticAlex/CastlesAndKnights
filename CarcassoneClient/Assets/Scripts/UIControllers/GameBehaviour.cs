@@ -4,13 +4,9 @@ using Carcassone.Core.Fields;
 using Carcassone.Core.Players;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -64,6 +60,8 @@ namespace Assets.Scripts
 
         public void VisualizeTurn(GameMove gameMove)
         {
+            var time = DateTime.Now;
+
             // отображаем ход
             var player = _room.PlayersPool.GetPlayer(gameMove.PlayerName);
             var field = _room.FieldBoard.GetField(gameMove.FieldId);
@@ -81,6 +79,8 @@ namespace Assets.Scripts
             _scoreController.UpdateScore();
             _scoreController.UpdateCurrentPlayerMark(player);
             _scoreController.UpdateWaitingSpinners(player);
+
+            Logger.Info("Время отрисовки хода: " + (DateTime.Now - time).TotalSeconds);
         }
 
         /// <summary>

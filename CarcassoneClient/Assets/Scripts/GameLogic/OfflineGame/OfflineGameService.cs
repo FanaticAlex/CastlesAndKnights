@@ -30,18 +30,10 @@ namespace Assets.Scripts
 
         public BasePlayer GetPlayer(string playerName) => Room.PlayersPool.GetPlayer(playerName);
         public List<BasePlayer> GetPlayers() => Room.PlayersPool.Players;
-        BasePlayer IGameService.GetCurrentPlayer()
-        {
-            return Room.PlayersPool.GetCurrentPlayer();
-        }
+        BasePlayer IGameService.GetCurrentPlayer() => Room.PlayersPool.GetCurrentPlayer();
         public void DeletePlayer(string userName) => Room.PlayersPool.DeletePlayer(userName);
-
         public List<Field> GetFields() => Room.FieldBoard.Fields;
-        public List<Field> GetAvailableFields(string cardName) => Room.GetAvailableFields(cardName);
-        public List<Field> GetNotAvailableFields() => Room.GetNotAvailableFields();
-
         public List<ObjectPart> GetActiveParts() => Room.GetActiveParts();
-
         public List<PlayerScore> GetGameScores() => throw new NotImplementedException();
         public PlayerScore GetScore(string playerName) => Room.GetPlayerScore(Room.PlayersPool.GetPlayer(playerName));
         public List<Road> GetRoads() => Room.ScoreCalculator.Roads;

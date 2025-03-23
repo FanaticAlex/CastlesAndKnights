@@ -52,9 +52,19 @@ namespace Carcassone.Core.Fields
             };
         }
 
-        public List<Field> GetAvailableFields()
+        public List<Field> GetEmptyFields()
         {
             return Fields.ToList().Where(f => string.IsNullOrEmpty(f.CardName)).ToList();
+        }
+
+        public List<Field> GetAvailableFields()
+        {
+            return Fields.ToList().Where(f => !f.NotAvailable).ToList();
+        }
+
+        public List<Field> GetUnavailableFields()
+        {
+            return Fields.ToList().Where(f => f.NotAvailable).ToList();
         }
 
         public Field GetField(int x, int y) => GetField(Field.GetFieldID(x,y));

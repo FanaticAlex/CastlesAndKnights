@@ -25,8 +25,6 @@ namespace Assets.Scripts
         BasePlayer GetCurrentPlayer();
 
         List<Field> GetFields();
-        List<Field> GetAvailableFields(string cardName);
-        List<Field> GetNotAvailableFields();
 
         List<ObjectPart> GetActiveParts();
 

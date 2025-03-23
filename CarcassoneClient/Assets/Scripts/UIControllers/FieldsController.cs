@@ -54,7 +54,7 @@ namespace Assets.Scripts
         /// <param name="card"></param>
         public void ShowAvailableFields(Card card)
         {
-            if (card == null)
+            if (card == null) // конец игры
             {
                 foreach (var field in _fieldsToGameObject.Keys)
                     SetFieldNotAvailable(field);
@@ -62,24 +62,21 @@ namespace Assets.Scripts
                 return;
             }
 
-            var availableFields = GameManager.Instance.RoomService.GetAvailableFields(card?.Id);
-            var notAvailableFields = GameManager.Instance.RoomService.GetNotAvailableFields();
-            var fields = _fieldsToGameObject.Keys;
-            foreach (var field in fields)
+            var moveFields = _room.GetFieldsToPutCard(card?.Id);
+            var fieldIds = _fieldsToGameObject.Keys;
+            foreach (var fieldId in fieldIds)
             {
-                if (availableFields.Select(f => f.Id).Contains(field))
-                {
-                    SetFieldAvailable(field);
-                }
-                else if (notAvailableFields.Select(f => f.Id).Contains(field))
-                {
-                    SetFieldNotAvailable(field);
-                }
+                var field = _room.FieldBoard.GetField(fieldId);
+                if (moveFields.Contains(field))
+                    SetFieldAvailable(fieldId);
                 else
-                {
-                    SetFieldInvisible(field);
-                }
+                    SetFieldInvisible(fieldId);
             }
+
+            // недоступные поля
+            var notAvailableFields = _room.RecalculateNotAvailableFields();
+            foreach (var field in notAvailableFields)
+                SetFieldNotAvailable(field.Id);
         }
 
         public void CreateFieldsIfNotExistView()

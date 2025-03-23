@@ -83,52 +83,43 @@ namespace Carcassone.Core
 
         public Card GetCard(string cardId) => CardsPool.GetCard(cardId);
 
-        /// <summary>
-        /// Возвращает поля пригодные для установки карты
-        /// </summary>
-        /// <param name="cardName"></param>
-        /// <returns></returns>
-        public List<Field> GetAvailableFields(string cardName)
+        public List<Field> GetFieldsToPutCard(string cardId)
         {
             var list = new List<Field>();
-            if (cardName == null)
+            if (cardId == null)
                 return list;
 
-            var card = GetCard(cardName);
-            var fields = FieldBoard.Fields;
+            var card = GetCard(cardId);
+            var fields = FieldBoard.GetAvailableFields();
             foreach (var field in fields)
             {
                 if (CanPutCardInFieldWithRotation(field, card))
-                {
                     list.Add(field);
-                }
             }
 
             return list;
         }
 
-        /// <summary>
-        /// Возвращает поля в которые уже не могут быть поставлены карты по ходу игры.
-        /// </summary>
-        /// <returns></returns>
-        public List<Field> GetNotAvailableFields()
+        public List<Field> RecalculateNotAvailableFields()
         {
-            var notAvailableCards = new List<Field>();
-            var fields = FieldBoard.GetAvailableFields();
-            foreach (var field in fields)
+            var emptyFields = FieldBoard.GetEmptyFields();
+            foreach (var field in emptyFields)
             {
                 var canPut = false;
                 foreach (var card in CardsPool.CardsDeck)
                 {
                     if (CanPutCardInFieldWithRotation(field, card))
+                    {
                         canPut = true;
+                        break;
+                    }
                 }
 
                 if (!canPut)
-                    notAvailableCards.Add(field);
+                    field.NotAvailable = true;
             }
 
-            return notAvailableCards;
+            return FieldBoard.GetUnavailableFields();
         }
 
         public List<ObjectPart> GetAvailableParts(string cardName)
@@ -185,7 +176,7 @@ namespace Carcassone.Core
         public List<Card> GetActiveCards()
         {
             return FieldBoard.Fields
-                .Where(f => f.CardName != null)
+                .Where(f => f.IsContainsCard())
                 .Select(f => CardsPool.GetCard(f.CardName))
                 .ToList();
         }
@@ -217,9 +208,9 @@ namespace Carcassone.Core
         {
             if (card == null) return false;
 
-            List<Field> fields = FieldBoard.GetAvailableFields();
+            List<Field> emptyFields = FieldBoard.GetEmptyFields();
             // проверяем можно ли эту карту сыграть, если нет берем следующую
-            foreach (var field in fields)
+            foreach (var field in emptyFields)
             {
                 if (CanPutCardInFieldWithRotation(field, card))
                     return true;
@@ -230,9 +221,7 @@ namespace Carcassone.Core
 
         public bool CanPutCardInField(Field field, Card card)
         {
-            // if there is another card in field then false
-            if (!string.IsNullOrEmpty(field.CardName))
-                return false;
+            if (field.IsContainsCard()) return false;
 
             var neighbourTopCardName = FieldBoard.GetNeighbour(field, FieldSide.top)?.CardName;
             Card? neighbourTopCard = neighbourTopCardName != null ? CardsPool.GetCard(neighbourTopCardName) : null;
@@ -291,7 +280,7 @@ namespace Carcassone.Core
 
         public bool RotateCardTilFit(Field field, Card card)
         {
-            for (int i = 1; i < 5; i++) // можно сделать до 3х поворотов 4й - исходное положение (в конце)
+            for (int i = 0; i < 4; i++) // можно сделать до 4х поворотов 4й - исходное положение (в конце)
             {
                 card.RotateCard();
                 if (CanPutCardInField(field, card))
@@ -303,12 +292,11 @@ namespace Carcassone.Core
 
         public bool CanPutCardInFieldWithRotation(Field field, Card? card)
         {
-            if (!string.IsNullOrEmpty(field.CardName))
-                return false;
+            if (field.IsContainsCard()) return false;
 
-            if (card == null)
-                return false;
+            if (card == null) return false;
 
+            // чтобы не поворачивать оригинальную карту поворачиваем копию
             var type = card.GetType();
             var copy = (Card)Activator.CreateInstance(type, card.CardType, card.CardNumber);
             copy.TopEdgeType = card.TopEdgeType;

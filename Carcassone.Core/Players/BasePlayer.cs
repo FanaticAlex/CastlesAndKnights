@@ -76,8 +76,9 @@ namespace Carcassone.Core.Players
                 return; // игра уже окончена
 
             // where to put a card
-            var fields = room.GetAvailableFields(card.Id).Select(f => f.Id).ToList();
-            List<GameMove> possibleMoves = GetPossibleMoves(room.Save(), card.Id, fields);
+            var availableFields = room.GetFieldsToPutCard(card.Id)
+                             .Select(item => item.Id).ToList();
+            List<GameMove> possibleMoves = GetPossibleMoves(room.Save(), card.Id, availableFields);
             GameMove bestMove = GetBestMove(possibleMoves);
             room.MakeMove(bestMove);
         }

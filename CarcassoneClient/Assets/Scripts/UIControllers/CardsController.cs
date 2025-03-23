@@ -41,8 +41,6 @@ namespace Assets.Scripts
             if (currentCard != null)
             {
 
-
-
                 // изображение на панели
                 var cardGO = _cardsToGameObject[currentCard.Id];
                 currentCardImageGO.GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;

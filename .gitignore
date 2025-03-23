@@ -8,3 +8,4 @@ CarcassoneClient/Packages/
 CarcassoneClient/Logs/
 CarcassoneClient/Temp/
 /Carcassone.Web.Blazor/home
+/CarcassoneClient/.utmp

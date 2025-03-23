@@ -72,14 +72,6 @@ namespace CarcassoneServer.Web.Blazor.Controllers
         [Route("{roomId}/start")]
         public void Start(string roomId) => _service.GetRoom(roomId).Start();
 
-        [HttpGet]
-        [Route("{roomId}/availableFields/{cardId}")]
-        public List<Field> GetAvailableFields(string roomId, string cardId) => _service.GetRoom(roomId).GetAvailableFields(cardId);
-
-        [HttpGet]
-        [Route("{roomId}/notAvailableFields")]
-        public List<Field> GetNotAvailableFields(string roomId) => _service.GetRoom(roomId).GetNotAvailableFields();
-
 
         [HttpGet]
         [Route("{roomId}/field/all")]
