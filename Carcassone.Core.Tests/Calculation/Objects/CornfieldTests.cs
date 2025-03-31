@@ -22,11 +22,12 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore()
         {
             var room = new GameRoom();
-            var player = room.PlayersPool.AddPlayer("Jack", PlayerType.Human);
+            var player = new Player() { Name = "Jack", PlayerType = PlayerType.Human };
+            var gamePlayer = room.PlayersPool.AddPlayer(player);
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = "Jack",
+                PlayerName = player.Name,
                 CardId = "CRFR(0)",
                 CardRotation = 2,
                 FieldId = $"{0}_{0}",
@@ -36,7 +37,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = "Jack",
+                PlayerName = player.Name,
                 CardId = "CFFF(0)",
                 CardRotation = 0,
                 FieldId = $"{0}_{-1}",
@@ -47,14 +48,14 @@ namespace Carcassone.Core.Tests.Buisness
             Assert.Single(room.ScoreCalculator.Castles);
             Assert.True(room.ScoreCalculator.Castles[0].IsFinished);
 
-            var score = room.GetPlayerScore(player);
+            var score = room.GetPlayerScore(gamePlayer);
             Assert.Equal(4, score.CastlesScore);
             Assert.Equal(3, score.CornfieldsScore);
 
             Assert.Equal(3, room.ScoreCalculator.Cornfields.Count);
-            Assert.True(room.ScoreCalculator.Cornfields[0].IsPlayerOwner(player, room.CardsPool));
-            Assert.True(!room.ScoreCalculator.Cornfields[1].IsPlayerOwner(player, room.CardsPool));
-            Assert.True(!room.ScoreCalculator.Cornfields[2].IsPlayerOwner(player, room.CardsPool));
+            Assert.True(room.ScoreCalculator.Cornfields[0].IsPlayerOwner(gamePlayer, room.CardsPool));
+            Assert.True(!room.ScoreCalculator.Cornfields[1].IsPlayerOwner(gamePlayer, room.CardsPool));
+            Assert.True(!room.ScoreCalculator.Cornfields[2].IsPlayerOwner(gamePlayer, room.CardsPool));
         }
 
         /// <summary>
@@ -74,11 +75,12 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore1()
         {
             var room = new GameRoom();
-            var owner1 = room.PlayersPool.AddPlayer("owner1", PlayerType.Human);
+            var player = new Player() { Name = "owner1", PlayerType = PlayerType.Human };
+            var owner1 = room.PlayersPool.AddPlayer(player);
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = "owner1",
+                PlayerName = player.Name,
                 CardId = "RRWW(0)",
                 CardRotation = 0,
                 FieldId = $"{0}_{0}",
@@ -88,7 +90,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = "owner1",
+                PlayerName = player.Name,
                 CardId = "WCCW(0)",
                 CardRotation = 0,
                 FieldId = $"{0}_{-1}",
@@ -125,7 +127,8 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore2()
         {
             var room = new GameRoom();
-            var owner1 = room.PlayersPool.AddPlayer("owner1", PlayerType.Human);
+            var player = new Player() { Name = "owner1", PlayerType = PlayerType.Human };
+            var owner1 = room.PlayersPool.AddPlayer(player);
 
             var card1 = room.GetCard("FWWF(0)");
             var field1 = room.FieldBoard.GetField("0_0");
@@ -158,7 +161,8 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore3()
         {
             var room = new GameRoom();
-            var owner1 = room.PlayersPool.AddPlayer("owner1", PlayerType.Human);
+            var player = new Player() { Name = "owner1", PlayerType = PlayerType.Human };
+            var owner1 = room.PlayersPool.AddPlayer(player);
 
             var card1 = room.GetCard("FFWF(0)");
             var field1 = room.FieldBoard.GetField("0_0");
@@ -192,7 +196,8 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore4()
         {
             var room = new GameRoom();
-            var owner1 = room.PlayersPool.AddPlayer("owner1", PlayerType.Human);
+            var player = new Player() { Name = "owner1", PlayerType = PlayerType.Human };
+            var owner1 = room.PlayersPool.AddPlayer(player);
 
             var card1 = room.GetCard("FFWF(0)");
             var field1 = room.FieldBoard.GetField("0_0");
@@ -226,7 +231,8 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore5()
         {
             var room = new GameRoom();
-            var owner1 = room.PlayersPool.AddPlayer("owner1", PlayerType.Human);
+            var player = new Player() { Name = "owner1", PlayerType = PlayerType.Human };
+            var owner1 = room.PlayersPool.AddPlayer(player);
 
             var card1 = room.GetCard("RRWW(0)");
             var field1 = room.FieldBoard.GetField("0_0");

@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
-using Assets.Scripts;
 
-enum TouchState
+public enum TouchState
 {
-    None = 0,
-    Drag = 1,
-    Zoom = 2,
+    Drag,
+    ZoomToCard
 }
 
 /// <summary>
@@ -16,53 +14,63 @@ public class CameraBehaviour : MonoBehaviour {
     private Vector3 _mouseOrigin;
     private Vector3 _cameraOrigin;
 
-    private TouchState _state;
+    public TouchState State { get; set; }
 
     void Update ()
     {
-        if (Input.touchCount > 0)
+        switch (State)
         {
-            DragByTouch();
-            ZoomByTouch();
+            case TouchState.Drag: Drag(); break;
+            case TouchState.ZoomToCard: AnimateToCard(); break;
         }
-        else
-        {
-            _state = TouchState.None;
-            Drag();
-        }
+
+        FreeZoom();
     }
 
-    private void DragByTouch()
+    public void MoveCameraAtCard(GameObject cardGO) // приближаемм к карте
     {
-        if (Input.touchCount == 1)
-        {
-            if (Input.touches[0].phase == TouchPhase.Began) // запоминаем где нажали кнопку
-            {
-                _state = TouchState.Drag;
-                _mouseOrigin = Input.touches[0].position;
-                _cameraOrigin = transform.position;
-                return;
-            }
+        State = TouchState.ZoomToCard;
+        _animationPosition = 0;
+        _startPosition = Camera.main.transform.position;
+        _endPosition = new Vector3(cardGO.transform.position.x, cardGO.transform.position.y, Camera.main.transform.position.z);
+    }
 
-            if (_state != TouchState.Drag)
-                return;
+    private Vector3 _startPosition;
+    private Vector3 _endPosition;
+    private float _animationPosition;
+    private const float _animationTime = 1; // в секундах
+    private void AnimateToCard()
+    {
+        _animationPosition += Time.deltaTime;
+        var t = _animationPosition / _animationTime;
+        Camera.main.transform.position = Vector3.Lerp(_startPosition, _endPosition, t);
 
-            var deltaVec = Camera.main.ScreenToWorldPoint(_mouseOrigin) - Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 move = _cameraOrigin + new Vector3(deltaVec.x, deltaVec.y, 0);
-            transform.position = move;
-        }
+        if (t >= 1) // окончание анимации
+            State = TouchState.Drag;
     }
 
     private void Drag()
     {
-        if (Input.GetMouseButtonDown(0)) // запоминаем где нажали кнопку
+        // пока происходит перемещение запоминаем исходную точку и вычисляем текущую
+         
+        if (Input.GetMouseButtonDown(0)) // PC
         {
+            // инициализация, стартовая позиция при нажатии
             _mouseOrigin = Input.mousePosition;
             _cameraOrigin = transform.position;
             return;
         }
 
-        if (!Input.GetMouseButton(0)) return;
+        if ((Input.touchCount == 1) && (Input.touches[0].phase == TouchPhase.Began)) // Mobile
+        {
+            // инициализация, стартовая позиция при нажатии
+            _mouseOrigin = Input.touches[0].position;
+            _cameraOrigin = transform.position;
+            return;
+        }
+
+        if ((Input.touchCount != 1) && (!Input.GetMouseButton(0))) // перетаскивание прекращено
+            return;
 
         var deltaVec = Camera.main.ScreenToWorldPoint(_mouseOrigin) - Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3 move = _cameraOrigin + new Vector3(deltaVec.x, deltaVec.y, 0);
@@ -70,12 +78,15 @@ public class CameraBehaviour : MonoBehaviour {
     }
 
     private readonly float _zoomModifierSpeed = 0.025f;
-    private void ZoomByTouch()
+    private void FreeZoom()
     {
-        if (Input.touchCount == 2)
+        if (Input.GetAxis("Mouse ScrollWheel") != 0f) // PC
         {
-            _state = TouchState.Zoom;
+            Camera.main.orthographicSize += Input.GetAxis("Mouse ScrollWheel");
+        }
 
+        if (Input.touchCount == 2) // Mobile
+        {
             var firstTouch = Input.GetTouch(0);
             var secondTouch = Input.GetTouch(1);
 

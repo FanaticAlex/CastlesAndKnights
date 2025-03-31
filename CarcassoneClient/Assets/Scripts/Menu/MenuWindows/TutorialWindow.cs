@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.Menu
 {
-    internal class TutorialWindowController : BaseMenuWindowController
+    internal class TutorialWindow : BaseMenuWindow
     {
         public List<Sprite> TutorialSprites;
         public GameObject Slide;

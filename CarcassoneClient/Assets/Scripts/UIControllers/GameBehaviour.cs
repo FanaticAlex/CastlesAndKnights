@@ -35,6 +35,7 @@ namespace Assets.Scripts
         private ObjectPart _selectedPart;
 
         private GameRoom _preliminaryGameRoomWithNewCard;
+        private CameraBehaviour _cameraBehaviour;
 
         /// <summary>
         /// Инициализация сцены комнаты игры.
@@ -43,7 +44,8 @@ namespace Assets.Scripts
         /// </summary>
         void Start()
         {
-            _room = GameManager.Instance.RoomService.Room;
+            _cameraBehaviour = Camera.main.GetComponent<CameraBehaviour>();
+            _room = GameManager.Instance.Room;
 
             _fieldsController = new FieldsController(_room);
             _cardsController = new CardsController(_room);
@@ -80,6 +82,8 @@ namespace Assets.Scripts
             _scoreController.UpdateCurrentPlayerMark(player);
             _scoreController.UpdateWaitingSpinners(player);
 
+            _cameraBehaviour.MoveCameraAtCard(_cardsController.GetCardGO(card.Id)); // анимация
+
             Logger.Info("Время отрисовки хода: " + (DateTime.Now - time).TotalSeconds);
         }
 
@@ -89,6 +93,8 @@ namespace Assets.Scripts
         /// </summary>
         async void Update()
         {
+            if (_cameraBehaviour.State == TouchState.ZoomToCard) return;
+
             // если наш ход
             var currentPlayer = _room.PlayersPool.GetCurrentPlayer();
             switch (currentPlayer.PlayerType)
@@ -115,10 +121,10 @@ namespace Assets.Scripts
         private async Task UpdateSpecial()
         {
             // окончание игры
-            var isFinished = GameManager.Instance.RoomService.Room.IsFinished;
+            var isFinished = GameManager.Instance.Room.IsFinished;
             if (isFinished)
             {
-                var currentPlayer = GameManager.Instance.RoomService.GetCurrentPlayer();
+                var currentPlayer = GameManager.Instance.Room.PlayersPool.GetCurrentPlayer();
                 this.enabled = false;
                 _scoreController.ShowEndGameWindow();
                return;
@@ -154,7 +160,7 @@ namespace Assets.Scripts
         public void OnEndTurnButonClick()
         {
             var currentCard = _room.CardsPool.CurrentCard;
-            var currentPlayer = GameManager.Instance.RoomService.GetCurrentPlayer();
+            var currentPlayer = GameManager.Instance.Room.PlayersPool.GetCurrentPlayer();
 
             _selectedPart = GetSelectedPart(currentCard);
 
@@ -176,7 +182,6 @@ namespace Assets.Scripts
             _selectedField = null;
             _selectedPart = null;
             SelectPartPanel.SetActive(false);
-
         }
 
         public void OnShowPlayerDetailedScore(Text playerNamePanel)
@@ -223,8 +228,6 @@ namespace Assets.Scripts
 
         private void PutCardInField_Preliminary(Card card, Field field)
         {
-            // TODO: камера приближается к карте при установке в поле
-
             _room.RotateCardTilFit(field, card);
             SetCardGOTransform(field, card);
 
@@ -280,13 +283,15 @@ namespace Assets.Scripts
                 return;
             }
 
-            var currentPlayer = GameManager.Instance.RoomService.GetCurrentPlayer();
+            var currentPlayer = GameManager.Instance.Room.PlayersPool.GetCurrentPlayer();
             if (currentPlayer.ChipCount == 0)
             {
                 Logger.Info("Player has no chip!");
                 OnEndTurnButonClick();
                 return;
             }
+
+            _cameraBehaviour.MoveCameraAtCard(_cardsController.GetCardGO(currentCard.Id)); // анимация
 
             SelectPartPanel.SetActive(true);
             InitToggles(parts);

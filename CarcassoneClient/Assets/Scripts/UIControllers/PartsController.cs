@@ -18,8 +18,8 @@ namespace Assets.Scripts
         /// </summary>
         public void ShowFlagsAndChips()
         {
-            var players = GameManager.Instance.RoomService.GetPlayers();
-            var activeParts = GameManager.Instance.RoomService.GetActiveParts();
+            var players = GameManager.Instance.Room.PlayersPool.GamePlayers;
+            var activeParts = GameManager.Instance.Room.GetActiveParts();
 
             foreach (var part in activeParts)
             {
@@ -28,7 +28,7 @@ namespace Assets.Scripts
             }
         }
 
-        private void TryCreateFlag(ObjectPart part, List<BasePlayer> players)
+        private void TryCreateFlag(ObjectPart part, List<GamePlayer> players)
         {
             // TEST
             /*var partGO = _partToGameObject[part.PartId];
@@ -62,7 +62,7 @@ namespace Assets.Scripts
             _ownedPartsFlags[part.PartId] = flagObject;
         }
 
-        private void TryCreateChip(ObjectPart part, List<BasePlayer> players)
+        private void TryCreateChip(ObjectPart part, List<GamePlayer> players)
         {
             if (part.Chip == null)
                 return;

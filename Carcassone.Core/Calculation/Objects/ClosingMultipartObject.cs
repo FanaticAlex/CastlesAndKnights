@@ -40,7 +40,7 @@ namespace Carcassone.Core.Calculation.Objects
 
         public bool IsFinished { get; set; }
 
-        public void TryToClose(PlayersPool playersPool, CardPool cardPool)
+        public void TryToClose(GamePlayersPool playersPool, CardPool cardPool)
         {
             IsFinished = IsClosed();
             if (IsFinished)
@@ -72,7 +72,7 @@ namespace Carcassone.Core.Calculation.Objects
             return isClosed1;
         }
 
-        public bool IsPlayerOwner(BasePlayer player, CardPool cardPool)
+        public bool IsPlayerOwner(GamePlayer player, CardPool cardPool)
         {
             return GetOwnersNames(cardPool).Contains(player.Name);
         }

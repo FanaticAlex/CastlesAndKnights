@@ -32,7 +32,8 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetPointsTest()
         {
             var room = new GameRoom();
-            room.PlayersPool.AddPlayer("Jack", PlayerType.Human);
+            var player = new Player() { Name = "Jack", PlayerType = PlayerType.Human };
+            room.PlayersPool.AddPlayer(player);
             room.PlayersPool.MoveToNextPlayer();
 
             var gameMove0 = new GameMove()

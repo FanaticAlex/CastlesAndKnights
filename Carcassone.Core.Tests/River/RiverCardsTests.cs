@@ -23,12 +23,13 @@ namespace Carcassone.Core.Tests.Buisness
         public void RiverCardPut()
         {
             var room = new GameRoom();
-            room.PlayersPool.AddPlayer("bob", PlayerType.Human);
+            var player = new Player() { Name = "bob", PlayerType = PlayerType.Human };
+            room.PlayersPool.AddPlayer(player);
             room.Start();
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = "bob",
+                PlayerName = player.Name,
                 CardId = "FWRW(0)",
                 CardRotation = 1,
                 FieldId = $"{0}_{-1}",

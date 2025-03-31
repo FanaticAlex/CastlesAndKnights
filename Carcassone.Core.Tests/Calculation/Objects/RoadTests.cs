@@ -21,7 +21,8 @@ namespace Carcassone.Core.Tests.Buisness
         public void CalculationTest_CrossRoad()
         {
             var room = new GameRoom();
-            var bob = room.PlayersPool.AddPlayer("bob", PlayerType.Human);
+            var player = new Player() { Name = "bob", PlayerType = PlayerType.Human };
+            var bob = room.PlayersPool.AddPlayer(player);
 
             var gameMove0 = new GameMove()
             {
@@ -59,7 +60,8 @@ namespace Carcassone.Core.Tests.Buisness
         public void CalculationTest_RoadRing()
         {
             var room = new GameRoom();
-            var bob = room.PlayersPool.AddPlayer("bob", PlayerType.Human);
+            var player = new Player() { Name = "bob", PlayerType = PlayerType.Human };
+            var bob = room.PlayersPool.AddPlayer(player);
 
             var gameMove0 = new GameMove()
             {
@@ -126,12 +128,12 @@ namespace Carcassone.Core.Tests.Buisness
         public void CalculationTest_FlatRoad()
         {
             var room = new GameRoom();
-            var playerName = "bob";
-            room.PlayersPool.AddPlayer(playerName, PlayerType.Human);
+            var player = new Player() { Name = "bob", PlayerType = PlayerType.Human };
+            room.PlayersPool.AddPlayer(player);
 
             var gameMove0 = new GameMove()
             {
-                PlayerName = playerName,
+                PlayerName = player.Name,
                 CardId = "FFRF(0)",
                 CardRotation = 0,
                 FieldId = $"{0}_{0}",
@@ -141,7 +143,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = playerName,
+                PlayerName = player.Name,
                 CardId = "FRRR(0)",
                 CardRotation = 2,
                 FieldId = $"{0}_{-1}",

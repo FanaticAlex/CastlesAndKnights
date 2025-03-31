@@ -1,5 +1,7 @@
 ﻿using Carcassone.Core.Players;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Assets.Scripts.Menu
 {
@@ -27,6 +29,11 @@ namespace Assets.Scripts.Menu
                 PlayerType.AI_Hard => "AI_hard",
                 _ => throw new Exception($"type {type} does not exist"),
             };
+        }
+
+        public static List<string> GetStrings()
+        {
+            return Enum.GetNames(typeof(PlayerType)).ToList();
         }
     }
 }

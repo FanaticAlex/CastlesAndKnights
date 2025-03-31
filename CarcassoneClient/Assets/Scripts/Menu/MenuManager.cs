@@ -11,11 +11,11 @@ using UnityEngine;
 /// </summary>
 public class MenuManager : MonoBehaviour
 {
-    private static List<BaseMenuWindowController> menuManagers;
+    private static List<BaseMenuWindow> menuManagers;
 
-    private List<BaseMenuWindowController> GetMenuControllers()
+    private List<BaseMenuWindow> GetMenuControllers()
     {
-        return FindObjectsByType<BaseMenuWindowController>(FindObjectsInactive.Include, FindObjectsSortMode.None).ToList();
+        return FindObjectsByType<BaseMenuWindow>(FindObjectsInactive.Include, FindObjectsSortMode.None).ToList();
     }
 
     void Awake()

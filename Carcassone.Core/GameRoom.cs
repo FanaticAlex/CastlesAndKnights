@@ -23,7 +23,7 @@ namespace Carcassone.Core
         public CardPool CardsPool { get; set; }
         public ScoreCalculator ScoreCalculator { get; set; }
         public FieldBoard FieldBoard { get; set; }
-        public PlayersPool PlayersPool { get; set; }
+        public GamePlayersPool PlayersPool { get; set; }
 
         public string Id { get; }
         public bool IsStarted { get; set; }
@@ -38,7 +38,7 @@ namespace Carcassone.Core
             CardsPool = new CardPool(ExtensionsManager);
             ScoreCalculator = new ScoreCalculator();
             FieldBoard = new FieldBoard();
-            PlayersPool = new PlayersPool();
+            PlayersPool = new GamePlayersPool();
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Carcassone.Core
             PlayersPool = room.PlayersPool;
         }
 
-        public PlayerScore GetPlayerScore(BasePlayer player) =>
+        public PlayerScore GetPlayerScore(GamePlayer player) =>
             ScoreCalculator.GetPlayerScore(player, PlayersPool, CardsPool);
 
         public Card GetCard(string cardId) => CardsPool.GetCard(cardId);

@@ -14,7 +14,7 @@ namespace Carcassone.Web.Blazor.Services
         /// <summary>
         /// Возвращает статистику игрока.
         /// </summary>
-        UserInfo GetUserInfo(CarcassoneUser user);
+        PlayerInfo GetUserInfo(CarcassoneUser user);
 
         /// <summary>
         /// Сохраняет результат игры.

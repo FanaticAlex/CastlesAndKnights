@@ -13,7 +13,7 @@ namespace Carcassone.Core.Calculation.Objects
 
         public List<string> PartsIds { get; set; } = new List<string>();
 
-        public bool IsPlayerOwner(BasePlayer player, CardPool cardPool)
+        public bool IsPlayerOwner(GamePlayer player, CardPool cardPool)
         {
             return GetOwnersNames(cardPool).Contains(player.Name);
         }

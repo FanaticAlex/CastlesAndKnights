@@ -18,7 +18,7 @@ namespace Assets.Scripts
             _cardsController = cardsController;
         }
 
-        public void UpdatePlayerLastMoveMarkerUI(Card card, BasePlayer player)
+        public void UpdatePlayerLastMoveMarkerUI(Card card, GamePlayer player)
         {
             if (player == null)
                 return;

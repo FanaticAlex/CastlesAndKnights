@@ -99,21 +99,21 @@ namespace CarcassoneServer.Web.Blazor.Controllers
 
 
 
-        [HttpPost]
-        [Route("{roomId}/player/add")]
-        public void AddPlayer(string roomId, string playerName, PlayerType type) => _service.GetRoom(roomId).PlayersPool.AddPlayer(playerName, type);
+        //[HttpPost]
+        //[Route("{roomId}/player/add")]
+        //public void AddPlayer(string roomId, string playerName, PlayerType type) => _service.GetRoom(roomId).PlayersPool.AddPlayer(playerName, type);
 
         [HttpGet]
         [Route("{roomId}/player/list")]
-        public List<BasePlayer> GetPlayersList(string roomId) => _service.GetRoom(roomId).PlayersPool.Players;
+        public List<GamePlayer> GetPlayersList(string roomId) => _service.GetRoom(roomId).PlayersPool.GamePlayers;
 
         [HttpGet]
         [Route("{roomId}/player/current")]
-        public Task<BasePlayer?> GetCurrentPlayer(string roomId) => Task.FromResult(_service.GetRoom(roomId).PlayersPool.GetCurrentPlayer());
+        public Task<GamePlayer?> GetCurrentPlayer(string roomId) => Task.FromResult(_service.GetRoom(roomId).PlayersPool.GetCurrentPlayer());
 
         [HttpGet]
         [Route("{roomId}/player/{playerName}")]
-        public BasePlayer GetPlayer(string roomId, string playerName) => _service.GetRoom(roomId).PlayersPool.GetPlayer(playerName);
+        public GamePlayer GetPlayer(string roomId, string playerName) => _service.GetRoom(roomId).PlayersPool.GetPlayer(playerName);
 
         [HttpGet]
         [Route("{roomId}/player/{playerName}/score")]

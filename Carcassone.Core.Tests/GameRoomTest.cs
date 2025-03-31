@@ -12,13 +12,15 @@ namespace Carcassone.Core.Tests.Room
         public void WorkflowAI()
         {
             var room = new GameRoom();
-            room.PlayersPool.AddPlayer("AI_1", PlayerType.AI_Easy);
-            room.PlayersPool.AddPlayer("AI_2", PlayerType.AI_Easy);
+            var player1 = new Player() { Name = "AI_1", PlayerType = PlayerType.AI_Easy };
+            var player2 = new Player() { Name = "AI_2", PlayerType = PlayerType.AI_Easy };
+            room.PlayersPool.AddPlayer(player1);
+            room.PlayersPool.AddPlayer(player2);
             room.Start();
 
             Assert.True(room.IsFinished);
-            Assert.NotEqual(0, room.GetPlayerScore(room.PlayersPool.Players[0]).GetOverallScore());
-            Assert.NotEqual(0, room.GetPlayerScore(room.PlayersPool.Players[1]).GetOverallScore());
+            Assert.NotEqual(0, room.GetPlayerScore(room.PlayersPool.GamePlayers[0]).GetOverallScore());
+            Assert.NotEqual(0, room.GetPlayerScore(room.PlayersPool.GamePlayers[1]).GetOverallScore());
         }
 
         [Fact]

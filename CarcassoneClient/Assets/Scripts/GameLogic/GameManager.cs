@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Carcassone.Core;
+using Carcassone.Core.Players;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 namespace Assets.Scripts
 {
@@ -9,31 +15,40 @@ namespace Assets.Scripts
     {
         private static readonly Lazy<GameManager> _instance = new Lazy<GameManager>(() => new GameManager());
 
+        
         private GameManager()
         {
+            Room = new GameRoom();
+            Players = PlayersManager.Load();
         }
 
         public static GameManager Instance => _instance.Value;
 
-        public IGameService RoomService { get; private set; }
+        public GameRoom Room { get; private set; }
+        public List<Player> Players {  get; private set; }
 
-        public void SetOfflineMode()
+        public Player GetDefaultPlayer()
         {
-            if (RoomService is not OfflineGameService)
-                RoomService = new OfflineGameService();
+            return Players.Where(p => p.PlayerType == PlayerType.Human).FirstOrDefault();
         }
 
-        public void SetOnlineMode()
+        public Player GetPlayer(string name)
         {
-            try
-            {
-                //if (RoomService is not OnlineGameService)
-                //    RoomService = new OnlineGameService();
-            }
-            catch (Exception ex)
-            {
-                Logger.Info($"No connection. {ex.Message}");
-            }
+            return Players.Where(p => p.Name == name).FirstOrDefault();
+        }
+
+        public void AddPlayer(string playerName, PlayerType playerType)
+        {
+            var newPlayer = new Player() { Name = playerName, PlayerType = playerType };
+            Players.Add(newPlayer);
+            PlayersManager.Save(Players);
+        }
+
+        public void DeletePlayer(string playerName)
+        {
+            var deletedPlayer = Players.Single(p => p.Name == playerName);
+            Players.Remove(deletedPlayer);
+            PlayersManager.Save(Players);
         }
     }
 }

@@ -62,35 +62,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\MusicPlayer.cs" />
-    <Compile Include="Assets\Scripts\Menu\SetupRoomWindowController.cs" />
     <Compile Include="Assets\Scripts\Logger.cs" />
-    <Compile Include="Assets\Scripts\UserManager.cs" />
     <Compile Include="Assets\Scripts\UIControllers\FieldsController.cs" />
-    <Compile Include="Assets\Scripts\GameLogic\OnlineGame\IOnlineGame.cs" />
-    <Compile Include="Assets\Scripts\Menu\ChooseRoomWindowController.cs" />
-    <Compile Include="Assets\Scripts\User.cs" />
+    <Compile Include="Assets\Scripts\GameLogic\IOnlineGame.cs" />
     <Compile Include="Assets\Scripts\UIControllers\CardsController.cs" />
     <Compile Include="Assets\Scripts\CameraBehaviour.cs" />
-    <Compile Include="Assets\Scripts\Menu\TutorialWindowController.cs" />
     <Compile Include="Assets\Scripts\GameLogic\GameManager.cs" />
     <Compile Include="Assets\Scripts\UIControllers\PartsController.cs" />
-    <Compile Include="Assets\Scripts\GameLogic\OnlineGame\GameObjectTranslator.cs" />
-    <Compile Include="Assets\Scripts\GameLogic\IGameService.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuWindows\EditPlayersWindow.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuWindowType.cs" />
     <Compile Include="Assets\Scripts\Menu\PlayerTypeHelper.cs" />
-    <Compile Include="Assets\Scripts\Menu\LoginWindowController.cs" />
-    <Compile Include="Assets\Scripts\Menu\BaseMenuWindowController.cs" />
-    <Compile Include="Assets\Scripts\GameLogic\OfflineGame\OfflineGameService.cs" />
-    <Compile Include="Assets\Scripts\Menu\ProfileWindowController.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuWindows\LoginWindow.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuWindows\SetupRoomWindow.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuWindows\TutorialWindow.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuWindows\ProfileWindow.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuManager.cs" />
     <Compile Include="Assets\Scripts\Timer.cs" />
-    <Compile Include="Assets\Scripts\GameLogic\OnlineGame\Prefs.cs" />
-    <Compile Include="Assets\Scripts\GameLogic\OnlineGame\OnlineGameService.cs" />
-    <Compile Include="Assets\Scripts\GameLogic\OnlineGame\Client.cs" />
+    <Compile Include="Assets\Scripts\Auth\Prefs.cs" />
     <Compile Include="Assets\Scripts\UIControllers\GameBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuWindows\ChooseRoomWindow.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuWindows\BaseMenuWindow.cs" />
     <Compile Include="Assets\Scripts\UIControllers\ScoreController.cs" />
     <Compile Include="Assets\Scripts\UIControllers\Constants.cs" />
     <Compile Include="Assets\Scripts\UIControllers\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\RemoteAPI\Client.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

@@ -110,7 +110,7 @@ namespace Carcassone.Core.Calculation
             }
         }
 
-        public void CloseObjectsAndReturnChips(PlayersPool playersPool, CardPool cardPool)
+        public void CloseObjectsAndReturnChips(GamePlayersPool playersPool, CardPool cardPool)
         {
             foreach (var church in Churches)
                 church.TryToClose(playersPool, cardPool);
@@ -125,17 +125,17 @@ namespace Carcassone.Core.Calculation
                 cornfield.RecalculatePartsOwner(cardPool);
         }
 
-        public PlayerScore GetPlayerScore(BasePlayer player, PlayersPool plyersPool, CardPool cardPool)
+        public PlayerScore GetPlayerScore(GamePlayer player, GamePlayersPool plyersPool, CardPool cardPool)
         {
             var scores = GetPlayersScores(plyersPool, cardPool);
             var score = scores.Single(s => s.PlayerName == player.Name);
             return score;
         }
 
-        private IEnumerable<PlayerScore> GetPlayersScores(PlayersPool plyersPool, CardPool cardPool)
+        private IEnumerable<PlayerScore> GetPlayersScores(GamePlayersPool plyersPool, CardPool cardPool)
         {
             var scores = new List<PlayerScore>();
-            foreach (var player in plyersPool.Players)
+            foreach (var player in plyersPool.GamePlayers)
             {
                 var score = new PlayerScore()
                 {
@@ -209,43 +209,43 @@ namespace Carcassone.Core.Calculation
             return mergedObject;
         }
 
-        private IEnumerable<Castle> GetCastles(BasePlayer player, CardPool cardPool)
+        private IEnumerable<Castle> GetCastles(GamePlayer player, CardPool cardPool)
         {
             return Castles.Where(castle => castle.IsPlayerOwner(player, cardPool));
         }
 
-        private IEnumerable<Road> GetRoads(BasePlayer player, CardPool cardPool)
+        private IEnumerable<Road> GetRoads(GamePlayer player, CardPool cardPool)
         {
             return Roads.Where(road => road.IsPlayerOwner(player, cardPool));
         }
 
-        private IEnumerable<Cornfield> GetCornfields(BasePlayer player, CardPool cardPool)
+        private IEnumerable<Cornfield> GetCornfields(GamePlayer player, CardPool cardPool)
         {
             return Cornfields.Where(cornfield => cornfield.IsPlayerOwner(player, cardPool));
         }
 
-        private IEnumerable<Church> GetChurches(BasePlayer player, CardPool cardPool)
+        private IEnumerable<Church> GetChurches(GamePlayer player, CardPool cardPool)
         {
             return Churches.Where(church => church.IsPlayerOwner(player, cardPool));
         }
 
 
-        private int GetCastlesScore(BasePlayer player, CardPool cardPool)
+        private int GetCastlesScore(GamePlayer player, CardPool cardPool)
         {
             return GetCastles(player, cardPool).ToList().Sum(castle => castle.GetPoints(cardPool));
         }
 
-        private int GetRoadsScore(BasePlayer player, CardPool cardPool)
+        private int GetRoadsScore(GamePlayer player, CardPool cardPool)
         {
             return GetRoads(player, cardPool).ToList().Sum(road => road.GetPoints(cardPool));
         }
 
-        private int GetCornfieldsScore(BasePlayer player, CardPool cardPool)
+        private int GetCornfieldsScore(GamePlayer player, CardPool cardPool)
         {
             return GetCornfields(player, cardPool).ToList().Sum(cornfield => cornfield.GetPoints(Castles, cardPool));
         }
 
-        private int GetChurchesScore(BasePlayer player, CardPool cardPool)
+        private int GetChurchesScore(GamePlayer player, CardPool cardPool)
         {
             return GetChurches(player, cardPool).ToList().Sum(church => church.GetPoints());
         }

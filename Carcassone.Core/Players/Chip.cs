@@ -8,7 +8,7 @@ namespace Carcassone.Core.Players
         public Chip()
         { }
 
-        public Chip(BasePlayer owner)
+        public Chip(GamePlayer owner)
         {
             Type = ChipType.None;
             OwnerName = owner.Name;

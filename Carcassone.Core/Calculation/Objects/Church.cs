@@ -54,7 +54,7 @@ namespace Carcassone.Core.Calculation.Objects
             return baseChurchPart.Chip?.OwnerName ?? baseChurchPart.Flag?.OwnerName;
         }
 
-        public bool IsPlayerOwner(BasePlayer player, CardPool cardPool)
+        public bool IsPlayerOwner(GamePlayer player, CardPool cardPool)
         {
             return GetOwnerName(cardPool) == player.Name;
         }
@@ -86,7 +86,7 @@ namespace Carcassone.Core.Calculation.Objects
         /// <summary>
         /// закрыть церковь если в ней 9 карт и вернуть фишку
         /// </summary>
-        public void TryToClose(PlayersPool playersPool, CardPool cardPool)
+        public void TryToClose(GamePlayersPool playersPool, CardPool cardPool)
         {
             if (IsFinished)
             {

@@ -7,18 +7,21 @@ namespace Carcassone.Core.Players
     /// <summary>
     /// Класс управляющий пулом игроков одной игровой комнаты.
     /// </summary>
-    public class PlayersPool
+    public class GamePlayersPool
     {
         private static readonly int _maximumPlayersCount = 5;
         private static readonly int _playerChipCount = 7;
 
-        public PlayersPool()
+        public List<GamePlayer> GamePlayers { get; } = new List<GamePlayer>();
+        public int CurrentPlayerIndex { get; set; } = -1;
+
+        public GamePlayersPool()
         {
         }
 
-        public BasePlayer? GetPlayer(string playerName)
+        public GamePlayer? GetPlayer(string playerName)
         {
-            var playerItems = Players.Where(_player => _player.Name == playerName);
+            var playerItems = GamePlayers.Where(_player => _player.Name == playerName);
             if (playerItems.Count() == 0)
                 return null;
 
@@ -28,11 +31,9 @@ namespace Carcassone.Core.Players
             return playerItems.Single();
         }
 
-        public int CurrentPlayerIndex { get; set; } = -1;
+        public GamePlayer? GetCurrentPlayer() => (CurrentPlayerIndex == -1) ? null : GamePlayers[CurrentPlayerIndex];
 
-        public BasePlayer? GetCurrentPlayer() => (CurrentPlayerIndex == -1) ? null : Players[CurrentPlayerIndex];
-
-        public BasePlayer GetHumanPlayer(GameRoom room, string playerName)
+        public GamePlayer GetHumanPlayer(GameRoom room, string playerName)
         {
             var player = GetCurrentPlayer();
             if (player.Name != playerName)
@@ -44,31 +45,29 @@ namespace Carcassone.Core.Players
             return player;
         }
 
-        public List<BasePlayer> Players { get; } = new List<BasePlayer>();
-
         public void DeletePlayer(string name)
         {
-            var player = Players.FirstOrDefault(_player => _player.Name == name);
+            var player = GamePlayers.FirstOrDefault(_player => _player.Name == name);
             if (player == null)
                 return;
 
-            Players.Remove(player);
+            GamePlayers.Remove(player);
         }
 
-        public BasePlayer AddPlayer(string name, PlayerType type)
+        public GamePlayer AddPlayer(Player player)
         {
-            if (Players.Count >= _maximumPlayersCount)
+            if (GamePlayers.Count >= _maximumPlayersCount)
                 throw new Exception($"Cant add player. Maximum player count is {_maximumPlayersCount}");
 
             // если этот игрок уже подключен
-            var player = Players.FirstOrDefault(_player => _player.Name == name);
-            if (player != null)
-                throw new Exception($"Игрок '{name}' уже подключен.");
+            var gamePlayer = GamePlayers.FirstOrDefault(_player => _player.Name == player.Name);
+            if (gamePlayer != null)
+                throw new Exception($"Игрок '{player.Name}' уже подключен.");
 
             var color = GetFreeColor();
-            var player1 = new BasePlayer(name, color, _playerChipCount, type);
-            Players.Add(player1);
-            return player1;
+            var newGamePlayer = new GamePlayer(player, color, _playerChipCount);
+            GamePlayers.Add(newGamePlayer);
+            return newGamePlayer;
         }
 
         public void MoveToNextPlayer()
@@ -76,12 +75,12 @@ namespace Carcassone.Core.Players
             // передать ход
             // если ход сделан то ход передается следующему игроку
             CurrentPlayerIndex++;
-            CurrentPlayerIndex %= Players.Count;
+            CurrentPlayerIndex %= GamePlayers.Count;
         }
 
         private string GetFreeColor()
         {
-            var takenColors = Players.Select(player => player.Color).ToList();
+            var takenColors = GamePlayers.Select(player => player.Color).ToList();
 
             if (!takenColors.Contains("Blue"))
                 return "Blue";

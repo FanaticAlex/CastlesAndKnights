@@ -6,7 +6,7 @@ namespace Assets.Scripts.Menu
     /// <summary>
     /// MenuWindow that can be enabled and disabled.
     /// </summary>
-    public class BaseMenuWindowController : MonoBehaviour
+    public class BaseMenuWindow : MonoBehaviour
     {
         /// <summary>
         /// Тип панели

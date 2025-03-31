@@ -6,6 +6,6 @@ namespace Carcassone.Core.Calculation.Objects
     public interface IClosingObject
     {
         public bool IsFinished { get; }
-        public void TryToClose(PlayersPool playersPool, CardPool cardPool);
+        public void TryToClose(GamePlayersPool playersPool, CardPool cardPool);
     }
 }

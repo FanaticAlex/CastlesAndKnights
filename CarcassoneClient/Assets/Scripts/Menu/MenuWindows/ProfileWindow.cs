@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Game;
+using Carcassone.Core.Players;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -8,7 +9,7 @@ namespace Assets.Scripts.Menu
     /// <summary>
     /// Контроллер окна информации об игроке
     /// </summary>
-    internal class ProfileWindowController : BaseMenuWindowController
+    internal class ProfileWindow : BaseMenuWindow
     {
         public GameObject UserName;
         public GameObject UserInfo;
@@ -17,12 +18,11 @@ namespace Assets.Scripts.Menu
         {
             base.Enable();
 
-            var user = new User();
-            var userInfo = user.GetUserInfo();
+            var user = new Player();
             UserName.GetComponent<TMP_Text>().text = user.Name;
             UserInfo.GetComponent<TMP_Text>().text = 
-                $"GamesCount: {userInfo.GamesCount} \r\n" +
-                $"WinCount: {userInfo.WinCount}";
+                $"GamesCount: {user.GamesCount} \r\n" +
+                $"WinCount: {user.WinCount}";
         }
 
         public override MenuWindowType MenuPanelType => MenuWindowType.Profile;
@@ -34,7 +34,6 @@ namespace Assets.Scripts.Menu
 
         public void OnSingleGameBtnClick()
         {
-            GameManager.Instance.SetOfflineMode();
             MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);
         }
 

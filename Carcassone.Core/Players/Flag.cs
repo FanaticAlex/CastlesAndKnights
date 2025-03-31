@@ -9,7 +9,7 @@ namespace Carcassone.Core.Players
         [JsonConstructor]
         public Flag() { }
 
-        public Flag(BasePlayer owner)
+        public Flag(GamePlayer owner)
         {
             OwnerName = owner.Name;
         }

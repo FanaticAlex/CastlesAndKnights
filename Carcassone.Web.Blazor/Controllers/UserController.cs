@@ -100,7 +100,7 @@ namespace CarcassoneServer.Web.Blazor.Controllers
 
         [HttpGet]
         [Route("user/{userName}/info")]
-        public async Task<ActionResult<UserInfo>> GetUserStatisticAsync(string userName)
+        public async Task<ActionResult<PlayerInfo>> GetUserStatisticAsync(string userName)
         {
             _logger.LogInformation("GetUserStatistic Called");
             var user = await _userManager.GetUserAsync(User);

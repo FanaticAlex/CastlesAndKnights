@@ -7,7 +7,7 @@ namespace Assets.Scripts.Menu
     /// <summary>
     /// Контроллер окна поиска игровой комнаты.
     /// </summary>
-    public class ChooseRoomWindowController : BaseMenuWindowController
+    public class ChooseRoomWindow : BaseMenuWindow
     {
         private float _timer;
 

@@ -24,13 +24,13 @@ namespace Carcassone.Web.Blazor.Services
                 .Where(g => g.PlayerFinalResultList.Select(r => r.CarcassoneUser).Contains(user));
         }
 
-        public UserInfo GetUserInfo(CarcassoneUser user)
+        public PlayerInfo GetUserInfo(CarcassoneUser user)
         {
             var playerFinalResultList = _context.PlayerFinalResultList.Where(r => r.CarcassoneUser == user);
             var gamesCount = playerFinalResultList.Count();
             var winCount = playerFinalResultList.Where(g => g.Rank == 0).Count();
 
-            var statistic = new UserInfo()
+            var statistic = new PlayerInfo()
             {
                 GamesCount = gamesCount,
                 WinCount = winCount
@@ -42,7 +42,7 @@ namespace Carcassone.Web.Blazor.Services
         public async Task AddGameResults(GameRoom room)
         {
             var playedGame = new PlayedGame();
-            foreach (var player in room.PlayersPool.Players)
+            foreach (var player in room.PlayersPool.GamePlayers)
             {
                 var playerScore = room.GetPlayerScore(player);
                 var playerResult = new PlayerFinalResult()

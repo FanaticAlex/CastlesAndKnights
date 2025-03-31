@@ -6,6 +6,7 @@
         Profile,
         ChooseRoom,
         SetupRoom,
+        EditPlayers,
         Tutorial
     }
 }

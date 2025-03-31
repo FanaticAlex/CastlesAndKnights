@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Menu
 {
-    public class LoginWindowController : BaseMenuWindowController
+    public class LoginWindow : BaseMenuWindow
     {
         public override MenuWindowType MenuPanelType => MenuWindowType.Login;
 
@@ -24,7 +24,7 @@ namespace Assets.Scripts.Menu
                 if (data.Login == null || data.Token == null)
                     return;
 
-                GameManager.Instance.SetOnlineMode();
+                //GameManager.Instance.SetOnlineMode();
                 //GameManager.Instance.RoomService.Login(data);
                 MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
             }
@@ -76,7 +76,7 @@ namespace Assets.Scripts.Menu
         {
             try
             {
-                GameManager.Instance.SetOnlineMode();
+                //GameManager.Instance.SetOnlineMode();
                 //GameManager.Instance.RoomService.Login(login, password);
                 message = String.Empty;
                 return true;
@@ -90,7 +90,7 @@ namespace Assets.Scripts.Menu
 
         public void OnOfflineGameBtnClick()
         {
-            GameManager.Instance.SetOfflineMode();
+            //GameManager.Instance.SetOfflineMode();
             MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);
         }
 

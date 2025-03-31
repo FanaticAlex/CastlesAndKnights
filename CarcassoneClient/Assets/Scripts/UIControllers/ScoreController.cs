@@ -30,7 +30,7 @@ namespace Assets.Scripts
             GameObject finalScoreUIPanelText,
             GameObject playerDetailScorePanel)
         {
-            var players = GameManager.Instance.RoomService.GetPlayers();
+            var players = GameManager.Instance.Room.PlayersPool.GamePlayers;
 
             _finalScoreUIPanel = finalScoreUIPanel;
             _finalScoreUIPanelText = finalScoreUIPanelText;
@@ -75,7 +75,8 @@ namespace Assets.Scripts
                 _playerDetailScorePanel.SetActive(true);
                 var textComp = GameObject.Find("DetailedPlayerScore").GetComponent<TMP_Text>();
                 textComp.text = "Player score " + playerName + "\r\n";
-                var score = GameManager.Instance.RoomService.GetScore(playerName);
+                var gamePlayer = GameManager.Instance.Room.PlayersPool.GetPlayer(playerName);
+                var score = GameManager.Instance.Room.GetPlayerScore(gamePlayer);
                 textComp.text += $"Castles: {score.CastlesScore}({score.CastlesCount})\r\n";
                 textComp.text += $"Fields: {score.CornfieldsScore}({score.CornfieldsCount})\r\n";
                 textComp.text += $"Churches: {score.ChurchesScore}({score.ChurchesCount})\r\n";
@@ -90,8 +91,8 @@ namespace Assets.Scripts
 
         public void UpdateScore()
         {
-            var players = GameManager.Instance.RoomService.GetPlayers();
-            var scores = players.Select(p => GameManager.Instance.RoomService.GetScore(p.Name));
+            var players = GameManager.Instance.Room.PlayersPool.GamePlayers;
+            var scores = players.Select(p => GameManager.Instance.Room.GetPlayerScore(p));
 
             foreach (var score in scores)
             {
@@ -108,7 +109,7 @@ namespace Assets.Scripts
             }
         }
 
-        public void UpdateCurrentPlayerMark(BasePlayer currentPlayer)
+        public void UpdateCurrentPlayerMark(GamePlayer currentPlayer)
         {
             foreach(var item in  _playersScorePanels)
             {
@@ -119,16 +120,17 @@ namespace Assets.Scripts
             }
         }
 
-        public void UpdateWaitingSpinners(BasePlayer currentPlayer)
+        // для удаленных игроков крутим спиннер
+        public void UpdateWaitingSpinners(GamePlayer currentPlayer)
         {
-            var isLocalPlayerMove = UserManager.Instance.User.Name == currentPlayer?.Name;
+            /*var isLocalPlayerMove = UserManager.Instance.User.Name == currentPlayer?.Name;
             if (isLocalPlayerMove)
                 SetSpinnersOff();
             else
-                SetPlayerSpinnerOn(currentPlayer);
+                SetPlayerSpinnerOn(currentPlayer);*/
         }
 
-        private void SetPlayerSpinnerOn(BasePlayer player)
+        private void SetPlayerSpinnerOn(GamePlayer player)
         {
             foreach (var item in _playersScorePanels)
             {
@@ -151,8 +153,8 @@ namespace Assets.Scripts
         {
             _finalScoreUIPanel.SetActive(true);
 
-            var players = GameManager.Instance.RoomService.GetPlayers();
-            var scores = players.Select(p => GameManager.Instance.RoomService.GetScore(p.Name));
+            var players = GameManager.Instance.Room.PlayersPool.GamePlayers;
+            var scores = players.Select(p => GameManager.Instance.Room.GetPlayerScore(p));
 
             var winnerScore = scores.Max(x => SumScore(x));
             var winners = scores

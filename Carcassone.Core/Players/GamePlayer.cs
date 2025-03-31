@@ -7,49 +7,38 @@ using System.Linq;
 
 namespace Carcassone.Core.Players
 {
-    public enum PlayerType
+    /// <summary>
+    /// Players proprties in particular room
+    /// </summary>
+    public class GamePlayer
     {
-        Human,
-        AI_Easy,
-        AI_Normal,
-        AI_Hard,
-        NetworkPlayer
-    }
-
-    public class BasePlayer
-    {
-        private List<Chip> _chipList = new List<Chip>();
-
-        public BasePlayer(string name, string color, int chipCount, PlayerType playerType)
+        public GamePlayer(Player player, string color, int chipCount)
         {
-            Name = name;
+            Player = player;
             Color = color;
-            PlayerType = playerType;
 
             for (var i = 0; i < chipCount; i++)
             {
                 var chip = new Chip(this);
-                _chipList.Add(chip);
+                СhipList.Add(chip);
             }
         }
 
-        public PlayerType PlayerType { get; set; }
+        public Player Player { get; private set; }
 
-        public string Name { get; set; }
-
+        public string Name => Player.Name;
+        public PlayerType PlayerType => Player.PlayerType;
         public string Color { get; set; }
-
-        public string? LastCardId { get; set; }
-
-        public int ChipCount => _chipList.Count;
+        private List<Chip> СhipList { get; set; } = new List<Chip>();
+        public int ChipCount => СhipList.Count;
 
         public Chip? TakeChip()
         {
-            if (_chipList.Count == 0)
+            if (СhipList.Count == 0)
                 return null;
 
-            var chip = _chipList[0];
-            _chipList.Remove(chip);
+            var chip = СhipList[0];
+            СhipList.Remove(chip);
             return chip;
         }
 
@@ -60,7 +49,7 @@ namespace Carcassone.Core.Players
 
             var chip = part.Chip;
             chip.OwnerName = Name;
-            _chipList.Add(chip);
+            СhipList.Add(chip);
 
             part.Chip = null;
             part.Flag = new Flag(this);
