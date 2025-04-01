@@ -27,7 +27,7 @@ public class CameraBehaviour : MonoBehaviour {
         FreeZoom();
     }
 
-    public void MoveCameraAtCard(GameObject cardGO) // приближаемм к карте
+    public void MoveCameraAtCard(GameObject cardGO) // приближаем к карте
     {
         State = TouchState.ZoomToCard;
         _animationPosition = 0;

@@ -29,6 +29,8 @@ namespace Carcassone.Core
         public bool IsStarted { get; set; }
         public bool IsFinished { get; set; }
 
+        public event EventHandler Finished;
+
         public GameRoom()
         {
             Id = Guid.NewGuid().ToString();
@@ -169,7 +171,13 @@ namespace Carcassone.Core
 
             CardsPool.DiscardCard(card);
             CardsPool.CurrentCard = GetNextCard();
-            IsFinished = (CardsPool.CurrentCard == null);
+
+            if (CardsPool.CurrentCard == null)
+            {
+                IsFinished = true;
+                Finished.Invoke(this, null);
+            }
+
             PlayersPool.MoveToNextPlayer();
         }
 

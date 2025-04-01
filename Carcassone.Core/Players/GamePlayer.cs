@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Carcassone.Core.Players
 {
@@ -31,6 +32,8 @@ namespace Carcassone.Core.Players
         public string Color { get; set; }
         private List<Chip> СhipList { get; set; } = new List<Chip>();
         public int ChipCount => СhipList.Count;
+
+        public bool IsAIProcessing {  get; set; }
 
         public Chip? TakeChip()
         {
@@ -64,12 +67,15 @@ namespace Carcassone.Core.Players
             if (card == null)
                 return; // игра уже окончена
 
+            IsAIProcessing = true;
+
             // where to put a card
-            var availableFields = room.GetFieldsToPutCard(card.Id)
-                             .Select(item => item.Id).ToList();
+            var availableFields = room.GetFieldsToPutCard(card.Id).Select(item => item.Id).ToList();
             List<GameMove> possibleMoves = GetPossibleMoves(room.Save(), card.Id, availableFields);
             GameMove bestMove = GetBestMove(possibleMoves);
             room.MakeMove(bestMove);
+
+            IsAIProcessing = false;
         }
 
         private GameMove GetBestMove(List<GameMove> possibleMoves)

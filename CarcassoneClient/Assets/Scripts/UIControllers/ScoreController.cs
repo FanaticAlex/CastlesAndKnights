@@ -120,35 +120,6 @@ namespace Assets.Scripts
             }
         }
 
-        // для удаленных игроков крутим спиннер
-        public void UpdateWaitingSpinners(GamePlayer currentPlayer)
-        {
-            /*var isLocalPlayerMove = UserManager.Instance.User.Name == currentPlayer?.Name;
-            if (isLocalPlayerMove)
-                SetSpinnersOff();
-            else
-                SetPlayerSpinnerOn(currentPlayer);*/
-        }
-
-        private void SetPlayerSpinnerOn(GamePlayer player)
-        {
-            foreach (var item in _playersScorePanels)
-            {
-                var spinner = item.Value.transform.Find("Spinner");
-                var isPlayerPanel = (item.Key == player?.Name);
-                spinner.gameObject.SetActive(isPlayerPanel);
-            }
-        }
-
-        private void SetSpinnersOff()
-        {
-            foreach (var item in _playersScorePanels)
-            {
-                var spinner = item.Value.transform.Find("Spinner");
-                spinner.gameObject.SetActive(false);
-            }
-        }
-
         public void ShowEndGameWindow()
         {
             _finalScoreUIPanel.SetActive(true);
@@ -170,8 +141,6 @@ namespace Assets.Scripts
                 _finalScoreUIPanelText.GetComponent<TMP_Text>().text +=
                     $"{score.PlayerName} : {SumScore(score)} \r\n";
             }
-
-            //GameManager.Instance.RoomService.Reset();
         }
 
         private int SumScore(PlayerScore score)

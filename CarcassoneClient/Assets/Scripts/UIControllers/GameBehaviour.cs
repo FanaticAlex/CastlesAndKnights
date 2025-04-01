@@ -46,6 +46,7 @@ namespace Assets.Scripts
         {
             _cameraBehaviour = Camera.main.GetComponent<CameraBehaviour>();
             _room = GameManager.Instance.Room;
+            _room.Finished += _room_Finished;
 
             _fieldsController = new FieldsController(_room);
             _cardsController = new CardsController(_room);
@@ -79,8 +80,9 @@ namespace Assets.Scripts
             _fieldsController.ShowAvailableFields(_room.CardsPool.CurrentCard);
 
             _scoreController.UpdateScore();
-            _scoreController.UpdateCurrentPlayerMark(player);
-            _scoreController.UpdateWaitingSpinners(player);
+
+            var currentPlayer = _room.PlayersPool.GetCurrentPlayer();
+            _scoreController.UpdateCurrentPlayerMark(currentPlayer);
 
             _cameraBehaviour.MoveCameraAtCard(_cardsController.GetCardGO(card.Id)); // анимация
 
@@ -93,10 +95,16 @@ namespace Assets.Scripts
         /// </summary>
         async void Update()
         {
+            // TODO: клик по обьекту для просмотра владельцев
+
+            if (_room.IsFinished) return;
+
             if (_cameraBehaviour.State == TouchState.ZoomToCard) return;
 
             // если наш ход
             var currentPlayer = _room.PlayersPool.GetCurrentPlayer();
+            if (currentPlayer.IsAIProcessing) return;
+
             switch (currentPlayer.PlayerType)
             {
                 case PlayerType.Human:
@@ -105,16 +113,13 @@ namespace Assets.Scripts
                 case PlayerType.AI_Easy:
                 case PlayerType.AI_Normal:
                 case PlayerType.AI_Hard:
-                    currentPlayer.ProcessMove(_room);
+                    await Task.Run(() => currentPlayer.ProcessMove(_room));
                     VisualizeTurn(_room.Moves.Last());
                     break;
                 case PlayerType.NetworkPlayer:
                     // ждать сетевых игроков 
                     break;
             }
-
-
-            // клик по обьекту для просмотра владельцев
         }
 
         // для сетевой игры
@@ -197,6 +202,8 @@ namespace Assets.Scripts
         public void OnEndGameBtn()
         {
             SceneManager.LoadScene("CreateRoom", LoadSceneMode.Single);
+            GameManager.Instance.SaveScore();
+            GameManager.Instance.ResetGame();
         }
 
         private void TryToPutCardInField(string playerName, CardsController cardsController)
@@ -257,7 +264,7 @@ namespace Assets.Scripts
             cardGO.transform.rotation = Quaternion.Euler(0, 0, -90 * card_Temp.RotationsCount);
         }
 
-        public void ResetCardGOTransform(Card card)
+        private void ResetCardGOTransform(Card card)
         {
             var cardGO = _cardsController.GetCardGO(card.Id);
             cardGO.transform.position = new Vector3(0, 0, 0);
@@ -320,6 +327,11 @@ namespace Assets.Scripts
             var noneToggle = toggleGroup.Find("Toggle_None");
             var noneToggleComponent = noneToggle.GetComponent<Toggle>();
             noneToggleComponent.isOn = true;
+        }
+
+        private void _room_Finished(object sender, EventArgs e)
+        {
+            _scoreController.ShowEndGameWindow();
         }
 
         private ObjectPart GetSelectedPart(Card card)

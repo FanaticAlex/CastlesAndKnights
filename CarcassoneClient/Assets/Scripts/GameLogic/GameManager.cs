@@ -50,5 +50,27 @@ namespace Assets.Scripts
             Players.Remove(deletedPlayer);
             PlayersManager.Save(Players);
         }
+
+        public void SaveScore()
+        {
+            var gamePLayers = Room.PlayersPool.GamePlayers.Where(p => p.PlayerType != PlayerType.NetworkPlayer);
+            foreach (var gamePlayer in gamePLayers)
+            {
+                var score = Room.GetPlayerScore(gamePlayer);
+                var player = Players.Single(p => p.Name == gamePlayer.Name);
+
+                player.GamesCount = player.GamesCount + 1;
+
+                if (score.Rank == 0)
+                    player.WinCount = player.WinCount + 1;
+            }
+
+            PlayersManager.Save(Players);
+        }
+
+        public void ResetGame()
+        {
+            Room = new GameRoom();
+        }
     }
 }
