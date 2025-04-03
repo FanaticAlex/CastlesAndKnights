@@ -1,12 +1,10 @@
-﻿using Carcassone.Core.Players;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.Menu
@@ -33,22 +31,26 @@ namespace Assets.Scripts.Menu
 
         public void OnBackBtnClick()
         {
+            GetSoundEffectsPlayer().PlayClick();
             NewPlayerPanel.SetActive(false);
             MenuManager.SwitchToMenuPanel(MenuWindowType.SetupRoom);
         }
 
         public void OnCancelBtnClick()
         {
+            GetSoundEffectsPlayer().PlayClick();
             NewPlayerPanel.SetActive(false);
         }
 
         public void OnNewPlayerBtnClick()
         {
+            GetSoundEffectsPlayer().PlayClick();
             ShowNewPlayerPanel();
         }
 
         public void OnNewPlayerCreateAcceptedClick()
         {
+            GetSoundEffectsPlayer().PlayClick();
             var typeStr = PlayerTypeGO.GetComponent<TMP_Dropdown>().captionText.text;
             var newPlayerType = PlayerTypeHelper.ToPlayerType(typeStr);
             var newPlayerName = PlayerNameGO.GetComponent<TMP_InputField>().text;
@@ -100,6 +102,7 @@ namespace Assets.Scripts.Menu
 
         public void OnDeletePlayerBtn(string name)
         {
+            GetSoundEffectsPlayer().PlayClick();
             GameManager.Instance.DeletePlayer(name);
             UpdatePlayerList(PlayersList);
 

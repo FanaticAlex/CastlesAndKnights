@@ -1,11 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using Carcassone.Core.Players;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
+using UnityEngine;
 
-namespace Carcassone.Core.Players
+namespace Assets.Scripts
 {
     /// <summary>
     /// Хранит игроков
@@ -17,14 +19,14 @@ namespace Carcassone.Core.Players
         public static void Save(List<Player> Users)
         {
             var json = JsonConvert.SerializeObject(Users);
-            File.WriteAllText(_fileName, json);
+            File.WriteAllText(GetFilePath(), json);
         }
 
         public static List<Player> Load()
         {
             try
             {
-                var json = File.ReadAllText(_fileName);
+                var json = File.ReadAllText(GetFilePath());
                 var users = JsonConvert.DeserializeObject<List<Player>>(json) ?? throw new Exception($"Can't load Local Users");
                 return users;
             }
@@ -41,6 +43,11 @@ namespace Carcassone.Core.Players
                 Save(dafaultUsersList);
                 return dafaultUsersList;
             }
+        }
+
+        private static string GetFilePath()
+        {
+            return Application.persistentDataPath + _fileName;
         }
     }
 }

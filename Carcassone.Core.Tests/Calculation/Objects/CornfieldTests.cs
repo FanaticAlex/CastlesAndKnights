@@ -22,12 +22,12 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore()
         {
             var room = new GameRoom();
-            var player = new Player() { Name = "Jack", PlayerType = PlayerType.Human };
-            var gamePlayer = room.PlayersPool.AddPlayer(player);
+            var name = "Jack";
+            var gamePlayer = room.PlayersPool.AddPlayer(name, PlayerType.Human);
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = player.Name,
+                PlayerName = name,
                 CardId = "CRFR(0)",
                 CardRotation = 2,
                 FieldId = $"{0}_{0}",
@@ -37,7 +37,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = player.Name,
+                PlayerName = name,
                 CardId = "CFFF(0)",
                 CardRotation = 0,
                 FieldId = $"{0}_{-1}",
@@ -75,12 +75,12 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore1()
         {
             var room = new GameRoom();
-            var player = new Player() { Name = "owner1", PlayerType = PlayerType.Human };
-            var owner1 = room.PlayersPool.AddPlayer(player);
+            var name = "owner1";
+            var owner1 = room.PlayersPool.AddPlayer(name, PlayerType.Human);
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = player.Name,
+                PlayerName = name,
                 CardId = "RRWW(0)",
                 CardRotation = 0,
                 FieldId = $"{0}_{0}",
@@ -90,7 +90,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = player.Name,
+                PlayerName = name,
                 CardId = "WCCW(0)",
                 CardRotation = 0,
                 FieldId = $"{0}_{-1}",
@@ -111,11 +111,12 @@ namespace Carcassone.Core.Tests.Buisness
         }
 
         /// <summary>
-        ///       F
-        ///   |       |
-        /// F |   ++++| W
-        ///   |   +   |
-        ///       W
+        ///       F                F
+        ///   |       |        |       |
+        /// F |   ++++| W    W |++++   | F
+        ///   |   +   |        |       |
+        ///       W                F
+        ///       
         /// 
         ///       W
         ///   |   +   |
@@ -127,21 +128,41 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore2()
         {
             var room = new GameRoom();
-            var player = new Player() { Name = "owner1", PlayerType = PlayerType.Human };
-            var owner1 = room.PlayersPool.AddPlayer(player);
+            var name = "owner1";
+            var owner1 = room.PlayersPool.AddPlayer(name, PlayerType.Human);
+            
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = name,
+                CardId = "FFWF(0)",
+                CardRotation = 1,
+                FieldId = $"{0}_{0}",
+                PartName = null
+            };
+            room.MakeMove(gameMove0);
 
-            var card1 = room.GetCard("FWWF(0)");
-            var field1 = room.FieldBoard.GetField("0_0");
-            room.PutCardInField(card1, field1);
+            var gameMove1 = new GameMove()
+            {
+                PlayerName = name,
+                CardId = "FWWF(0)",
+                CardRotation = 0,
+                FieldId = $"{-1}_{0}",
+                PartName = null
+            };
+            room.MakeMove(gameMove1);
 
-            var card2 = room.GetCard("WFWF(0)");
-            var field2 = room.FieldBoard.GetField("0_-1");
-            room.PutCardInField(card2, field2);
+            var gameMove2 = new GameMove()
+            {
+                PlayerName = name,
+                CardId = "WFWF(0)",
+                CardRotation = 0,
+                FieldId = $"{-1}_{-1}",
+                PartName = null
+            };
+            room.MakeMove(gameMove2);
 
-            Assert.Equal(2, room.ScoreCalculator.Cornfields.Count);
-
-            Assert.Equal(5, room.ScoreCalculator.Cornfields[0].OpenBorders.Count);
-            Assert.Equal(7, room.ScoreCalculator.Cornfields[1].OpenBorders.Count);
+            Assert.Equal(1, room.ScoreCalculator.Cornfields.Count);
+            Assert.Equal(17, room.ScoreCalculator.Cornfields[0].OpenBorders.Count);
         }
 
         /// <summary>
@@ -161,8 +182,8 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore3()
         {
             var room = new GameRoom();
-            var player = new Player() { Name = "owner1", PlayerType = PlayerType.Human };
-            var owner1 = room.PlayersPool.AddPlayer(player);
+            var name = "owner1";
+            var owner1 = room.PlayersPool.AddPlayer(name, PlayerType.Human);
 
             var card1 = room.GetCard("FFWF(0)");
             var field1 = room.FieldBoard.GetField("0_0");
@@ -196,8 +217,8 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore4()
         {
             var room = new GameRoom();
-            var player = new Player() { Name = "owner1", PlayerType = PlayerType.Human };
-            var owner1 = room.PlayersPool.AddPlayer(player);
+            var name = "owner1";
+            var owner1 = room.PlayersPool.AddPlayer(name, PlayerType.Human);
 
             var card1 = room.GetCard("FFWF(0)");
             var field1 = room.FieldBoard.GetField("0_0");
@@ -231,8 +252,8 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore5()
         {
             var room = new GameRoom();
-            var player = new Player() { Name = "owner1", PlayerType = PlayerType.Human };
-            var owner1 = room.PlayersPool.AddPlayer(player);
+            var name = "owner1";
+            var owner1 = room.PlayersPool.AddPlayer(name, PlayerType.Human);
 
             var card1 = room.GetCard("RRWW(0)");
             var field1 = room.FieldBoard.GetField("0_0");

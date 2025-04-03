@@ -32,13 +32,13 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetPointsTest()
         {
             var room = new GameRoom();
-            var player = new Player() { Name = "Jack", PlayerType = PlayerType.Human };
-            room.PlayersPool.AddPlayer(player);
+            var name = "Jack";
+            room.PlayersPool.AddPlayer(name, PlayerType.Human);
             room.PlayersPool.MoveToNextPlayer();
 
             var gameMove0 = new GameMove()
             {
-                PlayerName = "Jack",
+                PlayerName = name,
                 CardId = "FFFF(0)",
                 CardRotation = 0,
                 FieldId = $"{0}_{0}",
@@ -50,7 +50,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = "Jack",
+                PlayerName = name,
                 CardId = "RFRF(0)",
                 CardRotation = 1,
                 FieldId = $"{0}_{1}",
@@ -62,7 +62,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = "Jack",
+                PlayerName = name,
                 CardId = "FFRR(0)",
                 CardRotation = 0,
                 FieldId = $"{1}_{1}",
@@ -74,7 +74,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove3 = new GameMove()
             {
-                PlayerName = "Jack",
+                PlayerName = name,
                 CardId = "FFRR(1)",
                 CardRotation = 3,
                 FieldId = $"{-1}_{1}",
@@ -86,7 +86,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove4 = new GameMove()
             {
-                PlayerName = "Jack",
+                PlayerName = name,
                 CardId = "RFRF(1)",
                 CardRotation = 0,
                 FieldId = $"{-1}_{0}",
@@ -98,7 +98,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove5 = new GameMove()
             {
-                PlayerName = "Jack",
+                PlayerName = name,
                 CardId = "RFRF(2)",
                 CardRotation = 0,
                 FieldId = $"{1}_{0}",
@@ -110,7 +110,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove6 = new GameMove()
             {
-                PlayerName = "Jack",
+                PlayerName = name,
                 CardId = "RFRF(3)",
                 CardRotation = 1,
                 FieldId = $"{0}_{-1}",
@@ -122,7 +122,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove7 = new GameMove()
             {
-                PlayerName = "Jack",
+                PlayerName = name,
                 CardId = "FFRR(2)",
                 CardRotation = 1,
                 FieldId = $"{1}_{-1}",
@@ -134,7 +134,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove8 = new GameMove()
             {
-                PlayerName = "Jack",
+                PlayerName = name,
                 CardId = "FFRR(3)",
                 CardRotation = 2,
                 FieldId = $"{-1}_{-1}",

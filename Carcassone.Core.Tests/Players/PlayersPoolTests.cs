@@ -11,14 +11,14 @@ namespace Carcassone.Core.Tests.Players
         {
             var pool = new GamePlayersPool();
 
-            var player = new Player() { Name = "bob", PlayerType = PlayerType.Human };
-            pool.AddPlayer(player);
-            var bob = pool.GetPlayer(player.Name);
-            Assert.Equal("bob", bob.Name);
+            var bobName = "bob";
+            pool.AddPlayer(bobName, PlayerType.Human);
+            var bob = pool.GetPlayer(bobName);
+            Assert.Equal(bobName, bob.Name);
 
-            var player1 = new Player() { Name = "AI_1", PlayerType = PlayerType.AI_Easy };
-            pool.AddPlayer(player1);
-            var ai_1 = pool.GetPlayer(player1.Name);
+            var player1Name = "AI_1";
+            pool.AddPlayer(player1Name, PlayerType.AI_Easy);
+            var ai_1 = pool.GetPlayer(player1Name);
             Assert.Equal(PlayerType.AI_Easy, ai_1.PlayerType);
 
             pool.MoveToNextPlayer();

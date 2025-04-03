@@ -1,34 +1,10 @@
 fileFormatVersion: 2
-guid: e82cb2a068a432b49bdcc2f0eb78e308
+guid: b1af0e6eb138b6c4585bf43a6cb61347
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7278221401937051059
-    second: carcassonne_text_0
-  - first:
-      213: 8421929737633404840
-    second: carcassonne_text_1
-  - first:
-      213: -4956467303808408619
-    second: carcassonne_text_2
-  - first:
-      213: -4990329161930332969
-    second: carcassonne_text_3
-  - first:
-      213: -2497251298092604226
-    second: carcassonne_text_4
-  - first:
-      213: -1208655543140799196
-    second: carcassonne_text_5
-  - first:
-      213: -536948605580293404
-    second: carcassonne_text_6
-  - first:
-      213: -8844044924482897347
-    second: carcassonne_text_7
-  - first:
-      213: 1694652518368294210
-    second: carcassonne_text_8
+      213: 2119385652457617898
+    second: -arcassonne-4-1-2025_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -121,7 +97,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WebGL
+    buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -134,7 +110,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Android
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -150,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: carcassonne_text_0
+      name: -arcassonne-4-1-2025_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 35
-        height: 65
+        x: 45
+        y: 45
+        width: 934
+        height: 218
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -165,184 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d4285e452309efa90800000000000000
-      internalID: -7278221401937051059
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: carcassonne_text_1
-      rect:
-        serializedVersion: 2
-        x: 35
-        y: 0
-        width: 38
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8a710fe9974b0e470800000000000000
-      internalID: 8421929737633404840
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: carcassonne_text_2
-      rect:
-        serializedVersion: 2
-        x: 68
-        y: 0
-        width: 53
-        height: 42
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5d369a76f37173bb0800000000000000
-      internalID: -4956467303808408619
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: carcassonne_text_3
-      rect:
-        serializedVersion: 2
-        x: 121
-        y: 0
-        width: 37
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7d4aede211acebab0800000000000000
-      internalID: -4990329161930332969
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: carcassonne_text_4
-      rect:
-        serializedVersion: 2
-        x: 157
-        y: 1
-        width: 60
-        height: 41
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: eb4ae46ec2bf75dd0800000000000000
-      internalID: -2497251298092604226
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: carcassonne_text_5
-      rect:
-        serializedVersion: 2
-        x: 218
-        y: 1
-        width: 32
-        height: 39
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 42d294fef2ef93fe0800000000000000
-      internalID: -1208655543140799196
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: carcassonne_text_6
-      rect:
-        serializedVersion: 2
-        x: 249
-        y: 1
-        width: 36
-        height: 39
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4eacebd86106c88f0800000000000000
-      internalID: -536948605580293404
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: carcassonne_text_7
-      rect:
-        serializedVersion: 2
-        x: 285
-        y: 0
-        width: 36
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d3ab99abff3a34580800000000000000
-      internalID: -8844044924482897347
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: carcassonne_text_8
-      rect:
-        serializedVersion: 2
-        x: 319
-        y: 1
-        width: 30
-        height: 39
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 245301f9c7d948710800000000000000
-      internalID: 1694652518368294210
+      spriteID: ae9bbcc9502996d10800000000000000
+      internalID: 2119385652457617898
       vertices: []
       indices: 
       edges: []
@@ -361,15 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      carcassonne_text_0: -7278221401937051059
-      carcassonne_text_1: 8421929737633404840
-      carcassonne_text_2: -4956467303808408619
-      carcassonne_text_3: -4990329161930332969
-      carcassonne_text_4: -2497251298092604226
-      carcassonne_text_5: -1208655543140799196
-      carcassonne_text_6: -536948605580293404
-      carcassonne_text_7: -8844044924482897347
-      carcassonne_text_8: 1694652518368294210
+      -arcassonne-4-1-2025_0: 2119385652457617898
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

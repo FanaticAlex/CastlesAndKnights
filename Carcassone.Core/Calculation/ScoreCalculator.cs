@@ -148,7 +148,7 @@ namespace Carcassone.Core.Calculation
                     RoadsCount = GetRoads(player, cardPool).Count(),
                     CornfieldsCount = GetCornfields(player, cardPool).Count(),
                     ChurchesCount = GetChurches(player, cardPool).Count(),
-                    ChipCount = player.ChipCount
+                    ChipCount = player.СhipList.Count
                 };
                 scores.Add(score);
             }

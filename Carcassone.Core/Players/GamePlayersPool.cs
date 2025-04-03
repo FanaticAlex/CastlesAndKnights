@@ -54,18 +54,18 @@ namespace Carcassone.Core.Players
             GamePlayers.Remove(player);
         }
 
-        public GamePlayer AddPlayer(Player player)
+        public GamePlayer AddPlayer(string name, PlayerType _type)
         {
             if (GamePlayers.Count >= _maximumPlayersCount)
                 throw new Exception($"Cant add player. Maximum player count is {_maximumPlayersCount}");
 
             // если этот игрок уже подключен
-            var gamePlayer = GamePlayers.FirstOrDefault(_player => _player.Name == player.Name);
+            var gamePlayer = GamePlayers.FirstOrDefault(_player => _player.Name == name);
             if (gamePlayer != null)
-                throw new Exception($"Игрок '{player.Name}' уже подключен.");
+                throw new Exception($"Игрок '{name}' уже подключен.");
 
             var color = GetFreeColor();
-            var newGamePlayer = new GamePlayer(player, color, _playerChipCount);
+            var newGamePlayer = new GamePlayer(name, _type, color, _playerChipCount);
             GamePlayers.Add(newGamePlayer);
             return newGamePlayer;
         }

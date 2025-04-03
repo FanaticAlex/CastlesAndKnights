@@ -10,7 +10,9 @@ public class MusicPlayer : MonoBehaviour
 
     void Start()
     {
-        AudioSource = FindObjectOfType<AudioSource>();
+        if (AudioSource == null)
+            AudioSource = FindAnyObjectByType<AudioSource>();
+
         AudioSource.loop = false;
         PlayClip(_currentClipNumber);
         _currentClipNumber = 0;

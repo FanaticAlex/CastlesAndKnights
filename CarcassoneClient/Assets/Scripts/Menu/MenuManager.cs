@@ -27,6 +27,7 @@ public class MenuManager : MonoBehaviour
 
     public static void SwitchToMenuPanel(MenuWindowType menu)
     {
+        FindAnyObjectByType<SoundEffectsPlayer>().PlayMenuChange();
         menuManagers.ForEach(manager => { manager.Disable(); });
         menuManagers.Single(manager => (manager.MenuPanelType == menu)).Enable();
     }

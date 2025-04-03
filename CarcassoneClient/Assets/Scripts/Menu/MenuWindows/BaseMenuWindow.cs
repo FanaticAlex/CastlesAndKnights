@@ -12,6 +12,10 @@ namespace Assets.Scripts.Menu
         /// Тип панели
         /// </summary>
         public virtual MenuWindowType MenuPanelType { get; }
+        public SoundEffectsPlayer GetSoundEffectsPlayer()
+        {
+            return FindAnyObjectByType<SoundEffectsPlayer>();
+        }
 
         public virtual void Disable()
         {

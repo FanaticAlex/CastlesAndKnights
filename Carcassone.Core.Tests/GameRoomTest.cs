@@ -12,11 +12,16 @@ namespace Carcassone.Core.Tests.Room
         public void WorkflowAI()
         {
             var room = new GameRoom();
-            var player1 = new Player() { Name = "AI_1", PlayerType = PlayerType.AI_Easy };
-            var player2 = new Player() { Name = "AI_2", PlayerType = PlayerType.AI_Easy };
-            room.PlayersPool.AddPlayer(player1);
-            room.PlayersPool.AddPlayer(player2);
+            room.PlayersPool.AddPlayer("AI_1", PlayerType.AI_Easy);
+            room.PlayersPool.AddPlayer("AI_2", PlayerType.AI_Easy);
             room.Start();
+
+            do
+            {
+                var player = room.PlayersPool.GetCurrentPlayer();
+                player.ProcessMove(room);
+            }
+            while (!room.IsFinished);
 
             Assert.True(room.IsFinished);
             Assert.NotEqual(0, room.GetPlayerScore(room.PlayersPool.GamePlayers[0]).GetOverallScore());
@@ -27,6 +32,8 @@ namespace Carcassone.Core.Tests.Room
         public void GetCurrentCardTest()
         {
             var room = new GameRoom();
+            room.PlayersPool.AddPlayer("bob", PlayerType.Human);
+            room.Start();
             var card = room.CardsPool.CurrentCard;
             Assert.NotNull(card);
         }

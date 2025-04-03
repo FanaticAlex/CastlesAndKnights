@@ -46,8 +46,8 @@ namespace Assets.Scripts.Menu
             // добавляем себя
             if (GameManager.Instance.Room.PlayersPool.GamePlayers.Count == 0)
             {
-                var dafaultUser = GameManager.Instance.GetDefaultPlayer();
-                GameManager.Instance.Room.PlayersPool.AddPlayer(dafaultUser);
+                var defaultUser = GameManager.Instance.GetDefaultPlayer();
+                GameManager.Instance.Room.PlayersPool.AddPlayer(defaultUser.Name, defaultUser.PlayerType);
             }
             
             UpdateUI();
@@ -74,12 +74,14 @@ namespace Assets.Scripts.Menu
             if (GameManager.Instance.Room.PlayersPool.GamePlayers.Count() >= 5)
                 throw new Exception("Cant create player, 5 players max");
 
+            GetSoundEffectsPlayer().PlayClick();
             ShowNewPlayerPanel();
         }
 
         // добавляем нового игрока
         public void OnAddPlayerBtnClick()
         {
+            GetSoundEffectsPlayer().PlayClick();
             NewPlayerPanel.SetActive(false);
 
             if (GameManager.Instance.Room.PlayersPool.GamePlayers.Count() >= 5)
@@ -87,29 +89,33 @@ namespace Assets.Scripts.Menu
 
             var playerName = PlayerNameGO.GetComponent<TMP_Dropdown>().captionText.text;
             var player = GameManager.Instance.GetPlayer(playerName);
-            GameManager.Instance.Room.PlayersPool.AddPlayer(player);
+            GameManager.Instance.Room.PlayersPool.AddPlayer(player.Name, player.PlayerType);
 
             UpdateUI();
         }
 
         public void OnAddPlayerCancelBtnClick()
         {
+            GetSoundEffectsPlayer().PlayClick();
             NewPlayerPanel.SetActive(false);
         }
 
         public void OnStartGameBtnClick()
         {
+            GetSoundEffectsPlayer().PlayClick();
             GameManager.Instance.Room.Start();
             SceneManager.LoadScene("RoomScene");
         }
 
         public void OnBackBtnClick()
         {
+            GetSoundEffectsPlayer().PlayClick();
             MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
         }
 
         public void OnDeletePlayerBtn(string name)
         {
+            GetSoundEffectsPlayer().PlayClick();
             GameManager.Instance.Room.PlayersPool.DeletePlayer(name);
             UpdateUI();
         }

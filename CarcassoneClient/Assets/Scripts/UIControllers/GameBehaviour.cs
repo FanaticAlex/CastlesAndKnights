@@ -28,6 +28,7 @@ namespace Assets.Scripts
         public GameObject FinalScoreUIPanel;
         public GameObject FinalScoreUIPanelText;
         public GameObject PlayerDetailScorePanel;
+        public GameObject ExitAcceptPanel;
 
         private GameRoom _room;
 
@@ -36,6 +37,7 @@ namespace Assets.Scripts
 
         private GameRoom _preliminaryGameRoomWithNewCard;
         private CameraBehaviour _cameraBehaviour;
+        private SoundEffectsPlayer _soundEffectPlayer;
 
         /// <summary>
         /// Инициализация сцены комнаты игры.
@@ -52,12 +54,14 @@ namespace Assets.Scripts
             _cardsController = new CardsController(_room);
             _scoreController = new ScoreController(FinalScoreUIPanel, FinalScoreUIPanelText, PlayerDetailScorePanel);
             _playerController = new PlayerController(_cardsController);
+            _soundEffectPlayer = FindAnyObjectByType<SoundEffectsPlayer>();
 
             VisualizeTurn(_room.Moves[0]);
 
             _updateTimer = new Timer(0.5f);
             _updateTimer.Elapsed += async (s, e) => await UpdateSpecial();
 
+            ExitAcceptPanel.SetActive(false);
             SelectPartPanel.SetActive(false);
         }
 
@@ -98,6 +102,8 @@ namespace Assets.Scripts
             // TODO: клик по обьекту для просмотра владельцев
 
             if (_room.IsFinished) return;
+
+            if (Input.GetKey(KeyCode.Escape)) ExitAcceptPanel.SetActive(true);
 
             if (_cameraBehaviour.State == TouchState.ZoomToCard) return;
 
@@ -206,6 +212,17 @@ namespace Assets.Scripts
             GameManager.Instance.ResetGame();
         }
 
+        public void OnExitAcceptButtonClick()
+        {
+            SceneManager.LoadScene("CreateRoom", LoadSceneMode.Single);
+            GameManager.Instance.ResetGame();
+        }
+
+        public void OnExitCancelButtonClick()
+        {
+            ExitAcceptPanel.SetActive(false);
+        }
+
         private void TryToPutCardInField(string playerName, CardsController cardsController)
         {
             if (SelectPartPanel.activeSelf) // если мы в состоянии выбора чати то не кликам на поля
@@ -230,6 +247,7 @@ namespace Assets.Scripts
                 return;
             }
 
+            _soundEffectPlayer.PlayPutCard();
             PutCardInField_Preliminary(currentCard, _selectedField);
         }
 
@@ -291,7 +309,7 @@ namespace Assets.Scripts
             }
 
             var currentPlayer = GameManager.Instance.Room.PlayersPool.GetCurrentPlayer();
-            if (currentPlayer.ChipCount == 0)
+            if (currentPlayer.СhipList.Count == 0)
             {
                 Logger.Info("Player has no chip!");
                 OnEndTurnButonClick();

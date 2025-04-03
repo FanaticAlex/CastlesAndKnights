@@ -13,9 +13,10 @@ namespace Carcassone.Core.Players
     /// </summary>
     public class GamePlayer
     {
-        public GamePlayer(Player player, string color, int chipCount)
+        public GamePlayer(string _name, PlayerType _type, string color, int chipCount)
         {
-            Player = player;
+            Name = _name;
+            PlayerType = _type;
             Color = color;
 
             for (var i = 0; i < chipCount; i++)
@@ -25,13 +26,10 @@ namespace Carcassone.Core.Players
             }
         }
 
-        public Player Player { get; private set; }
-
-        public string Name => Player.Name;
-        public PlayerType PlayerType => Player.PlayerType;
+        public string Name { get; set; }
+        public PlayerType PlayerType { get; set; }
         public string Color { get; set; }
-        private List<Chip> СhipList { get; set; } = new List<Chip>();
-        public int ChipCount => СhipList.Count;
+        public List<Chip> СhipList { get; set; } = new List<Chip>();
 
         public bool IsAIProcessing {  get; set; }
 
@@ -84,9 +82,9 @@ namespace Carcassone.Core.Players
                 throw new Exception("AI cant make a move. No possible moves.");
 
             // ходы возвращающие фишки
-            var maxReturnChips = possibleMoves.Max(m => (m.ExpectedScore.ChipCount - ChipCount));
+            var maxReturnChips = possibleMoves.Max(m => (m.ExpectedScore.ChipCount - СhipList.Count));
             var returnChipsMove = possibleMoves
-                .Where(m => (m.ExpectedScore.ChipCount - ChipCount) == maxReturnChips)
+                .Where(m => (m.ExpectedScore.ChipCount - СhipList.Count) == maxReturnChips)
                 .FirstOrDefault();
             if (maxReturnChips > 0 && returnChipsMove != null)
                 return returnChipsMove;
@@ -129,7 +127,7 @@ namespace Carcassone.Core.Players
                         var card1 = gameCopy1.CardsPool.GetCard(cardId);
                         var field1 = gameCopy1.FieldBoard.GetField(fieldId);
                         var part1 = card1.GetPart(partName);
-                        if (!part1.IsPartOfOwnedObject && ChipCount > 0)
+                        if (!part1.IsPartOfOwnedObject && СhipList.Count > 0)
                         {
                             gameCopy1.PutChipInCard(part1, Name);
                             gameCopy1.ScoreCalculator.CloseObjectsAndReturnChips(gameCopy1.PlayersPool, gameCopy1.CardsPool);

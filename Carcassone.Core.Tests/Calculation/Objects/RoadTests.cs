@@ -21,12 +21,12 @@ namespace Carcassone.Core.Tests.Buisness
         public void CalculationTest_CrossRoad()
         {
             var room = new GameRoom();
-            var player = new Player() { Name = "bob", PlayerType = PlayerType.Human };
-            var bob = room.PlayersPool.AddPlayer(player);
+            var name = "bob";
+            var bob = room.PlayersPool.AddPlayer(name, PlayerType.Human);
 
             var gameMove0 = new GameMove()
             {
-                PlayerName = "bob",
+                PlayerName = name,
                 CardId = "RRRR(0)",
                 CardRotation = 0,
                 FieldId = $"{0}_{0}",
@@ -60,12 +60,12 @@ namespace Carcassone.Core.Tests.Buisness
         public void CalculationTest_RoadRing()
         {
             var room = new GameRoom();
-            var player = new Player() { Name = "bob", PlayerType = PlayerType.Human };
-            var bob = room.PlayersPool.AddPlayer(player);
+            var name = "bob";
+            var bob = room.PlayersPool.AddPlayer(name, PlayerType.Human);
 
             var gameMove0 = new GameMove()
             {
-                PlayerName = "bob",
+                PlayerName = name,
                 CardId = "FFRR(0)",
                 CardRotation = 2,
                 FieldId = $"{0}_{0}",
@@ -75,7 +75,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = "bob",
+                PlayerName = name,
                 CardId = "FFRR(1)",
                 CardRotation = 3,
                 FieldId = $"{0}_{1}",
@@ -85,7 +85,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = "bob",
+                PlayerName = name,
                 CardId = "FFRR(2)",
                 CardRotation = 0,
                 FieldId = $"{1}_{1}",
@@ -95,7 +95,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove3 = new GameMove()
             {
-                PlayerName = "bob",
+                PlayerName = name,
                 CardId = "FFRR(3)",
                 CardRotation = 1,
                 FieldId = $"{1}_{0}",
@@ -128,12 +128,12 @@ namespace Carcassone.Core.Tests.Buisness
         public void CalculationTest_FlatRoad()
         {
             var room = new GameRoom();
-            var player = new Player() { Name = "bob", PlayerType = PlayerType.Human };
-            room.PlayersPool.AddPlayer(player);
+            var name = "bob";
+            room.PlayersPool.AddPlayer(name, PlayerType.Human);
 
             var gameMove0 = new GameMove()
             {
-                PlayerName = player.Name,
+                PlayerName = name,
                 CardId = "FFRF(0)",
                 CardRotation = 0,
                 FieldId = $"{0}_{0}",
@@ -143,7 +143,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = player.Name,
+                PlayerName = name,
                 CardId = "FRRR(0)",
                 CardRotation = 2,
                 FieldId = $"{0}_{-1}",

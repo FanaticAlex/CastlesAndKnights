@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Carcassone.Core.Players;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Carcassone.Core.Players
+namespace Assets.Scripts
 {
     /// <summary>
     /// Базовые свойства игрока, сохраняемые глобально

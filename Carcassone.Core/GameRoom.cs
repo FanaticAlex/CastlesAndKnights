@@ -175,7 +175,7 @@ namespace Carcassone.Core
             if (CardsPool.CurrentCard == null)
             {
                 IsFinished = true;
-                Finished.Invoke(this, null);
+                Finished?.Invoke(this, null);
             }
 
             PlayersPool.MoveToNextPlayer();
