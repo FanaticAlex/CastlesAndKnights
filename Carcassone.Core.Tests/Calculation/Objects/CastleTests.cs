@@ -55,7 +55,7 @@ namespace Carcassone.Core.Tests.Buisness
             Assert.False(castles[1].IsFinished);
             Assert.True(castles[0].IsPlayerOwner(room.PlayersPool.GetPlayer(name), room.CardsPool));
             
-            var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name));
+            var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name).Name);
             Assert.Equal(1, score.CastlesScore);
             Assert.Equal(6, room.PlayersPool.GetPlayer(name).СhipList.Count);
         }
@@ -109,7 +109,7 @@ namespace Carcassone.Core.Tests.Buisness
             Assert.True(castle.IsPlayerOwner(room.PlayersPool.GetPlayer(name), room.CardsPool));
             Assert.Contains(castle.PartsIds.Select(id => room.CardsPool.GetPart(id)), p => p.Flag != null);
 
-            var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name));
+            var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name).Name);
             Assert.Equal(4, score.CastlesScore);
             Assert.Equal(7, room.PlayersPool.GetPlayer(name).СhipList.Count);
         }
@@ -191,7 +191,7 @@ namespace Carcassone.Core.Tests.Buisness
             Assert.True(castle.IsPlayerOwner(room.PlayersPool.GetPlayer(name), room.CardsPool));
             Assert.Contains(castle.PartsIds.Select(id => room.CardsPool.GetPart(id)), p => p.Flag != null);
 
-            var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name));
+            var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name).Name);
             Assert.Equal(4, score.CastlesScore);
             Assert.Equal(7, room.PlayersPool.GetPlayer(name).СhipList.Count);
         }

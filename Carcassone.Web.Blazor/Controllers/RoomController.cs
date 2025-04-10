@@ -121,7 +121,7 @@ namespace CarcassoneServer.Web.Blazor.Controllers
         {
             var room = _service.GetRoom(roomId);
             var player = room.PlayersPool.GetPlayer(playerName);
-            var score = room.GetPlayerScore(player);
+            var score = room.GetPlayerScore(player.Name);
             return score;
         }
 

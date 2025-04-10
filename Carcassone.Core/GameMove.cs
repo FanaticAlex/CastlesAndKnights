@@ -9,6 +9,5 @@ namespace Carcassone.Core
         public int CardRotation { get; set; }
         public string FieldId { get; set; }
         public string? PartName { get; set; }
-        public PlayerScore ExpectedScore { get; set; }
     }
 }

@@ -48,7 +48,7 @@ namespace Carcassone.Core.Tests.Buisness
             Assert.Single(room.ScoreCalculator.Castles);
             Assert.True(room.ScoreCalculator.Castles[0].IsFinished);
 
-            var score = room.GetPlayerScore(gamePlayer);
+            var score = room.GetPlayerScore(gamePlayer.Name);
             Assert.Equal(4, score.CastlesScore);
             Assert.Equal(3, score.CornfieldsScore);
 
@@ -98,7 +98,7 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove2);
 
-            var score = room.GetPlayerScore(owner1);
+            var score = room.GetPlayerScore(owner1.Name);
             Assert.Equal(0, score.CornfieldsScore);
 
             Assert.Single(room.ScoreCalculator.Castles);

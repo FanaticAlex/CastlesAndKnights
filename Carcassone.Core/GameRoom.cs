@@ -80,8 +80,8 @@ namespace Carcassone.Core
             PlayersPool = room.PlayersPool;
         }
 
-        public PlayerScore GetPlayerScore(GamePlayer player) =>
-            ScoreCalculator.GetPlayerScore(player, PlayersPool, CardsPool);
+        public PlayerScore GetPlayerScore(string playerName) =>
+            ScoreCalculator.GetPlayerScore(playerName, PlayersPool, CardsPool);
 
         public Card GetCard(string cardId) => CardsPool.GetCard(cardId);
 

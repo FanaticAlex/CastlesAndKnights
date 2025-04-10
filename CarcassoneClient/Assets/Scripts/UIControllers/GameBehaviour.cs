@@ -301,12 +301,6 @@ namespace Assets.Scripts
             // дальше устанавливаем part
             var currentCard = _room.CardsPool.CurrentCard;
             var parts = _preliminaryGameRoomWithNewCard.GetAvailableParts(currentCard.Id);
-            if (!parts.Any())
-            {
-                Logger.Info("Card has no free parts!");
-                OnEndTurnButonClick();
-                return;
-            }
 
             var currentPlayer = GameManager.Instance.Room.PlayersPool.GetCurrentPlayer();
             if (currentPlayer.СhipList.Count == 0)

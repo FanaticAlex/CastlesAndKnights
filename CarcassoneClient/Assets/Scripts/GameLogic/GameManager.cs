@@ -54,7 +54,7 @@ namespace Assets.Scripts
             var gamePLayers = Room.PlayersPool.GamePlayers.Where(p => p.PlayerType != PlayerType.NetworkPlayer);
             foreach (var gamePlayer in gamePLayers)
             {
-                var score = Room.GetPlayerScore(gamePlayer);
+                var score = Room.GetPlayerScore(gamePlayer.Name);
                 var player = Players.Single(p => p.Name == gamePlayer.Name);
 
                 player.GamesCount = player.GamesCount + 1;

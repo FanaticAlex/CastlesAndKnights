@@ -44,7 +44,7 @@ namespace Carcassone.Web.Blazor.Services
             var playedGame = new PlayedGame();
             foreach (var player in room.PlayersPool.GamePlayers)
             {
-                var playerScore = room.GetPlayerScore(player);
+                var playerScore = room.GetPlayerScore(player.Name);
                 var playerResult = new PlayerFinalResult()
                 {
                     CarcassoneUser = await _userManager.FindByNameAsync(player.Name),

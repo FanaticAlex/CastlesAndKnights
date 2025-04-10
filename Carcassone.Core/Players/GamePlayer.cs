@@ -1,4 +1,5 @@
-﻿using Carcassone.Core.Cards;
+﻿using Carcassone.Core.Calculation;
+using Carcassone.Core.Cards;
 using Carcassone.Core.Fields;
 using System;
 using System.Collections.Generic;
@@ -68,37 +69,51 @@ namespace Carcassone.Core.Players
             IsAIProcessing = true;
 
             // where to put a card
-            var availableFields = room.GetFieldsToPutCard(card.Id).Select(item => item.Id).ToList();
-            List<GameMove> possibleMoves = GetPossibleMoves(room.Save(), card.Id, availableFields);
-            GameMove bestMove = GetBestMove(possibleMoves);
+            List<GameMove> possibleMoves = GetPossibleMoves(room, card.Id);
+            GameMove bestMove = GetBestMove(room, possibleMoves);
             room.MakeMove(bestMove);
 
             IsAIProcessing = false;
         }
 
-        private GameMove GetBestMove(List<GameMove> possibleMoves)
+        private GameMove GetBestMove(GameRoom room, List<GameMove> possibleMoves)
         {
             if (possibleMoves == null || possibleMoves.Count == 0)
                 throw new Exception("AI cant make a move. No possible moves.");
 
+            var dic = new Dictionary<GameMove, PlayerScore>();
+            foreach (GameMove move in possibleMoves)
+            {
+                var gameCopy1 = new GameRoom();
+                gameCopy1.Load(room.Save());
+                gameCopy1.MakeMove(move);
+                var expectedScore = gameCopy1.GetPlayerScore(this.Name);
+                dic.Add(move, expectedScore);
+            }
+
+
             // ходы возвращающие фишки
-            var maxReturnChips = possibleMoves.Max(m => (m.ExpectedScore.ChipCount - СhipList.Count));
-            var returnChipsMove = possibleMoves
-                .Where(m => (m.ExpectedScore.ChipCount - СhipList.Count) == maxReturnChips)
-                .FirstOrDefault();
-            if (maxReturnChips > 0 && returnChipsMove != null)
-                return returnChipsMove;
+            var maxReturnChips = dic.Max(item => (item.Value.ChipCount - СhipList.Count));
+            var returnChipsMoves = dic
+                .Where(item => (item.Value.ChipCount - СhipList.Count) == maxReturnChips);
+            if (maxReturnChips > 0 && returnChipsMoves.Count() > 0)
+            {
+                return returnChipsMoves.FirstOrDefault().Key;
+            }
 
             // ходы дающие наибольшее число очков
-            var maxScore = possibleMoves.Max(m => m.ExpectedScore.GetOverallScore());
-            var bestScoreMove = possibleMoves
-                .Where(m => m.ExpectedScore.GetOverallScore() == maxScore)
+            var maxScore = dic.Max(item => item.Value.GetOverallScore());
+            var bestScoreMove = dic
+                .Where(item => item.Value.GetOverallScore() == maxScore)
                 .First();
-            return bestScoreMove;
+            return bestScoreMove.Key;
         }
 
-        private List<GameMove> GetPossibleMoves(string roomSave, string cardId, List<string> fieldIds)
+        private List<GameMove> GetPossibleMoves(GameRoom room, string cardId)
         {
+            var roomSave = room.Save();
+            var availableFields = room.GetFieldsToPutCard(cardId).Select(item => item.Id).ToList();
+
             var maxCalculations = 10;
             switch (PlayerType)
             {
@@ -108,57 +123,34 @@ namespace Carcassone.Core.Players
             }
 
             var possibleMoves = new List<GameMove>();
-            foreach (var fieldId in fieldIds)
+            foreach (var fieldId in availableFields)
             {
                 var gameCopy = new GameRoom();
                 gameCopy.Load(roomSave);
                 var card = gameCopy.CardsPool.GetCard(cardId);
                 var field = gameCopy.FieldBoard.GetField(fieldId);
-                if (gameCopy.RotateCardTilFit(field, card))
+                
+                if (!gameCopy.RotateCardTilFit(field, card)) // если карта не подходит
+                    continue;
+
+
+                gameCopy.PutCardInField(card, field); 
+
+                // ходы с установкой фишки
+                var partNames = gameCopy.GetAvailableParts(card.Id).Select(p => p.PartName).ToList();
+                partNames.Add(null); // ход без установки фишки
+                foreach (var partName in partNames)
                 {
-                    gameCopy.PutCardInField(card, field);
-
-                    // where to put a chip
-                    var partNames = gameCopy.GetAvailableParts(card.Id).Select(p => p.PartName);
-                    foreach (var partName in partNames)
-                    {
-                        var gameCopy1 = new GameRoom();
-                        gameCopy1.Load(gameCopy.Save());
-                        var card1 = gameCopy1.CardsPool.GetCard(cardId);
-                        var field1 = gameCopy1.FieldBoard.GetField(fieldId);
-                        var part1 = card1.GetPart(partName);
-                        if (!part1.IsPartOfOwnedObject && СhipList.Count > 0)
-                        {
-                            gameCopy1.PutChipInCard(part1, Name);
-                            gameCopy1.ScoreCalculator.CloseObjectsAndReturnChips(gameCopy1.PlayersPool, gameCopy1.CardsPool);
-                        }
-
-                        var gameMove1 = new GameMove()
-                        {
-                            CardId = card.Id,
-                            CardRotation = card.RotationsCount,
-                            PlayerName = Name,
-                            FieldId = field.Id,
-                            PartName = part1.PartName,
-                            ExpectedScore = gameCopy1.GetPlayerScore(this)
-                        };
-
-                        possibleMoves.Add(gameMove1);
-                    }
-
-                    gameCopy.ScoreCalculator.CloseObjectsAndReturnChips(gameCopy.PlayersPool, gameCopy.CardsPool);
-                    // ход без установки фишки
-                    var gameMove = new GameMove()
+                    var gameMove1 = new GameMove()
                     {
                         CardId = card.Id,
                         CardRotation = card.RotationsCount,
                         PlayerName = Name,
                         FieldId = field.Id,
-                        PartName = null,
-                        ExpectedScore =  gameCopy.GetPlayerScore(this)
+                        PartName = partName,
                     };
 
-                    possibleMoves.Add(gameMove);
+                    possibleMoves.Add(gameMove1);
                 }
 
                 if (possibleMoves.Count >= maxCalculations) // ограничение по времени выполнения

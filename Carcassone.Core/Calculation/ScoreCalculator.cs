@@ -125,10 +125,10 @@ namespace Carcassone.Core.Calculation
                 cornfield.RecalculatePartsOwner(cardPool);
         }
 
-        public PlayerScore GetPlayerScore(GamePlayer player, GamePlayersPool plyersPool, CardPool cardPool)
+        public PlayerScore GetPlayerScore(string playerName, GamePlayersPool plyersPool, CardPool cardPool)
         {
             var scores = GetPlayersScores(plyersPool, cardPool);
-            var score = scores.Single(s => s.PlayerName == player.Name);
+            var score = scores.Single(s => s.PlayerName == playerName);
             return score;
         }
 

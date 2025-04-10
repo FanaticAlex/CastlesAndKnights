@@ -76,7 +76,7 @@ namespace Assets.Scripts
                 var textComp = GameObject.Find("DetailedPlayerScore").GetComponent<TMP_Text>();
                 textComp.text = "Player score " + playerName + "\r\n";
                 var gamePlayer = GameManager.Instance.Room.PlayersPool.GetPlayer(playerName);
-                var score = GameManager.Instance.Room.GetPlayerScore(gamePlayer);
+                var score = GameManager.Instance.Room.GetPlayerScore(gamePlayer.Name);
                 textComp.text += $"Castles: {score.CastlesScore}({score.CastlesCount})\r\n";
                 textComp.text += $"Fields: {score.CornfieldsScore}({score.CornfieldsCount})\r\n";
                 textComp.text += $"Churches: {score.ChurchesScore}({score.ChurchesCount})\r\n";
@@ -92,7 +92,7 @@ namespace Assets.Scripts
         public void UpdateScore()
         {
             var players = GameManager.Instance.Room.PlayersPool.GamePlayers;
-            var scores = players.Select(p => GameManager.Instance.Room.GetPlayerScore(p));
+            var scores = players.Select(p => GameManager.Instance.Room.GetPlayerScore(p.Name));
 
             foreach (var score in scores)
             {
@@ -125,7 +125,7 @@ namespace Assets.Scripts
             _finalScoreUIPanel.SetActive(true);
 
             var players = GameManager.Instance.Room.PlayersPool.GamePlayers;
-            var scores = players.Select(p => GameManager.Instance.Room.GetPlayerScore(p));
+            var scores = players.Select(p => GameManager.Instance.Room.GetPlayerScore(p.Name));
 
             var winnerScore = scores.Max(x => SumScore(x));
             var winners = scores
