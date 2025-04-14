@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Carcassone.Core.Calculation.Objects
 {
-    public class Cornfield : IMultipartObject
+    public class Cornfield : IMultipartObject, IOwnedObject
     {
         public List<CardBorder> OpenBorders = new List<CardBorder>();
 

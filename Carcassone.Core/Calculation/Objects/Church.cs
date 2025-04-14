@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Carcassone.Core.Calculation.Objects
 {
-    public class Church : IClosingObject
+    public class Church : IClosingObject, IOwnedObject
     {
         public bool IsFinished => (ChurchCardIds.Count == 9);
         public string BaseChurchPartId { get; set; }
@@ -48,7 +48,7 @@ namespace Carcassone.Core.Calculation.Objects
             }
         }
 
-        public string GetOwnerName(CardPool cardPool)
+        public string? GetOwnerName(CardPool cardPool)
         {
             var baseChurchPart = cardPool.GetPart(BaseChurchPartId);
             return baseChurchPart.Chip?.OwnerName ?? baseChurchPart.Flag?.OwnerName;

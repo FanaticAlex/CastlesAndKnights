@@ -137,17 +137,22 @@ namespace Carcassone.Core.Calculation
             var scores = new List<PlayerScore>();
             foreach (var player in plyersPool.GamePlayers)
             {
+                var playerCastles = Castles.Where(castle => castle.IsPlayerOwner(player, cardPool));
+                var playerRoads = Roads.Where(road => road.IsPlayerOwner(player, cardPool));
+                var playerCornfields = Cornfields.Where(cornfield => cornfield.IsPlayerOwner(player, cardPool));
+                var playerChurches = Churches.Where(church => church.IsPlayerOwner(player, cardPool));
+
                 var score = new PlayerScore()
                 {
                     PlayerName = player.Name,
-                    ChurchesScore = GetChurchesScore(player, cardPool),
-                    CornfieldsScore = GetCornfieldsScore(player, cardPool),
-                    RoadsScore = GetRoadsScore(player, cardPool),
-                    CastlesScore = GetCastlesScore(player, cardPool),
-                    CastlesCount = GetCastles(player, cardPool).Count(),
-                    RoadsCount = GetRoads(player, cardPool).Count(),
-                    CornfieldsCount = GetCornfields(player, cardPool).Count(),
-                    ChurchesCount = GetChurches(player, cardPool).Count(),
+                    ChurchesScore = playerChurches.ToList().Sum(church => church.GetPoints()),
+                    ChurchesCount = playerChurches.ToList().Count(),
+                    CornfieldsScore = playerCornfields.ToList().Sum(cornfield => cornfield.GetPoints(Castles, cardPool)),
+                    CornfieldsCount = playerCornfields.ToList().Count(),
+                    RoadsScore = playerRoads.ToList().Sum(road => road.GetPoints(cardPool)),
+                    RoadsCount = playerRoads.ToList().Count(),
+                    CastlesScore = playerCastles.ToList().Sum(castle => castle.GetPoints(cardPool)),
+                    CastlesCount = playerCastles.ToList().Count(),
                     ChipCount = player.СhipList.Count
                 };
                 scores.Add(score);
@@ -207,47 +212,6 @@ namespace Carcassone.Core.Calculation
             }
 
             return mergedObject;
-        }
-
-        private IEnumerable<Castle> GetCastles(GamePlayer player, CardPool cardPool)
-        {
-            return Castles.Where(castle => castle.IsPlayerOwner(player, cardPool));
-        }
-
-        private IEnumerable<Road> GetRoads(GamePlayer player, CardPool cardPool)
-        {
-            return Roads.Where(road => road.IsPlayerOwner(player, cardPool));
-        }
-
-        private IEnumerable<Cornfield> GetCornfields(GamePlayer player, CardPool cardPool)
-        {
-            return Cornfields.Where(cornfield => cornfield.IsPlayerOwner(player, cardPool));
-        }
-
-        private IEnumerable<Church> GetChurches(GamePlayer player, CardPool cardPool)
-        {
-            return Churches.Where(church => church.IsPlayerOwner(player, cardPool));
-        }
-
-
-        private int GetCastlesScore(GamePlayer player, CardPool cardPool)
-        {
-            return GetCastles(player, cardPool).ToList().Sum(castle => castle.GetPoints(cardPool));
-        }
-
-        private int GetRoadsScore(GamePlayer player, CardPool cardPool)
-        {
-            return GetRoads(player, cardPool).ToList().Sum(road => road.GetPoints(cardPool));
-        }
-
-        private int GetCornfieldsScore(GamePlayer player, CardPool cardPool)
-        {
-            return GetCornfields(player, cardPool).ToList().Sum(cornfield => cornfield.GetPoints(Castles, cardPool));
-        }
-
-        private int GetChurchesScore(GamePlayer player, CardPool cardPool)
-        {
-            return GetChurches(player, cardPool).ToList().Sum(church => church.GetPoints());
         }
     }
 }

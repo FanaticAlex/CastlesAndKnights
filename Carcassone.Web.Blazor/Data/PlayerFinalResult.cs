@@ -9,8 +9,8 @@ namespace Carcassone.Web.Blazor.Data
     {
         [Key]
         public string Id { get; set; }
-        public CarcassoneUser CarcassoneUser { get; set; }
-        public int FinalScore { get; set; }
-        public int Rank { get; set; }
+        public CarcassoneUser? CarcassoneUser { get; set; }
+        public required int FinalScore { get; set; }
+        public required int Rank { get; set; }
     }
 }

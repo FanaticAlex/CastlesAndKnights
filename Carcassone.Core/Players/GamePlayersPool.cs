@@ -13,13 +13,13 @@ namespace Carcassone.Core.Players
         private static readonly int _playerChipCount = 7;
 
         public List<GamePlayer> GamePlayers { get; } = new List<GamePlayer>();
-        public int CurrentPlayerIndex { get; set; } = -1;
+        public int CurrentPlayerIndex { get; set; }
 
         public GamePlayersPool()
         {
         }
 
-        public GamePlayer? GetPlayer(string playerName)
+        public GamePlayer GetPlayer(string playerName)
         {
             var playerItems = GamePlayers.Where(_player => _player.Name == playerName);
             if (playerItems.Count() == 0)
@@ -31,7 +31,7 @@ namespace Carcassone.Core.Players
             return playerItems.Single();
         }
 
-        public GamePlayer? GetCurrentPlayer() => (CurrentPlayerIndex == -1) ? null : GamePlayers[CurrentPlayerIndex];
+        public GamePlayer GetCurrentPlayer() => GamePlayers[CurrentPlayerIndex];
 
         public GamePlayer GetHumanPlayer(GameRoom room, string playerName)
         {

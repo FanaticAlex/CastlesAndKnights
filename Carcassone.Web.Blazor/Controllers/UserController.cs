@@ -48,63 +48,9 @@ namespace CarcassoneServer.Web.Blazor.Controllers
         [HttpGet]
         [Route("login/{login}/{password}")]
         [AllowAnonymous]
-        public async Task<ActionResult<TokenResult>> Login(string login, [DataType(DataType.Password)] string password)
+        public ActionResult<TokenResult> Login(string login, [DataType(DataType.Password)] string password)
         {
-            /* var user = await _userManager.FindByNameAsync(login);
-            if (user?.UserName == null)
-                return Unauthorized();
-
-            if (!await _userManager.CheckPasswordAsync(user, password))
-                return Unauthorized();
-
-            var userRoles = await _userManager.GetRolesAsync(user);
-            var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-
-            foreach (var userRole in userRoles)
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-
-            var secret = _configuration["JWT:Secret"];
-            if (secret == null)
-                return Problem();
-
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddHours(3),
-                claims: null,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
-
-            return Ok(new TokenResult
-            {
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
-                Expiration = token.ValidTo
-            });*/
-
-            return null;
-        }
-
-        [HttpGet]
-        [Route("")]
-        public async Task<ActionResult<List<PlayedGame>>> GetPlayedGameList()
-        {
-            _logger.LogInformation("GetScoreByUser Called");
-            var user = await _userManager.GetUserAsync(User);
-            return _service.GetPlayedGameList(user).ToList();
-        }
-
-        [HttpGet]
-        [Route("user/{userName}/info")]
-        public async Task<ActionResult<PlayerInfo>> GetUserStatisticAsync(string userName)
-        {
-            _logger.LogInformation("GetUserStatistic Called");
-            var user = await _userManager.GetUserAsync(User);
-            return _service.GetUserInfo(user);
+            throw new NotImplementedException();
         }
     }
 }

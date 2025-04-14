@@ -49,7 +49,7 @@ namespace Assets.Scripts.Menu
             foreach (Transform child in listUi.transform)
                 GameObject.Destroy(child.gameObject);
 
-            var pos = 0;
+            //var pos = 0;
             /*var roomsList = GameManager.Instance.RoomService.GetRoomsIds();
             foreach (var roomId in roomsList)
             {

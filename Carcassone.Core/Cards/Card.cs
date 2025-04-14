@@ -55,26 +55,30 @@ namespace Carcassone.Core.Cards
 
         public static string GetCardId(string cardType, int cardNumber) => $"{cardType}({cardNumber})";
 
-        public ObjectPart? GetPart(string partName)
+        public ObjectPart GetPart(string partName)
         {
             var list = Parts.Where(p => p.PartName == partName);
-            if (list.Count() == 0) return null;
+            if (list.Count() == 0) throw new NullReferenceException("Part not found: " + partName);
 
             if (list.Count() > 1) throw new InvalidOperationException("Не может быть два обьекта с одним названием");
 
             return list.Single();
         }
 
-        public void AddBorderToPart(Field field, FieldSide side, ObjectPart part, FieldBoard fieldBoard)
+        public void AddBorderToPart(Field field, FieldSide side, ObjectPart? part, FieldBoard fieldBoard)
         {
+            if (part == null) throw new ArgumentNullException(nameof(part));
+
             var rotatedSide = RotateSide(side, RotationsCount);
             var castleBorder = new CardBorder(field, fieldBoard.GetNeighbour(field, rotatedSide), this);
             part.Borders.Add(castleBorder);
         }
 
         public void AddCornfieldSplittedBorder(
-            Field field, FieldSide side, CornfieldSide sidePart, ObjectPart part, FieldBoard fieldBoard)
+            Field field, FieldSide side, CornfieldSide sidePart, ObjectPart? part, FieldBoard fieldBoard)
         {
+            if (part == null) throw new ArgumentNullException(nameof(part));
+
             if ((side == FieldSide.top && sidePart != CornfieldSide.side_0 && sidePart != CornfieldSide.side_7) ||
                 (side == FieldSide.right && sidePart != CornfieldSide.side_1 && sidePart != CornfieldSide.side_2) ||
                 (side == FieldSide.bottom && sidePart != CornfieldSide.side_3 && sidePart != CornfieldSide.side_4) ||

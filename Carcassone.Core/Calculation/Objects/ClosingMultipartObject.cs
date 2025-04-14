@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Carcassone.Core.Calculation.Objects
 {
-    public class ClosingMultipartObject: IClosingObject, IMultipartObject
+    public class ClosingMultipartObject: IClosingObject, IMultipartObject, IOwnedObject
     {
         public List<CardBorder> OpenBorders = new List<CardBorder>();
 

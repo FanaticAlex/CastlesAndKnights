@@ -21,7 +21,6 @@ namespace Carcassone.Core.Tests.Players
             var ai_1 = pool.GetPlayer(player1Name);
             Assert.Equal(PlayerType.AI_Easy, ai_1.PlayerType);
 
-            pool.MoveToNextPlayer();
             Assert.True("bob" == pool.GetCurrentPlayer().Name, "Неверно установлен первый игрок");
 
             pool.MoveToNextPlayer();

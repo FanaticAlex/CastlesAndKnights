@@ -46,7 +46,6 @@ namespace Carcassone.Core.Cards
             AddBorderToPart(field, FieldSide.bottom, GetPart(roadPartName), fieldBoard);
 
             AddCornfieldSplittedBorder(field, FieldSide.bottom, CornfieldSide.side_3, GetPart(cornfieldPartName), fieldBoard);
-
             AddCornfieldSplittedBorder(field, FieldSide.bottom, CornfieldSide.side_4, GetPart(cornfieldPart1Name), fieldBoard);
         }
     }

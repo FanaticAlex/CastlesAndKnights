@@ -149,20 +149,25 @@ namespace Carcassone.Core
         public void PutChipInCard(ObjectPart partObject, string playerName)
         {
             var player = PlayersPool.GetPlayer(playerName);
+            if (player == null) throw new NullReferenceException("Player not found: " + playerName);
+
             partObject.Chip = player.TakeChip();
         }
 
         public void MakeMove(GameMove gameMove)
         {
+            if (gameMove == null) throw new ArgumentNullException("Move obj can not be null");
+
             var field = FieldBoard.GetField(gameMove.FieldId);
             var card = CardsPool.GetCard(gameMove.CardId);
             card.RotateCard(gameMove.CardRotation);
             PutCardInField(card, field);
 
-            var player = PlayersPool.GetPlayer(gameMove.PlayerName);
-            var part = card.GetPart(gameMove.PartName);
-            if ((player != null) && (part != null))
-              PutChipInCard(part, gameMove.PlayerName);
+            if ((gameMove.PlayerName != null) && (gameMove.PartName != null))
+            {
+                var part = card.GetPart(gameMove.PartName);
+                PutChipInCard(part, gameMove.PlayerName);
+            }
 
             Moves.Add(gameMove);
 
@@ -178,7 +183,8 @@ namespace Carcassone.Core
                 Finished?.Invoke(this, null);
             }
 
-            PlayersPool.MoveToNextPlayer();
+            if (gameMove.PlayerName != null)
+                PlayersPool.MoveToNextPlayer();
         }
 
         public List<Card> GetActiveCards()

@@ -133,7 +133,7 @@ namespace Carcassone.Core.Tests.Buisness
             
             var gameMove0 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = owner1.Name,
                 CardId = "FFWF(0)",
                 CardRotation = 1,
                 FieldId = $"{0}_{0}",
@@ -143,7 +143,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = owner1.Name,
                 CardId = "FWWF(0)",
                 CardRotation = 0,
                 FieldId = $"{-1}_{0}",
@@ -153,7 +153,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = owner1.Name,
                 CardId = "WFWF(0)",
                 CardRotation = 0,
                 FieldId = $"{-1}_{-1}",
@@ -185,14 +185,26 @@ namespace Carcassone.Core.Tests.Buisness
             var name = "owner1";
             var owner1 = room.PlayersPool.AddPlayer(name, PlayerType.Human);
 
-            var card1 = room.GetCard("FFWF(0)");
-            var field1 = room.FieldBoard.GetField("0_0");
-            room.PutCardInField(card1, field1);
+            var gameMove1 = new GameMove()
+            {
+                PlayerName = owner1.Name,
+                CardId = "FFWF(0)",
+                CardRotation = 0,
+                FieldId = $"{0}_{0}",
+                PartName = null
+            };
+            room.MakeMove(gameMove1);
 
-            var card2 = room.GetCard("FWRW(0)");
-            card2.RotateCard();
-            var field2 = room.FieldBoard.GetField("0_-1");
-            room.PutCardInField(card2, field2);
+
+            var gameMove2 = new GameMove()
+            {
+                PlayerName = owner1.Name,
+                CardId = "FWRW(0)",
+                CardRotation = 1,
+                FieldId = $"{0}_{-1}",
+                PartName = null
+            };
+            room.MakeMove(gameMove2);
 
             Assert.Equal(2, room.ScoreCalculator.Cornfields.Count);
 
@@ -220,15 +232,25 @@ namespace Carcassone.Core.Tests.Buisness
             var name = "owner1";
             var owner1 = room.PlayersPool.AddPlayer(name, PlayerType.Human);
 
-            var card1 = room.GetCard("FFWF(0)");
-            var field1 = room.FieldBoard.GetField("0_0");
-            room.PutCardInField(card1, field1);
+            var gameMove1 = new GameMove()
+            {
+                PlayerName = owner1.Name,
+                CardId = "FFWF(0)",
+                CardRotation = 0,
+                FieldId = $"{0}_{0}",
+                PartName = null
+            };
+            room.MakeMove(gameMove1);
 
-            var card2 = room.GetCard("FWWF(0)");
-            card2.RotateCard();
-            card2.RotateCard();
-            var field2 = room.FieldBoard.GetField("0_-1");
-            room.PutCardInField(card2, field2);
+            var gameMove2 = new GameMove()
+            {
+                PlayerName = owner1.Name,
+                CardId = "FWWF(0)",
+                CardRotation = 2,
+                FieldId = $"{0}_{-1}",
+                PartName = null
+            };
+            room.MakeMove(gameMove2);
 
             Assert.Single(room.ScoreCalculator.Cornfields);
 
@@ -255,17 +277,27 @@ namespace Carcassone.Core.Tests.Buisness
             var name = "owner1";
             var owner1 = room.PlayersPool.AddPlayer(name, PlayerType.Human);
 
-            var card1 = room.GetCard("RRWW(0)");
-            var field1 = room.FieldBoard.GetField("0_0");
-            room.PutCardInField(card1, field1);
+            var gameMove1 = new GameMove()
+            {
+                PlayerName = owner1.Name,
+                CardId = "RRWW(0)",
+                CardRotation = 0,
+                FieldId = $"{0}_{0}",
+                PartName = "Cornfield_1"
+            };
+            room.MakeMove(gameMove1);
 
-            var part = card1.GetPart("Cornfield_1");
-            room.PutChipInCard(part, owner1.Name);
+            var gameMove2 = new GameMove()
+            {
+                PlayerName = owner1.Name,
+                CardId = "WCWR(0)",
+                CardRotation = 0,
+                FieldId = $"{0}_{-1}",
+                PartName = null
+            };
+            room.MakeMove(gameMove2);
 
             var card2 = room.GetCard("WCWR(0)");
-            var field2 = room.FieldBoard.GetField("0_-1");
-            room.PutCardInField(card2, field2);
-
             Assert.Equal(true, card2.GetPart("Cornfield_0").IsPartOfOwnedObject);
 
             Assert.Equal(5, room.ScoreCalculator.Cornfields.Count);
