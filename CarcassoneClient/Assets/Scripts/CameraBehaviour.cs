@@ -27,12 +27,12 @@ public class CameraBehaviour : MonoBehaviour {
         FreeZoom();
     }
 
-    public void MoveCameraAtCard(GameObject cardGO) // приближаем к карте
+    public void MoveCameraAtCard(Vector3 cardPosition) // приближаем к карте
     {
         State = TouchState.ZoomToCard;
         _animationPosition = 0;
         _startPosition = Camera.main.transform.position;
-        _endPosition = new Vector3(cardGO.transform.position.x, cardGO.transform.position.y, Camera.main.transform.position.z);
+        _endPosition = new Vector3(cardPosition.x, cardPosition.y, Camera.main.transform.position.z);
     }
 
     private Vector3 _startPosition;

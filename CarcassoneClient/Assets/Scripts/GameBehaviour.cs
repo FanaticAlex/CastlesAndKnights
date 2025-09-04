@@ -88,7 +88,7 @@ namespace Assets.Scripts
             var currentPlayer = _room.PlayersPool.GetCurrentPlayer();
             _scoreController.UpdateCurrentPlayerMark(currentPlayer);
 
-            _cameraBehaviour.MoveCameraAtCard(_cardsController.GetCardGO(card.Id)); // анимация
+            _cameraBehaviour.MoveCameraAtCard(_cardsController.GetCardPosition(card.Id)); // анимация
 
             Logger.Info("Время отрисовки хода: " + (DateTime.Now - time).TotalSeconds);
         }
@@ -277,16 +277,12 @@ namespace Assets.Scripts
         private void SetCardGOTransform(Field field, Card card_Temp)
         {
             var fieldGO = _fieldsController.GetFieldGameObject(field.Id);
-            var cardGO = _cardsController.GetCardGO(card_Temp.Id);
-            cardGO.transform.position = fieldGO.transform.position + new Vector3(0, 0, -1);
-            cardGO.transform.rotation = Quaternion.Euler(0, 0, -90 * card_Temp.RotationsCount);
+            _cardsController.SetCardPositionRotation(card_Temp.Id, fieldGO.transform.position, card_Temp.RotationsCount);
         }
 
         private void ResetCardGOTransform(Card card)
         {
-            var cardGO = _cardsController.GetCardGO(card.Id);
-            cardGO.transform.position = new Vector3(0, 0, 0);
-            cardGO.transform.rotation = Quaternion.Euler(0, 0, 0);
+            _cardsController.SetCardPositionRotation(card.Id, new Vector3(0, 0, 0), 0);
         }
 
         private GameObject GetHitedGameObject()
@@ -310,7 +306,7 @@ namespace Assets.Scripts
                 return;
             }
 
-            _cameraBehaviour.MoveCameraAtCard(_cardsController.GetCardGO(currentCard.Id)); // анимация
+            _cameraBehaviour.MoveCameraAtCard(_cardsController.GetCardPosition(currentCard.Id)); // анимация
 
             SelectPartPanel.SetActive(true);
             InitToggles(parts);

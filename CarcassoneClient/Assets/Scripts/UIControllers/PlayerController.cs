@@ -31,8 +31,8 @@ namespace Assets.Scripts
             }
             
             var markObject = _playerToMarkers[player.Name];
-            var cardGO = _cardsController.GetCardGO(card.Id);
-            markObject.transform.position = cardGO.transform.position + new Vector3(0, 0, -1.3f);
+            var cardPosition = _cardsController.GetCardPosition(card.Id);
+            markObject.transform.position = cardPosition + new Vector3(0, 0, -1.3f);
         }
     }
 }

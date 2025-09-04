@@ -68,6 +68,7 @@
     <Compile Include="Assets\Scripts\GameLogic\IOnlineGame.cs" />
     <Compile Include="Assets\Scripts\UIControllers\CardsController.cs" />
     <Compile Include="Assets\Scripts\CameraBehaviour.cs" />
+    <Compile Include="Assets\Scripts\GameBehaviour.cs" />
     <Compile Include="Assets\Scripts\GameLogic\GameManager.cs" />
     <Compile Include="Assets\Scripts\UIControllers\PartsController.cs" />
     <Compile Include="Assets\Scripts\PlayersManager.cs" />
@@ -82,7 +83,6 @@
     <Compile Include="Assets\Scripts\Menu\MenuManager.cs" />
     <Compile Include="Assets\Scripts\Timer.cs" />
     <Compile Include="Assets\Scripts\Auth\Prefs.cs" />
-    <Compile Include="Assets\Scripts\UIControllers\GameBehaviour.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuWindows\ChooseRoomWindow.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuWindows\BaseMenuWindow.cs" />
     <Compile Include="Assets\Scripts\UIControllers\ScoreController.cs" />
