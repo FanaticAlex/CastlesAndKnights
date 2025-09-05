@@ -21,7 +21,7 @@ public class MenuManager : MonoBehaviour
     void Awake()
     {
         menuManagers = GetMenuControllers();
-        SwitchToMenuPanel(MenuWindowType.Profile);
+        SwitchToMenuPanel(MenuWindowType.Activities);
         GameObject.Find("Version").GetComponent<TMP_Text>().text = "Version : " + Application.version;
     }
 

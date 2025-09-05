@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9b31341a565a9e949be343d0765ea12d
+guid: 0262084a7b345b143b9a8b6051073311
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -912057568744356971
-    second: button-big-hilited_0
+      213: 2461914879955017530
+    second: Border1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,23 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: button-big-hilited_0
+      name: Border1_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 200
-        height: 72
+        width: 786
+        height: 586
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 7, y: 7, z: 7, w: 7}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 59349483978b753f0800000000000000
-      internalID: -912057568744356971
+      spriteID: a3f97fe1a8a7a2220800000000000000
+      internalID: 2461914879955017530
       vertices: []
       indices: 
       edges: []
@@ -151,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 7671d594a6ef9cd498a20ad86f7d0a3c
     internalID: 0
     vertices: []
     indices: 
@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Border1_0: 2461914879955017530
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -64,6 +64,7 @@
     <Compile Include="Assets\Scripts\SoundEffectsPlayer.cs" />
     <Compile Include="Assets\Scripts\MusicPlayer.cs" />
     <Compile Include="Assets\Scripts\Logger.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuWindows\ActivitiesMenuSectionScript.cs" />
     <Compile Include="Assets\Scripts\UIControllers\FieldsController.cs" />
     <Compile Include="Assets\Scripts\GameLogic\IOnlineGame.cs" />
     <Compile Include="Assets\Scripts\UIControllers\CardsController.cs" />
@@ -79,7 +80,6 @@
     <Compile Include="Assets\Scripts\Menu\MenuWindows\LoginWindow.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuWindows\SetupRoomWindow.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuWindows\TutorialWindow.cs" />
-    <Compile Include="Assets\Scripts\Menu\MenuWindows\ProfileWindow.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuManager.cs" />
     <Compile Include="Assets\Scripts\Timer.cs" />
     <Compile Include="Assets\Scripts\Auth\Prefs.cs" />

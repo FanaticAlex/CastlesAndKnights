@@ -26,7 +26,7 @@ namespace Assets.Scripts.Menu
 
         public void OnBackBtnClick()
         {
-            MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
+            MenuManager.SwitchToMenuPanel(MenuWindowType.Activities);
         }
 
         public void OnConnectToGameBtnClick(string roomId)

@@ -26,7 +26,7 @@ namespace Assets.Scripts.Menu
 
                 //GameManager.Instance.SetOnlineMode();
                 //GameManager.Instance.RoomService.Login(data);
-                MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
+                MenuManager.SwitchToMenuPanel(MenuWindowType.Activities);
             }
             catch
             {
@@ -47,7 +47,7 @@ namespace Assets.Scripts.Menu
             {
                 if (TryLogin(login, password, out string errorMessage))
                 {
-                    MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
+                    MenuManager.SwitchToMenuPanel(MenuWindowType.Activities);
                     break;
                 }
 

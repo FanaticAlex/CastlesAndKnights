@@ -44,7 +44,12 @@ namespace Assets.Scripts
 
         public void ResetSetPositionRotation(string cardId)
         {
+            var cardGO = _cardsToGameObject[cardId];
+            cardGO.transform.position = new Vector3(0, 0, 0);
+            cardGO.transform.rotation = Quaternion.Euler(0, 0, 0);
 
+            var border = _cardsBordersToGameObject[cardId];
+            border.transform.position = new Vector3(0, 0, 0);
         }
 
         public void SetCardPositionRotation(string cardId, Vector3 position, int rotationsCount)

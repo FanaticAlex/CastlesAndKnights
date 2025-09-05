@@ -3,7 +3,7 @@
     public enum MenuWindowType
     {
         Login,
-        Profile,
+        Activities,
         ChooseRoom,
         SetupRoom,
         EditPlayers,

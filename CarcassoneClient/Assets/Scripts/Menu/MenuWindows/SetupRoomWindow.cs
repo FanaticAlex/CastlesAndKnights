@@ -110,7 +110,7 @@ namespace Assets.Scripts.Menu
         public void OnBackBtnClick()
         {
             GetSoundEffectsPlayer().PlayClick();
-            MenuManager.SwitchToMenuPanel(MenuWindowType.Profile);
+            MenuManager.SwitchToMenuPanel(MenuWindowType.Activities);
         }
 
         public void OnDeletePlayerBtn(string name)
