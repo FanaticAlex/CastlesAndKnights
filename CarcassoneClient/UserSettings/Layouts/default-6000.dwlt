@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 1117
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Hierarchy
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 100}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 127
+  controlID: 130
   draggingID: 0
 --- !u!114 &6
 MonoBehaviour:
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
-  controlID: 71
+  controlID: 46
   draggingID: 0
 --- !u!114 &7
 MonoBehaviour:
@@ -352,7 +352,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Resources/Cards/River
+    - Assets/Resources
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -362,16 +362,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 96
   m_LastFolders:
-  - Assets/Resources/Cards/River
+  - Assets/Resources
   m_LastFoldersGridSize: 96
   m_LastProjectPath: D:\Projects\Carcassone\CarcassoneClient
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 5a8b0000
-    m_LastClickedID: 35674
-    m_ExpandedIDs: 000000007c7400007e740000
+    m_SelectedIDs: 7e740000
+    m_LastClickedID: 29822
+    m_ExpandedIDs: 00000000f4720000f6720000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -400,7 +400,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000007c7400007e740000
+    m_ExpandedIDs: 00000000f4720000f6720000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -499,7 +499,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 7aceffff7cd6ffff28fbffff
+      m_ExpandedIDs: 4aeffefff8f2feff320dfffff00fffffe828ffffcc44ffff9046ffff0a6affffda6cfffff289ffff70a9ffffd0a9ffffd8abffffccb0ffff84b7ffff5eb8ffff7cbdffff88d6ffff1cd9ffff9cdbffffaaddffff28fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -991,9 +991,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: 100.337395, y: 306.6921, z: -2.3800123}
+    m_Target: {x: 139.32594, y: 207.46179, z: -8.062509}
     speed: 2
-    m_Value: {x: 100.337395, y: 306.6921, z: -2.3800123}
+    m_Value: {x: 139.32594, y: 207.46179, z: -8.062509}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1043,9 +1043,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 402.78067
+    m_Target: 520.6883
     speed: 2
-    m_Value: 402.78067
+    m_Value: 520.6883
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1143,7 +1143,7 @@ MonoBehaviour:
     m_VAllowExceedBaseRangeMax: 1
     m_ScaleWithWindow: 0
     m_HSlider: 0
-    m_VSlider: 0
+    m_VSlider: 1
     m_IgnoreScrollWheelUntilClicked: 0
     m_EnableMouseInput: 1
     m_EnableSliderZoomHorizontal: 0
@@ -1156,18 +1156,18 @@ MonoBehaviour:
       y: 21
       width: 659
       height: 517
-    m_Scale: {x: 0.5949367, y: 0.5949367}
-    m_Translation: {x: 329.5, y: 258.5}
+    m_Scale: {x: 0.8852928, y: 0.8852928}
+    m_Translation: {x: 329.5, y: 214.73846}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -553.8404
-      y: -434.5
-      width: 1107.6808
-      height: 869
+      x: -372.19324
+      y: -242.56207
+      width: 744.3865
+      height: 583.98755
     m_MinimalGUI: 1
   m_defaultScale: 0.5949367
   m_LastWindowPixelSize: {x: 659, y: 538}

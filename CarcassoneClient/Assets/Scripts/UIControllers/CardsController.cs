@@ -4,6 +4,7 @@ using Carcassone.Core.Fields;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +23,7 @@ namespace Assets.Scripts
 
         public PartsController _partsController;
         public GameObject currentCardImageGO;
+        public ParticleSystem placeCardEffect;
 
         private GameRoom _room;
 
@@ -32,6 +34,7 @@ namespace Assets.Scripts
 
             CreateCardsView();
             currentCardImageGO = GameObject.Find("CurrentCardImage");
+            placeCardEffect = GameObject.Find("PlaceCardEffectParticles").GetComponent<ParticleSystem>();
         }
 
         public Vector3 GetCardPosition(string cardId)
@@ -39,13 +42,22 @@ namespace Assets.Scripts
             return _cardsToGameObject[cardId].transform.position;
         }
 
+        public void ResetSetPositionRotation(string cardId)
+        {
+
+        }
+
         public void SetCardPositionRotation(string cardId, Vector3 position, int rotationsCount)
         {
             var cardGO = _cardsToGameObject[cardId];
             cardGO.transform.position = position + new Vector3(0, 0, -1);
             cardGO.transform.rotation = Quaternion.Euler(0, 0, -90 * rotationsCount);
+            
             var border = _cardsBordersToGameObject[cardId];
             border.transform.position = position + new Vector3(0, 0, -1.1f);
+
+            placeCardEffect.transform.position = position;
+            placeCardEffect.Play();
         }
 
         /// <summary>

@@ -282,7 +282,7 @@ namespace Assets.Scripts
 
         private void ResetCardGOTransform(Card card)
         {
-            _cardsController.SetCardPositionRotation(card.Id, new Vector3(0, 0, 0), 0);
+            _cardsController.ResetSetPositionRotation(card.Id);
         }
 
         private GameObject GetHitedGameObject()
