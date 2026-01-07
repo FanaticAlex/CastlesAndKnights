@@ -1,11 +1,11 @@
 ﻿namespace Carcassone.Core.Tiles
 {
-    public class CastlePart : ObjectPart
+    public class CityPart : ObjectPart
     {
-        public CastlePart(string partName, string cardId, bool isThereShield = false)
+        public CityPart(string partName, string cardId, bool isThereShield = false)
             : base(partName, cardId)
         {
-            PartType = "Castle";
+            PartType = "City";
             IsThereShield = isThereShield;
         }
 

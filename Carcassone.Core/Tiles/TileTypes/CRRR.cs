@@ -23,7 +23,7 @@ namespace Carcassone.Core.Tiles
 
         public CRRR(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var castlePart = new CastlePart(castlePartName, Id);
+            var castlePart = new CityPart(castlePartName, Id);
             Parts.Add(castlePart);
 
             var roadPart0 = new RoadPart(roadPart0Name, Id);
@@ -35,13 +35,13 @@ namespace Carcassone.Core.Tiles
             var roadPart2 = new RoadPart(roadPart2Name, Id);
             Parts.Add(roadPart2);
 
-            var cornfieldPart0 = new CornfieldPart(cornfieldPart0Name, Id);
+            var cornfieldPart0 = new FieldPart(cornfieldPart0Name, Id);
             Parts.Add(cornfieldPart0);
 
-            var cornfieldPart1 = new CornfieldPart(cornfieldPart1Name, Id);
+            var cornfieldPart1 = new FieldPart(cornfieldPart1Name, Id);
             Parts.Add(cornfieldPart1);
 
-            var cornfieldPart2 = new CornfieldPart(cornfieldPart2Name, Id);
+            var cornfieldPart2 = new FieldPart(cornfieldPart2Name, Id);
             Parts.Add(cornfieldPart2);
 
 

@@ -16,7 +16,7 @@ namespace Carcassone.Core.Extensions.River.Cards
 
         public WFFF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, Id);
+            var cornfieldPart1 = new FieldPart(cornfieldPartName, Id);
             Parts.Add(cornfieldPart1);
         }
 

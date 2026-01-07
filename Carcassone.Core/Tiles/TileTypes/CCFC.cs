@@ -19,10 +19,10 @@ namespace Carcassone.Core.Tiles
 
         public CCFC(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var castlePart = new CastlePart(castlePartName, Id);
+            var castlePart = new CityPart(castlePartName, Id);
             Parts.Add(castlePart);
 
-            var cornfieldPart = new CornfieldPart(cornfieldPartName, Id);
+            var cornfieldPart = new FieldPart(cornfieldPartName, Id);
             Parts.Add(cornfieldPart);
 
             FieldToCastleParts.Add(cornfieldPart.PartId, new List<string>() { castlePart.PartId });

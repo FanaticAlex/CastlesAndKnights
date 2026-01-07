@@ -21,16 +21,16 @@ namespace Carcassone.Core.Tiles
 
         public CRFR(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var castlePart = new CastlePart(castlePartName, Id);
+            var castlePart = new CityPart(castlePartName, Id);
             Parts.Add(castlePart);
 
             var roadPart = new RoadPart(roadPartName, Id);
             Parts.Add(roadPart);
 
-            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, Id);
+            var cornfieldPart1 = new FieldPart(cornfieldPartName, Id);
             Parts.Add(cornfieldPart1);
 
-            var cornfieldPart2 = new CornfieldPart(cornfieldPart1Name, Id);
+            var cornfieldPart2 = new FieldPart(cornfieldPart1Name, Id);
             Parts.Add(cornfieldPart2);
 
 

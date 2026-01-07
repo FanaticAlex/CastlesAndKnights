@@ -24,16 +24,16 @@ namespace Carcassone.Core.Extensions.River.Cards
             var churchPart = new ChurchPart(churchPartName, Id);
             Parts.Add(churchPart);
 
-            var cornfieldPart1 = new CornfieldPart(cornfieldPart0Name, Id);
+            var cornfieldPart1 = new FieldPart(cornfieldPart0Name, Id);
             Parts.Add(cornfieldPart1);
 
-            var cornfieldPart2 = new CornfieldPart(cornfieldPart1Name, Id);
+            var cornfieldPart2 = new FieldPart(cornfieldPart1Name, Id);
             Parts.Add(cornfieldPart2);
 
             var roadPart = new RoadPart(roadPartName, Id);
             Parts.Add(roadPart);
 
-            var cornfieldPart3 = new CornfieldPart(cornfieldPart2Name, Id);
+            var cornfieldPart3 = new FieldPart(cornfieldPart2Name, Id);
             Parts.Add(cornfieldPart3);
         }
 

@@ -23,7 +23,7 @@ namespace Carcassone.Core.Tiles
             var churchPart = new ChurchPart(churchPartName, Id);
             Parts.Add(churchPart);
 
-            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, Id);
+            var cornfieldPart1 = new FieldPart(cornfieldPartName, Id);
             Parts.Add(cornfieldPart1);
         }
 

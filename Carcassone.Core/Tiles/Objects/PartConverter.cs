@@ -24,9 +24,9 @@ namespace Carcassone.Core.Tiles.Objects
 
             switch (partType)
             {
-                case "Castle": return part.ToObject<CastlePart>();
+                case "City": return part.ToObject<CityPart>();
                 case "Church": return part.ToObject<ChurchPart>();
-                case "Cornfield": return part.ToObject<CornfieldPart>();
+                case "Field": return part.ToObject<FieldPart>();
                 case "Road": return part.ToObject<RoadPart>();
             }
 

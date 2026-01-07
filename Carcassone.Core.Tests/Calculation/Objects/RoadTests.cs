@@ -34,7 +34,7 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove0);
                 
-            var roads = room.ScoreCalculator.Roads;
+            var roads = room.ScoreCalculator.RoadsManager.Objects;
             Assert.Equal(4, roads.Count);
             foreach (var road in roads)
             {
@@ -103,7 +103,7 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove3);
 
-            var roads = room.ScoreCalculator.Roads;
+            var roads = room.ScoreCalculator.RoadsManager.Objects;
             Assert.Single(roads);
             var road = roads.Single();
             Assert.Equal(8, road.GetPoints(room.CardsPool));
@@ -151,7 +151,7 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove1);
 
-            var roads = room.ScoreCalculator.Roads;
+            var roads = room.ScoreCalculator.RoadsManager.Objects;
             Assert.Equal(3, roads.Count);
             var road = roads.First(r => r.IsFinished);
             Assert.Equal(4, road.GetPoints(room.CardsPool));

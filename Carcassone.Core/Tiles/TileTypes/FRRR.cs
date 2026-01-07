@@ -30,13 +30,13 @@ namespace Carcassone.Core.Tiles
             var roadPart4 = new RoadPart(roadPart2Name, Id);
             Parts.Add(roadPart4);
 
-            var cornfieldPart1 = new CornfieldPart(cornfieldPartName, Id);
+            var cornfieldPart1 = new FieldPart(cornfieldPartName, Id);
             Parts.Add(cornfieldPart1);
 
-            var cornfieldPart2 = new CornfieldPart(cornfieldPart1Name, Id);
+            var cornfieldPart2 = new FieldPart(cornfieldPart1Name, Id);
             Parts.Add(cornfieldPart2);
 
-            var cornfieldPart3 = new CornfieldPart(cornfieldPart2Name, Id);
+            var cornfieldPart3 = new FieldPart(cornfieldPart2Name, Id);
             Parts.Add(cornfieldPart3);
         }
 

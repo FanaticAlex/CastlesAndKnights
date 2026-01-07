@@ -12,7 +12,7 @@
     {
         public CCFC_1(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            ((CastlePart)GetPart(castlePartName)).IsThereShield = true;
+            ((CityPart)GetPart(castlePartName)).IsThereShield = true;
         }
     }
 }

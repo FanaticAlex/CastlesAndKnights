@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Carcassone.Core.Tests.Buisness
 {
-    public class CastleTests
+    public class CitiesTests
     {
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Carcassone.Core.Tests.Buisness
         ///       W
         /// </summary>
         [Fact]
-        public void CalculationTest_NotClosedCastle()
+        public void CalculationTest_NotClosedCity()
         {
             var room = new GameRoom();
             var name = "bob";
@@ -49,7 +49,7 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove1);
 
-            var castles = room.ScoreCalculator.Castles;
+            var castles = room.ScoreCalculator.CastlesManager.Objects;
             Assert.True(castles.Count == 2);
             Assert.False(castles[0].IsFinished);
             Assert.False(castles[1].IsFinished);
@@ -75,7 +75,7 @@ namespace Carcassone.Core.Tests.Buisness
         ///       F
         /// </summary>
         [Fact]
-        public void CalculationTest_DoubleCastle()
+        public void CalculationTest_DoubleCity()
         {
             var room = new GameRoom();
             var name = "bob";
@@ -101,7 +101,7 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove1);
 
-            var castles = room.ScoreCalculator.Castles;
+            var castles = room.ScoreCalculator.CastlesManager.Objects;
             Assert.Single(castles);
             var castle = castles.Single();
             Assert.Equal(4, castle.GetPoints(room.CardsPool));
@@ -136,7 +136,7 @@ namespace Carcassone.Core.Tests.Buisness
         ///       F
         /// </summary>
         [Fact]
-        public void CalculationTest_TwoRiverCastles()
+        public void CalculationTest_TwoRiverCities()
         {
             var room = new GameRoom();
             var name = "bob";
@@ -182,7 +182,7 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove3);
 
-            var castles = room.ScoreCalculator.Castles;
+            var castles = room.ScoreCalculator.CastlesManager.Objects;
             Assert.Equal(2, castles.Count);
 
             var castle = castles[1];

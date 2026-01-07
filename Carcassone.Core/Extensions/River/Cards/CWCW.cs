@@ -21,16 +21,16 @@ namespace Carcassone.Core.Extensions.River.Cards
 
         public CWCW(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var castlePart0 = new CastlePart(castlePart0Name, Id);
+            var castlePart0 = new CityPart(castlePart0Name, Id);
             Parts.Add(castlePart0);
 
-            var castlePart1 = new CastlePart(castlePart1Name, Id);
+            var castlePart1 = new CityPart(castlePart1Name, Id);
             Parts.Add(castlePart1);
 
-            var cornfieldPart0 = new CornfieldPart(cornfieldPart0Name, Id);
+            var cornfieldPart0 = new FieldPart(cornfieldPart0Name, Id);
             Parts.Add(cornfieldPart0);
 
-            var cornfieldPart1 = new CornfieldPart(cornfieldPart1Name, Id);
+            var cornfieldPart1 = new FieldPart(cornfieldPart1Name, Id);
             Parts.Add(cornfieldPart1);
 
 

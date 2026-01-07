@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Carcassone.Core.Calculation.Objects
 {
-    public class Cornfield : IMultipartObject, IOwnedObject
+    public class Farm : IMultipartObject, IOwnedObject
     {
         public List<CardBorder> OpenBorders = new List<CardBorder>();
 
@@ -82,18 +82,18 @@ namespace Carcassone.Core.Calculation.Objects
             return false;
         }
 
-        public int GetPoints(List<Castle> allCastles, Stack cardPool)
+        public int GetPoints(List<City> allCastles, Stack cardPool)
         {
             // считаем все подключенные карты,
             // за каждый подключенный и законченный замок 3 очка
             // за незаконченный очков нет
 
-            var connectedCastles = new List<Castle>();
+            var connectedCastles = new List<City>();
             var parts = PartsIds.Select(id => cardPool.GetPart(id));
             foreach (var cornfieldPart in parts)
             {
                 var card = cardPool.GetCard(cornfieldPart.CardId);
-                var connectedCastleParts = card.GetConnectedCastleParts((CornfieldPart)cornfieldPart);
+                var connectedCastleParts = card.GetConnectedCastleParts((FieldPart)cornfieldPart);
 
                 foreach (var castle in allCastles)
                 {

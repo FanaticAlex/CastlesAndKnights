@@ -8,15 +8,64 @@ using System.Linq;
 
 namespace Carcassone.Core.Calculation
 {
+    public class MultipartObjectsManager<T> where T : IMultipartObject
+    {
+        public List<T> Objects { get; set; } = new List<T>();
+
+        public void ProcessPart(ObjectPart part, Stack cardPool)
+        {
+            var objectsToMerge = GetObjectsToConnectWithPart(part, Objects);
+            var merged = Merge(part, objectsToMerge, cardPool);
+            objectsToMerge.ForEach(c => Objects.Remove(c));
+            Objects.Add(merged);
+        }
+
+        /// <summary>
+        /// Если часть присоединяется к нескольким обьектам то их можно мержить
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="part"></param>
+        /// <param name="objects"></param>
+        /// <returns></returns>
+        protected List<T> GetObjectsToConnectWithPart(ObjectPart part, List<T> objects) 
+        {
+            var objectsToMerge = new List<T>();
+            foreach (var gameObject in objects)
+            {
+                if (gameObject.CanConnect(part))
+                    objectsToMerge.Add(gameObject);
+            }
+
+            return objectsToMerge;
+        }
+
+        protected T Merge(ObjectPart connectingPart, IEnumerable<T> objectsToMerge, Stack cardPool)
+        {
+            if (objectsToMerge == null)
+                throw new Exception("Failed to process merge objects. objectsToMerge shouldn't be null");
+
+            // object contained new part
+            var mergedObject = (T)Activator.CreateInstance(typeof(T));
+            mergedObject.AddPart(connectingPart, cardPool);
+
+            var allMergedParts = objectsToMerge.SelectMany(obj => obj.PartsIds.Select(id => cardPool.GetPart(id)));
+            foreach (var part in allMergedParts)
+                mergedObject.AddPart(part, cardPool);
+
+            return mergedObject;
+        }
+    }
+
     /// <summary>
     /// Считает очки по расположению карт на полях.
     /// </summary>
     public class ScoreCalculator
     {
-        public List<Castle> Castles { get; set; } = new List<Castle>();
-        public List<Road> Roads { get; set; } = new List<Road>();
+        public MultipartObjectsManager<City> CastlesManager { get; set; } = new MultipartObjectsManager<City>();
+        public MultipartObjectsManager<Road> RoadsManager { get; set; } = new MultipartObjectsManager<Road>();
+        public MultipartObjectsManager<Farm> FarmsManager { get; set; } = new MultipartObjectsManager<Farm>();
         public List<Church> Churches { get; set; } = new List<Church>();
-        public List<Cornfield> Cornfields { get; set; } = new List<Cornfield>();
+        
 
         /// <summary>
         /// Добавляет карту и пересчитывает очки.
@@ -31,56 +80,17 @@ namespace Carcassone.Core.Calculation
             // подключаем карту
             foreach (ObjectPart part in card.Parts)
             {
-                if (part is CornfieldPart)
-                    ProcessCornfieldPart(part, cardPool);
+                if (part is FieldPart)
+                    FarmsManager.ProcessPart(part, cardPool);
 
                 if (part is ChurchPart)
                     ProcessChurchPart(part, grid);
 
-                if (part is CastlePart)
-                    ProcessCastlePart(part, cardPool);
+                if (part is CityPart)
+                    CastlesManager.ProcessPart(part, cardPool);
 
                 if (part is RoadPart)
-                    ProcessRoadPart(part, cardPool);
-            }
-        }
-
-        private void ProcessRoadPart(ObjectPart part, Stack cardPool)
-        {
-            List<Road> roadsToMerge = GetObjectsToMerge(part, Roads);
-
-            var needMerge = (roadsToMerge.Count != 0);
-            if (!needMerge)
-            {
-                var newRoad = new Road();
-                newRoad.AddPart(part, cardPool);
-                Roads.Add(newRoad);
-            }
-            else
-            {
-                var merged = Merge<Road>(part, roadsToMerge, cardPool);
-                roadsToMerge.ForEach(r => Roads.Remove(r));
-                Roads.Add(merged);
-            }
-        }
-
-        private void ProcessCastlePart(ObjectPart part, Stack cardPool)
-        {
-            List<Castle> castlesToMerge = GetObjectsToMerge(part, Castles);
-
-            var needMerge = (castlesToMerge.Count != 0);
-            if (!needMerge)
-            {
-                var newCastle = new Castle();
-                newCastle.AddPart(part, cardPool);
-                Castles.Add(newCastle);
-
-            }
-            else
-            {
-                var merged = Merge<Castle>(part, castlesToMerge, cardPool);
-                castlesToMerge.ForEach(c => Castles.Remove(c));
-                Castles.Add(merged);
+                    RoadsManager.ProcessPart(part, cardPool);
             }
         }
 
@@ -90,38 +100,18 @@ namespace Carcassone.Core.Calculation
             Churches.Add(church);
         }
 
-        private void ProcessCornfieldPart(ObjectPart part, Stack cardPool)
-        {
-            List<Cornfield> cornfieldsToMerge = GetObjectsToMerge(part, Cornfields);
-
-            var needMerge = (cornfieldsToMerge.Count != 0);
-            if (!needMerge)
-            {
-                var newCornfield = new Cornfield();
-                newCornfield.AddPart(part, cardPool);
-                Cornfields.Add(newCornfield);
-
-            }
-            else
-            {
-                var merged = Merge<Cornfield>(part, cornfieldsToMerge, cardPool);
-                cornfieldsToMerge.ForEach(c => Cornfields.Remove(c));
-                Cornfields.Add(merged);
-            }
-        }
-
         public void CloseObjectsAndReturnChips(GamePlayersPool playersPool, Stack cardPool)
         {
             foreach (var church in Churches)
                 church.TryToClose(playersPool, cardPool);
 
-            foreach (var castle in Castles)
+            foreach (var castle in CastlesManager.Objects)
                 castle.TryToClose(playersPool, cardPool);
 
-            foreach (var road in Roads)
+            foreach (var road in RoadsManager.Objects)
                 road.TryToClose(playersPool, cardPool);
 
-            foreach (var cornfield in Cornfields)
+            foreach (var cornfield in FarmsManager.Objects)
                 cornfield.RecalculatePartsOwner(cardPool);
         }
 
@@ -137,9 +127,9 @@ namespace Carcassone.Core.Calculation
             var scores = new List<PlayerScore>();
             foreach (var player in plyersPool.GamePlayers)
             {
-                var playerCastles = Castles.Where(castle => castle.IsPlayerOwner(player, cardPool));
-                var playerRoads = Roads.Where(road => road.IsPlayerOwner(player, cardPool));
-                var playerCornfields = Cornfields.Where(cornfield => cornfield.IsPlayerOwner(player, cardPool));
+                var playerCastles = CastlesManager.Objects.Where(castle => castle.IsPlayerOwner(player, cardPool));
+                var playerRoads = RoadsManager.Objects.Where(road => road.IsPlayerOwner(player, cardPool));
+                var playerCornfields = FarmsManager.Objects.Where(cornfield => cornfield.IsPlayerOwner(player, cardPool));
                 var playerChurches = Churches.Where(church => church.IsPlayerOwner(player, cardPool));
 
                 var score = new PlayerScore()
@@ -147,7 +137,7 @@ namespace Carcassone.Core.Calculation
                     PlayerName = player.Name,
                     ChurchesScore = playerChurches.ToList().Sum(church => church.GetPoints()),
                     ChurchesCount = playerChurches.ToList().Count(),
-                    CornfieldsScore = playerCornfields.ToList().Sum(cornfield => cornfield.GetPoints(Castles, cardPool)),
+                    CornfieldsScore = playerCornfields.ToList().Sum(cornfield => cornfield.GetPoints(CastlesManager.Objects, cardPool)),
                     CornfieldsCount = playerCornfields.ToList().Count(),
                     RoadsScore = playerRoads.ToList().Sum(road => road.GetPoints(cardPool)),
                     RoadsCount = playerRoads.ToList().Count(),
@@ -171,48 +161,7 @@ namespace Carcassone.Core.Calculation
             return scores;
         }
 
-        /// <summary>
-        /// Если часть присоединяется к нескольким обьектам то их можно мержить
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="part"></param>
-        /// <param name="objects"></param>
-        /// <returns></returns>
-        private List<T> GetObjectsToMerge<T>(ObjectPart part, List<T> objects) where T : IMultipartObject
-        {
-            var objectsToMerge = new List<T>();
-            foreach (var gameObject in objects)
-            {
-                if (gameObject.CanConnect(part))
-                    objectsToMerge.Add(gameObject);
-            }
-
-            return objectsToMerge;
-        }
-
-        private T Merge<T>(
-            ObjectPart connectingPart,
-            IEnumerable<IMultipartObject> objectsToMerge,
-            Stack cardPool)
-            where T : IMultipartObject
-        {
-            if (objectsToMerge == null)
-                return default;
-
-            if (!objectsToMerge.Any())
-                return default;
-
-            var mergedObject = (T)Activator.CreateInstance(typeof(T));
-            mergedObject.AddPart(connectingPart, cardPool);
-
-            foreach (var gameObject in objectsToMerge)
-            {
-                foreach (var part in gameObject.PartsIds.Select(id => cardPool.GetPart(id)))
-                    mergedObject.AddPart(part, cardPool);
-            }
-
-            return mergedObject;
-        }
+        
     }
 }
 

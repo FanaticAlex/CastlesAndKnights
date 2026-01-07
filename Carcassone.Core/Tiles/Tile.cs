@@ -95,7 +95,7 @@ namespace Carcassone.Core.Tiles
             part.Borders.Add(cornfield1Border0);
         }
 
-        public List<string> GetConnectedCastleParts(CornfieldPart part)
+        public List<string> GetConnectedCastleParts(FieldPart part)
         {
             var castleParts = new List<string>();
             if (FieldToCastleParts.Keys.Contains(part.PartId))
