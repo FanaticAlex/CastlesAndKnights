@@ -1,5 +1,5 @@
-﻿using Carcassone.Core.Cards;
-using Carcassone.Core.Fields;
+﻿using Carcassone.Core.Tiles;
+using Carcassone.Core.Board;
 
 namespace Carcassone.Core.Extensions.River.Cards
 {
@@ -10,7 +10,7 @@ namespace Carcassone.Core.Extensions.River.Cards
     ///   |       |
     ///       F
     /// </summary>
-    public class WFFF : Card
+    public class WFFF : Tile
     {
         protected string cornfieldPartName = "Cornfield_0";
 
@@ -20,13 +20,13 @@ namespace Carcassone.Core.Extensions.River.Cards
             Parts.Add(cornfieldPart1);
         }
 
-        public override void ConnectField(Field field, FieldBoard fieldBoard)
+        public override void ConnectField(Cell field, Grid grid)
         {
-            AddCornfieldSplittedBorder(field, FieldSide.top, CornfieldSide.side_0, GetPart(cornfieldPartName), fieldBoard);
-            AddCornfieldSplittedBorder(field, FieldSide.top, CornfieldSide.side_7, GetPart(cornfieldPartName), fieldBoard);
-            AddBorderToPart(field, FieldSide.right, GetPart(cornfieldPartName), fieldBoard);
-            AddBorderToPart(field, FieldSide.bottom, GetPart(cornfieldPartName), fieldBoard);
-            AddBorderToPart(field, FieldSide.left, GetPart(cornfieldPartName), fieldBoard);
+            AddCornfieldSplittedBorder(field, CellSide.top, CornfieldSide.side_0, GetPart(cornfieldPartName), grid);
+            AddCornfieldSplittedBorder(field, CellSide.top, CornfieldSide.side_7, GetPart(cornfieldPartName), grid);
+            AddBorderToPart(field, CellSide.right, GetPart(cornfieldPartName), grid);
+            AddBorderToPart(field, CellSide.bottom, GetPart(cornfieldPartName), grid);
+            AddBorderToPart(field, CellSide.left, GetPart(cornfieldPartName), grid);
         }
     }
 }

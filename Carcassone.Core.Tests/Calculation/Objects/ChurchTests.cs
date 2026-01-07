@@ -1,4 +1,4 @@
-﻿using Carcassone.Core.Cards;
+﻿using Carcassone.Core.Tiles;
 using Carcassone.Core.Players;
 using Xunit;
 

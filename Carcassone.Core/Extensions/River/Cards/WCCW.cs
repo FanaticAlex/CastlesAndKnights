@@ -1,5 +1,5 @@
-﻿using Carcassone.Core.Cards;
-using Carcassone.Core.Fields;
+﻿using Carcassone.Core.Tiles;
+using Carcassone.Core.Board;
 using System.Collections.Generic;
 
 namespace Carcassone.Core.Extensions.River.Cards
@@ -11,7 +11,7 @@ namespace Carcassone.Core.Extensions.River.Cards
     ///   |/      |
     ///       C
     /// </summary>
-    public class WCCW : Card
+    public class WCCW : Tile
     {
         protected string cornfieldPart0Name = "Cornfield_0";
         protected string cornfieldPart1Name = "Cornfield_1";
@@ -31,16 +31,16 @@ namespace Carcassone.Core.Extensions.River.Cards
             FieldToCastleParts.Add(cornfieldPart0.PartId, new List<string>() { castlePart1.PartId });
         }
 
-        public override void ConnectField(Field field, FieldBoard fieldBoard)
+        public override void ConnectField(Cell field, Grid grid)
         {
-            AddBorderToPart(field, FieldSide.right, GetPart(castlePart1Name), fieldBoard);
-            AddBorderToPart(field, FieldSide.bottom, GetPart(castlePart1Name), fieldBoard);
+            AddBorderToPart(field, CellSide.right, GetPart(castlePart1Name), grid);
+            AddBorderToPart(field, CellSide.bottom, GetPart(castlePart1Name), grid);
 
-            AddCornfieldSplittedBorder(field, FieldSide.top, CornfieldSide.side_0, GetPart(cornfieldPart0Name), fieldBoard);
-            AddCornfieldSplittedBorder(field, FieldSide.left, CornfieldSide.side_5, GetPart(cornfieldPart0Name), fieldBoard);
+            AddCornfieldSplittedBorder(field, CellSide.top, CornfieldSide.side_0, GetPart(cornfieldPart0Name), grid);
+            AddCornfieldSplittedBorder(field, CellSide.left, CornfieldSide.side_5, GetPart(cornfieldPart0Name), grid);
 
-            AddCornfieldSplittedBorder(field, FieldSide.top, CornfieldSide.side_7, GetPart(cornfieldPart1Name), fieldBoard);
-            AddCornfieldSplittedBorder(field, FieldSide.left, CornfieldSide.side_6, GetPart(cornfieldPart1Name), fieldBoard);
+            AddCornfieldSplittedBorder(field, CellSide.top, CornfieldSide.side_7, GetPart(cornfieldPart1Name), grid);
+            AddCornfieldSplittedBorder(field, CellSide.left, CornfieldSide.side_6, GetPart(cornfieldPart1Name), grid);
         }
     }
 }

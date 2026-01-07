@@ -1,4 +1,4 @@
-﻿using Carcassone.Core.Cards;
+﻿using Carcassone.Core.Tiles;
 using Carcassone.Core.Players;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace Carcassone.Core.Calculation.Objects
 
         public List<string> PartsIds { get; set; } = new List<string>();
 
-        public void AddPart(ObjectPart part, CardPool cardPool)
+        public void AddPart(ObjectPart part, Stack cardPool)
         {
             PartsIds.Add(part.PartId);
             OpenBorders.AddRange(part.Borders);
@@ -40,7 +40,7 @@ namespace Carcassone.Core.Calculation.Objects
 
         public bool IsFinished { get; set; }
 
-        public void TryToClose(GamePlayersPool playersPool, CardPool cardPool)
+        public void TryToClose(GamePlayersPool playersPool, Stack cardPool)
         {
             IsFinished = IsClosed();
             if (IsFinished)
@@ -72,12 +72,12 @@ namespace Carcassone.Core.Calculation.Objects
             return isClosed1;
         }
 
-        public bool IsPlayerOwner(GamePlayer player, CardPool cardPool)
+        public bool IsPlayerOwner(GamePlayer player, Stack cardPool)
         {
             return GetOwnersNames(cardPool).Contains(player.Name);
         }
 
-        private List<string> GetOwnersNames(CardPool cardPool)
+        private List<string> GetOwnersNames(Stack cardPool)
         {
             // если объект закончен считаем по флагам владельцев
             // если не закончен считаем количество фишек
@@ -89,7 +89,7 @@ namespace Carcassone.Core.Calculation.Objects
                 return GetOwnersByChips(cardPool);
         }
 
-        private List<string> GetOwnersByFlags(CardPool cardPool)
+        private List<string> GetOwnersByFlags(Stack cardPool)
         {
             var parts = PartsIds.Select(id => cardPool.GetPart(id));
             return parts
@@ -98,7 +98,7 @@ namespace Carcassone.Core.Calculation.Objects
                 .Distinct().ToList();
         }
 
-        private List<string> GetOwnersByChips(CardPool cardPool)
+        private List<string> GetOwnersByChips(Stack cardPool)
         {
             // количество фишек у каждого игрока
             var ownersToChipCount = new Dictionary<string, int>();

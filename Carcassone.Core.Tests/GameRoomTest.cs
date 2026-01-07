@@ -1,6 +1,6 @@
-using Carcassone.Core.Cards;
+using Carcassone.Core.Tiles;
 using Carcassone.Core.Extensions;
-using Carcassone.Core.Fields;
+using Carcassone.Core.Board;
 using Carcassone.Core.Players;
 using Xunit;
 
@@ -42,19 +42,19 @@ namespace Carcassone.Core.Tests.Room
         public void GetCardsRemainInPoolTest()
         {
             var room = new GameRoom();
-            Assert.Equal(82, room.CardsPool.CardsDeck.Count);
+            Assert.Equal(82, room.CardsPool.GetRemainTiles().Count);
         }
 
         [Fact]
         public void SaveLoadTest()
         {
             var room = new GameRoom();
-            Assert.Single(room.FieldBoard.Fields);
-            room.FieldBoard.Fields[0].CardName = "CCCC";
+            Assert.Single(room.GameGrid.Cells);
+            room.GameGrid.Cells[0].CardName = "CCCC";
             var save = room.Save();
             room.Load(save);
-            Assert.Single(room.FieldBoard.Fields);
-            Assert.Equal("CCCC", room.FieldBoard.Fields[0].CardName);
+            Assert.Single(room.GameGrid.Cells);
+            Assert.Equal("CCCC", room.GameGrid.Cells[0].CardName);
         }
     }
 }

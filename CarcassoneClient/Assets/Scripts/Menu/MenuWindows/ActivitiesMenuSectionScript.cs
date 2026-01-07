@@ -6,9 +6,6 @@ using UnityEngine;
 
 namespace Assets.Scripts.Menu
 {
-    /// <summary>
-    /// Контроллер окна информации об игроке
-    /// </summary>
     internal class ActivitiesMenuSectionScript : BaseMenuWindow
     {
         public override void Enable()

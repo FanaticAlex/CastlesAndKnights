@@ -1,4 +1,4 @@
-﻿using Carcassone.Core.Cards;
+﻿using Carcassone.Core.Tiles;
 using System.Collections.Generic;
 
 namespace Carcassone.Core.Calculation.Objects
@@ -8,6 +8,6 @@ namespace Carcassone.Core.Calculation.Objects
         public List<string> PartsIds { get; set; }
 
         bool CanConnect(ObjectPart part);
-        void AddPart(ObjectPart part, CardPool cardPool);
+        void AddPart(ObjectPart part, Stack cardPool);
     }
 }

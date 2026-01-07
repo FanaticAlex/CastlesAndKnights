@@ -1,4 +1,4 @@
-﻿using Carcassone.Core.Cards;
+﻿using Carcassone.Core.Tiles;
 using Carcassone.Core.Players;
 using Newtonsoft.Json;
 using System;
@@ -13,19 +13,19 @@ namespace Carcassone.Core.Calculation.Objects
 
         public List<string> PartsIds { get; set; } = new List<string>();
 
-        public bool IsPlayerOwner(GamePlayer player, CardPool cardPool)
+        public bool IsPlayerOwner(GamePlayer player, Stack cardPool)
         {
             return GetOwnersNames(cardPool).Contains(player.Name);
         }
 
-        public void AddPart(ObjectPart part, CardPool cardPool)
+        public void AddPart(ObjectPart part, Stack cardPool)
         {
             PartsIds.Add(part.PartId);
             OpenBorders.AddRange(part.Borders);
             RecalculatePartsOwner(cardPool);
         }
 
-        public void RecalculatePartsOwner(CardPool cardPool)
+        public void RecalculatePartsOwner(Stack cardPool)
         {
             if (GetOwnersNames(cardPool).Count > 0)
             {
@@ -82,7 +82,7 @@ namespace Carcassone.Core.Calculation.Objects
             return false;
         }
 
-        public int GetPoints(List<Castle> allCastles, CardPool cardPool)
+        public int GetPoints(List<Castle> allCastles, Stack cardPool)
         {
             // считаем все подключенные карты,
             // за каждый подключенный и законченный замок 3 очка
@@ -115,7 +115,7 @@ namespace Carcassone.Core.Calculation.Objects
         }
 
 
-        private List<string> GetOwnersNames(CardPool cardPool)
+        private List<string> GetOwnersNames(Stack cardPool)
         {
             var owners = new List<string>();
             var parts = PartsIds.Select(id => cardPool.GetPart(id));

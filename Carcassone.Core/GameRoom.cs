@@ -1,7 +1,7 @@
 ﻿using Carcassone.Core.Calculation;
-using Carcassone.Core.Cards;
+using Carcassone.Core.Tiles;
 using Carcassone.Core.Extensions;
-using Carcassone.Core.Fields;
+using Carcassone.Core.Board;
 using Carcassone.Core.Players;
 using Newtonsoft.Json;
 using System;
@@ -20,9 +20,9 @@ namespace Carcassone.Core
         public List<GameMove> Moves { get; set; } = new List<GameMove>();
 
         public ExtensionsManager ExtensionsManager { get; set; }
-        public CardPool CardsPool { get; set; }
+        public Stack CardsPool { get; set; }
         public ScoreCalculator ScoreCalculator { get; set; }
-        public FieldBoard FieldBoard { get; set; }
+        public Grid GameGrid { get; set; }
         public GamePlayersPool PlayersPool { get; set; }
 
         public string Id { get; }
@@ -37,9 +37,9 @@ namespace Carcassone.Core
 
             ExtensionsManager = new ExtensionsManager(true);
 
-            CardsPool = new CardPool(ExtensionsManager);
+            CardsPool = new Stack(ExtensionsManager);
             ScoreCalculator = new ScoreCalculator();
-            FieldBoard = new FieldBoard();
+            GameGrid = new Grid();
             PlayersPool = new GamePlayersPool();
         }
 
@@ -52,7 +52,7 @@ namespace Carcassone.Core
 
             // инициализирующий ход
             var firstCard = GetNextCard() ?? throw new Exception("Ошибка. В колоде нет карт!");
-            var firstField = FieldBoard.GetField(0, 0);
+            var firstField = GameGrid.GetField(0, 0);
             var initMove = new GameMove()
             {
                 PlayerName = null,
@@ -76,23 +76,23 @@ namespace Carcassone.Core
             ExtensionsManager = room.ExtensionsManager;
             CardsPool = room.CardsPool;
             ScoreCalculator = room.ScoreCalculator;
-            FieldBoard = room.FieldBoard;
+            GameGrid = room.GameGrid;
             PlayersPool = room.PlayersPool;
         }
 
         public PlayerScore GetPlayerScore(string playerName) =>
             ScoreCalculator.GetPlayerScore(playerName, PlayersPool, CardsPool);
 
-        public Card GetCard(string cardId) => CardsPool.GetCard(cardId);
+        public Tile GetCard(string cardId) => CardsPool.GetCard(cardId);
 
-        public List<Field> GetFieldsToPutCard(string cardId)
+        public List<Cell> GetFieldsToPutCard(string cardId)
         {
-            var list = new List<Field>();
+            var list = new List<Cell>();
             if (cardId == null)
                 return list;
 
             var card = GetCard(cardId);
-            var fields = FieldBoard.GetAvailableFields();
+            var fields = GameGrid.GetAvailableCells();
             foreach (var field in fields)
             {
                 if (CanPutCardInFieldWithRotation(field, card))
@@ -102,13 +102,13 @@ namespace Carcassone.Core
             return list;
         }
 
-        public List<Field> RecalculateNotAvailableFields()
+        public List<Cell> RecalculateNotAvailableFields()
         {
-            var emptyFields = FieldBoard.GetEmptyFields();
+            var emptyFields = GameGrid.GetEmptyFields();
             foreach (var field in emptyFields)
             {
                 var canPut = false;
-                foreach (var card in CardsPool.CardsDeck)
+                foreach (var card in CardsPool.GetRemainTiles())
                 {
                     if (CanPutCardInFieldWithRotation(field, card))
                     {
@@ -121,7 +121,7 @@ namespace Carcassone.Core
                     field.NotAvailable = true;
             }
 
-            return FieldBoard.GetUnavailableFields();
+            return GameGrid.GetUnavailableFields();
         }
 
         public List<ObjectPart> GetAvailableParts(string cardName)
@@ -131,7 +131,7 @@ namespace Carcassone.Core
             return list;
         }
 
-        public void PutCardInField(Card card, Field field)
+        public void PutCardInField(Tile card, Cell field)
         {
             if (card == null)
                 throw new Exception("Card can't be null");
@@ -142,8 +142,8 @@ namespace Carcassone.Core
             if (!CanPutCardInField(field, card))
                 throw new Exception("Card can't be put");
 
-            FieldBoard.PutCard(card, field);
-            ScoreCalculator.AddCard(card, field, FieldBoard, CardsPool);
+            GameGrid.PutCard(card, field);
+            ScoreCalculator.AddCard(card, field, GameGrid, CardsPool);
         }
 
         public void PutChipInCard(ObjectPart partObject, string playerName)
@@ -158,7 +158,7 @@ namespace Carcassone.Core
         {
             if (gameMove == null) throw new ArgumentNullException("Move obj can not be null");
 
-            var field = FieldBoard.GetField(gameMove.FieldId);
+            var field = GameGrid.GetField(gameMove.FieldId);
             var card = CardsPool.GetCard(gameMove.CardId);
             card.RotateCard(gameMove.CardRotation);
             PutCardInField(card, field);
@@ -187,9 +187,9 @@ namespace Carcassone.Core
                 PlayersPool.MoveToNextPlayer();
         }
 
-        public List<Card> GetActiveCards()
+        public List<Tile> GetActiveCards()
         {
-            return FieldBoard.Fields
+            return GameGrid.Cells
                 .Where(f => f.IsContainsCard())
                 .Select(f => CardsPool.GetCard(f.CardName))
                 .ToList();
@@ -203,7 +203,7 @@ namespace Carcassone.Core
                 .ToList();
         }
 
-        private Card? GetNextCard()
+        private Tile? GetNextCard()
         {
             do
             {
@@ -218,11 +218,11 @@ namespace Carcassone.Core
             return null;
         }
 
-        private bool CanPlayCard(Card? card)
+        private bool CanPlayCard(Tile? card)
         {
             if (card == null) return false;
 
-            List<Field> emptyFields = FieldBoard.GetEmptyFields();
+            List<Cell> emptyFields = GameGrid.GetEmptyFields();
             // проверяем можно ли эту карту сыграть, если нет берем следующую
             foreach (var field in emptyFields)
             {
@@ -233,18 +233,18 @@ namespace Carcassone.Core
             return false;
         }
 
-        public bool CanPutCardInField(Field field, Card card)
+        public bool CanPutCardInField(Cell field, Tile card)
         {
             if (field.IsContainsCard()) return false;
 
-            var neighbourTopCardName = FieldBoard.GetNeighbour(field, FieldSide.top)?.CardName;
-            Card? neighbourTopCard = neighbourTopCardName != null ? CardsPool.GetCard(neighbourTopCardName) : null;
-            var neighbourLeftCardName = FieldBoard.GetNeighbour(field, FieldSide.left)?.CardName;
-            Card? neighbourLeftCard = neighbourLeftCardName != null ? CardsPool.GetCard(neighbourLeftCardName) : null;
-            var neighbourBottomCardName = FieldBoard.GetNeighbour(field, FieldSide.bottom)?.CardName;
-            Card? neighbourBottomCard = neighbourBottomCardName != null ? CardsPool.GetCard(neighbourBottomCardName) : null;
-            var neighbourRightCardName = FieldBoard.GetNeighbour(field, FieldSide.right)?.CardName;
-            Card? neighbourRightCard = neighbourRightCardName != null ? CardsPool.GetCard(neighbourRightCardName) : null;
+            var neighbourTopCardName = GameGrid.GetNeighbour(field, CellSide.top)?.CardName;
+            Tile? neighbourTopCard = neighbourTopCardName != null ? CardsPool.GetCard(neighbourTopCardName) : null;
+            var neighbourLeftCardName = GameGrid.GetNeighbour(field, CellSide.left)?.CardName;
+            Tile? neighbourLeftCard = neighbourLeftCardName != null ? CardsPool.GetCard(neighbourLeftCardName) : null;
+            var neighbourBottomCardName = GameGrid.GetNeighbour(field, CellSide.bottom)?.CardName;
+            Tile? neighbourBottomCard = neighbourBottomCardName != null ? CardsPool.GetCard(neighbourBottomCardName) : null;
+            var neighbourRightCardName = GameGrid.GetNeighbour(field, CellSide.right)?.CardName;
+            Tile? neighbourRightCard = neighbourRightCardName != null ? CardsPool.GetCard(neighbourRightCardName) : null;
 
             // если есть граничные карты то границы должны совпадать иначе карту присоединить нельзя
             var isRiverCard = card.Id.Contains("W");
@@ -292,7 +292,7 @@ namespace Carcassone.Core
             return false;
         }
 
-        public bool RotateCardTilFit(Field field, Card card)
+        public bool RotateCardTilFit(Cell field, Tile card)
         {
             for (int i = 0; i < 4; i++) // можно сделать до 4х поворотов 4й - исходное положение (в конце)
             {
@@ -304,7 +304,7 @@ namespace Carcassone.Core
             return false;
         }
 
-        public bool CanPutCardInFieldWithRotation(Field field, Card? card)
+        public bool CanPutCardInFieldWithRotation(Cell field, Tile? card)
         {
             if (field.IsContainsCard()) return false;
 
@@ -312,7 +312,7 @@ namespace Carcassone.Core
 
             // чтобы не поворачивать оригинальную карту поворачиваем копию
             var type = card.GetType();
-            var copy = (Card)Activator.CreateInstance(type, card.CardType, card.CardNumber);
+            var copy = (Tile)Activator.CreateInstance(type, card.CardType, card.CardNumber);
             copy.TopEdgeType = card.TopEdgeType;
             copy.LeftEdgeType = card.LeftEdgeType;
             copy.BottomEdgeType = card.BottomEdgeType;

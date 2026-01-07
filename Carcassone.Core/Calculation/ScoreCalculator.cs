@@ -1,6 +1,6 @@
 ﻿using Carcassone.Core.Calculation.Objects;
-using Carcassone.Core.Cards;
-using Carcassone.Core.Fields;
+using Carcassone.Core.Tiles;
+using Carcassone.Core.Board;
 using Carcassone.Core.Players;
 using System;
 using System.Collections.Generic;
@@ -22,11 +22,11 @@ namespace Carcassone.Core.Calculation
         /// Добавляет карту и пересчитывает очки.
         /// </summary>
         /// <param name="card"></param>
-        public void AddCard(Card card, Field field, FieldBoard fieldBoard, CardPool cardPool)
+        public void AddCard(Tile card, Cell field, Grid grid, Stack cardPool)
         {
             // проверяет подходит ли карта к одной из существующих церквей
             foreach (var church in Churches)
-                church.TryAddCard(card, field, fieldBoard, cardPool);
+                church.TryAddCard(card, field, grid, cardPool);
 
             // подключаем карту
             foreach (ObjectPart part in card.Parts)
@@ -35,7 +35,7 @@ namespace Carcassone.Core.Calculation
                     ProcessCornfieldPart(part, cardPool);
 
                 if (part is ChurchPart)
-                    ProcessChurchPart(part, fieldBoard);
+                    ProcessChurchPart(part, grid);
 
                 if (part is CastlePart)
                     ProcessCastlePart(part, cardPool);
@@ -45,7 +45,7 @@ namespace Carcassone.Core.Calculation
             }
         }
 
-        private void ProcessRoadPart(ObjectPart part, CardPool cardPool)
+        private void ProcessRoadPart(ObjectPart part, Stack cardPool)
         {
             List<Road> roadsToMerge = GetObjectsToMerge(part, Roads);
 
@@ -64,7 +64,7 @@ namespace Carcassone.Core.Calculation
             }
         }
 
-        private void ProcessCastlePart(ObjectPart part, CardPool cardPool)
+        private void ProcessCastlePart(ObjectPart part, Stack cardPool)
         {
             List<Castle> castlesToMerge = GetObjectsToMerge(part, Castles);
 
@@ -84,13 +84,13 @@ namespace Carcassone.Core.Calculation
             }
         }
 
-        private void ProcessChurchPart(ObjectPart part, FieldBoard fieldBoard)
+        private void ProcessChurchPart(ObjectPart part, Grid grid)
         {
-            var church = new Church((ChurchPart)part, fieldBoard);
+            var church = new Church((ChurchPart)part, grid);
             Churches.Add(church);
         }
 
-        private void ProcessCornfieldPart(ObjectPart part, CardPool cardPool)
+        private void ProcessCornfieldPart(ObjectPart part, Stack cardPool)
         {
             List<Cornfield> cornfieldsToMerge = GetObjectsToMerge(part, Cornfields);
 
@@ -110,7 +110,7 @@ namespace Carcassone.Core.Calculation
             }
         }
 
-        public void CloseObjectsAndReturnChips(GamePlayersPool playersPool, CardPool cardPool)
+        public void CloseObjectsAndReturnChips(GamePlayersPool playersPool, Stack cardPool)
         {
             foreach (var church in Churches)
                 church.TryToClose(playersPool, cardPool);
@@ -125,14 +125,14 @@ namespace Carcassone.Core.Calculation
                 cornfield.RecalculatePartsOwner(cardPool);
         }
 
-        public PlayerScore GetPlayerScore(string playerName, GamePlayersPool plyersPool, CardPool cardPool)
+        public PlayerScore GetPlayerScore(string playerName, GamePlayersPool plyersPool, Stack cardPool)
         {
             var scores = GetPlayersScores(plyersPool, cardPool);
             var score = scores.Single(s => s.PlayerName == playerName);
             return score;
         }
 
-        private IEnumerable<PlayerScore> GetPlayersScores(GamePlayersPool plyersPool, CardPool cardPool)
+        private IEnumerable<PlayerScore> GetPlayersScores(GamePlayersPool plyersPool, Stack cardPool)
         {
             var scores = new List<PlayerScore>();
             foreach (var player in plyersPool.GamePlayers)
@@ -193,7 +193,7 @@ namespace Carcassone.Core.Calculation
         private T Merge<T>(
             ObjectPart connectingPart,
             IEnumerable<IMultipartObject> objectsToMerge,
-            CardPool cardPool)
+            Stack cardPool)
             where T : IMultipartObject
         {
             if (objectsToMerge == null)

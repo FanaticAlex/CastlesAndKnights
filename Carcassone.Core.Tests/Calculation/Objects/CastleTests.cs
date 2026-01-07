@@ -1,5 +1,5 @@
 ﻿using Carcassone.Core.Calculation.Objects;
-using Carcassone.Core.Cards;
+using Carcassone.Core.Tiles;
 using Carcassone.Core.Players;
 using System.Linq;
 using Xunit;

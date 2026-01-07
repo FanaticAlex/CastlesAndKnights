@@ -1,6 +1,6 @@
-﻿using Carcassone.Core.Cards;
+﻿using Carcassone.Core.Tiles;
 using Carcassone.Core.Extensions;
-using Carcassone.Core.Fields;
+using Carcassone.Core.Board;
 using System;
 using Xunit;
 
@@ -12,7 +12,7 @@ namespace Carcassone.Core.Tests.Cards
         public void GetCardTest()
         {
             var extensionsManager = new ExtensionsManager(true);
-            var cardPool = new CardPool(extensionsManager);
+            var cardPool = new Stack(extensionsManager);
             var cccc = cardPool.GetCard("CCCC(0)");
             Assert.NotNull(cccc);
         }

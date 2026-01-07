@@ -1,4 +1,4 @@
-﻿using Carcassone.Core.Cards;
+﻿using Carcassone.Core.Tiles;
 using System;
 using System.Linq;
 
@@ -13,7 +13,7 @@ namespace Carcassone.Core.Calculation.Objects
         /// Возвращает количество очков за замок.
         /// </summary>
         /// <returns></returns>
-        public int GetPoints(CardPool cardPool)
+        public int GetPoints(Stack cardPool)
         {
             // за каждую часть замка по 1 очку, за карту замка со щитом 2 очка.
             // если замок завершен очки удваиваются

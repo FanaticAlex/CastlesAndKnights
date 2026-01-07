@@ -1,4 +1,4 @@
-﻿using Carcassone.Core.Cards;
+﻿using Carcassone.Core.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
