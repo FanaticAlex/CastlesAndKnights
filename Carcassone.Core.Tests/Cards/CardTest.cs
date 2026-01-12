@@ -1,4 +1,5 @@
-﻿using Carcassone.Core.Tiles;
+﻿using Carcassone.Core.Calculation.Base.Tiles;
+using Carcassone.Core.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;

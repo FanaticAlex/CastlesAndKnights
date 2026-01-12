@@ -1,4 +1,4 @@
-﻿using Carcassone.Core.Extensions.River;
+﻿using Carcassone.Core.Calculation.River;
 
 namespace Carcassone.Core.Extensions
 {

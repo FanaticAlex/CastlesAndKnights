@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using Carcassone.Core.Board;
-using Carcassone.Core.Tiles.Objects;
+using Carcassone.Core.Calculation;
+using Carcassone.Core.Calculation.Base.Farms;
 using Newtonsoft.Json;
 
 namespace Carcassone.Core.Tiles
 {
     /// <summary>
-    /// Игровая карта. определяет местность на поле.
+    /// Game tile. Square card represents landscape or parts of game objects.
+    /// Could be placed and connected with other tiles.
     /// </summary>
     public abstract class Tile
     {
@@ -31,7 +33,6 @@ namespace Carcassone.Core.Tiles
         public CardEdgeType BottomEdgeType { get; set; } = CardEdgeType.None;
         public CardEdgeType LeftEdgeType { get; set; } = CardEdgeType.None;
 
-        public CenterType CenterType = CenterType.None;
 
         public int RotationsCount { get; set; }
 
@@ -45,7 +46,7 @@ namespace Carcassone.Core.Tiles
                 { 'W', CardEdgeType.Water }
             };
 
-            Id = GetCardId(cardType, cardNumber);
+            Id = GetTileId(cardType, cardNumber);
             CardType = cardType;
             CardNumber = cardNumber;
             TopEdgeType = nameDict[cardType[0]];
@@ -54,7 +55,7 @@ namespace Carcassone.Core.Tiles
             LeftEdgeType = nameDict[cardType[3]];
         }
 
-        public static string GetCardId(string cardType, int cardNumber) => $"{cardType}({cardNumber})";
+        public static string GetTileId(string cardType, int cardNumber) => $"{cardType}({cardNumber})";
 
         public ObjectPart GetPart(string partName)
         {
@@ -66,31 +67,31 @@ namespace Carcassone.Core.Tiles
             return list.Single();
         }
 
-        public void AddBorderToPart(Cell field, CellSide side, ObjectPart? part, Grid grid)
+        public void AddBorderToPart(Cell cell, CellSide side, ObjectPart? part, Grid grid)
         {
             if (part == null) throw new ArgumentNullException(nameof(part));
 
-            var rotatedSide = RotateSide(side, RotationsCount);
-            var castleBorder = new CardBorder(field, grid.GetNeighbour(field, rotatedSide), this);
-            part.Borders.Add(castleBorder);
+            var rotatedSide = GetRotatedSide(side, RotationsCount);
+            var border = new TileBorder(cell, grid.GetNeighbour(cell, rotatedSide), this);
+            part.Borders.Add(border);
         }
 
         public void AddCornfieldSplittedBorder(
-            Cell field, CellSide side, CornfieldSide sidePart, ObjectPart? part, Grid grid)
+            Cell field, CellSide side, FieldSide sidePart, ObjectPart? part, Grid grid)
         {
             if (part == null) throw new ArgumentNullException(nameof(part));
 
-            if ((side == CellSide.top && sidePart != CornfieldSide.side_0 && sidePart != CornfieldSide.side_7) ||
-                (side == CellSide.right && sidePart != CornfieldSide.side_1 && sidePart != CornfieldSide.side_2) ||
-                (side == CellSide.bottom && sidePart != CornfieldSide.side_3 && sidePart != CornfieldSide.side_4) ||
-                (side == CellSide.left && sidePart != CornfieldSide.side_5 && sidePart != CornfieldSide.side_6))
+            if ((side == CellSide.top && sidePart != FieldSide.side_0 && sidePart != FieldSide.side_7) ||
+                (side == CellSide.right && sidePart != FieldSide.side_1 && sidePart != FieldSide.side_2) ||
+                (side == CellSide.bottom && sidePart != FieldSide.side_3 && sidePart != FieldSide.side_4) ||
+                (side == CellSide.left && sidePart != FieldSide.side_5 && sidePart != FieldSide.side_6))
             {
                 throw new Exception($"Wrong side order in part {part.PartId}");
             }
 
-            side = RotateSide(side, RotationsCount);
-            sidePart = RotateSidePart(sidePart, RotationsCount);
-            var cornfield1Border0 = new CardBorder(field, grid.GetNeighbour(field, side), this);
+            side = GetRotatedSide(side, RotationsCount);
+            sidePart = GetRotatedSidePart(sidePart, RotationsCount);
+            var cornfield1Border0 = new TileBorder(field, grid.GetNeighbour(field, side), this);
             cornfield1Border0.CornfieldSide = sidePart;
             part.Borders.Add(cornfield1Border0);
         }
@@ -143,7 +144,7 @@ namespace Carcassone.Core.Tiles
         /// <param name="side"></param>
         /// <param name="rotationCount"></param>
         /// <returns></returns>
-        public static CellSide RotateSide(CellSide side, int rotationCount)
+        private static CellSide GetRotatedSide(CellSide side, int rotationCount)
         {
             var result = ((byte)side + rotationCount) % 4;
             return (CellSide)result;
@@ -155,10 +156,10 @@ namespace Carcassone.Core.Tiles
         /// <param name="side"></param>
         /// <param name="rotationCount"></param>
         /// <returns></returns>
-        public static CornfieldSide RotateSidePart(CornfieldSide side, int rotationCount)
+        private static FieldSide GetRotatedSidePart(FieldSide side, int rotationCount)
         {
             var result = ((byte)side + rotationCount * 2) % 8;
-            return (CornfieldSide)result;
+            return (FieldSide)result;
         }
     }
 }

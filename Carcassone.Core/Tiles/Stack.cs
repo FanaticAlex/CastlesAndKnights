@@ -1,4 +1,6 @@
-﻿using Carcassone.Core.Extensions;
+﻿using Carcassone.Core.Calculation;
+using Carcassone.Core.Calculation.Base.Tiles;
+using Carcassone.Core.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

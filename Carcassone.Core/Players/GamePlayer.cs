@@ -1,5 +1,4 @@
 ﻿using Carcassone.Core.Calculation;
-using Carcassone.Core.Tiles;
 using Carcassone.Core.Board;
 using System;
 using System.Collections.Generic;
@@ -128,7 +127,7 @@ namespace Carcassone.Core.Players
                 var gameCopy = new GameRoom();
                 gameCopy.Load(roomSave);
                 var card = gameCopy.CardsPool.GetCard(cardId);
-                var field = gameCopy.GameGrid.GetField(fieldId);
+                var field = gameCopy.GameGrid.GetCell(fieldId);
                 
                 if (!gameCopy.RotateCardTilFit(field, card)) // если карта не подходит
                     continue;

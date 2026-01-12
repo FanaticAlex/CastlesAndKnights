@@ -53,6 +53,14 @@ namespace Carcassone.Core.Board
             };
         }
 
+        public Cell? GetNeighbour(Cell? field, int deltaX, int deltaY)
+        {
+            if (field == null)
+                return null;
+
+            return GetFieldWithoutThrowing(field.X + deltaX, field.Y + deltaY);
+        }
+
         public List<Cell> GetEmptyFields()
         {
             return Cells.ToList().Where(f => string.IsNullOrEmpty(f.CardName)).ToList();
@@ -68,9 +76,9 @@ namespace Carcassone.Core.Board
             return Cells.ToList().Where(f => f.NotAvailable).ToList();
         }
 
-        public Cell GetField(int x, int y) => GetField(Cell.GetFieldID(x,y));
+        public Cell GetField(int x, int y) => GetCell(Cell.GetFieldID(x,y));
 
-        public Cell GetField(string fieldId)
+        public Cell GetCell(string fieldId)
         {
             var field = Cells.ToList().FirstOrDefault(field => field.Id == fieldId);
             if (field == null)

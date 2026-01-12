@@ -158,7 +158,7 @@ namespace Carcassone.Core
         {
             if (gameMove == null) throw new ArgumentNullException("Move obj can not be null");
 
-            var field = GameGrid.GetField(gameMove.FieldId);
+            var field = GameGrid.GetCell(gameMove.FieldId);
             var card = CardsPool.GetCard(gameMove.CardId);
             card.RotateCard(gameMove.CardRotation);
             PutCardInField(card, field);

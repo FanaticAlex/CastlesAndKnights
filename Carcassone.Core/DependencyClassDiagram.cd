@@ -42,34 +42,12 @@
       <Property Name="Moves" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="Carcassone.Core.Calculation.Objects.Castle">
-    <Position X="6.75" Y="10.5" Width="1.5" />
+  <Class Name="Carcassone.Core.Calculation.Objects.City">
+    <Position X="7" Y="10.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Calculation\Objects\Castle.cs</FileName>
+      <FileName>Calculation\Objects\City.cs</FileName>
     </TypeIdentifier>
-  </Class>
-  <Class Name="Carcassone.Core.Calculation.Objects.Church" BaseTypeListCollapsed="true">
-    <Position X="13" Y="10.5" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>EAAAIAQAAAAAAAAABAACAAAAAgAAAIAABAAAAAAAAIA=</HashCode>
-      <FileName>Calculation\Objects\Church.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
-  </Class>
-  <Class Name="Carcassone.Core.Calculation.Objects.ClosingMultipartObject">
-    <Position X="7.75" Y="8" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>AAAAAMAAAAAAAAAAAAAABAAAQAAAAMAABQAAGAAAAIA=</HashCode>
-      <FileName>Calculation\Objects\ClosingMultipartObject.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Carcassone.Core.Calculation.Objects.Farm" BaseTypeListCollapsed="true">
     <Position X="11" Y="10.5" Width="1.5" />
@@ -104,21 +82,13 @@
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
-    <AssociationLine Name="Churches" Type="Carcassone.Core.Calculation.Objects.Church" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="10.688" Y="7.247" />
-        <Point X="10.688" Y="7.622" />
-        <Point X="13.75" Y="7.622" />
-        <Point X="13.75" Y="10.5" />
-      </Path>
-    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AIAAIAAgAAAAAAAAAAgSAAAQAAAAAAAABAAAAQAAAAA=</HashCode>
+      <HashCode>AIAAIAAAAAAAAAAAAAgSAAAQAAAAAAAABAAAAQAAAAA=</HashCode>
       <FileName>Calculation\ScoreCalculator.cs</FileName>
     </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Property Name="Churches" />
-    </ShowAsCollectionAssociation>
+    <ShowAsAssociation>
+      <Property Name="CastlesManager" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="Carcassone.Core.Extensions.River.RiverExtension">
     <Position X="24" Y="7.25" Width="1.75" />
@@ -196,7 +166,7 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAEAAAgAAAAACAAAIAAAAAACBAAQAAgAAAAAAAACA=</HashCode>
+      <HashCode>QAAAEAAAgAAAAACAAAIAAAAAACBAAQAAgAAAAAAAACA=</HashCode>
       <FileName>Board\Grid.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -232,26 +202,30 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>IKACCAABAAAAAAAAABEIAAAABBgAACgAAAAYAAAAKgA=</HashCode>
+      <HashCode>IKACCAABAAAAAAAAABEIAAAABBgAACgAAAAYAAAAKAA=</HashCode>
       <FileName>Tiles\Tile.cs</FileName>
     </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Property Name="Parts" />
-    </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="Carcassone.Core.Tiles.ObjectPart">
-    <Position X="1.25" Y="8" Width="1.5" />
+  <Class Name="Carcassone.Core.Calculation.MultipartObjectsManager&lt;T&gt;">
+    <Position X="9.5" Y="8" Width="1.5" />
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>BAAAAAAAAAgAAAAAAAAAAACAAAQAAIgAAAAAAAgAgAA=</HashCode>
-      <FileName>Tiles\Objects\PartTypes\ObjectPart.cs</FileName>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAgA=</HashCode>
+      <FileName>Calculation\MultipartObjectsManager.cs</FileName>
     </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="Chip" />
-      <Property Name="Flag" />
-    </ShowAsAssociation>
+  </Class>
+  <Class Name="Carcassone.Core.Calculation.Objects.Monastery">
+    <Position X="12.75" Y="10.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAMAAAAIAAAAAAAIAAAAAAAgAAAIAABAAAAAAIAIA=</HashCode>
+      <FileName>Calculation\Objects\Monastery.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Interface Name="Carcassone.Core.Calculation.Objects.IClosingObject" Collapsed="true">
     <Position X="11" Y="13.75" Width="1.5" />

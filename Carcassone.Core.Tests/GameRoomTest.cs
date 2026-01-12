@@ -1,7 +1,8 @@
-using Carcassone.Core.Tiles;
-using Carcassone.Core.Extensions;
 using Carcassone.Core.Board;
+using Carcassone.Core.Extensions;
 using Carcassone.Core.Players;
+using Carcassone.Core.Tiles;
+using System.Xml.Linq;
 using Xunit;
 
 namespace Carcassone.Core.Tests.Room
@@ -49,12 +50,24 @@ namespace Carcassone.Core.Tests.Room
         public void SaveLoadTest()
         {
             var room = new GameRoom();
+            room.PlayersPool.AddPlayer("player1", PlayerType.Human);
+
             Assert.Single(room.GameGrid.Cells);
-            room.GameGrid.Cells[0].CardName = "CCCC";
+
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = "player1",
+                CardId = "FFWF(0)",
+                CardRotation = 0,
+                FieldId = $"{0}_{0}",
+                PartName = null
+            };
+            room.MakeMove(gameMove0);
+
             var save = room.Save();
             room.Load(save);
-            Assert.Single(room.GameGrid.Cells);
-            Assert.Equal("CCCC", room.GameGrid.Cells[0].CardName);
+
+            Assert.Equal(5, room.GameGrid.Cells.Count);
         }
     }
 }

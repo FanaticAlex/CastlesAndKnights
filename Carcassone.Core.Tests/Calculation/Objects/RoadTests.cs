@@ -1,5 +1,4 @@
-﻿using Carcassone.Core.Calculation.Objects;
-using Carcassone.Core.Tiles;
+﻿using Carcassone.Core.Tiles;
 using Carcassone.Core.Board;
 using Carcassone.Core.Players;
 using System.Linq;

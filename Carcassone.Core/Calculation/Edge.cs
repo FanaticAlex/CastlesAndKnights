@@ -1,0 +1,14 @@
+﻿namespace Carcassone.Core.Calculation
+{
+    /// <summary>
+    /// Тип объекта границы карты
+    /// </summary>
+    public enum CardEdgeType
+    {
+        Road,
+        Castle,
+        Cornfield,
+        Water,
+        None
+    }
+}
