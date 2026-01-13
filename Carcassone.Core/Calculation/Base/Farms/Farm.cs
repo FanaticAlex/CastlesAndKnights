@@ -14,19 +14,19 @@ namespace Carcassone.Core.Calculation.Base.Farms
 
         public List<string> PartsIds { get; set; } = new List<string>();
 
-        public bool IsPlayerOwner(GamePlayer player, Stack cardPool)
+        public bool IsPlayerOwner(GamePlayer player, TileStack cardPool)
         {
             return GetOwnersNames(cardPool).Contains(player.Name);
         }
 
-        public void AddPart(ObjectPart part, Stack cardPool)
+        public void AddPart(ObjectPart part, TileStack cardPool)
         {
             PartsIds.Add(part.PartId);
             OpenBorders.AddRange(part.Borders);
             RecalculatePartsOwner(cardPool);
         }
 
-        public void RecalculatePartsOwner(Stack cardPool)
+        public void RecalculatePartsOwner(TileStack cardPool)
         {
             if (GetOwnersNames(cardPool).Count > 0)
             {
@@ -43,21 +43,21 @@ namespace Carcassone.Core.Calculation.Base.Farms
             foreach (var partBorder in part.Borders)
             {
                 // ищем открытые границы этого поля которые совпадают с границами присоединяемой части
-                var adjacentCornfieldBorders = OpenBorders.FindAll(border2 => TileBorder.Equial(partBorder, border2));
-                foreach (var adjacentCornfieldBorder in adjacentCornfieldBorders)
+                var adjacentFarmBorders = OpenBorders.FindAll(border2 => TileBorder.Equial(partBorder, border2));
+                foreach (var adjacentFarmBorder in adjacentFarmBorders)
                 {
                     // части поля одной карты не могут быть смежными.
                     // если это граница от той же карты то присоединять нельзя
-                    if (partBorder.TileId == adjacentCornfieldBorder.TileId)
+                    if (partBorder.TileId == adjacentFarmBorder.TileId)
                         continue;
 
                     // если сторон нет тоесть граница карты не разделена дорогой или рекой,
                     // то считаем границы смежными и соединяем
-                    if (adjacentCornfieldBorder.CornfieldSide == null && partBorder.CornfieldSide == null)
+                    if (adjacentFarmBorder.FarmSide == null && partBorder.FarmSide == null)
                         return true;
 
                     // одна граница с дорогой или рекой а другая нет, поля соеденены неверно
-                    if (adjacentCornfieldBorder.CornfieldSide == null || partBorder.CornfieldSide == null)
+                    if (adjacentFarmBorder.FarmSide == null || partBorder.FarmSide == null)
                         throw new Exception("поля соеденены неверно");
 
                     // проверяем четность. 
@@ -72,10 +72,10 @@ namespace Carcassone.Core.Calculation.Base.Farms
                     var group2 = new List<FieldSide>() { FieldSide.side_1, FieldSide.side_3, FieldSide.side_5, FieldSide.side_7 };
 
                     // проверяемые части должны быть в разных группах
-                    if (group1.Contains(adjacentCornfieldBorder.CornfieldSide.Value) && group2.Contains(partBorder.CornfieldSide.Value))
+                    if (group1.Contains(adjacentFarmBorder.FarmSide.Value) && group2.Contains(partBorder.FarmSide.Value))
                         return true;
 
-                    if (group2.Contains(adjacentCornfieldBorder.CornfieldSide.Value) && group1.Contains(partBorder.CornfieldSide.Value))
+                    if (group2.Contains(adjacentFarmBorder.FarmSide.Value) && group1.Contains(partBorder.FarmSide.Value))
                         return true;
                 }
             }
@@ -83,40 +83,40 @@ namespace Carcassone.Core.Calculation.Base.Farms
             return false;
         }
 
-        public int GetPoints(List<City> allCastles, Stack cardPool)
+        public int GetPoints(List<City> allCitys, TileStack cardPool)
         {
             // считаем все подключенные карты,
             // за каждый подключенный и законченный замок 3 очка
             // за незаконченный очков нет
 
-            var connectedCastles = new List<City>();
+            var connectedCitys = new List<City>();
             var parts = PartsIds.Select(id => cardPool.GetPart(id));
-            foreach (var cornfieldPart in parts)
+            foreach (var FarmPart in parts)
             {
-                var card = cardPool.GetCard(cornfieldPart.CardId);
-                var connectedCastleParts = card.GetConnectedCastleParts((FieldPart)cornfieldPart);
+                var card = cardPool.GetCard(FarmPart.CardId);
+                var connectedCityParts = card.GetConnectedCityParts((FieldPart)FarmPart);
 
-                foreach (var castle in allCastles)
+                foreach (var City in allCitys)
                 {
-                    var castleIsConnected = false;
-                    foreach (var connectedCastlePart in connectedCastleParts)
+                    var CityIsConnected = false;
+                    foreach (var connectedCityPart in connectedCityParts)
                     {
-                        if (castle.PartsIds.Contains(connectedCastlePart))
-                            castleIsConnected = true;
+                        if (City.PartsIds.Contains(connectedCityPart))
+                            CityIsConnected = true;
                     }
 
-                    if (castleIsConnected)
-                        if (!connectedCastles.Contains(castle))
-                            connectedCastles.Add(castle);
+                    if (CityIsConnected)
+                        if (!connectedCitys.Contains(City))
+                            connectedCitys.Add(City);
                 }
             }
 
-            var finishedCastles = connectedCastles.Where(castle => castle.IsFinished);
-            return 3 * finishedCastles.Count();
+            var finishedCitys = connectedCitys.Where(City => City.IsFinished);
+            return 3 * finishedCitys.Count();
         }
 
 
-        private List<string> GetOwnersNames(Stack cardPool)
+        private List<string> GetOwnersNames(TileStack cardPool)
         {
             var owners = new List<string>();
             var parts = PartsIds.Select(id => cardPool.GetPart(id));

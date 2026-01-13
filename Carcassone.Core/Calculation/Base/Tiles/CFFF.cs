@@ -17,28 +17,28 @@ namespace Carcassone.Core.Calculation.Base.Tiles
     /// </summary>
     public class CFFF : Tile
     {
-        private string castlePartName = "Castle_0";
-        private string cornfieldPartName = "Cornfield_0";
+        private string CityPartName = "City_0";
+        private string FarmPartName = "Farm_0";
 
         public CFFF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var castlePart = new CityPart(castlePartName, Id);
-            Parts.Add(castlePart);
+            var CityPart = new CityPart(CityPartName, Id);
+            Parts.Add(CityPart);
 
-            var cornfieldPart = new FieldPart(cornfieldPartName, Id);
-            Parts.Add(cornfieldPart);
+            var FarmPart = new FieldPart(FarmPartName, Id);
+            Parts.Add(FarmPart);
 
 
-            FieldToCastleParts.Add(cornfieldPart.PartId, new List<string>() { castlePart.PartId });
+            FieldToCityParts.Add(FarmPart.PartId, new List<string>() { CityPart.PartId });
         }
 
         public override void ConnectField(Cell field, Grid grid)
         {
-            AddBorderToPart(field, CellSide.top, GetPart(castlePartName), grid);
+            AddBorderToPart(field, CellSide.top, GetPart(CityPartName), grid);
 
-            AddBorderToPart(field, CellSide.right, GetPart(cornfieldPartName), grid);
-            AddBorderToPart(field, CellSide.bottom, GetPart(cornfieldPartName), grid);
-            AddBorderToPart(field, CellSide.left, GetPart(cornfieldPartName), grid);
+            AddBorderToPart(field, CellSide.right, GetPart(FarmPartName), grid);
+            AddBorderToPart(field, CellSide.bottom, GetPart(FarmPartName), grid);
+            AddBorderToPart(field, CellSide.left, GetPart(FarmPartName), grid);
         }
     }
 }

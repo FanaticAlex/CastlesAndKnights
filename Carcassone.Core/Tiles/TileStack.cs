@@ -1,0 +1,105 @@
+﻿using Carcassone.Core.Calculation;
+using Carcassone.Core.Calculation.Base.Tiles;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Carcassone.Core.Tiles
+{
+    /// <summary>
+    /// Stack of tiles in a current game
+    /// </summary>
+    public class TileStack
+    {
+        private List<Tile> _remain = new List<Tile>();
+        private readonly List<Tile> _discardedTiles = new List<Tile>();
+
+        [JsonConverter(typeof(TileConverter))]
+        public Tile? CurrentCard { get; set; }
+
+        public void AddTiles(List<Tile> tiles)
+        {
+            _remain.AddRange(tiles);
+        }
+
+        public List<Tile> GetRemainTiles()
+        {
+            return _remain;
+        }
+
+        public List<Tile> GetAllTiles()
+        {
+            var allCards = new List<Tile>();
+            allCards.AddRange(GetRemainTiles());
+            allCards.AddRange(_discardedTiles);
+            return allCards;
+        }
+
+        public Tile GetCard(string cardId)
+        {
+            var card = GetAllTiles().FirstOrDefault(card => card.Id == cardId);
+            if (card == null)
+                throw new Exception($"Card {cardId} not found");
+
+            return card;
+        }
+
+        public bool IsEmpty()
+        {
+            return _remain.Count == 0;
+        }
+
+        public Tile? GetTopCard()
+        {
+            return _remain.FirstOrDefault();
+        }
+
+        public void DiscardCard(Tile? card)
+        {
+            if (card == null) return;
+
+            _remain.Remove(card);
+            _discardedTiles.Add(card);
+        }
+
+        public ObjectPart GetPart(string partId)
+        {
+            return GetAllTiles().SelectMany(c => c.Parts).FirstOrDefault(p => p.PartId == partId);
+        }
+
+        public void Shaffle()
+        {
+            // перетосовка
+            var rnd = new System.Random();
+            int n = _remain.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rnd.Next(n + 1);
+                var value = _remain[k];
+                _remain[k] = _remain[n];
+                _remain[n] = value;
+            }
+
+            _remain = _remain.OrderBy(tile => tile.StackPriority).ToList();
+        }
+
+        public void CreateTiles(Type tileType, byte count, int priority)
+        {
+            var tiles = new List<Tile>();
+            for (int i = 0; i < count; i++)
+            {
+                var tileTypeStr = tileType.Name.Replace(tileType.Namespace ?? string.Empty, string.Empty);
+                var tile = (Tile?)Activator.CreateInstance(tileType, tileTypeStr, i);
+                if (tile == null)
+                    throw new Exception($"Can't create card of type {tileTypeStr}: {i}");
+
+                tile.StackPriority = priority;
+                tiles.Add(tile);
+            }
+
+            _remain.AddRange(tiles);
+        }
+    }
+}

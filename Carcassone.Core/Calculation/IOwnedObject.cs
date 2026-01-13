@@ -8,6 +8,6 @@ namespace Carcassone.Core.Calculation
 {
     public interface IOwnedObject
     {
-        public bool IsPlayerOwner(GamePlayer player, Stack cardPool);
+        public bool IsPlayerOwner(GamePlayer player, TileStack cardPool);
     }
 }

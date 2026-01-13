@@ -13,7 +13,7 @@ namespace Carcassone.Core.Calculation.Base.Cities
         /// Возвращает количество очков за замок.
         /// </summary>
         /// <returns></returns>
-        public int GetPoints(Stack cardPool)
+        public int GetPoints(TileStack cardPool)
         {
             // за каждую часть замка по 1 очку, за карту замка со щитом 2 очка.
             // если замок завершен очки удваиваются

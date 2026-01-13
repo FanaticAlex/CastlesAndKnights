@@ -8,6 +8,6 @@ namespace Carcassone.Core.Calculation
         public List<string> PartsIds { get; set; }
 
         bool CanConnect(ObjectPart part);
-        void AddPart(ObjectPart part, Stack cardPool);
+        void AddPart(ObjectPart part, TileStack cardPool);
     }
 }

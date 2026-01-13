@@ -1,4 +1,4 @@
-﻿namespace Carcassone.Core.Calculation.River.Tiles
+﻿namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 {
     /// <summary>
     ///       W

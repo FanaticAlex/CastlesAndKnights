@@ -15,25 +15,25 @@ namespace Carcassone.Core.Calculation.Base.Tiles
     public class FFFF : Tile
     {
         protected string churchPartName = "Church_0";
-        protected string cornfieldPartName = "Cornfield_0";
+        protected string FarmPartName = "Farm_0";
 
         public FFFF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
             var churchPart = new MonasteryPart(churchPartName, Id);
             Parts.Add(churchPart);
 
-            var cornfieldPart1 = new FieldPart(cornfieldPartName, Id);
-            Parts.Add(cornfieldPart1);
+            var FarmPart1 = new FieldPart(FarmPartName, Id);
+            Parts.Add(FarmPart1);
         }
 
         public override void ConnectField(Cell field, Grid grid)
         {
             ((MonasteryPart)GetPart(churchPartName)).CellId = field.Id;
 
-            AddBorderToPart(field, CellSide.top, GetPart(cornfieldPartName), grid);
-            AddBorderToPart(field, CellSide.right, GetPart(cornfieldPartName), grid);
-            AddBorderToPart(field, CellSide.bottom, GetPart(cornfieldPartName), grid);
-            AddBorderToPart(field, CellSide.left, GetPart(cornfieldPartName), grid);
+            AddBorderToPart(field, CellSide.top, GetPart(FarmPartName), grid);
+            AddBorderToPart(field, CellSide.right, GetPart(FarmPartName), grid);
+            AddBorderToPart(field, CellSide.bottom, GetPart(FarmPartName), grid);
+            AddBorderToPart(field, CellSide.left, GetPart(FarmPartName), grid);
         }
     }
 }

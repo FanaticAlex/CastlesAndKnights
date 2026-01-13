@@ -17,18 +17,18 @@ namespace Carcassone.Core.Calculation.Base.Tiles
     /// </summary>
     public class CRRR : Tile
     {
-        protected string castlePartName = "Castle_0";
+        protected string CityPartName = "City_0";
         protected string roadPart0Name = "Road_0";
         protected string roadPart1Name = "Road_1";
         protected string roadPart2Name = "Road_2";
-        protected string cornfieldPart0Name = "Cornfield_0";
-        protected string cornfieldPart1Name = "Cornfield_1";
-        protected string cornfieldPart2Name = "Cornfield_2";
+        protected string FarmPart0Name = "Farm_0";
+        protected string FarmPart1Name = "Farm_1";
+        protected string FarmPart2Name = "Farm_2";
 
         public CRRR(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var castlePart = new CityPart(castlePartName, Id);
-            Parts.Add(castlePart);
+            var CityPart = new CityPart(CityPartName, Id);
+            Parts.Add(CityPart);
 
             var roadPart0 = new RoadPart(roadPart0Name, Id);
             Parts.Add(roadPart0);
@@ -39,22 +39,22 @@ namespace Carcassone.Core.Calculation.Base.Tiles
             var roadPart2 = new RoadPart(roadPart2Name, Id);
             Parts.Add(roadPart2);
 
-            var cornfieldPart0 = new FieldPart(cornfieldPart0Name, Id);
-            Parts.Add(cornfieldPart0);
+            var FarmPart0 = new FieldPart(FarmPart0Name, Id);
+            Parts.Add(FarmPart0);
 
-            var cornfieldPart1 = new FieldPart(cornfieldPart1Name, Id);
-            Parts.Add(cornfieldPart1);
+            var FarmPart1 = new FieldPart(FarmPart1Name, Id);
+            Parts.Add(FarmPart1);
 
-            var cornfieldPart2 = new FieldPart(cornfieldPart2Name, Id);
-            Parts.Add(cornfieldPart2);
+            var FarmPart2 = new FieldPart(FarmPart2Name, Id);
+            Parts.Add(FarmPart2);
 
 
-            FieldToCastleParts.Add(cornfieldPart0.PartId, new List<string>() { castlePart.PartId });
+            FieldToCityParts.Add(FarmPart0.PartId, new List<string>() { CityPart.PartId });
         }
 
         public override void ConnectField(Cell field, Grid grid)
         {
-            AddBorderToPart(field, CellSide.top, GetPart(castlePartName), grid);
+            AddBorderToPart(field, CellSide.top, GetPart(CityPartName), grid);
 
             AddBorderToPart(field, CellSide.right, GetPart(roadPart0Name), grid);
 
@@ -62,14 +62,14 @@ namespace Carcassone.Core.Calculation.Base.Tiles
 
             AddBorderToPart(field, CellSide.left, GetPart(roadPart2Name), grid);
 
-            AddCornfieldSplittedBorder(field, CellSide.right, FieldSide.side_1, GetPart(cornfieldPart0Name), grid);
-            AddCornfieldSplittedBorder(field, CellSide.left, FieldSide.side_6, GetPart(cornfieldPart0Name), grid);
+            AddFarmSplittedBorder(field, CellSide.right, FieldSide.side_1, GetPart(FarmPart0Name), grid);
+            AddFarmSplittedBorder(field, CellSide.left, FieldSide.side_6, GetPart(FarmPart0Name), grid);
 
-            AddCornfieldSplittedBorder(field, CellSide.right, FieldSide.side_2, GetPart(cornfieldPart1Name), grid);
-            AddCornfieldSplittedBorder(field, CellSide.bottom, FieldSide.side_3, GetPart(cornfieldPart1Name), grid);
+            AddFarmSplittedBorder(field, CellSide.right, FieldSide.side_2, GetPart(FarmPart1Name), grid);
+            AddFarmSplittedBorder(field, CellSide.bottom, FieldSide.side_3, GetPart(FarmPart1Name), grid);
 
-            AddCornfieldSplittedBorder(field, CellSide.bottom, FieldSide.side_4, GetPart(cornfieldPart2Name), grid);
-            AddCornfieldSplittedBorder(field, CellSide.left, FieldSide.side_5, GetPart(cornfieldPart2Name), grid);
+            AddFarmSplittedBorder(field, CellSide.bottom, FieldSide.side_4, GetPart(FarmPart2Name), grid);
+            AddFarmSplittedBorder(field, CellSide.left, FieldSide.side_5, GetPart(FarmPart2Name), grid);
         }
     }
 }

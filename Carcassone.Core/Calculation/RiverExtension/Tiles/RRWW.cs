@@ -1,9 +1,10 @@
-﻿using Carcassone.Core.Tiles;
-using Carcassone.Core.Board;
+﻿using Carcassone.Core.Board;
 using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Calculation.Base.Roads;
+using Carcassone.Core.Calculation.RiverExtension.Rivers;
+using Carcassone.Core.Tiles;
 
-namespace Carcassone.Core.Calculation.River.Tiles
+namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 {
     /// <summary>
     ///       R
@@ -14,43 +15,50 @@ namespace Carcassone.Core.Calculation.River.Tiles
     /// </summary>
     public class RRWW : Tile
     {
-        protected string cornfieldPart0Name = "Cornfield_0";
-        protected string cornfieldPart1Name = "Cornfield_1";
-        protected string cornfieldPart2Name = "Cornfield_2";
+        protected string RiverPart0Name = "River_0";
+        protected string FarmPart0Name = "Farm_0";
+        protected string FarmPart1Name = "Farm_1";
+        protected string FarmPart2Name = "Farm_2";
         protected string roadPartName = "Road_0";
 
         public RRWW(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var cornfieldPart0 = new FieldPart(cornfieldPart0Name, Id);
-            Parts.Add(cornfieldPart0);
+            var RiverPart0 = new RiverPart(RiverPart0Name, Id);
+            Parts.Add(RiverPart0);
 
-            var cornfieldPart1 = new FieldPart(cornfieldPart1Name, Id);
-            Parts.Add(cornfieldPart1);
+            var FarmPart0 = new FieldPart(FarmPart0Name, Id);
+            Parts.Add(FarmPart0);
 
-            var cornfieldPart2 = new FieldPart(cornfieldPart2Name, Id);
-            Parts.Add(cornfieldPart2);
+            var FarmPart1 = new FieldPart(FarmPart1Name, Id);
+            Parts.Add(FarmPart1);
+
+            var FarmPart2 = new FieldPart(FarmPart2Name, Id);
+            Parts.Add(FarmPart2);
 
             var roadPart = new RoadPart(roadPartName, Id);
             Parts.Add(roadPart);
         }
 
-        public override void ConnectField(Cell field, Grid grid)
+        public override void ConnectField(Cell cell, Grid grid)
         {
-            AddCornfieldSplittedBorder(field, CellSide.top, FieldSide.side_0, GetPart(cornfieldPart0Name), grid);
-            AddCornfieldSplittedBorder(field, CellSide.right, FieldSide.side_1, GetPart(cornfieldPart0Name), grid);
+            AddBorderToPart(cell, CellSide.bottom, GetPart(RiverPart0Name), grid);
+            AddBorderToPart(cell, CellSide.left, GetPart(RiverPart0Name), grid);
 
-            AddCornfieldSplittedBorder(field, CellSide.right, FieldSide.side_2, GetPart(cornfieldPart1Name), grid);
-            AddCornfieldSplittedBorder(field, CellSide.bottom, FieldSide.side_3, GetPart(cornfieldPart1Name), grid);
-            AddCornfieldSplittedBorder(field, CellSide.left, FieldSide.side_6, GetPart(cornfieldPart1Name), grid);
-            AddCornfieldSplittedBorder(field, CellSide.top, FieldSide.side_7, GetPart(cornfieldPart1Name), grid);
+            AddFarmSplittedBorder(cell, CellSide.top, FieldSide.side_0, GetPart(FarmPart0Name), grid);
+            AddFarmSplittedBorder(cell, CellSide.right, FieldSide.side_1, GetPart(FarmPart0Name), grid);
+
+            AddFarmSplittedBorder(cell, CellSide.right, FieldSide.side_2, GetPart(FarmPart1Name), grid);
+            AddFarmSplittedBorder(cell, CellSide.bottom, FieldSide.side_3, GetPart(FarmPart1Name), grid);
+            AddFarmSplittedBorder(cell, CellSide.left, FieldSide.side_6, GetPart(FarmPart1Name), grid);
+            AddFarmSplittedBorder(cell, CellSide.top, FieldSide.side_7, GetPart(FarmPart1Name), grid);
 
             // поле 3
-            AddCornfieldSplittedBorder(field, CellSide.bottom, FieldSide.side_4, GetPart(cornfieldPart2Name), grid);
-            AddCornfieldSplittedBorder(field, CellSide.left, FieldSide.side_5, GetPart(cornfieldPart2Name), grid);
+            AddFarmSplittedBorder(cell, CellSide.bottom, FieldSide.side_4, GetPart(FarmPart2Name), grid);
+            AddFarmSplittedBorder(cell, CellSide.left, FieldSide.side_5, GetPart(FarmPart2Name), grid);
 
             // дорога
-            AddBorderToPart(field, CellSide.top, GetPart(roadPartName), grid);
-            AddBorderToPart(field, CellSide.right, GetPart(roadPartName), grid);
+            AddBorderToPart(cell, CellSide.top, GetPart(roadPartName), grid);
+            AddBorderToPart(cell, CellSide.right, GetPart(roadPartName), grid);
         }
     }
 }

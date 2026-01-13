@@ -37,7 +37,7 @@ namespace Carcassone.Core.Tests.Buisness
             Assert.Equal(4, roads.Count);
             foreach (var road in roads)
             {
-                Assert.Equal(1, road.GetPoints(room.CardsPool));
+                Assert.Equal(1, road.GetPoints(room.TileStack));
                 Assert.False(road.IsFinished);
             }
         }
@@ -105,9 +105,9 @@ namespace Carcassone.Core.Tests.Buisness
             var roads = room.ScoreCalculator.RoadsManager.Objects;
             Assert.Single(roads);
             var road = roads.Single();
-            Assert.Equal(8, road.GetPoints(room.CardsPool));
+            Assert.Equal(8, road.GetPoints(room.TileStack));
             Assert.True(road.IsFinished);
-            Assert.Single(road.PartsIds.Select(id => room.CardsPool.GetPart(id)).Where(p => p.Flag != null));
+            Assert.Single(road.PartsIds.Select(id => room.TileStack.GetPart(id)).Where(p => p.Flag != null));
         }
 
         /// <summary>
@@ -153,9 +153,9 @@ namespace Carcassone.Core.Tests.Buisness
             var roads = room.ScoreCalculator.RoadsManager.Objects;
             Assert.Equal(3, roads.Count);
             var road = roads.First(r => r.IsFinished);
-            Assert.Equal(4, road.GetPoints(room.CardsPool));
+            Assert.Equal(4, road.GetPoints(room.TileStack));
             Assert.True(road.IsFinished);
-            Assert.Single(road.PartsIds.Select(id => room.CardsPool.GetPart(id)).Where(p => p.Flag != null));
+            Assert.Single(road.PartsIds.Select(id => room.TileStack.GetPart(id)).Where(p => p.Flag != null));
         }
     }
 }

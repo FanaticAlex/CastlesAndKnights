@@ -19,7 +19,7 @@ namespace Carcassone.Core.Tiles
         /// это нужно для подсчета какие замки присоденены к полям при подсчете очков за поля
         /// </summary>
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        public Dictionary<string, List<string>> FieldToCastleParts { get; set; } = new Dictionary<string, List<string>>();
+        public Dictionary<string, List<string>> FieldToCityParts { get; set; } = new Dictionary<string, List<string>>();
 
         [JsonProperty(ItemConverterType = typeof(PartConverter), ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public List<ObjectPart> Parts { get; set; } = new List<ObjectPart>();
@@ -28,31 +28,28 @@ namespace Carcassone.Core.Tiles
         public string CardType { get; set; }
         public int CardNumber { get; set; }
 
-        public CardEdgeType TopEdgeType { get; set; } = CardEdgeType.None;
-        public CardEdgeType RightEdgeType { get; set; } = CardEdgeType.None;
-        public CardEdgeType BottomEdgeType { get; set; } = CardEdgeType.None;
-        public CardEdgeType LeftEdgeType { get; set; } = CardEdgeType.None;
+        /// <summary>
+        /// define where in a tile stack pile this card should apear
+        /// </summary>
+        public int StackPriority { get; set; }
+
+        public char TopEdgeType { get; set; }
+        public char RightEdgeType { get; set; }
+        public char BottomEdgeType { get; set; }
+        public char LeftEdgeType { get; set; }
 
 
         public int RotationsCount { get; set; }
 
         public Tile(string cardType, int cardNumber)
         {
-            Dictionary<char, CardEdgeType> nameDict = new Dictionary<char, CardEdgeType>()
-            {
-                { 'R', CardEdgeType.Road },
-                { 'C', CardEdgeType.Castle },
-                { 'F', CardEdgeType.Cornfield },
-                { 'W', CardEdgeType.Water }
-            };
-
             Id = GetTileId(cardType, cardNumber);
             CardType = cardType;
             CardNumber = cardNumber;
-            TopEdgeType = nameDict[cardType[0]];
-            RightEdgeType = nameDict[cardType[1]];
-            BottomEdgeType = nameDict[cardType[2]];
-            LeftEdgeType = nameDict[cardType[3]];
+            TopEdgeType = cardType[0];
+            RightEdgeType = cardType[1];
+            BottomEdgeType = cardType[2];
+            LeftEdgeType = cardType[3];
         }
 
         public static string GetTileId(string cardType, int cardNumber) => $"{cardType}({cardNumber})";
@@ -76,7 +73,7 @@ namespace Carcassone.Core.Tiles
             part.Borders.Add(border);
         }
 
-        public void AddCornfieldSplittedBorder(
+        public void AddFarmSplittedBorder(
             Cell field, CellSide side, FieldSide sidePart, ObjectPart? part, Grid grid)
         {
             if (part == null) throw new ArgumentNullException(nameof(part));
@@ -91,20 +88,20 @@ namespace Carcassone.Core.Tiles
 
             side = GetRotatedSide(side, RotationsCount);
             sidePart = GetRotatedSidePart(sidePart, RotationsCount);
-            var cornfield1Border0 = new TileBorder(field, grid.GetNeighbour(field, side), this);
-            cornfield1Border0.CornfieldSide = sidePart;
-            part.Borders.Add(cornfield1Border0);
+            var Farm1Border0 = new TileBorder(field, grid.GetNeighbour(field, side), this);
+            Farm1Border0.FarmSide = sidePart;
+            part.Borders.Add(Farm1Border0);
         }
 
-        public List<string> GetConnectedCastleParts(FieldPart part)
+        public List<string> GetConnectedCityParts(FieldPart part)
         {
-            var castleParts = new List<string>();
-            if (FieldToCastleParts.Keys.Contains(part.PartId))
+            var CityParts = new List<string>();
+            if (FieldToCityParts.Keys.Contains(part.PartId))
             {
-                castleParts = FieldToCastleParts[part.PartId];
+                CityParts = FieldToCityParts[part.PartId];
             }
 
-            return castleParts;
+            return CityParts;
         }
 
         public abstract void ConnectField(Cell field, Grid grid);

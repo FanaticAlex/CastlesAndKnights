@@ -16,33 +16,33 @@ namespace Carcassone.Core.Calculation.Base.Tiles
     /// </summary>
     public class FCFC_1 : Tile
     {
-        protected string castlePartName = "Castle_0";
-        protected string cornfieldPartName = "Cornfield_0";
-        protected string cornfieldPart1Name = "Cornfield_1";
+        protected string CityPartName = "City_0";
+        protected string FarmPartName = "Farm_0";
+        protected string FarmPart1Name = "Farm_1";
 
         public FCFC_1(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var castlePart = new CityPart(castlePartName, Id);
-            Parts.Add(castlePart);
+            var CityPart = new CityPart(CityPartName, Id);
+            Parts.Add(CityPart);
 
-            var cornfieldPart1 = new FieldPart(cornfieldPartName, Id);
-            Parts.Add(cornfieldPart1);
+            var FarmPart1 = new FieldPart(FarmPartName, Id);
+            Parts.Add(FarmPart1);
 
-            var cornfieldPart2 = new FieldPart(cornfieldPart1Name, Id);
-            Parts.Add(cornfieldPart2);
+            var FarmPart2 = new FieldPart(FarmPart1Name, Id);
+            Parts.Add(FarmPart2);
 
-            FieldToCastleParts.Add(cornfieldPart1.PartId, new List<string>() { castlePart.PartId });
-            FieldToCastleParts.Add(cornfieldPart2.PartId, new List<string>() { castlePart.PartId });
+            FieldToCityParts.Add(FarmPart1.PartId, new List<string>() { CityPart.PartId });
+            FieldToCityParts.Add(FarmPart2.PartId, new List<string>() { CityPart.PartId });
         }
 
         public override void ConnectField(Cell field, Grid grid)
         {
-            AddBorderToPart(field, CellSide.right, GetPart(castlePartName), grid);
-            AddBorderToPart(field, CellSide.left, GetPart(castlePartName), grid);
+            AddBorderToPart(field, CellSide.right, GetPart(CityPartName), grid);
+            AddBorderToPart(field, CellSide.left, GetPart(CityPartName), grid);
 
-            AddBorderToPart(field, CellSide.top, GetPart(cornfieldPartName), grid);
+            AddBorderToPart(field, CellSide.top, GetPart(FarmPartName), grid);
 
-            AddBorderToPart(field, CellSide.bottom, GetPart(cornfieldPart1Name), grid);
+            AddBorderToPart(field, CellSide.bottom, GetPart(FarmPart1Name), grid);
         }
     }
 }

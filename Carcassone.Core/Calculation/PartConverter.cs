@@ -5,6 +5,7 @@ using Carcassone.Core.Calculation.Base.Cities;
 using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Calculation.Base.Roads;
 using Carcassone.Core.Calculation.Base.Monasteries;
+using Carcassone.Core.Calculation.RiverExtension.Rivers;
 
 namespace Carcassone.Core.Calculation
 {
@@ -32,6 +33,7 @@ namespace Carcassone.Core.Calculation
                 case "Monastery": return part.ToObject<MonasteryPart>();
                 case "Field": return part.ToObject<FieldPart>();
                 case "Road": return part.ToObject<RoadPart>();
+                case "River": return part.ToObject<RiverPart>();
             }
 
             throw new NotImplementedException();

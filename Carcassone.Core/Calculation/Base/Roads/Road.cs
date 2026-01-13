@@ -5,7 +5,7 @@ namespace Carcassone.Core.Calculation.Base.Roads
 {
     public class Road : ClosingMultipartObject
     {
-        public int GetPoints(Stack cardPool)
+        public int GetPoints(TileStack cardPool)
         {
             var score = 0;
             var parts = PartsIds.Select(id => cardPool.GetPart(id));

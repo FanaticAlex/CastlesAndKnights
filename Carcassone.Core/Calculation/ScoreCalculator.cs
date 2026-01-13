@@ -7,6 +7,7 @@ using Carcassone.Core.Calculation.Base.Cities;
 using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Calculation.Base.Roads;
 using Carcassone.Core.Calculation.Base.Monasteries;
+using Carcassone.Core.Calculation.RiverExtension.Rivers;
 
 namespace Carcassone.Core.Calculation
 {
@@ -15,7 +16,9 @@ namespace Carcassone.Core.Calculation
     /// </summary>
     public class ScoreCalculator
     {
-        public MultipartObjectsManager<City> CastlesManager { get; set; } = new MultipartObjectsManager<City>();
+        public RiversManager RiversManager { get; set; } = new RiversManager();
+
+        public MultipartObjectsManager<City> CitysManager { get; set; } = new MultipartObjectsManager<City>();
         public MultipartObjectsManager<Road> RoadsManager { get; set; } = new MultipartObjectsManager<Road>();
         public MultipartObjectsManager<Farm> FarmsManager { get; set; } = new MultipartObjectsManager<Farm>();
         public List<Monastery> Churches { get; set; } = new List<Monastery>();
@@ -29,13 +32,16 @@ namespace Carcassone.Core.Calculation
         /// <summary>
         /// Добавляет карту и пересчитывает очки.
         /// </summary>
-        /// <param name="card"></param>
-        public void AddCard(Tile card, Cell cell, Grid grid, Stack cardPool)
+        /// <param name="tile"></param>
+        public void AddCard(Tile tile, Cell cell, Grid grid, TileStack tileStack)
         {
-            foreach (ObjectPart part in card.Parts)
+            foreach (ObjectPart part in tile.Parts)
             {
+                if (part is RiverPart)
+                    RiversManager.ProcessPart(part, tileStack);
+
                 if (part is FieldPart)
-                    FarmsManager.ProcessPart(part, cardPool);
+                    FarmsManager.ProcessPart(part, tileStack);
 
                 if (part is MonasteryPart)
                 {
@@ -44,43 +50,43 @@ namespace Carcassone.Core.Calculation
                 }
 
                 if (part is CityPart)
-                    CastlesManager.ProcessPart(part, cardPool);
+                    CitysManager.ProcessPart(part, tileStack);
 
                 if (part is RoadPart)
-                    RoadsManager.ProcessPart(part, cardPool);
+                    RoadsManager.ProcessPart(part, tileStack);
             }
         }
 
-        public void CloseObjectsAndReturnChips(GamePlayersPool playersPool, Stack cardPool)
+        public void CloseObjectsAndReturnChips(GamePlayersPool playersPool, TileStack cardPool)
         {
             foreach (var church in Churches)
                 church.TryToClose(playersPool, cardPool);
 
-            foreach (var castle in CastlesManager.Objects)
-                castle.TryToClose(playersPool, cardPool);
+            foreach (var City in CitysManager.Objects)
+                City.TryToClose(playersPool, cardPool);
 
             foreach (var road in RoadsManager.Objects)
                 road.TryToClose(playersPool, cardPool);
 
-            foreach (var cornfield in FarmsManager.Objects)
-                cornfield.RecalculatePartsOwner(cardPool);
+            foreach (var Farm in FarmsManager.Objects)
+                Farm.RecalculatePartsOwner(cardPool);
         }
 
-        public PlayerScore GetPlayerScore(string playerName, GamePlayersPool plyersPool, Stack cardPool)
+        public PlayerScore GetPlayerScore(string playerName, GamePlayersPool plyersPool, TileStack cardPool)
         {
             var scores = GetPlayersScores(plyersPool, cardPool);
             var score = scores.Single(s => s.PlayerName == playerName);
             return score;
         }
 
-        private IEnumerable<PlayerScore> GetPlayersScores(GamePlayersPool plyersPool, Stack cardPool)
+        private IEnumerable<PlayerScore> GetPlayersScores(GamePlayersPool plyersPool, TileStack cardPool)
         {
             var scores = new List<PlayerScore>();
             foreach (var player in plyersPool.GamePlayers)
             {
-                var playerCastles = CastlesManager.Objects.Where(castle => castle.IsPlayerOwner(player, cardPool));
+                var playerCitys = CitysManager.Objects.Where(City => City.IsPlayerOwner(player, cardPool));
                 var playerRoads = RoadsManager.Objects.Where(road => road.IsPlayerOwner(player, cardPool));
-                var playerCornfields = FarmsManager.Objects.Where(cornfield => cornfield.IsPlayerOwner(player, cardPool));
+                var playerFarms = FarmsManager.Objects.Where(Farm => Farm.IsPlayerOwner(player, cardPool));
                 var playerChurches = Churches.Where(church => church.IsPlayerOwner(player, cardPool));
 
                 var score = new PlayerScore()
@@ -88,12 +94,12 @@ namespace Carcassone.Core.Calculation
                     PlayerName = player.Name,
                     ChurchesScore = playerChurches.ToList().Sum(church => church.GetPoints()),
                     ChurchesCount = playerChurches.ToList().Count(),
-                    CornfieldsScore = playerCornfields.ToList().Sum(cornfield => cornfield.GetPoints(CastlesManager.Objects, cardPool)),
-                    CornfieldsCount = playerCornfields.ToList().Count(),
+                    FarmsScore = playerFarms.ToList().Sum(Farm => Farm.GetPoints(CitysManager.Objects, cardPool)),
+                    FarmsCount = playerFarms.ToList().Count(),
                     RoadsScore = playerRoads.ToList().Sum(road => road.GetPoints(cardPool)),
                     RoadsCount = playerRoads.ToList().Count(),
-                    CastlesScore = playerCastles.ToList().Sum(castle => castle.GetPoints(cardPool)),
-                    CastlesCount = playerCastles.ToList().Count(),
+                    CitysScore = playerCitys.ToList().Sum(City => City.GetPoints(cardPool)),
+                    CitysCount = playerCitys.ToList().Count(),
                     ChipCount = player.СhipList.Count
                 };
                 scores.Add(score);

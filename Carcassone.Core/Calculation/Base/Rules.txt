@@ -1,0 +1,15 @@
+﻿1. The 72 LANDSCAPE TILES show roads, cities, and monasteries, in a field.
+
+2. Placing a tile
+You draw the depicted tile with three road segments starting from a village. 
+You must place it in such a way that it continues the existing landscape (the tiles already in play). 
+In the rare case that a tile cannot legally be placed anywhere, and all players agree, 
+it is removed from the game, and the player draws another.
+
+3. Placing a meeple
+After placing the tile, you may place a meeple on one of that tile’s object segments, 
+but only if the object is unoccupied by another highwayman.
+
+4. Scoring a road
+When both ends of a road are closed, that road is completed and scored. 
+The end of a road is closed when it meets a village, a city, a monastery, or it loops onto itself by meeting the other end.

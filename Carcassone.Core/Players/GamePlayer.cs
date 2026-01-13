@@ -61,7 +61,7 @@ namespace Carcassone.Core.Players
             if (room == null)
                 throw new Exception("The room cannot be null.");
 
-            var card = room.CardsPool.CurrentCard;
+            var card = room.TileStack.CurrentCard;
             if (card == null)
                 return; // игра уже окончена
 
@@ -126,14 +126,14 @@ namespace Carcassone.Core.Players
             {
                 var gameCopy = new GameRoom();
                 gameCopy.Load(roomSave);
-                var card = gameCopy.CardsPool.GetCard(cardId);
+                var card = gameCopy.TileStack.GetCard(cardId);
                 var field = gameCopy.GameGrid.GetCell(fieldId);
                 
                 if (!gameCopy.RotateCardTilFit(field, card)) // если карта не подходит
                     continue;
 
 
-                gameCopy.PutCardInField(card, field); 
+                gameCopy.PutTileInCell(card, field); 
 
                 // ходы с установкой фишки
                 var partNames = gameCopy.GetAvailableParts(card.Id).Select(p => p.PartName).ToList();

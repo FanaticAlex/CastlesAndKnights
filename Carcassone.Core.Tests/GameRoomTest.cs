@@ -1,5 +1,4 @@
 using Carcassone.Core.Board;
-using Carcassone.Core.Extensions;
 using Carcassone.Core.Players;
 using Carcassone.Core.Tiles;
 using System.Xml.Linq;
@@ -35,7 +34,7 @@ namespace Carcassone.Core.Tests.Room
             var room = new GameRoom();
             room.PlayersPool.AddPlayer("bob", PlayerType.Human);
             room.Start();
-            var card = room.CardsPool.CurrentCard;
+            var card = room.TileStack.CurrentCard;
             Assert.NotNull(card);
         }
 
@@ -43,7 +42,7 @@ namespace Carcassone.Core.Tests.Room
         public void GetCardsRemainInPoolTest()
         {
             var room = new GameRoom();
-            Assert.Equal(82, room.CardsPool.GetRemainTiles().Count);
+            Assert.Equal(82, room.TileStack.GetRemainTiles().Count);
         }
 
         [Fact]

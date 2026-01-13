@@ -87,7 +87,7 @@
       <FileName>Calculation\ScoreCalculator.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="CastlesManager" />
+      <Property Name="CitysManager" />
     </ShowAsAssociation>
   </Class>
   <Class Name="Carcassone.Core.Extensions.River.RiverExtension">

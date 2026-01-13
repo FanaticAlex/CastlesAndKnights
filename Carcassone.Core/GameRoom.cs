@@ -1,8 +1,9 @@
-﻿using Carcassone.Core.Calculation;
-using Carcassone.Core.Tiles;
-using Carcassone.Core.Extensions;
-using Carcassone.Core.Board;
+﻿using Carcassone.Core.Board;
+using Carcassone.Core.Calculation;
+using Carcassone.Core.Calculation.Base;
+using Carcassone.Core.Calculation.RiverExtension;
 using Carcassone.Core.Players;
+using Carcassone.Core.Tiles;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,8 +20,12 @@ namespace Carcassone.Core
     {
         public List<GameMove> Moves { get; set; } = new List<GameMove>();
 
-        public ExtensionsManager ExtensionsManager { get; set; }
-        public Stack CardsPool { get; set; }
+        /// <summary>
+        /// Extensions contains rules of the game.
+        /// </summary>
+        private List<IGameExtension> Extensions { get; } = new List<IGameExtension>();
+
+        public TileStack TileStack { get; set; }
         public ScoreCalculator ScoreCalculator { get; set; }
         public Grid GameGrid { get; set; }
         public GamePlayersPool PlayersPool { get; set; }
@@ -35,9 +40,16 @@ namespace Carcassone.Core
         {
             Id = Guid.NewGuid().ToString();
 
-            ExtensionsManager = new ExtensionsManager(true);
+            Extensions.Add(new BaseRules());
+            Extensions.Add(new RiverExtension());
 
-            CardsPool = new Stack(ExtensionsManager);
+            // compose stack from all tiles of all extensions
+            TileStack = new Tiles.TileStack();
+            foreach (var extension in Extensions)
+                extension.AddTiles(TileStack);
+
+            TileStack.Shaffle();
+
             ScoreCalculator = new ScoreCalculator();
             GameGrid = new Grid();
             PlayersPool = new GamePlayersPool();
@@ -73,17 +85,16 @@ namespace Carcassone.Core
         public void Load(string save)
         {
             var room = JsonConvert.DeserializeObject<GameRoom>(save) ?? throw new Exception($"Can't load the game from save {save}");
-            ExtensionsManager = room.ExtensionsManager;
-            CardsPool = room.CardsPool;
+            TileStack = room.TileStack;
             ScoreCalculator = room.ScoreCalculator;
             GameGrid = room.GameGrid;
             PlayersPool = room.PlayersPool;
         }
 
         public PlayerScore GetPlayerScore(string playerName) =>
-            ScoreCalculator.GetPlayerScore(playerName, PlayersPool, CardsPool);
+            ScoreCalculator.GetPlayerScore(playerName, PlayersPool, TileStack);
 
-        public Tile GetCard(string cardId) => CardsPool.GetCard(cardId);
+        public Tile GetCard(string cardId) => TileStack.GetCard(cardId);
 
         public List<Cell> GetFieldsToPutCard(string cardId)
         {
@@ -108,7 +119,7 @@ namespace Carcassone.Core
             foreach (var field in emptyFields)
             {
                 var canPut = false;
-                foreach (var card in CardsPool.GetRemainTiles())
+                foreach (var card in TileStack.GetRemainTiles())
                 {
                     if (CanPutCardInFieldWithRotation(field, card))
                     {
@@ -131,7 +142,7 @@ namespace Carcassone.Core
             return list;
         }
 
-        public void PutCardInField(Tile card, Cell field)
+        public void PutTileInCell(Tile card, Cell field)
         {
             if (card == null)
                 throw new Exception("Card can't be null");
@@ -143,7 +154,7 @@ namespace Carcassone.Core
                 throw new Exception("Card can't be put");
 
             GameGrid.PutCard(card, field);
-            ScoreCalculator.AddCard(card, field, GameGrid, CardsPool);
+            ScoreCalculator.AddCard(card, field, GameGrid, TileStack);
         }
 
         public void PutChipInCard(ObjectPart partObject, string playerName)
@@ -159,9 +170,9 @@ namespace Carcassone.Core
             if (gameMove == null) throw new ArgumentNullException("Move obj can not be null");
 
             var field = GameGrid.GetCell(gameMove.FieldId);
-            var card = CardsPool.GetCard(gameMove.CardId);
+            var card = TileStack.GetCard(gameMove.CardId);
             card.RotateCard(gameMove.CardRotation);
-            PutCardInField(card, field);
+            PutTileInCell(card, field);
 
             if ((gameMove.PlayerName != null) && (gameMove.PartName != null))
             {
@@ -172,12 +183,12 @@ namespace Carcassone.Core
             Moves.Add(gameMove);
 
             // расчеты
-            ScoreCalculator.CloseObjectsAndReturnChips(PlayersPool, CardsPool);
+            ScoreCalculator.CloseObjectsAndReturnChips(PlayersPool, TileStack);
 
-            CardsPool.DiscardCard(card);
-            CardsPool.CurrentCard = GetNextCard();
+            TileStack.DiscardCard(card);
+            TileStack.CurrentCard = GetNextCard();
 
-            if (CardsPool.CurrentCard == null)
+            if (TileStack.CurrentCard == null)
             {
                 IsFinished = true;
                 Finished?.Invoke(this, null);
@@ -191,7 +202,7 @@ namespace Carcassone.Core
         {
             return GameGrid.Cells
                 .Where(f => f.IsContainsCard())
-                .Select(f => CardsPool.GetCard(f.CardName))
+                .Select(f => TileStack.GetCard(f.CardName))
                 .ToList();
         }
 
@@ -207,13 +218,13 @@ namespace Carcassone.Core
         {
             do
             {
-                var topCard = CardsPool.GetTopCard();
+                var topCard = TileStack.GetTopCard();
                 if (CanPlayCard(topCard))
                     return topCard;
                 else
-                    CardsPool.DiscardCard(topCard);
+                    TileStack.DiscardCard(topCard);
             } 
-            while (!CardsPool.IsEmpty());
+            while (!TileStack.IsEmpty());
 
             return null;
         }
@@ -228,65 +239,6 @@ namespace Carcassone.Core
             {
                 if (CanPutCardInFieldWithRotation(field, card))
                     return true;
-            }
-
-            return false;
-        }
-
-        public bool CanPutCardInField(Cell field, Tile card)
-        {
-            if (field.IsContainsCard()) return false;
-
-            var neighbourTopCardName = GameGrid.GetNeighbour(field, CellSide.top)?.CardName;
-            Tile? neighbourTopCard = neighbourTopCardName != null ? CardsPool.GetCard(neighbourTopCardName) : null;
-            var neighbourLeftCardName = GameGrid.GetNeighbour(field, CellSide.left)?.CardName;
-            Tile? neighbourLeftCard = neighbourLeftCardName != null ? CardsPool.GetCard(neighbourLeftCardName) : null;
-            var neighbourBottomCardName = GameGrid.GetNeighbour(field, CellSide.bottom)?.CardName;
-            Tile? neighbourBottomCard = neighbourBottomCardName != null ? CardsPool.GetCard(neighbourBottomCardName) : null;
-            var neighbourRightCardName = GameGrid.GetNeighbour(field, CellSide.right)?.CardName;
-            Tile? neighbourRightCard = neighbourRightCardName != null ? CardsPool.GetCard(neighbourRightCardName) : null;
-
-            // если есть граничные карты то границы должны совпадать иначе карту присоединить нельзя
-            var isRiverCard = card.Id.Contains("W");
-            if (isRiverCard)
-            {
-                bool isTopFree = neighbourTopCard == null;
-                bool isLeftFree = neighbourLeftCard == null;
-                bool isBottomFree = neighbourBottomCard == null;
-                bool isRightFree = neighbourRightCard == null;
-
-                // проверям направление реки
-                bool isWaterDirectionTop = (isTopFree && card.TopEdgeType == CardEdgeType.Water);
-                bool isWaterDirectionRight = (isRightFree && card.RightEdgeType == CardEdgeType.Water);
-
-                bool connectWithTopWaterCard = (neighbourTopCard?.BottomEdgeType == card.TopEdgeType && card.TopEdgeType == CardEdgeType.Water);
-                bool connectWithLeftWaterCard = (neighbourLeftCard?.RightEdgeType == card.LeftEdgeType && card.LeftEdgeType == CardEdgeType.Water);
-                bool connectWithBottomWaterCard = (neighbourBottomCard?.TopEdgeType == card.BottomEdgeType && card.BottomEdgeType == CardEdgeType.Water);
-                bool connectWithRightWaterCard = (neighbourRightCard?.LeftEdgeType == card.RightEdgeType && card.RightEdgeType == CardEdgeType.Water);
-
-                // водную карту можно положить в поле, если в соседних с полем областях либо нет карт
-                // либо водные границы соседних карт совпадают
-                if ((isTopFree || connectWithTopWaterCard) &&
-                    (isLeftFree || connectWithLeftWaterCard) &&
-                    (isBottomFree || connectWithBottomWaterCard) &&
-                    (isRightFree || connectWithRightWaterCard) &&
-                    !isWaterDirectionTop &&
-                    !isWaterDirectionRight)
-                {
-                    return true;
-                }
-            }
-            else
-            {
-                // карту можно положить в поле, если в соседних с полем областях либо нет карт
-                // либо границы карты которую кладем и соседней карты совпадают
-                if ((neighbourTopCard == null || neighbourTopCard.BottomEdgeType == card.TopEdgeType) &&
-                    (neighbourLeftCard == null || neighbourLeftCard.RightEdgeType == card.LeftEdgeType) &&
-                    (neighbourBottomCard == null || neighbourBottomCard.TopEdgeType == card.BottomEdgeType) &&
-                    (neighbourRightCard == null || neighbourRightCard.LeftEdgeType == card.RightEdgeType))
-                {
-                    return true;
-                }
             }
 
             return false;
@@ -319,6 +271,15 @@ namespace Carcassone.Core
             copy.RightEdgeType = card.RightEdgeType;
 
             return RotateCardTilFit(field, copy);
+        }
+
+        private bool CanPutCardInField(Cell cell, Tile tile)
+        {
+            var result = true;
+            foreach(var extension in Extensions)
+                result &= extension.CanPutCardInField(cell, tile, GameGrid, TileStack);
+
+            return result;
         }
     }
 }

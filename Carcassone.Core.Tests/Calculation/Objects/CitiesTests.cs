@@ -44,18 +44,18 @@ namespace Carcassone.Core.Tests.Buisness
                 CardId = "CWCW(0)",
                 CardRotation = 1,
                 FieldId = $"{0}_{-1}",
-                PartName = "Castle_0"
+                PartName = "City_0"
             };
             room.MakeMove(gameMove1);
 
-            var castles = room.ScoreCalculator.CastlesManager.Objects;
-            Assert.True(castles.Count == 2);
-            Assert.False(castles[0].IsFinished);
-            Assert.False(castles[1].IsFinished);
-            Assert.True(castles[0].IsPlayerOwner(room.PlayersPool.GetPlayer(name), room.CardsPool));
+            var Citys = room.ScoreCalculator.CitysManager.Objects;
+            Assert.True(Citys.Count == 2);
+            Assert.False(Citys[0].IsFinished);
+            Assert.False(Citys[1].IsFinished);
+            Assert.True(Citys[0].IsPlayerOwner(room.PlayersPool.GetPlayer(name), room.TileStack));
             
             var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name).Name);
-            Assert.Equal(1, score.CastlesScore);
+            Assert.Equal(1, score.CitysScore);
             Assert.Equal(6, room.PlayersPool.GetPlayer(name).СhipList.Count);
         }
 
@@ -96,20 +96,20 @@ namespace Carcassone.Core.Tests.Buisness
                 CardId = "CFFF(1)",
                 CardRotation = 0,
                 FieldId = $"{0}_{-1}",
-                PartName = "Castle_0"
+                PartName = "City_0"
             };
             room.MakeMove(gameMove1);
 
-            var castles = room.ScoreCalculator.CastlesManager.Objects;
-            Assert.Single(castles);
-            var castle = castles.Single();
-            Assert.Equal(4, castle.GetPoints(room.CardsPool));
-            Assert.True(castle.IsFinished);
-            Assert.True(castle.IsPlayerOwner(room.PlayersPool.GetPlayer(name), room.CardsPool));
-            Assert.Contains(castle.PartsIds.Select(id => room.CardsPool.GetPart(id)), p => p.Flag != null);
+            var Citys = room.ScoreCalculator.CitysManager.Objects;
+            Assert.Single(Citys);
+            var City = Citys.Single();
+            Assert.Equal(4, City.GetPoints(room.TileStack));
+            Assert.True(City.IsFinished);
+            Assert.True(City.IsPlayerOwner(room.PlayersPool.GetPlayer(name), room.TileStack));
+            Assert.Contains(City.PartsIds.Select(id => room.TileStack.GetPart(id)), p => p.Flag != null);
 
             var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name).Name);
-            Assert.Equal(4, score.CastlesScore);
+            Assert.Equal(4, score.CitysScore);
             Assert.Equal(7, room.PlayersPool.GetPlayer(name).СhipList.Count);
         }
 
@@ -177,21 +177,21 @@ namespace Carcassone.Core.Tests.Buisness
                 CardId = "CFFF(1)",
                 CardRotation = 0,
                 FieldId = $"{-1}_{-1}",
-                PartName = "Castle_0"
+                PartName = "City_0"
             };
             room.MakeMove(gameMove3);
 
-            var castles = room.ScoreCalculator.CastlesManager.Objects;
-            Assert.Equal(2, castles.Count);
+            var Citys = room.ScoreCalculator.CitysManager.Objects;
+            Assert.Equal(2, Citys.Count);
 
-            var castle = castles[1];
-            Assert.Equal(4, castle.GetPoints(room.CardsPool));
-            Assert.True(castle.IsFinished);
-            Assert.True(castle.IsPlayerOwner(room.PlayersPool.GetPlayer(name), room.CardsPool));
-            Assert.Contains(castle.PartsIds.Select(id => room.CardsPool.GetPart(id)), p => p.Flag != null);
+            var City = Citys[1];
+            Assert.Equal(4, City.GetPoints(room.TileStack));
+            Assert.True(City.IsFinished);
+            Assert.True(City.IsPlayerOwner(room.PlayersPool.GetPlayer(name), room.TileStack));
+            Assert.Contains(City.PartsIds.Select(id => room.TileStack.GetPart(id)), p => p.Flag != null);
 
             var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name).Name);
-            Assert.Equal(4, score.CastlesScore);
+            Assert.Equal(4, score.CitysScore);
             Assert.Equal(7, room.PlayersPool.GetPlayer(name).СhipList.Count);
         }
     }

@@ -31,7 +31,7 @@ namespace Carcassone.Core.Tests.Buisness
                 CardId = "CRFR(0)",
                 CardRotation = 2,
                 FieldId = $"{0}_{0}",
-                PartName = "Cornfield_0"
+                PartName = "Farm_0"
             };
             room.MakeMove(gameMove1);
 
@@ -41,21 +41,21 @@ namespace Carcassone.Core.Tests.Buisness
                 CardId = "CFFF(0)",
                 CardRotation = 0,
                 FieldId = $"{0}_{-1}",
-                PartName = "Castle_0"
+                PartName = "City_0"
             };
             room.MakeMove(gameMove2);
 
-            Assert.Single(room.ScoreCalculator.CastlesManager.Objects);
-            Assert.True(room.ScoreCalculator.CastlesManager.Objects[0].IsFinished);
+            Assert.Single(room.ScoreCalculator.CitysManager.Objects);
+            Assert.True(room.ScoreCalculator.CitysManager.Objects[0].IsFinished);
 
             var score = room.GetPlayerScore(gamePlayer.Name);
-            Assert.Equal(4, score.CastlesScore);
-            Assert.Equal(3, score.CornfieldsScore);
+            Assert.Equal(4, score.CitysScore);
+            Assert.Equal(3, score.FarmsScore);
 
             Assert.Equal(3, room.ScoreCalculator.FarmsManager.Objects.Count);
-            Assert.True(room.ScoreCalculator.FarmsManager.Objects[0].IsPlayerOwner(gamePlayer, room.CardsPool));
-            Assert.True(!room.ScoreCalculator.FarmsManager.Objects[1].IsPlayerOwner(gamePlayer, room.CardsPool));
-            Assert.True(!room.ScoreCalculator.FarmsManager.Objects[2].IsPlayerOwner(gamePlayer, room.CardsPool));
+            Assert.True(room.ScoreCalculator.FarmsManager.Objects[0].IsPlayerOwner(gamePlayer, room.TileStack));
+            Assert.True(!room.ScoreCalculator.FarmsManager.Objects[1].IsPlayerOwner(gamePlayer, room.TileStack));
+            Assert.True(!room.ScoreCalculator.FarmsManager.Objects[2].IsPlayerOwner(gamePlayer, room.TileStack));
         }
 
         /// <summary>
@@ -94,14 +94,14 @@ namespace Carcassone.Core.Tests.Buisness
                 CardId = "WCCW(0)",
                 CardRotation = 0,
                 FieldId = $"{0}_{-1}",
-                PartName = "Cornfield_0"
+                PartName = "Farm_0"
             };
             room.MakeMove(gameMove2);
 
             var score = room.GetPlayerScore(owner1.Name);
-            Assert.Equal(0, score.CornfieldsScore);
+            Assert.Equal(0, score.FarmsScore);
 
-            Assert.Single(room.ScoreCalculator.CastlesManager.Objects);
+            Assert.Single(room.ScoreCalculator.CitysManager.Objects);
             Assert.Single(room.ScoreCalculator.RoadsManager.Objects);
             Assert.Equal(3, room.ScoreCalculator.FarmsManager.Objects.Count);
 
@@ -283,7 +283,7 @@ namespace Carcassone.Core.Tests.Buisness
                 CardId = "RRWW(0)",
                 CardRotation = 0,
                 FieldId = $"{0}_{0}",
-                PartName = "Cornfield_1"
+                PartName = "Farm_1"
             };
             room.MakeMove(gameMove1);
 
@@ -298,7 +298,7 @@ namespace Carcassone.Core.Tests.Buisness
             room.MakeMove(gameMove2);
 
             var card2 = room.GetCard("WCWR(0)");
-            Assert.Equal(true, card2.GetPart("Cornfield_0").IsPartOfOwnedObject);
+            Assert.Equal(true, card2.GetPart("Farm_0").IsPartOfOwnedObject);
 
             Assert.Equal(5, room.ScoreCalculator.FarmsManager.Objects.Count);
 

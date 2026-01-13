@@ -11,7 +11,7 @@ namespace Carcassone.Core.Calculation
 
         public string SecondCellId { get; set; }
 
-        public FieldSide? CornfieldSide { get; set; }
+        public FieldSide? FarmSide { get; set; }
 
         public string TileId { get; set; }
 

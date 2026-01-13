@@ -1,36 +1,61 @@
-﻿using Carcassone.Core.Tiles;
+﻿using Carcassone.Core.Board;
+using Carcassone.Core.Calculation.RiverExtension.Tiles;
+using Carcassone.Core.Tiles;
 using System.Collections.Generic;
-using Carcassone.Core.Calculation.River.Tiles;
 
-namespace Carcassone.Core.Calculation.River
+namespace Carcassone.Core.Calculation.RiverExtension
 {
     /// <summary>
     /// This extension is adding river cards to the game.
     /// </summary>
-    public class RiverExtension
+    public class RiverExtension: IGameExtension
     {
-        public List<Tile> GetCards()
+        public bool CanPutCardInField(Cell cell, Tile tile, Grid grid, TileStack tileStack)
         {
-            var riverCards = new List<Tile>();
-            Stack.AddCardToPool(typeof(FFWF), 1, riverCards); // начало реки
+            // направление реки всегда должно быть вниз и влево
+            var isRiverCard = tile.Id.Contains("W");
+            if (isRiverCard)
+            {
+                var neighbourTopCardName = grid.GetNeighbour(cell, CellSide.top)?.CardName;
+                Tile? neighbourTopCard = neighbourTopCardName != null ? tileStack.GetCard(neighbourTopCardName) : null;
 
-            var middleRiverCards = new List<Tile>();
-            Stack.AddCardToPool(typeof(CWCW), 1, middleRiverCards);
-            Stack.AddCardToPool(typeof(FWRW), 1, middleRiverCards);
-            Stack.AddCardToPool(typeof(FWWF), 1, middleRiverCards);
-            Stack.AddCardToPool(typeof(FWWF_1), 1, middleRiverCards);
-            Stack.AddCardToPool(typeof(RRWW), 1, middleRiverCards);
-            Stack.AddCardToPool(typeof(RWRW), 1, middleRiverCards);
-            Stack.AddCardToPool(typeof(WCCW), 1, middleRiverCards);
-            Stack.AddCardToPool(typeof(WCWR), 1, middleRiverCards);
-            Stack.AddCardToPool(typeof(WFWF), 1, middleRiverCards);
-            Stack.AddCardToPool(typeof(WFWF_1), 1, middleRiverCards);
-            // тасуем крты которые не начало и не конец реки
-            Stack.Shaffle(middleRiverCards);
-            riverCards.AddRange(middleRiverCards);
+                var neighbourRightCardName = grid.GetNeighbour(cell, CellSide.right)?.CardName;
+                Tile? neighbourRightCard = neighbourRightCardName != null ? tileStack.GetCard(neighbourRightCardName) : null;
 
-            Stack.AddCardToPool(typeof(WFFF), 1, riverCards); // окончание реки
-            return riverCards;
+                bool isTopFree = neighbourTopCard == null;
+                bool isRightFree = neighbourRightCard == null;
+
+                // проверям направление реки
+                bool isWaterDirectionTop = (isTopFree && tile.TopEdgeType == 'W');
+                bool isWaterDirectionRight = (isRightFree && tile.RightEdgeType == 'W');
+
+                // водную карту можно положить в поле, если в соседних с полем областях либо нет карт
+                // либо водные границы соседних карт совпадают
+                if (isWaterDirectionTop || isWaterDirectionRight)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public void AddTiles(TileStack stack)
+        {
+            stack.CreateTiles(typeof(FFWF), 1, 0); // river start
+
+            stack.CreateTiles(typeof(CWCW), 1, 1);
+            stack.CreateTiles(typeof(FWRW), 1, 1);
+            stack.CreateTiles(typeof(FWWF), 1, 1);
+            stack.CreateTiles(typeof(FWWF_1), 1, 1);
+            stack.CreateTiles(typeof(RRWW), 1, 1);
+            stack.CreateTiles(typeof(RWRW), 1, 1);
+            stack.CreateTiles(typeof(WCCW), 1, 1);
+            stack.CreateTiles(typeof(WCWR), 1, 1);
+            stack.CreateTiles(typeof(WFWF), 1, 1);
+            stack.CreateTiles(typeof(WFWF_1), 1, 1);
+
+            stack.CreateTiles(typeof(WFFF), 1, 2); // river end
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Carcassone.Core.Calculation.Base.Tiles
     {
         public CFFC_1(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            ((CityPart)GetPart(castlePartName)).IsThereShield = true;
+            ((CityPart)GetPart(CityPartName)).IsThereShield = true;
         }
     }
 }

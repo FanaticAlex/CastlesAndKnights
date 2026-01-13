@@ -19,8 +19,8 @@ namespace Carcassone.Core.Calculation.Base.Tiles
 
         public CCCC(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var castlePart = new CityPart(cityPartName, Id);
-            Parts.Add(castlePart);
+            var CityPart = new CityPart(cityPartName, Id);
+            Parts.Add(CityPart);
         }
 
         public override void ConnectField(Cell field, Grid grid)

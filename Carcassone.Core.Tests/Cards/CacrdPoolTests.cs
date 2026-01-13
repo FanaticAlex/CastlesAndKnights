@@ -1,6 +1,6 @@
 ﻿using Carcassone.Core.Tiles;
-using Carcassone.Core.Extensions;
 using Carcassone.Core.Board;
+using Carcassone.Core.Calculation.Base;
 using System;
 using Xunit;
 
@@ -11,9 +11,11 @@ namespace Carcassone.Core.Tests.Cards
         [Fact]
         public void GetCardTest()
         {
-            var extensionsManager = new ExtensionsManager(true);
-            var cardPool = new Stack(extensionsManager);
-            var cccc = cardPool.GetCard("CCCC(0)");
+            var stack = new TileStack();
+            var baseExt = new BaseRules();
+            baseExt.AddTiles(stack);
+
+            var cccc = stack.GetCard("CCCC(0)");
             Assert.NotNull(cccc);
         }
     }

@@ -17,7 +17,7 @@ namespace Carcassone.Core.Calculation.Base.Tiles
     {
         protected string roadPartName = "Road_0";
         protected string churchPartName = "Church_0";
-        protected string cornfieldPartName = "Cornfield_0";
+        protected string FarmPartName = "Farm_0";
 
         public FFRF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
@@ -27,8 +27,8 @@ namespace Carcassone.Core.Calculation.Base.Tiles
             var churchPart = new MonasteryPart(churchPartName, Id);
             Parts.Add(churchPart);
 
-            var cornfieldPart1 = new FieldPart(cornfieldPartName, Id);
-            Parts.Add(cornfieldPart1);
+            var FarmPart1 = new FieldPart(FarmPartName, Id);
+            Parts.Add(FarmPart1);
         }
 
         public override void ConnectField(Cell field, Grid grid)
@@ -37,11 +37,11 @@ namespace Carcassone.Core.Calculation.Base.Tiles
 
             ((MonasteryPart)GetPart(churchPartName)).CellId = field.Id;
 
-            AddBorderToPart(field, CellSide.top, GetPart(cornfieldPartName), grid);
-            AddBorderToPart(field, CellSide.right, GetPart(cornfieldPartName), grid);
-            AddBorderToPart(field, CellSide.left, GetPart(cornfieldPartName), grid);
-            AddCornfieldSplittedBorder(field, CellSide.bottom, FieldSide.side_3, GetPart(cornfieldPartName), grid);
-            AddCornfieldSplittedBorder(field, CellSide.bottom, FieldSide.side_4, GetPart(cornfieldPartName), grid);
+            AddBorderToPart(field, CellSide.top, GetPart(FarmPartName), grid);
+            AddBorderToPart(field, CellSide.right, GetPart(FarmPartName), grid);
+            AddBorderToPart(field, CellSide.left, GetPart(FarmPartName), grid);
+            AddFarmSplittedBorder(field, CellSide.bottom, FieldSide.side_3, GetPart(FarmPartName), grid);
+            AddFarmSplittedBorder(field, CellSide.bottom, FieldSide.side_4, GetPart(FarmPartName), grid);
         }
     }
 }

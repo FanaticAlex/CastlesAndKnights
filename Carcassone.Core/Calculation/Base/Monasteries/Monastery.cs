@@ -22,12 +22,12 @@ namespace Carcassone.Core.Calculation.Base.Monasteries
             _grid = grid;
         }
 
-        public string? GetOwnerName(Stack cardPool)
+        public string? GetOwnerName(TileStack cardPool)
         {
             return _baseChurchPart.Chip?.OwnerName ?? _baseChurchPart.Flag?.OwnerName;
         }
 
-        public bool IsPlayerOwner(GamePlayer player, Stack cardPool)
+        public bool IsPlayerOwner(GamePlayer player, TileStack cardPool)
         {
             return GetOwnerName(cardPool) == player.Name;
         }
@@ -35,7 +35,7 @@ namespace Carcassone.Core.Calculation.Base.Monasteries
         /// <summary>
         /// закрыть церковь если в ней 9 карт и вернуть фишку
         /// </summary>
-        public void TryToClose(GamePlayersPool playersPool, Stack cardPool)
+        public void TryToClose(GamePlayersPool playersPool, TileStack cardPool)
         {
             if (IsFinished)
             {

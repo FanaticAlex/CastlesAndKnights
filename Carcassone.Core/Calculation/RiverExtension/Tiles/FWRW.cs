@@ -1,10 +1,11 @@
-﻿using Carcassone.Core.Tiles;
-using Carcassone.Core.Board;
-using Carcassone.Core.Calculation.Base.Roads;
+﻿using Carcassone.Core.Board;
 using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Calculation.Base.Monasteries;
+using Carcassone.Core.Calculation.Base.Roads;
+using Carcassone.Core.Calculation.RiverExtension.Rivers;
+using Carcassone.Core.Tiles;
 
-namespace Carcassone.Core.Calculation.River.Tiles
+namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 {
 
     /// <summary>
@@ -16,45 +17,52 @@ namespace Carcassone.Core.Calculation.River.Tiles
     /// </summary>
     public class FWRW : Tile
     {
+        protected string RiverPart0Name = "River_0";
         protected string churchPartName = "Church_0";
-        protected string cornfieldPart0Name = "Cornfield_0";
-        protected string cornfieldPart1Name = "Cornfield_1";
-        protected string cornfieldPart2Name = "Cornfield_2";
+        protected string FarmPart0Name = "Farm_0";
+        protected string FarmPart1Name = "Farm_1";
+        protected string FarmPart2Name = "Farm_2";
         protected string roadPartName = "Road_0";
 
         public FWRW(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
+            var RiverPart0 = new RiverPart(RiverPart0Name, Id);
+            Parts.Add(RiverPart0);
+
             var churchPart = new MonasteryPart(churchPartName, Id);
             Parts.Add(churchPart);
 
-            var cornfieldPart1 = new FieldPart(cornfieldPart0Name, Id);
-            Parts.Add(cornfieldPart1);
+            var FarmPart1 = new FieldPart(FarmPart0Name, Id);
+            Parts.Add(FarmPart1);
 
-            var cornfieldPart2 = new FieldPart(cornfieldPart1Name, Id);
-            Parts.Add(cornfieldPart2);
+            var FarmPart2 = new FieldPart(FarmPart1Name, Id);
+            Parts.Add(FarmPart2);
 
             var roadPart = new RoadPart(roadPartName, Id);
             Parts.Add(roadPart);
 
-            var cornfieldPart3 = new FieldPart(cornfieldPart2Name, Id);
-            Parts.Add(cornfieldPart3);
+            var FarmPart3 = new FieldPart(FarmPart2Name, Id);
+            Parts.Add(FarmPart3);
         }
 
-        public override void ConnectField(Cell field, Grid grid)
+        public override void ConnectField(Cell cell, Grid grid)
         {
-            ((MonasteryPart)GetPart(churchPartName)).CellId = field.Id;
+            AddBorderToPart(cell, CellSide.right, GetPart(RiverPart0Name), grid);
+            AddBorderToPart(cell, CellSide.left, GetPart(RiverPart0Name), grid);
 
-            AddBorderToPart(field, CellSide.top, GetPart(cornfieldPart0Name), grid);
-            AddCornfieldSplittedBorder(field, CellSide.right, FieldSide.side_1, GetPart(cornfieldPart0Name), grid);
-            AddCornfieldSplittedBorder(field, CellSide.left, FieldSide.side_6, GetPart(cornfieldPart0Name), grid);
+            ((MonasteryPart)GetPart(churchPartName)).CellId = cell.Id;
 
-            AddCornfieldSplittedBorder(field, CellSide.right, FieldSide.side_2, GetPart(cornfieldPart1Name), grid);
-            AddCornfieldSplittedBorder(field, CellSide.bottom, FieldSide.side_3, GetPart(cornfieldPart1Name), grid);
+            AddBorderToPart(cell, CellSide.top, GetPart(FarmPart0Name), grid);
+            AddFarmSplittedBorder(cell, CellSide.right, FieldSide.side_1, GetPart(FarmPart0Name), grid);
+            AddFarmSplittedBorder(cell, CellSide.left, FieldSide.side_6, GetPart(FarmPart0Name), grid);
 
-            AddBorderToPart(field, CellSide.bottom, GetPart(roadPartName), grid);
+            AddFarmSplittedBorder(cell, CellSide.right, FieldSide.side_2, GetPart(FarmPart1Name), grid);
+            AddFarmSplittedBorder(cell, CellSide.bottom, FieldSide.side_3, GetPart(FarmPart1Name), grid);
 
-            AddCornfieldSplittedBorder(field, CellSide.bottom, FieldSide.side_4, GetPart(cornfieldPart2Name), grid);
-            AddCornfieldSplittedBorder(field, CellSide.left, FieldSide.side_5, GetPart(cornfieldPart2Name), grid);
+            AddBorderToPart(cell, CellSide.bottom, GetPart(roadPartName), grid);
+
+            AddFarmSplittedBorder(cell, CellSide.bottom, FieldSide.side_4, GetPart(FarmPart2Name), grid);
+            AddFarmSplittedBorder(cell, CellSide.left, FieldSide.side_5, GetPart(FarmPart2Name), grid);
         }
     }
 }

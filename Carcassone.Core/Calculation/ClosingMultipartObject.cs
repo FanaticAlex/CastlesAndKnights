@@ -11,7 +11,7 @@ namespace Carcassone.Core.Calculation
 
         public List<string> PartsIds { get; set; } = new List<string>();
 
-        public void AddPart(ObjectPart part, Stack cardPool)
+        public void AddPart(ObjectPart part, TileStack cardPool)
         {
             PartsIds.Add(part.PartId);
             OpenBorders.AddRange(part.Borders);
@@ -40,7 +40,7 @@ namespace Carcassone.Core.Calculation
 
         public bool IsFinished { get; set; }
 
-        public void TryToClose(GamePlayersPool playersPool, Stack cardPool)
+        public void TryToClose(GamePlayersPool playersPool, TileStack cardPool)
         {
             IsFinished = IsClosed();
             if (IsFinished)
@@ -72,12 +72,12 @@ namespace Carcassone.Core.Calculation
             return isClosed1;
         }
 
-        public bool IsPlayerOwner(GamePlayer player, Stack cardPool)
+        public bool IsPlayerOwner(GamePlayer player, TileStack cardPool)
         {
             return GetOwnersNames(cardPool).Contains(player.Name);
         }
 
-        private List<string> GetOwnersNames(Stack cardPool)
+        private List<string> GetOwnersNames(TileStack cardPool)
         {
             // если объект закончен считаем по флагам владельцев
             // если не закончен считаем количество фишек
@@ -89,7 +89,7 @@ namespace Carcassone.Core.Calculation
                 return GetOwnersByChips(cardPool);
         }
 
-        private List<string> GetOwnersByFlags(Stack cardPool)
+        private List<string> GetOwnersByFlags(TileStack cardPool)
         {
             var parts = PartsIds.Select(id => cardPool.GetPart(id));
             return parts
@@ -98,7 +98,7 @@ namespace Carcassone.Core.Calculation
                 .Distinct().ToList();
         }
 
-        private List<string> GetOwnersByChips(Stack cardPool)
+        private List<string> GetOwnersByChips(TileStack cardPool)
         {
             // количество фишек у каждого игрока
             var ownersToChipCount = new Dictionary<string, int>();
