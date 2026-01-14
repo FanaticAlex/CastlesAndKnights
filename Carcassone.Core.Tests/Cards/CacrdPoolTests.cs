@@ -15,7 +15,7 @@ namespace Carcassone.Core.Tests.Cards
             var baseExt = new BaseRules();
             baseExt.AddTiles(stack);
 
-            var cccc = stack.GetCard("CCCC(0)");
+            var cccc = stack.GetTile("CCCC(0)");
             Assert.NotNull(cccc);
         }
     }

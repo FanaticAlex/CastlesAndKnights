@@ -56,9 +56,9 @@ namespace Carcassone.Core.Tests.Room
             var gameMove0 = new GameMove()
             {
                 PlayerName = "player1",
-                CardId = "FFWF(0)",
-                CardRotation = 0,
-                FieldId = $"{0}_{0}",
+                TileId = "FFWF(0)",
+                TileRotation = 0,
+                CellId = $"{0}_{0}",
                 PartName = null
             };
             room.MakeMove(gameMove0);

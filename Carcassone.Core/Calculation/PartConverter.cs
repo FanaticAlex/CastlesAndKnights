@@ -31,7 +31,7 @@ namespace Carcassone.Core.Calculation
             {
                 case "City": return part.ToObject<CityPart>();
                 case "Monastery": return part.ToObject<MonasteryPart>();
-                case "Field": return part.ToObject<FieldPart>();
+                case "Farm": return part.ToObject<FarmPart>();
                 case "Road": return part.ToObject<RoadPart>();
                 case "River": return part.ToObject<RiverPart>();
             }

@@ -26,9 +26,9 @@ namespace Carcassone.Core.Tests.Buisness
             var gameMove0 = new GameMove()
             {
                 PlayerName = name,
-                CardId = "RRRR(0)",
-                CardRotation = 0,
-                FieldId = $"{0}_{0}",
+                TileId = "RRRR(0)",
+                TileRotation = 0,
+                CellId = $"{0}_{0}",
                 PartName = null
             };
             room.MakeMove(gameMove0);
@@ -65,9 +65,9 @@ namespace Carcassone.Core.Tests.Buisness
             var gameMove0 = new GameMove()
             {
                 PlayerName = name,
-                CardId = "FFRR(0)",
-                CardRotation = 2,
-                FieldId = $"{0}_{0}",
+                TileId = "FFRR(0)",
+                TileRotation = 2,
+                CellId = $"{0}_{0}",
                 PartName = "Road_0"
             };
             room.MakeMove(gameMove0);
@@ -75,9 +75,9 @@ namespace Carcassone.Core.Tests.Buisness
             var gameMove1 = new GameMove()
             {
                 PlayerName = name,
-                CardId = "FFRR(1)",
-                CardRotation = 3,
-                FieldId = $"{0}_{1}",
+                TileId = "FFRR(1)",
+                TileRotation = 3,
+                CellId = $"{0}_{1}",
                 PartName = null
             };
             room.MakeMove(gameMove1);
@@ -85,9 +85,9 @@ namespace Carcassone.Core.Tests.Buisness
             var gameMove2 = new GameMove()
             {
                 PlayerName = name,
-                CardId = "FFRR(2)",
-                CardRotation = 0,
-                FieldId = $"{1}_{1}",
+                TileId = "FFRR(2)",
+                TileRotation = 0,
+                CellId = $"{1}_{1}",
                 PartName = null
             };
             room.MakeMove(gameMove2);
@@ -95,9 +95,9 @@ namespace Carcassone.Core.Tests.Buisness
             var gameMove3 = new GameMove()
             {
                 PlayerName = name,
-                CardId = "FFRR(3)",
-                CardRotation = 1,
-                FieldId = $"{1}_{0}",
+                TileId = "FFRR(3)",
+                TileRotation = 1,
+                CellId = $"{1}_{0}",
                 PartName = null
             };
             room.MakeMove(gameMove3);
@@ -133,9 +133,9 @@ namespace Carcassone.Core.Tests.Buisness
             var gameMove0 = new GameMove()
             {
                 PlayerName = name,
-                CardId = "FFRF(0)",
-                CardRotation = 0,
-                FieldId = $"{0}_{0}",
+                TileId = "FFRF(0)",
+                TileRotation = 0,
+                CellId = $"{0}_{0}",
                 PartName = "Road_0"
             };
             room.MakeMove(gameMove0);
@@ -143,9 +143,9 @@ namespace Carcassone.Core.Tests.Buisness
             var gameMove1 = new GameMove()
             {
                 PlayerName = name,
-                CardId = "FRRR(0)",
-                CardRotation = 2,
-                FieldId = $"{0}_{-1}",
+                TileId = "FRRR(0)",
+                TileRotation = 2,
+                CellId = $"{0}_{-1}",
                 PartName = null
             };
             room.MakeMove(gameMove1);

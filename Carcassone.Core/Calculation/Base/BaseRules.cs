@@ -9,25 +9,28 @@ namespace Carcassone.Core.Calculation.Base
 {
     public class BaseRules: IGameExtension
     {
-        public bool CanPutCardInField(Cell cell, Tile tile, Grid grid, TileStack tileStack)
+        public bool CanPutTileInCell(Cell cell, Tile tile, Grid grid, TileStack tileStack)
         {
-            if (cell.IsContainsCard()) return false; // if there is a tile already
+            if (cell.IsContainingTile()) return false; // if there is a tile already
 
-            var neighbourTopCardName = grid.GetNeighbour(cell, CellSide.top)?.CardName;
-            Tile? neighbourTopCard = neighbourTopCardName != null ? tileStack.GetCard(neighbourTopCardName) : null;
-            var neighbourLeftCardName = grid.GetNeighbour(cell, CellSide.left)?.CardName;
-            Tile? neighbourLeftCard = neighbourLeftCardName != null ? tileStack.GetCard(neighbourLeftCardName) : null;
-            var neighbourBottomCardName = grid.GetNeighbour(cell, CellSide.bottom)?.CardName;
-            Tile? neighbourBottomCard = neighbourBottomCardName != null ? tileStack.GetCard(neighbourBottomCardName) : null;
-            var neighbourRightCardName = grid.GetNeighbour(cell, CellSide.right)?.CardName;
-            Tile? neighbourRightCard = neighbourRightCardName != null ? tileStack.GetCard(neighbourRightCardName) : null;
+            var neighbourTopTileName = grid.GetNeighbour(cell, CellSide.top)?.CardName;
+            Tile? neighbourTopTile = neighbourTopTileName != null ? tileStack.GetTile(neighbourTopTileName) : null;
+
+            var neighbourLeftTileName = grid.GetNeighbour(cell, CellSide.left)?.CardName;
+            Tile? neighbourLeftTile = neighbourLeftTileName != null ? tileStack.GetTile(neighbourLeftTileName) : null;
+
+            var neighbourBottomTileName = grid.GetNeighbour(cell, CellSide.bottom)?.CardName;
+            Tile? neighbourBottomTile = neighbourBottomTileName != null ? tileStack.GetTile(neighbourBottomTileName) : null;
+
+            var neighbourRightTileName = grid.GetNeighbour(cell, CellSide.right)?.CardName;
+            Tile? neighbourRightTile = neighbourRightTileName != null ? tileStack.GetTile(neighbourRightTileName) : null;
 
             // карту можно положить в поле, если в соседних с полем областях либо нет карт
             // либо границы карты которую кладем и соседней карты совпадают
-            if ((neighbourTopCard == null || neighbourTopCard.BottomEdgeType == tile.TopEdgeType) &&
-                (neighbourLeftCard == null || neighbourLeftCard.RightEdgeType == tile.LeftEdgeType) &&
-                (neighbourBottomCard == null || neighbourBottomCard.TopEdgeType == tile.BottomEdgeType) &&
-                (neighbourRightCard == null || neighbourRightCard.LeftEdgeType == tile.RightEdgeType))
+            if ((neighbourTopTile == null || neighbourTopTile.BottomEdgeType == tile.TopEdgeType) &&
+                (neighbourLeftTile == null || neighbourLeftTile.RightEdgeType == tile.LeftEdgeType) &&
+                (neighbourBottomTile == null || neighbourBottomTile.TopEdgeType == tile.BottomEdgeType) &&
+                (neighbourRightTile == null || neighbourRightTile.LeftEdgeType == tile.RightEdgeType))
             {
                 return true;
             }

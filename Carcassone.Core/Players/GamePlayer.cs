@@ -108,10 +108,10 @@ namespace Carcassone.Core.Players
             return bestScoreMove.Key;
         }
 
-        private List<GameMove> GetPossibleMoves(GameRoom room, string cardId)
+        private List<GameMove> GetPossibleMoves(GameRoom room, string tileId)
         {
             var roomSave = room.Save();
-            var availableFields = room.GetFieldsToPutCard(cardId).Select(item => item.Id).ToList();
+            var availableCells = room.GetCellsToPutCard(tileId).Select(item => item.Id).ToList();
 
             var maxCalculations = 10;
             switch (PlayerType)
@@ -122,30 +122,30 @@ namespace Carcassone.Core.Players
             }
 
             var possibleMoves = new List<GameMove>();
-            foreach (var fieldId in availableFields)
+            foreach (var cellId in availableCells)
             {
                 var gameCopy = new GameRoom();
                 gameCopy.Load(roomSave);
-                var card = gameCopy.TileStack.GetCard(cardId);
-                var field = gameCopy.GameGrid.GetCell(fieldId);
+                var tile = gameCopy.TileStack.GetTile(tileId);
+                var cell = gameCopy.GameGrid.GetCell(cellId);
                 
-                if (!gameCopy.RotateCardTilFit(field, card)) // если карта не подходит
+                if (!gameCopy.RotateTileTilFit(cell, tile)) // если карта не подходит
                     continue;
 
 
-                gameCopy.PutTileInCell(card, field); 
+                gameCopy.PutTileInCell(tile, cell); 
 
                 // ходы с установкой фишки
-                var partNames = gameCopy.GetAvailableParts(card.Id).Select(p => p.PartName).ToList();
+                var partNames = gameCopy.GetAvailableParts(tile.Id).Select(p => p.PartName).ToList();
                 partNames.Add(null); // ход без установки фишки
                 foreach (var partName in partNames)
                 {
                     var gameMove1 = new GameMove()
                     {
-                        CardId = card.Id,
-                        CardRotation = card.RotationsCount,
+                        TileId = tile.Id,
+                        TileRotation = tile.RotationsCount,
                         PlayerName = Name,
-                        FieldId = field.Id,
+                        CellId = cell.Id,
                         PartName = partName,
                     };
 

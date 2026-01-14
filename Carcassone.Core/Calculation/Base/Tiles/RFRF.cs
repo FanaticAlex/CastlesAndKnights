@@ -24,25 +24,25 @@ namespace Carcassone.Core.Calculation.Base.Tiles
             var roadPart1 = new RoadPart(roadPartName, Id);
             Parts.Add(roadPart1);
 
-            var FarmPart1 = new FieldPart(FarmPartName, Id);
+            var FarmPart1 = new FarmPart(FarmPartName, Id);
             Parts.Add(FarmPart1);
 
-            var FarmPart2 = new FieldPart(FarmPart1Name, Id);
+            var FarmPart2 = new FarmPart(FarmPart1Name, Id);
             Parts.Add(FarmPart2);
         }
 
-        public override void ConnectField(Cell field, Grid grid)
+        public override void ConnectCell(Cell cell, Grid grid)
         {
-            AddBorderToPart(field, CellSide.top, GetPart(roadPartName), grid);
-            AddBorderToPart(field, CellSide.bottom, GetPart(roadPartName), grid);
+            AddBorderToPart(cell, CellSide.top, GetPart(roadPartName), grid);
+            AddBorderToPart(cell, CellSide.bottom, GetPart(roadPartName), grid);
 
-            AddFarmSplittedBorder(field, CellSide.top, FieldSide.side_0, GetPart(FarmPartName), grid);
-            AddBorderToPart(field, CellSide.right, GetPart(FarmPartName), grid);
-            AddFarmSplittedBorder(field, CellSide.bottom, FieldSide.side_3, GetPart(FarmPartName), grid);
+            AddFarmSplittedBorder(cell, CellSide.top, FieldSide.side_0, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, CellSide.right, GetPart(FarmPartName), grid);
+            AddFarmSplittedBorder(cell, CellSide.bottom, FieldSide.side_3, GetPart(FarmPartName), grid);
 
-            AddFarmSplittedBorder(field, CellSide.bottom, FieldSide.side_4, GetPart(FarmPart1Name), grid);
-            AddBorderToPart(field, CellSide.left, GetPart(FarmPart1Name), grid);
-            AddFarmSplittedBorder(field, CellSide.top, FieldSide.side_7, GetPart(FarmPart1Name), grid);
+            AddFarmSplittedBorder(cell, CellSide.bottom, FieldSide.side_4, GetPart(FarmPart1Name), grid);
+            AddBorderToPart(cell, CellSide.left, GetPart(FarmPart1Name), grid);
+            AddFarmSplittedBorder(cell, CellSide.top, FieldSide.side_7, GetPart(FarmPart1Name), grid);
         }
     }
 }

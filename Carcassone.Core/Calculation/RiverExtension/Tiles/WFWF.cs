@@ -23,14 +23,14 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
             var RiverPart0 = new RiverPart(RiverPart0Name, Id);
             Parts.Add(RiverPart0);
 
-            var FarmPart0 = new FieldPart(FarmPart0Name, Id);
+            var FarmPart0 = new FarmPart(FarmPart0Name, Id);
             Parts.Add(FarmPart0);
 
-            var FarmPart1 = new FieldPart(FarmPart1Name, Id);
+            var FarmPart1 = new FarmPart(FarmPart1Name, Id);
             Parts.Add(FarmPart1);
         }
 
-        public override void ConnectField(Cell cell, Grid grid)
+        public override void ConnectCell(Cell cell, Grid grid)
         {
             AddBorderToPart(cell, CellSide.top, GetPart(RiverPart0Name), grid);
             AddBorderToPart(cell, CellSide.bottom, GetPart(RiverPart0Name), grid);

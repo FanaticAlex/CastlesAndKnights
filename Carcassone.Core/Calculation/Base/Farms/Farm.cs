@@ -93,8 +93,8 @@ namespace Carcassone.Core.Calculation.Base.Farms
             var parts = PartsIds.Select(id => cardPool.GetPart(id));
             foreach (var FarmPart in parts)
             {
-                var card = cardPool.GetCard(FarmPart.CardId);
-                var connectedCityParts = card.GetConnectedCityParts((FieldPart)FarmPart);
+                var card = cardPool.GetTile(FarmPart.CardId);
+                var connectedCityParts = card.GetConnectedCityParts((FarmPart)FarmPart);
 
                 foreach (var City in allCitys)
                 {

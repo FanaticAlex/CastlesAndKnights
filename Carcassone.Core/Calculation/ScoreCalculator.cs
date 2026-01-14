@@ -33,14 +33,14 @@ namespace Carcassone.Core.Calculation
         /// Добавляет карту и пересчитывает очки.
         /// </summary>
         /// <param name="tile"></param>
-        public void AddCard(Tile tile, Cell cell, Grid grid, TileStack tileStack)
+        public void AddTile(Tile tile, Cell cell, Grid grid, TileStack tileStack)
         {
             foreach (ObjectPart part in tile.Parts)
             {
                 if (part is RiverPart)
                     RiversManager.ProcessPart(part, tileStack);
 
-                if (part is FieldPart)
+                if (part is FarmPart)
                     FarmsManager.ProcessPart(part, tileStack);
 
                 if (part is MonasteryPart)

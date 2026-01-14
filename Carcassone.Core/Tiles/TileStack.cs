@@ -30,19 +30,19 @@ namespace Carcassone.Core.Tiles
 
         public List<Tile> GetAllTiles()
         {
-            var allCards = new List<Tile>();
-            allCards.AddRange(GetRemainTiles());
-            allCards.AddRange(_discardedTiles);
-            return allCards;
+            var all = new List<Tile>();
+            all.AddRange(GetRemainTiles());
+            all.AddRange(_discardedTiles);
+            return all;
         }
 
-        public Tile GetCard(string cardId)
+        public Tile GetTile(string tileId)
         {
-            var card = GetAllTiles().FirstOrDefault(card => card.Id == cardId);
-            if (card == null)
-                throw new Exception($"Card {cardId} not found");
+            var tile = GetAllTiles().FirstOrDefault(t => t.Id == tileId);
+            if (tile == null)
+                throw new Exception($"Tile {tileId} not found");
 
-            return card;
+            return tile;
         }
 
         public bool IsEmpty()
@@ -50,12 +50,12 @@ namespace Carcassone.Core.Tiles
             return _remain.Count == 0;
         }
 
-        public Tile? GetTopCard()
+        public Tile? GetTopTile()
         {
             return _remain.FirstOrDefault();
         }
 
-        public void DiscardCard(Tile? card)
+        public void DiscardTile(Tile? card)
         {
             if (card == null) return;
 

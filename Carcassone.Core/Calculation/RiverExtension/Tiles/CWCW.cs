@@ -34,18 +34,18 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
             var CityPart1 = new CityPart(CityPart1Name, Id);
             Parts.Add(CityPart1);
 
-            var FarmPart0 = new FieldPart(FarmPart0Name, Id);
+            var FarmPart0 = new FarmPart(FarmPart0Name, Id);
             Parts.Add(FarmPart0);
 
-            var FarmPart1 = new FieldPart(FarmPart1Name, Id);
+            var FarmPart1 = new FarmPart(FarmPart1Name, Id);
             Parts.Add(FarmPart1);
 
 
-            FieldToCityParts.Add(FarmPart0.PartId, new List<string>() { CityPart0.PartId });
-            FieldToCityParts.Add(FarmPart1.PartId, new List<string>() { CityPart1.PartId });
+            FarmToCityParts.Add(FarmPart0.PartId, new List<string>() { CityPart0.PartId });
+            FarmToCityParts.Add(FarmPart1.PartId, new List<string>() { CityPart1.PartId });
         }
 
-        public override void ConnectField(Cell cell, Grid grid)
+        public override void ConnectCell(Cell cell, Grid grid)
         {
             AddBorderToPart(cell, CellSide.right, GetPart(RiverPart0Name), grid);
             AddBorderToPart(cell, CellSide.left, GetPart(RiverPart0Name), grid);

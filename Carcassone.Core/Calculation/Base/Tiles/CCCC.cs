@@ -23,12 +23,12 @@ namespace Carcassone.Core.Calculation.Base.Tiles
             Parts.Add(CityPart);
         }
 
-        public override void ConnectField(Cell field, Grid grid)
+        public override void ConnectCell(Cell cell, Grid grid)
         {
-            AddBorderToPart(field, CellSide.top, GetPart(cityPartName), grid);
-            AddBorderToPart(field, CellSide.right, GetPart(cityPartName), grid);
-            AddBorderToPart(field, CellSide.bottom, GetPart(cityPartName), grid);
-            AddBorderToPart(field, CellSide.left, GetPart(cityPartName), grid);
+            AddBorderToPart(cell, CellSide.top, GetPart(cityPartName), grid);
+            AddBorderToPart(cell, CellSide.right, GetPart(cityPartName), grid);
+            AddBorderToPart(cell, CellSide.bottom, GetPart(cityPartName), grid);
+            AddBorderToPart(cell, CellSide.left, GetPart(cityPartName), grid);
         }
     }
 }

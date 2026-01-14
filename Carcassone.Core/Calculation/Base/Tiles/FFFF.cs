@@ -22,18 +22,18 @@ namespace Carcassone.Core.Calculation.Base.Tiles
             var churchPart = new MonasteryPart(churchPartName, Id);
             Parts.Add(churchPart);
 
-            var FarmPart1 = new FieldPart(FarmPartName, Id);
+            var FarmPart1 = new FarmPart(FarmPartName, Id);
             Parts.Add(FarmPart1);
         }
 
-        public override void ConnectField(Cell field, Grid grid)
+        public override void ConnectCell(Cell cell, Grid grid)
         {
-            ((MonasteryPart)GetPart(churchPartName)).CellId = field.Id;
+            ((MonasteryPart)GetPart(churchPartName)).CellId = cell.Id;
 
-            AddBorderToPart(field, CellSide.top, GetPart(FarmPartName), grid);
-            AddBorderToPart(field, CellSide.right, GetPart(FarmPartName), grid);
-            AddBorderToPart(field, CellSide.bottom, GetPart(FarmPartName), grid);
-            AddBorderToPart(field, CellSide.left, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, CellSide.top, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, CellSide.right, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, CellSide.bottom, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, CellSide.left, GetPart(FarmPartName), grid);
         }
     }
 }

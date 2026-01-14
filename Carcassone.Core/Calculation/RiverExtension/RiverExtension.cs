@@ -10,17 +10,17 @@ namespace Carcassone.Core.Calculation.RiverExtension
     /// </summary>
     public class RiverExtension: IGameExtension
     {
-        public bool CanPutCardInField(Cell cell, Tile tile, Grid grid, TileStack tileStack)
+        public bool CanPutTileInCell(Cell cell, Tile tile, Grid grid, TileStack tileStack)
         {
             // направление реки всегда должно быть вниз и влево
             var isRiverCard = tile.Id.Contains("W");
             if (isRiverCard)
             {
                 var neighbourTopCardName = grid.GetNeighbour(cell, CellSide.top)?.CardName;
-                Tile? neighbourTopCard = neighbourTopCardName != null ? tileStack.GetCard(neighbourTopCardName) : null;
+                Tile? neighbourTopCard = neighbourTopCardName != null ? tileStack.GetTile(neighbourTopCardName) : null;
 
                 var neighbourRightCardName = grid.GetNeighbour(cell, CellSide.right)?.CardName;
-                Tile? neighbourRightCard = neighbourRightCardName != null ? tileStack.GetCard(neighbourRightCardName) : null;
+                Tile? neighbourRightCard = neighbourRightCardName != null ? tileStack.GetTile(neighbourRightCardName) : null;
 
                 bool isTopFree = neighbourTopCard == null;
                 bool isRightFree = neighbourRightCard == null;

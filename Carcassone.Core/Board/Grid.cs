@@ -22,7 +22,7 @@ namespace Carcassone.Core.Board
             CreateCell(0, 0); // create initial cell
         }
 
-        public void PutCard(Tile card, Cell cell)
+        public void PutTile(Tile card, Cell cell)
         {
             lock (_lockObj)
             {
@@ -34,69 +34,69 @@ namespace Carcassone.Core.Board
 
                 // connect card to cell
                 cell.CardName = card.Id;
-                card.ConnectField(cell, this);
+                card.ConnectCell(cell, this);
             }
         }
 
-        public Cell? GetNeighbour(Cell? field, CellSide side)
+        public Cell? GetNeighbour(Cell? cell, CellSide side)
         {
-            if (field == null)
+            if (cell == null)
                 return null;
 
             return side switch
             {
-                CellSide.top => GetFieldWithoutThrowing(field.X, field.Y + 1),
-                CellSide.bottom => GetFieldWithoutThrowing(field.X, field.Y - 1),
-                CellSide.right => GetFieldWithoutThrowing(field.X + 1, field.Y),
-                CellSide.left => GetFieldWithoutThrowing(field.X - 1, field.Y),
+                CellSide.top => GetCellWithoutThrowing(cell.X, cell.Y + 1),
+                CellSide.bottom => GetCellWithoutThrowing(cell.X, cell.Y - 1),
+                CellSide.right => GetCellWithoutThrowing(cell.X + 1, cell.Y),
+                CellSide.left => GetCellWithoutThrowing(cell.X - 1, cell.Y),
                 _ => throw new KeyNotFoundException(),
             };
         }
 
-        public Cell? GetNeighbour(Cell? field, int deltaX, int deltaY)
+        public Cell? GetNeighbour(Cell? cell, int deltaX, int deltaY)
         {
-            if (field == null)
+            if (cell == null)
                 return null;
 
-            return GetFieldWithoutThrowing(field.X + deltaX, field.Y + deltaY);
+            return GetCellWithoutThrowing(cell.X + deltaX, cell.Y + deltaY);
         }
 
-        public List<Cell> GetEmptyFields()
+        public List<Cell> GetEmptyCells()
         {
-            return Cells.ToList().Where(f => string.IsNullOrEmpty(f.CardName)).ToList();
+            return Cells.ToList().Where(c => string.IsNullOrEmpty(c.CardName)).ToList();
         }
 
         public List<Cell> GetAvailableCells()
         {
-            return Cells.ToList().Where(f => !f.NotAvailable).ToList();
+            return Cells.ToList().Where(c => !c.NotAvailable).ToList();
         }
 
-        public List<Cell> GetUnavailableFields()
+        public List<Cell> GetUnavailableCells()
         {
-            return Cells.ToList().Where(f => f.NotAvailable).ToList();
+            return Cells.ToList().Where(c => c.NotAvailable).ToList();
         }
 
-        public Cell GetField(int x, int y) => GetCell(Cell.GetFieldID(x,y));
+        public Cell GetCell(int x, int y) => GetCell(Cell.GetCellID(x,y));
 
-        public Cell GetCell(string fieldId)
+        public Cell GetCell(string cellId)
         {
-            var field = Cells.ToList().FirstOrDefault(field => field.Id == fieldId);
-            if (field == null)
-                throw new Exception($"No field {fieldId} found");
+            var cell = Cells.ToList().FirstOrDefault(c => c.Id == cellId);
+            if (cell == null)
+                throw new Exception($"No cell {cellId} found");
 
-            return field;
+            return cell;
         }
 
         private void CreateCell(int x, int y)
         {
-            var field = GetFieldWithoutThrowing(x, y);
-            if (field == null)
+            var cell = GetCellWithoutThrowing(x, y);
+            if (cell == null)
                 Cells.Add(new Cell(x, y));
         }
 
-        private Cell GetFieldWithoutThrowing(int x, int y)
+        private Cell GetCellWithoutThrowing(int x, int y)
         {
-            return Cells.ToList().FirstOrDefault(field => field.Id == Cell.GetFieldID(x, y));
+            return Cells.ToList().FirstOrDefault(c => c.Id == Cell.GetCellID(x, y));
         }
     }
 }

@@ -25,24 +25,24 @@ namespace Carcassone.Core.Calculation.Base.Tiles
             var CityPart = new CityPart(CityPartName, Id);
             Parts.Add(CityPart);
 
-            var FarmPart1 = new FieldPart(FarmPartName, Id);
+            var FarmPart1 = new FarmPart(FarmPartName, Id);
             Parts.Add(FarmPart1);
 
-            var FarmPart2 = new FieldPart(FarmPart1Name, Id);
+            var FarmPart2 = new FarmPart(FarmPart1Name, Id);
             Parts.Add(FarmPart2);
 
-            FieldToCityParts.Add(FarmPart1.PartId, new List<string>() { CityPart.PartId });
-            FieldToCityParts.Add(FarmPart2.PartId, new List<string>() { CityPart.PartId });
+            FarmToCityParts.Add(FarmPart1.PartId, new List<string>() { CityPart.PartId });
+            FarmToCityParts.Add(FarmPart2.PartId, new List<string>() { CityPart.PartId });
         }
 
-        public override void ConnectField(Cell field, Grid grid)
+        public override void ConnectCell(Cell cell, Grid grid)
         {
-            AddBorderToPart(field, CellSide.right, GetPart(CityPartName), grid);
-            AddBorderToPart(field, CellSide.left, GetPart(CityPartName), grid);
+            AddBorderToPart(cell, CellSide.right, GetPart(CityPartName), grid);
+            AddBorderToPart(cell, CellSide.left, GetPart(CityPartName), grid);
 
-            AddBorderToPart(field, CellSide.top, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, CellSide.top, GetPart(FarmPartName), grid);
 
-            AddBorderToPart(field, CellSide.bottom, GetPart(FarmPart1Name), grid);
+            AddBorderToPart(cell, CellSide.bottom, GetPart(FarmPart1Name), grid);
         }
     }
 }

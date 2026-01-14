@@ -63,14 +63,14 @@ namespace Carcassone.Core
             IsStarted = true;
 
             // инициализирующий ход
-            var firstCard = GetNextCard() ?? throw new Exception("Ошибка. В колоде нет карт!");
-            var firstField = GameGrid.GetField(0, 0);
+            var firstTile = GetNextTile() ?? throw new Exception("Ошибка. В колоде нет карт!");
+            var firstCell = GameGrid.GetCell(0, 0);
             var initMove = new GameMove()
             {
                 PlayerName = null,
-                CardId = firstCard.Id,
-                CardRotation = 0,
-                FieldId = firstField.Id,
+                TileId = firstTile.Id,
+                TileRotation = 0,
+                CellId = firstCell.Id,
                 PartName = null,
             };
 
@@ -94,34 +94,34 @@ namespace Carcassone.Core
         public PlayerScore GetPlayerScore(string playerName) =>
             ScoreCalculator.GetPlayerScore(playerName, PlayersPool, TileStack);
 
-        public Tile GetCard(string cardId) => TileStack.GetCard(cardId);
+        public Tile GetTile(string cardId) => TileStack.GetTile(cardId);
 
-        public List<Cell> GetFieldsToPutCard(string cardId)
+        public List<Cell> GetCellsToPutCard(string tileId)
         {
             var list = new List<Cell>();
-            if (cardId == null)
+            if (tileId == null)
                 return list;
 
-            var card = GetCard(cardId);
-            var fields = GameGrid.GetAvailableCells();
-            foreach (var field in fields)
+            var tile = GetTile(tileId);
+            var cells = GameGrid.GetAvailableCells();
+            foreach (var cell in cells)
             {
-                if (CanPutCardInFieldWithRotation(field, card))
-                    list.Add(field);
+                if (CanPutTileInCellWithRotation(cell, tile))
+                    list.Add(cell);
             }
 
             return list;
         }
 
-        public List<Cell> RecalculateNotAvailableFields()
+        public List<Cell> RecalculateNotAvailableCells()
         {
-            var emptyFields = GameGrid.GetEmptyFields();
-            foreach (var field in emptyFields)
+            var emptyCells = GameGrid.GetEmptyCells();
+            foreach (var cell in emptyCells)
             {
                 var canPut = false;
-                foreach (var card in TileStack.GetRemainTiles())
+                foreach (var tile in TileStack.GetRemainTiles())
                 {
-                    if (CanPutCardInFieldWithRotation(field, card))
+                    if (CanPutTileInCellWithRotation(cell, tile))
                     {
                         canPut = true;
                         break;
@@ -129,35 +129,35 @@ namespace Carcassone.Core
                 }
 
                 if (!canPut)
-                    field.NotAvailable = true;
+                    cell.NotAvailable = true;
             }
 
-            return GameGrid.GetUnavailableFields();
+            return GameGrid.GetUnavailableCells();
         }
 
-        public List<ObjectPart> GetAvailableParts(string cardName)
+        public List<ObjectPart> GetAvailableParts(string tileName)
         {
-            var card = GetCard(cardName);
-            var list = card.Parts.Where(p => !p.IsPartOfOwnedObject).ToList();
+            var tile = GetTile(tileName);
+            var list = tile.Parts.Where(p => !p.IsPartOfOwnedObject).ToList();
             return list;
         }
 
-        public void PutTileInCell(Tile card, Cell field)
+        public void PutTileInCell(Tile tile, Cell cell)
         {
-            if (card == null)
+            if (tile == null)
                 throw new Exception("Card can't be null");
 
-            if (field == null)
-                throw new Exception("Field can't be null");
+            if (cell == null)
+                throw new Exception("Cell can't be null");
 
-            if (!CanPutCardInField(field, card))
+            if (!CanPutTileInCell(cell, tile))
                 throw new Exception("Card can't be put");
 
-            GameGrid.PutCard(card, field);
-            ScoreCalculator.AddCard(card, field, GameGrid, TileStack);
+            GameGrid.PutTile(tile, cell);
+            ScoreCalculator.AddTile(tile, cell, GameGrid, TileStack);
         }
 
-        public void PutChipInCard(ObjectPart partObject, string playerName)
+        public void PutChipOnTile(ObjectPart partObject, string playerName)
         {
             var player = PlayersPool.GetPlayer(playerName);
             if (player == null) throw new NullReferenceException("Player not found: " + playerName);
@@ -169,15 +169,15 @@ namespace Carcassone.Core
         {
             if (gameMove == null) throw new ArgumentNullException("Move obj can not be null");
 
-            var field = GameGrid.GetCell(gameMove.FieldId);
-            var card = TileStack.GetCard(gameMove.CardId);
-            card.RotateCard(gameMove.CardRotation);
-            PutTileInCell(card, field);
+            var cell = GameGrid.GetCell(gameMove.CellId);
+            var tile = TileStack.GetTile(gameMove.TileId);
+            tile.RotateCard(gameMove.TileRotation);
+            PutTileInCell(tile, cell);
 
             if ((gameMove.PlayerName != null) && (gameMove.PartName != null))
             {
-                var part = card.GetPart(gameMove.PartName);
-                PutChipInCard(part, gameMove.PlayerName);
+                var part = tile.GetPart(gameMove.PartName);
+                PutChipOnTile(part, gameMove.PlayerName);
             }
 
             Moves.Add(gameMove);
@@ -185,8 +185,8 @@ namespace Carcassone.Core
             // расчеты
             ScoreCalculator.CloseObjectsAndReturnChips(PlayersPool, TileStack);
 
-            TileStack.DiscardCard(card);
-            TileStack.CurrentCard = GetNextCard();
+            TileStack.DiscardTile(tile);
+            TileStack.CurrentCard = GetNextTile();
 
             if (TileStack.CurrentCard == null)
             {
@@ -198,86 +198,86 @@ namespace Carcassone.Core
                 PlayersPool.MoveToNextPlayer();
         }
 
-        public List<Tile> GetActiveCards()
+        public List<Tile> GetActiveTiles()
         {
             return GameGrid.Cells
-                .Where(f => f.IsContainsCard())
-                .Select(f => TileStack.GetCard(f.CardName))
+                .Where(c => c.IsContainingTile())
+                .Select(c => TileStack.GetTile(c.CardName))
                 .ToList();
         }
 
         public List<ObjectPart> GetActiveParts()
         {
-            return GetActiveCards()
-                .SelectMany(c => c.Parts)
+            return GetActiveTiles()
+                .SelectMany(t => t.Parts)
                 .Where(p => p.Chip != null || p.Flag != null)
                 .ToList();
         }
 
-        private Tile? GetNextCard()
+        private Tile? GetNextTile()
         {
             do
             {
-                var topCard = TileStack.GetTopCard();
-                if (CanPlayCard(topCard))
-                    return topCard;
+                var topTile = TileStack.GetTopTile();
+                if (CanPlayTile(topTile))
+                    return topTile;
                 else
-                    TileStack.DiscardCard(topCard);
+                    TileStack.DiscardTile(topTile);
             } 
             while (!TileStack.IsEmpty());
 
             return null;
         }
 
-        private bool CanPlayCard(Tile? card)
+        private bool CanPlayTile(Tile? tile)
         {
-            if (card == null) return false;
+            if (tile == null) return false;
 
-            List<Cell> emptyFields = GameGrid.GetEmptyFields();
+            List<Cell> emptyCells = GameGrid.GetEmptyCells();
             // проверяем можно ли эту карту сыграть, если нет берем следующую
-            foreach (var field in emptyFields)
+            foreach (var cell in emptyCells)
             {
-                if (CanPutCardInFieldWithRotation(field, card))
+                if (CanPutTileInCellWithRotation(cell, tile))
                     return true;
             }
 
             return false;
         }
 
-        public bool RotateCardTilFit(Cell field, Tile card)
+        public bool CanPutTileInCellWithRotation(Cell cell, Tile? tile)
+        {
+            if (cell.IsContainingTile()) return false;
+
+            if (tile == null) return false;
+
+            // чтобы не поворачивать оригинальную карту поворачиваем копию
+            var type = tile.GetType();
+            var copy = (Tile)Activator.CreateInstance(type, tile.CardType, tile.CardNumber);
+            copy.TopEdgeType = tile.TopEdgeType;
+            copy.LeftEdgeType = tile.LeftEdgeType;
+            copy.BottomEdgeType = tile.BottomEdgeType;
+            copy.RightEdgeType = tile.RightEdgeType;
+
+            return RotateTileTilFit(cell, copy);
+        }
+
+        public bool RotateTileTilFit(Cell cell, Tile tile)
         {
             for (int i = 0; i < 4; i++) // можно сделать до 4х поворотов 4й - исходное положение (в конце)
             {
-                card.RotateCard();
-                if (CanPutCardInField(field, card))
+                tile.RotateCard();
+                if (CanPutTileInCell(cell, tile))
                     return true;
             }
 
             return false;
         }
 
-        public bool CanPutCardInFieldWithRotation(Cell field, Tile? card)
-        {
-            if (field.IsContainsCard()) return false;
-
-            if (card == null) return false;
-
-            // чтобы не поворачивать оригинальную карту поворачиваем копию
-            var type = card.GetType();
-            var copy = (Tile)Activator.CreateInstance(type, card.CardType, card.CardNumber);
-            copy.TopEdgeType = card.TopEdgeType;
-            copy.LeftEdgeType = card.LeftEdgeType;
-            copy.BottomEdgeType = card.BottomEdgeType;
-            copy.RightEdgeType = card.RightEdgeType;
-
-            return RotateCardTilFit(field, copy);
-        }
-
-        private bool CanPutCardInField(Cell cell, Tile tile)
+        private bool CanPutTileInCell(Cell cell, Tile tile)
         {
             var result = true;
             foreach(var extension in Extensions)
-                result &= extension.CanPutCardInField(cell, tile, GameGrid, TileStack);
+                result &= extension.CanPutTileInCell(cell, tile, GameGrid, TileStack);
 
             return result;
         }

@@ -10,7 +10,7 @@ namespace Carcassone.Core.Board
     {
         public Cell(int x, int y)
         {
-            Id = GetFieldID(x, y);
+            Id = GetCellID(x, y);
             X = x;
             Y = y;
             NotAvailable = false;
@@ -22,8 +22,8 @@ namespace Carcassone.Core.Board
         public string? CardName { get; set; }
         public bool NotAvailable { get; set; }
 
-        public static string GetFieldID(int x, int y) => $"{x}_{y}";
+        public static string GetCellID(int x, int y) => $"{x}_{y}";
 
-        public bool IsContainsCard() => !string.IsNullOrEmpty(CardName);
+        public bool IsContainingTile() => !string.IsNullOrEmpty(CardName);
     }
 }

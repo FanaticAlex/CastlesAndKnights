@@ -28,21 +28,21 @@ namespace Carcassone.Core.Calculation.Base.Tiles
             var CityPart1 = new CityPart(CityPart1Name, Id);
             Parts.Add(CityPart1);
 
-            var FarmPart1 = new FieldPart(FarmPartName, Id);
+            var FarmPart1 = new FarmPart(FarmPartName, Id);
             Parts.Add(FarmPart1);
 
 
-            FieldToCityParts.Add(FarmPart1.PartId, new List<string>() { CityPart0.PartId, CityPart1.PartId });
+            FarmToCityParts.Add(FarmPart1.PartId, new List<string>() { CityPart0.PartId, CityPart1.PartId });
         }
 
-        public override void ConnectField(Cell field, Grid grid)
+        public override void ConnectCell(Cell cell, Grid grid)
         {
-            AddBorderToPart(field, CellSide.left, GetPart(CityPart0Name), grid);
+            AddBorderToPart(cell, CellSide.left, GetPart(CityPart0Name), grid);
 
-            AddBorderToPart(field, CellSide.right, GetPart(CityPart1Name), grid);
+            AddBorderToPart(cell, CellSide.right, GetPart(CityPart1Name), grid);
 
-            AddBorderToPart(field, CellSide.top, GetPart(FarmPartName), grid);
-            AddBorderToPart(field, CellSide.bottom, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, CellSide.top, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, CellSide.bottom, GetPart(FarmPartName), grid);
         }
     }
 }

@@ -32,20 +32,20 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
             var churchPart = new MonasteryPart(churchPartName, Id);
             Parts.Add(churchPart);
 
-            var FarmPart1 = new FieldPart(FarmPart0Name, Id);
+            var FarmPart1 = new FarmPart(FarmPart0Name, Id);
             Parts.Add(FarmPart1);
 
-            var FarmPart2 = new FieldPart(FarmPart1Name, Id);
+            var FarmPart2 = new FarmPart(FarmPart1Name, Id);
             Parts.Add(FarmPart2);
 
             var roadPart = new RoadPart(roadPartName, Id);
             Parts.Add(roadPart);
 
-            var FarmPart3 = new FieldPart(FarmPart2Name, Id);
+            var FarmPart3 = new FarmPart(FarmPart2Name, Id);
             Parts.Add(FarmPart3);
         }
 
-        public override void ConnectField(Cell cell, Grid grid)
+        public override void ConnectCell(Cell cell, Grid grid)
         {
             AddBorderToPart(cell, CellSide.right, GetPart(RiverPart0Name), grid);
             AddBorderToPart(cell, CellSide.left, GetPart(RiverPart0Name), grid);

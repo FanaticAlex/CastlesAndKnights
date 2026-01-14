@@ -19,7 +19,7 @@ namespace Carcassone.Core.Tiles
         /// это нужно для подсчета какие замки присоденены к полям при подсчете очков за поля
         /// </summary>
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        public Dictionary<string, List<string>> FieldToCityParts { get; set; } = new Dictionary<string, List<string>>();
+        public Dictionary<string, List<string>> FarmToCityParts { get; set; } = new Dictionary<string, List<string>>();
 
         [JsonProperty(ItemConverterType = typeof(PartConverter), ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public List<ObjectPart> Parts { get; set; } = new List<ObjectPart>();
@@ -74,7 +74,7 @@ namespace Carcassone.Core.Tiles
         }
 
         public void AddFarmSplittedBorder(
-            Cell field, CellSide side, FieldSide sidePart, ObjectPart? part, Grid grid)
+            Cell cell, CellSide side, FieldSide sidePart, ObjectPart? part, Grid grid)
         {
             if (part == null) throw new ArgumentNullException(nameof(part));
 
@@ -88,23 +88,23 @@ namespace Carcassone.Core.Tiles
 
             side = GetRotatedSide(side, RotationsCount);
             sidePart = GetRotatedSidePart(sidePart, RotationsCount);
-            var Farm1Border0 = new TileBorder(field, grid.GetNeighbour(field, side), this);
+            var Farm1Border0 = new TileBorder(cell, grid.GetNeighbour(cell, side), this);
             Farm1Border0.FarmSide = sidePart;
             part.Borders.Add(Farm1Border0);
         }
 
-        public List<string> GetConnectedCityParts(FieldPart part)
+        public List<string> GetConnectedCityParts(FarmPart part)
         {
             var CityParts = new List<string>();
-            if (FieldToCityParts.Keys.Contains(part.PartId))
+            if (FarmToCityParts.Keys.Contains(part.PartId))
             {
-                CityParts = FieldToCityParts[part.PartId];
+                CityParts = FarmToCityParts[part.PartId];
             }
 
             return CityParts;
         }
 
-        public abstract void ConnectField(Cell field, Grid grid);
+        public abstract void ConnectCell(Cell field, Grid grid);
 
         public void RotateCard(int rotation)
         {
