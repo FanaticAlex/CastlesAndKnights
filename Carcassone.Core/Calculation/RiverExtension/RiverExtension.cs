@@ -16,10 +16,10 @@ namespace Carcassone.Core.Calculation.RiverExtension
             var isRiverCard = tile.Id.Contains("W");
             if (isRiverCard)
             {
-                var neighbourTopCardName = grid.GetNeighbour(cell, CellSide.top)?.CardName;
+                var neighbourTopCardName = grid.GetNeighbour(cell, Side.top)?.CardName;
                 Tile? neighbourTopCard = neighbourTopCardName != null ? tileStack.GetTile(neighbourTopCardName) : null;
 
-                var neighbourRightCardName = grid.GetNeighbour(cell, CellSide.right)?.CardName;
+                var neighbourRightCardName = grid.GetNeighbour(cell, Side.right)?.CardName;
                 Tile? neighbourRightCard = neighbourRightCardName != null ? tileStack.GetTile(neighbourRightCardName) : null;
 
                 bool isTopFree = neighbourTopCard == null;

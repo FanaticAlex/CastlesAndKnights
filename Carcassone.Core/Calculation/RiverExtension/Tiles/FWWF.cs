@@ -32,16 +32,16 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 
         public override void ConnectCell(Cell cell, Grid grid)
         {
-            AddBorderToPart(cell, CellSide.right, GetPart(RiverPart0Name), grid);
-            AddBorderToPart(cell, CellSide.bottom, GetPart(RiverPart0Name), grid);
+            AddBorderToPart(cell, Side.right, GetPart(RiverPart0Name), grid);
+            AddBorderToPart(cell, Side.bottom, GetPart(RiverPart0Name), grid);
 
-            AddBorderToPart(cell, CellSide.top, GetPart(FarmPart0Name), grid);
-            AddFarmSplittedBorder(cell, CellSide.right, FieldSide.side_1, GetPart(FarmPart0Name), grid);
-            AddFarmSplittedBorder(cell, CellSide.bottom, FieldSide.side_4, GetPart(FarmPart0Name), grid);
-            AddBorderToPart(cell, CellSide.left, GetPart(FarmPart0Name), grid);
+            AddBorderToPart(cell, Side.top, GetPart(FarmPart0Name), grid);
+            AddFarmSplittedBorder(cell, Side.right, FieldSide.side_1, GetPart(FarmPart0Name), grid);
+            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_4, GetPart(FarmPart0Name), grid);
+            AddBorderToPart(cell, Side.left, GetPart(FarmPart0Name), grid);
 
-            AddFarmSplittedBorder(cell, CellSide.right, FieldSide.side_2, GetPart(FarmPart1Name), grid);
-            AddFarmSplittedBorder(cell, CellSide.bottom, FieldSide.side_3, GetPart(FarmPart1Name), grid);
+            AddFarmSplittedBorder(cell, Side.right, FieldSide.side_2, GetPart(FarmPart1Name), grid);
+            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_3, GetPart(FarmPart1Name), grid);
         }
     }
 }

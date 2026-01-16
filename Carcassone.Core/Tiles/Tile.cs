@@ -64,7 +64,7 @@ namespace Carcassone.Core.Tiles
             return list.Single();
         }
 
-        public void AddBorderToPart(Cell cell, CellSide side, ObjectPart? part, Grid grid)
+        public void AddBorderToPart(Cell cell, Side side, ObjectPart? part, Grid grid)
         {
             if (part == null) throw new ArgumentNullException(nameof(part));
 
@@ -74,14 +74,14 @@ namespace Carcassone.Core.Tiles
         }
 
         public void AddFarmSplittedBorder(
-            Cell cell, CellSide side, FieldSide sidePart, ObjectPart? part, Grid grid)
+            Cell cell, Side side, FieldSide sidePart, ObjectPart? part, Grid grid)
         {
             if (part == null) throw new ArgumentNullException(nameof(part));
 
-            if ((side == CellSide.top && sidePart != FieldSide.side_0 && sidePart != FieldSide.side_7) ||
-                (side == CellSide.right && sidePart != FieldSide.side_1 && sidePart != FieldSide.side_2) ||
-                (side == CellSide.bottom && sidePart != FieldSide.side_3 && sidePart != FieldSide.side_4) ||
-                (side == CellSide.left && sidePart != FieldSide.side_5 && sidePart != FieldSide.side_6))
+            if ((side == Side.top && sidePart != FieldSide.side_0 && sidePart != FieldSide.side_7) ||
+                (side == Side.right && sidePart != FieldSide.side_1 && sidePart != FieldSide.side_2) ||
+                (side == Side.bottom && sidePart != FieldSide.side_3 && sidePart != FieldSide.side_4) ||
+                (side == Side.left && sidePart != FieldSide.side_5 && sidePart != FieldSide.side_6))
             {
                 throw new Exception($"Wrong side order in part {part.PartId}");
             }
@@ -141,10 +141,10 @@ namespace Carcassone.Core.Tiles
         /// <param name="side"></param>
         /// <param name="rotationCount"></param>
         /// <returns></returns>
-        private static CellSide GetRotatedSide(CellSide side, int rotationCount)
+        private static Side GetRotatedSide(Side side, int rotationCount)
         {
             var result = ((byte)side + rotationCount) % 4;
-            return (CellSide)result;
+            return (Side)result;
         }
 
         /// <summary>

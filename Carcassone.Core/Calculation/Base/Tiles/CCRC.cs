@@ -43,14 +43,14 @@ namespace Carcassone.Core.Calculation.Base.Tiles
 
         public override void ConnectCell(Cell cell, Grid grid)
         {
-            AddBorderToPart(cell, CellSide.top, GetPart(CityPartName), grid);
-            AddBorderToPart(cell, CellSide.right, GetPart(CityPartName), grid);
-            AddBorderToPart(cell, CellSide.left, GetPart(CityPartName), grid);
+            AddBorderToPart(cell, Side.top, GetPart(CityPartName), grid);
+            AddBorderToPart(cell, Side.right, GetPart(CityPartName), grid);
+            AddBorderToPart(cell, Side.left, GetPart(CityPartName), grid);
 
-            AddBorderToPart(cell, CellSide.bottom, GetPart(roadPartName), grid);
+            AddBorderToPart(cell, Side.bottom, GetPart(roadPartName), grid);
 
-            AddFarmSplittedBorder(cell, CellSide.bottom, FieldSide.side_3, GetPart(FarmPartName), grid);
-            AddFarmSplittedBorder(cell, CellSide.bottom, FieldSide.side_4, GetPart(FarmPart1Name), grid);
+            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_3, GetPart(FarmPartName), grid);
+            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_4, GetPart(FarmPart1Name), grid);
         }
     }
 }

@@ -30,10 +30,10 @@ namespace Carcassone.Core.Calculation.Base.Tiles
         {
             ((MonasteryPart)GetPart(churchPartName)).CellId = cell.Id;
 
-            AddBorderToPart(cell, CellSide.top, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, CellSide.right, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, CellSide.bottom, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, CellSide.left, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, Side.top, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, Side.right, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, Side.bottom, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, Side.left, GetPart(FarmPartName), grid);
         }
     }
 }

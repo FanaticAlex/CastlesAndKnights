@@ -37,12 +37,12 @@ namespace Carcassone.Core.Calculation.Base.Tiles
 
         public override void ConnectCell(Cell cell, Grid grid)
         {
-            AddBorderToPart(cell, CellSide.right, GetPart(CityPartName), grid);
-            AddBorderToPart(cell, CellSide.left, GetPart(CityPartName), grid);
+            AddBorderToPart(cell, Side.right, GetPart(CityPartName), grid);
+            AddBorderToPart(cell, Side.left, GetPart(CityPartName), grid);
 
-            AddBorderToPart(cell, CellSide.top, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, Side.top, GetPart(FarmPartName), grid);
 
-            AddBorderToPart(cell, CellSide.bottom, GetPart(FarmPart1Name), grid);
+            AddBorderToPart(cell, Side.bottom, GetPart(FarmPart1Name), grid);
         }
     }
 }

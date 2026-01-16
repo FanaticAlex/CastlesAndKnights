@@ -154,6 +154,7 @@ namespace Carcassone.Core
                 throw new Exception("Card can't be put");
 
             GameGrid.PutTile(tile, cell);
+            tile.ConnectCell(cell, GameGrid);
             ScoreCalculator.AddTile(tile, cell, GameGrid, TileStack);
         }
 

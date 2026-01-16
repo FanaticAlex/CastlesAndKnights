@@ -28,13 +28,13 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 
         public override void ConnectCell(Cell cell, Grid grid)
         {
-            AddBorderToPart(cell, CellSide.top, GetPart(RiverPart0Name), grid);
+            AddBorderToPart(cell, Side.top, GetPart(RiverPart0Name), grid);
 
-            AddFarmSplittedBorder(cell, CellSide.top, FieldSide.side_0, GetPart(FarmPartName), grid);
-            AddFarmSplittedBorder(cell, CellSide.top, FieldSide.side_7, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, CellSide.right, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, CellSide.bottom, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, CellSide.left, GetPart(FarmPartName), grid);
+            AddFarmSplittedBorder(cell, Side.top, FieldSide.side_0, GetPart(FarmPartName), grid);
+            AddFarmSplittedBorder(cell, Side.top, FieldSide.side_7, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, Side.right, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, Side.bottom, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, Side.left, GetPart(FarmPartName), grid);
         }
     }
 }

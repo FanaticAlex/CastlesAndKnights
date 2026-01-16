@@ -13,16 +13,16 @@ namespace Carcassone.Core.Calculation.Base
         {
             if (cell.IsContainingTile()) return false; // if there is a tile already
 
-            var neighbourTopTileName = grid.GetNeighbour(cell, CellSide.top)?.CardName;
+            var neighbourTopTileName = grid.GetNeighbour(cell, Side.top)?.CardName;
             Tile? neighbourTopTile = neighbourTopTileName != null ? tileStack.GetTile(neighbourTopTileName) : null;
 
-            var neighbourLeftTileName = grid.GetNeighbour(cell, CellSide.left)?.CardName;
+            var neighbourLeftTileName = grid.GetNeighbour(cell, Side.left)?.CardName;
             Tile? neighbourLeftTile = neighbourLeftTileName != null ? tileStack.GetTile(neighbourLeftTileName) : null;
 
-            var neighbourBottomTileName = grid.GetNeighbour(cell, CellSide.bottom)?.CardName;
+            var neighbourBottomTileName = grid.GetNeighbour(cell, Side.bottom)?.CardName;
             Tile? neighbourBottomTile = neighbourBottomTileName != null ? tileStack.GetTile(neighbourBottomTileName) : null;
 
-            var neighbourRightTileName = grid.GetNeighbour(cell, CellSide.right)?.CardName;
+            var neighbourRightTileName = grid.GetNeighbour(cell, Side.right)?.CardName;
             Tile? neighbourRightTile = neighbourRightTileName != null ? tileStack.GetTile(neighbourRightTileName) : null;
 
             // карту можно положить в поле, если в соседних с полем областях либо нет карт

@@ -34,21 +34,20 @@ namespace Carcassone.Core.Board
 
                 // connect card to cell
                 cell.CardName = card.Id;
-                card.ConnectCell(cell, this);
             }
         }
 
-        public Cell? GetNeighbour(Cell? cell, CellSide side)
+        public Cell? GetNeighbour(Cell? cell, Side side)
         {
             if (cell == null)
                 return null;
 
             return side switch
             {
-                CellSide.top => GetCellWithoutThrowing(cell.X, cell.Y + 1),
-                CellSide.bottom => GetCellWithoutThrowing(cell.X, cell.Y - 1),
-                CellSide.right => GetCellWithoutThrowing(cell.X + 1, cell.Y),
-                CellSide.left => GetCellWithoutThrowing(cell.X - 1, cell.Y),
+                Side.top => GetCellWithoutThrowing(cell.X, cell.Y + 1),
+                Side.bottom => GetCellWithoutThrowing(cell.X, cell.Y - 1),
+                Side.right => GetCellWithoutThrowing(cell.X + 1, cell.Y),
+                Side.left => GetCellWithoutThrowing(cell.X - 1, cell.Y),
                 _ => throw new KeyNotFoundException(),
             };
         }

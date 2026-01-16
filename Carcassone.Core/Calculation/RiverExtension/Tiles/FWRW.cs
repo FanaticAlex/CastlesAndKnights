@@ -47,22 +47,22 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 
         public override void ConnectCell(Cell cell, Grid grid)
         {
-            AddBorderToPart(cell, CellSide.right, GetPart(RiverPart0Name), grid);
-            AddBorderToPart(cell, CellSide.left, GetPart(RiverPart0Name), grid);
+            AddBorderToPart(cell, Side.right, GetPart(RiverPart0Name), grid);
+            AddBorderToPart(cell, Side.left, GetPart(RiverPart0Name), grid);
 
             ((MonasteryPart)GetPart(churchPartName)).CellId = cell.Id;
 
-            AddBorderToPart(cell, CellSide.top, GetPart(FarmPart0Name), grid);
-            AddFarmSplittedBorder(cell, CellSide.right, FieldSide.side_1, GetPart(FarmPart0Name), grid);
-            AddFarmSplittedBorder(cell, CellSide.left, FieldSide.side_6, GetPart(FarmPart0Name), grid);
+            AddBorderToPart(cell, Side.top, GetPart(FarmPart0Name), grid);
+            AddFarmSplittedBorder(cell, Side.right, FieldSide.side_1, GetPart(FarmPart0Name), grid);
+            AddFarmSplittedBorder(cell, Side.left, FieldSide.side_6, GetPart(FarmPart0Name), grid);
 
-            AddFarmSplittedBorder(cell, CellSide.right, FieldSide.side_2, GetPart(FarmPart1Name), grid);
-            AddFarmSplittedBorder(cell, CellSide.bottom, FieldSide.side_3, GetPart(FarmPart1Name), grid);
+            AddFarmSplittedBorder(cell, Side.right, FieldSide.side_2, GetPart(FarmPart1Name), grid);
+            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_3, GetPart(FarmPart1Name), grid);
 
-            AddBorderToPart(cell, CellSide.bottom, GetPart(roadPartName), grid);
+            AddBorderToPart(cell, Side.bottom, GetPart(roadPartName), grid);
 
-            AddFarmSplittedBorder(cell, CellSide.bottom, FieldSide.side_4, GetPart(FarmPart2Name), grid);
-            AddFarmSplittedBorder(cell, CellSide.left, FieldSide.side_5, GetPart(FarmPart2Name), grid);
+            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_4, GetPart(FarmPart2Name), grid);
+            AddFarmSplittedBorder(cell, Side.left, FieldSide.side_5, GetPart(FarmPart2Name), grid);
         }
     }
 }

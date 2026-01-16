@@ -1,6 +1,6 @@
-﻿namespace Carcassone.Core.Board
+﻿namespace Carcassone.Core.Tiles
 {
-    public enum CellSide
+    public enum Side
     {
         top,
         right,

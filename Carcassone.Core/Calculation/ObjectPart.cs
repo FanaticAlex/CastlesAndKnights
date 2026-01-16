@@ -1,4 +1,5 @@
 ﻿using Carcassone.Core.Players;
+using Carcassone.Core.Tiles;
 using System.Collections.Generic;
 
 namespace Carcassone.Core.Calculation
@@ -23,6 +24,8 @@ namespace Carcassone.Core.Calculation
         public string CardId { get; set; }
         public string PartType { get; set; }
         public bool IsPartOfOwnedObject { get; set; }
+
+        public List<Side> Sides { get; set; } = new List<Side>();
 
         public ObjectPart(string partName, string cardId)
         {

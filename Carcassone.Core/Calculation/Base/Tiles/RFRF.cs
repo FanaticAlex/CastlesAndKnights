@@ -33,16 +33,16 @@ namespace Carcassone.Core.Calculation.Base.Tiles
 
         public override void ConnectCell(Cell cell, Grid grid)
         {
-            AddBorderToPart(cell, CellSide.top, GetPart(roadPartName), grid);
-            AddBorderToPart(cell, CellSide.bottom, GetPart(roadPartName), grid);
+            AddBorderToPart(cell, Side.top, GetPart(roadPartName), grid);
+            AddBorderToPart(cell, Side.bottom, GetPart(roadPartName), grid);
 
-            AddFarmSplittedBorder(cell, CellSide.top, FieldSide.side_0, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, CellSide.right, GetPart(FarmPartName), grid);
-            AddFarmSplittedBorder(cell, CellSide.bottom, FieldSide.side_3, GetPart(FarmPartName), grid);
+            AddFarmSplittedBorder(cell, Side.top, FieldSide.side_0, GetPart(FarmPartName), grid);
+            AddBorderToPart(cell, Side.right, GetPart(FarmPartName), grid);
+            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_3, GetPart(FarmPartName), grid);
 
-            AddFarmSplittedBorder(cell, CellSide.bottom, FieldSide.side_4, GetPart(FarmPart1Name), grid);
-            AddBorderToPart(cell, CellSide.left, GetPart(FarmPart1Name), grid);
-            AddFarmSplittedBorder(cell, CellSide.top, FieldSide.side_7, GetPart(FarmPart1Name), grid);
+            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_4, GetPart(FarmPart1Name), grid);
+            AddBorderToPart(cell, Side.left, GetPart(FarmPart1Name), grid);
+            AddFarmSplittedBorder(cell, Side.top, FieldSide.side_7, GetPart(FarmPart1Name), grid);
         }
     }
 }
