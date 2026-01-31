@@ -48,14 +48,14 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove1);
 
-            var Citys = room.ScoreCalculator.CitysManager.Objects;
-            Assert.True(Citys.Count == 2);
-            Assert.False(Citys[0].IsFinished);
-            Assert.False(Citys[1].IsFinished);
-            Assert.True(Citys[0].IsPlayerOwner(room.PlayersPool.GetPlayer(name), room.TileStack));
+            var Citys = room.GetAllCities();
+            Assert.True(Citys.Count() == 2);
+            Assert.False(Citys.ElementAt(0).IsComplete());
+            Assert.False(Citys.ElementAt(1).IsComplete());
+            Assert.True(Citys.ElementAt(0).IsPlayerOwner(room.PlayersPool.GetPlayer(name)));
             
             var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name).Name);
-            Assert.Equal(1, score.CitysScore);
+            Assert.Equal(1, score.OverallScore);
             Assert.Equal(6, room.PlayersPool.GetPlayer(name).СhipList.Count);
         }
 
@@ -100,16 +100,16 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove1);
 
-            var Citys = room.ScoreCalculator.CitysManager.Objects;
+            var Citys = room.GetAllCities();
             Assert.Single(Citys);
             var City = Citys.Single();
-            Assert.Equal(4, City.GetPoints(room.TileStack));
-            Assert.True(City.IsFinished);
-            Assert.True(City.IsPlayerOwner(room.PlayersPool.GetPlayer(name), room.TileStack));
-            Assert.Contains(City.PartsIds.Select(id => room.TileStack.GetPart(id)), p => p.Flag != null);
+            Assert.True(City.IsComplete());
+            Assert.Equal(4, City.GetScore());
+            Assert.True(City.IsPlayerOwner(room.PlayersPool.GetPlayer(name)));
+            Assert.Contains(City.Parts, p => p.Flag != null);
 
             var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name).Name);
-            Assert.Equal(4, score.CitysScore);
+            Assert.Equal(4, score.OverallScore);
             Assert.Equal(7, room.PlayersPool.GetPlayer(name).СhipList.Count);
         }
 
@@ -181,17 +181,17 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove3);
 
-            var Citys = room.ScoreCalculator.CitysManager.Objects;
-            Assert.Equal(2, Citys.Count);
+            var Citys = room.GetAllCities();
+            Assert.Equal(2, Citys.Count());
 
-            var City = Citys[1];
-            Assert.Equal(4, City.GetPoints(room.TileStack));
-            Assert.True(City.IsFinished);
-            Assert.True(City.IsPlayerOwner(room.PlayersPool.GetPlayer(name), room.TileStack));
-            Assert.Contains(City.PartsIds.Select(id => room.TileStack.GetPart(id)), p => p.Flag != null);
+            var City = Citys.ElementAt(1);
+            Assert.Equal(4, City.GetScore());
+            Assert.True(City.IsComplete());
+            Assert.True(City.IsPlayerOwner(room.PlayersPool.GetPlayer(name)));
+            Assert.Contains(City.Parts, p => p.Flag != null);
 
             var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name).Name);
-            Assert.Equal(4, score.CitysScore);
+            Assert.Equal(4, score.OverallScore);
             Assert.Equal(7, room.PlayersPool.GetPlayer(name).СhipList.Count);
         }
     }

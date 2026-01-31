@@ -23,26 +23,20 @@ namespace Carcassone.Core.Calculation.Base.Tiles
 
         public CCFF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var CityPart = new CityPart(CityPartName, Id);
+            var CityPart = new CityPart(CityPartName, this);
+            CityPart.Sides.Add(Side.top);
             Parts.Add(CityPart);
 
-            var CityPart1 = new CityPart(CityPart1Name, Id);
+            var CityPart1 = new CityPart(CityPart1Name, this);
+            CityPart1.Sides.Add(Side.right);
             Parts.Add(CityPart1);
 
-            var FarmPart = new FarmPart(FarmPartName, Id);
+            var FarmPart = new FarmPart(FarmPartName, this);
+            FarmPart.Sides.Add(Side.bottom);
+            FarmPart.Sides.Add(Side.left);
             Parts.Add(FarmPart);
 
-            FarmToCityParts.Add(FarmPart.PartId, new List<string>() { CityPart.PartId, CityPart1.PartId });
-        }
-
-        public override void ConnectCell(Cell cell, Grid grid)
-        {
-            AddBorderToPart(cell, Side.top, GetPart(CityPartName), grid);
-
-            AddBorderToPart(cell, Side.right, GetPart(CityPart1Name), grid);
-
-            AddBorderToPart(cell, Side.bottom, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, Side.left, GetPart(FarmPartName), grid);
+            FarmToCityParts.Add(FarmPart, new List<CityPart>() { CityPart, CityPart1 });
         }
     }
 }

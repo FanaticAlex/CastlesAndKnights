@@ -24,8 +24,8 @@ namespace Carcassone.Core.Tests.Room
             while (!room.IsFinished);
 
             Assert.True(room.IsFinished);
-            Assert.NotEqual(0, room.GetPlayerScore(room.PlayersPool.GamePlayers[0].Name).GetOverallScore());
-            Assert.NotEqual(0, room.GetPlayerScore(room.PlayersPool.GamePlayers[1].Name).GetOverallScore());
+            Assert.NotEqual(0, room.GetPlayerScore(room.PlayersPool.GamePlayers[0].Name).OverallScore);
+            Assert.NotEqual(0, room.GetPlayerScore(room.PlayersPool.GamePlayers[1].Name).OverallScore);
         }
 
         [Fact]

@@ -1,25 +1,34 @@
-﻿using Carcassone.Core.Tiles;
+﻿using Carcassone.Core.Players;
+using Carcassone.Core.Tiles;
 using System.Linq;
 
 namespace Carcassone.Core.Calculation.Base.Roads
 {
-    public class Road : ClosingMultipartObject
+    public class Road : MergableObject, ICompletableGameObject, IHasOwner
     {
-        public int GetPoints(TileStack cardPool)
+        public override int GetScore()
         {
-            var score = 0;
-            var parts = PartsIds.Select(id => cardPool.GetPart(id));
-            foreach (RoadPart part in parts)
-            {
-                score++;
-            }
+            var score = Parts.Count;
 
-            if (IsFinished)
-            {
+            if (IsComplete())
                 score = score * 2;
-            }
 
             return score;
+        }
+
+        public bool IsComplete()
+        {
+            return ObjectCompletitionHelper.IsCompleteByBorder(this);
+        }
+
+        public void TryCompleteAndReturnChips()
+        {
+            ObjectCompletitionHelper.TryCompleteAndReturnChips(this);
+        }
+
+        public bool IsPlayerOwner(GamePlayer player)
+        {
+            return HasOwnerHelper.IsPlayerOwner(player, this);
         }
     }
 }

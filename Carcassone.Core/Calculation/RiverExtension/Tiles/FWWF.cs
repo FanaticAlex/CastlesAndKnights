@@ -20,28 +20,22 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 
         public FWWF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var RiverPart0 = new RiverPart(RiverPart0Name, Id);
+            var RiverPart0 = new RiverPart(RiverPart0Name, this);
+            RiverPart0.Sides.Add(Side.right);
+            RiverPart0.Sides.Add(Side.bottom);
             Parts.Add(RiverPart0);
 
-            var FarmPart1 = new FarmPart(FarmPart0Name, Id);
+            var FarmPart1 = new FarmPart(FarmPart0Name, this);
+            FarmPart1.Sides.Add(Side.top);
+            FarmPart1.Sides.Add(Side.side_1);
+            FarmPart1.Sides.Add(Side.side_4);
+            FarmPart1.Sides.Add(Side.left);
             Parts.Add(FarmPart1);
 
-            var FarmPart2 = new FarmPart(FarmPart1Name, Id);
+            var FarmPart2 = new FarmPart(FarmPart1Name, this);
+            FarmPart2.Sides.Add(Side.side_2);
+            FarmPart2.Sides.Add(Side.side_3);
             Parts.Add(FarmPart2);
-        }
-
-        public override void ConnectCell(Cell cell, Grid grid)
-        {
-            AddBorderToPart(cell, Side.right, GetPart(RiverPart0Name), grid);
-            AddBorderToPart(cell, Side.bottom, GetPart(RiverPart0Name), grid);
-
-            AddBorderToPart(cell, Side.top, GetPart(FarmPart0Name), grid);
-            AddFarmSplittedBorder(cell, Side.right, FieldSide.side_1, GetPart(FarmPart0Name), grid);
-            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_4, GetPart(FarmPart0Name), grid);
-            AddBorderToPart(cell, Side.left, GetPart(FarmPart0Name), grid);
-
-            AddFarmSplittedBorder(cell, Side.right, FieldSide.side_2, GetPart(FarmPart1Name), grid);
-            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_3, GetPart(FarmPart1Name), grid);
         }
     }
 }

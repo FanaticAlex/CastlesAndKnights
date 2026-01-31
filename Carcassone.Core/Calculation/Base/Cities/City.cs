@@ -1,28 +1,37 @@
-﻿using Carcassone.Core.Tiles;
+﻿using Carcassone.Core.Players;
+using Carcassone.Core.Tiles;
 using System;
 using System.Linq;
 
 namespace Carcassone.Core.Calculation.Base.Cities
 {
-    /// <summary>
-    /// Объект замок для подсчета очков. состоит из частей на картах. Завершаемый.
-    /// </summary>
-    public class City : ClosingMultipartObject
+    public class City : MergableObject, ICompletableGameObject, IHasOwner
     {
-        /// <summary>
-        /// Возвращает количество очков за замок.
-        /// </summary>
-        /// <returns></returns>
-        public int GetPoints(TileStack cardPool)
+        public override int GetScore()
         {
-            // за каждую часть замка по 1 очку, за карту замка со щитом 2 очка.
-            // если замок завершен очки удваиваются
-            var parts = PartsIds.Select(id => cardPool.GetPart(id));
-            var score = parts.Sum(part => ((CityPart)part).IsThereShield ? 2 : 1);
-            if (IsFinished)
+            // one part gives one score point
+            // part with shield gives two score point
+            var score = Parts.Sum(part => ((CityPart)part).IsThereShield ? 2 : 1);
+            
+            if (IsComplete())
                 score *= 2;
 
             return score;
+        }
+
+        public bool IsComplete()
+        {
+            return ObjectCompletitionHelper.IsCompleteByBorder(this);
+        }
+
+        public void TryCompleteAndReturnChips()
+        {
+            ObjectCompletitionHelper.TryCompleteAndReturnChips(this);
+        }
+
+        public bool IsPlayerOwner(GamePlayer player)
+        {
+            return HasOwnerHelper.IsPlayerOwner(player, this);
         }
     }
 }

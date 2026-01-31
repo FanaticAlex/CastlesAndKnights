@@ -15,7 +15,6 @@ namespace Carcassone.Core.Tiles
         private List<Tile> _remain = new List<Tile>();
         private readonly List<Tile> _discardedTiles = new List<Tile>();
 
-        [JsonConverter(typeof(TileConverter))]
         public Tile? CurrentCard { get; set; }
 
         public void AddTiles(List<Tile> tiles)

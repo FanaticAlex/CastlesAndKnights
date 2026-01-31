@@ -23,42 +23,32 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 
         public RRWW(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var RiverPart0 = new RiverPart(RiverPart0Name, Id);
+            var RiverPart0 = new RiverPart(RiverPart0Name, this);
+            RiverPart0.Sides.Add(Side.bottom);
+            RiverPart0.Sides.Add(Side.left);
             Parts.Add(RiverPart0);
 
-            var FarmPart0 = new FarmPart(FarmPart0Name, Id);
+            var FarmPart0 = new FarmPart(FarmPart0Name, this);
+            FarmPart0.Sides.Add(Side.side_0);
+            FarmPart0.Sides.Add(Side.side_1);
             Parts.Add(FarmPart0);
 
-            var FarmPart1 = new FarmPart(FarmPart1Name, Id);
+            var FarmPart1 = new FarmPart(FarmPart1Name, this);
+            FarmPart1.Sides.Add(Side.side_2);
+            FarmPart1.Sides.Add(Side.side_3);
+            FarmPart1.Sides.Add(Side.side_6);
+            FarmPart1.Sides.Add(Side.side_7);
             Parts.Add(FarmPart1);
 
-            var FarmPart2 = new FarmPart(FarmPart2Name, Id);
+            var FarmPart2 = new FarmPart(FarmPart2Name, this);
+            FarmPart2.Sides.Add(Side.side_4);
+            FarmPart2.Sides.Add(Side.side_5);
             Parts.Add(FarmPart2);
 
-            var roadPart = new RoadPart(roadPartName, Id);
+            var roadPart = new RoadPart(roadPartName, this);
+            roadPart.Sides.Add(Side.top);
+            roadPart.Sides.Add(Side.right);
             Parts.Add(roadPart);
-        }
-
-        public override void ConnectCell(Cell cell, Grid grid)
-        {
-            AddBorderToPart(cell, Side.bottom, GetPart(RiverPart0Name), grid);
-            AddBorderToPart(cell, Side.left, GetPart(RiverPart0Name), grid);
-
-            AddFarmSplittedBorder(cell, Side.top, FieldSide.side_0, GetPart(FarmPart0Name), grid);
-            AddFarmSplittedBorder(cell, Side.right, FieldSide.side_1, GetPart(FarmPart0Name), grid);
-
-            AddFarmSplittedBorder(cell, Side.right, FieldSide.side_2, GetPart(FarmPart1Name), grid);
-            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_3, GetPart(FarmPart1Name), grid);
-            AddFarmSplittedBorder(cell, Side.left, FieldSide.side_6, GetPart(FarmPart1Name), grid);
-            AddFarmSplittedBorder(cell, Side.top, FieldSide.side_7, GetPart(FarmPart1Name), grid);
-
-            // поле 3
-            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_4, GetPart(FarmPart2Name), grid);
-            AddFarmSplittedBorder(cell, Side.left, FieldSide.side_5, GetPart(FarmPart2Name), grid);
-
-            // дорога
-            AddBorderToPart(cell, Side.top, GetPart(roadPartName), grid);
-            AddBorderToPart(cell, Side.right, GetPart(roadPartName), grid);
         }
     }
 }

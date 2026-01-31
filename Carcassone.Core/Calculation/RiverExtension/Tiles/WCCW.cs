@@ -23,34 +23,27 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 
         public WCCW(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var RiverPart0 = new RiverPart(RiverPart0Name, Id);
+            var RiverPart0 = new RiverPart(RiverPart0Name, this);
+            RiverPart0.Sides.Add(Side.top);
+            RiverPart0.Sides.Add(Side.left);
             Parts.Add(RiverPart0);
 
-            var FarmPart0 = new FarmPart(FarmPart0Name, Id);
-            Parts.Add(FarmPart0);
-
-            var FarmPart1 = new FarmPart(FarmPart1Name, Id);
-            Parts.Add(FarmPart1);
-
-            var CityPart1 = new CityPart(CityPart1Name, Id);
+            var CityPart1 = new CityPart(CityPart1Name, this);
+            CityPart1.Sides.Add(Side.right);
+            CityPart1.Sides.Add(Side.bottom);
             Parts.Add(CityPart1);
 
-            FarmToCityParts.Add(FarmPart0.PartId, new List<string>() { CityPart1.PartId });
-        }
+            var FarmPart0 = new FarmPart(FarmPart0Name, this);
+            FarmPart0.Sides.Add(Side.side_0);
+            FarmPart0.Sides.Add(Side.side_5);
+            Parts.Add(FarmPart0);
 
-        public override void ConnectCell(Cell cell, Grid grid)
-        {
-            AddBorderToPart(cell, Side.top, GetPart(RiverPart0Name), grid);
-            AddBorderToPart(cell, Side.left, GetPart(RiverPart0Name), grid);
+            var FarmPart1 = new FarmPart(FarmPart1Name, this);
+            FarmPart1.Sides.Add(Side.side_7);
+            FarmPart1.Sides.Add(Side.side_6);
+            Parts.Add(FarmPart1);
 
-            AddBorderToPart(cell, Side.right, GetPart(CityPart1Name), grid);
-            AddBorderToPart(cell, Side.bottom, GetPart(CityPart1Name), grid);
-
-            AddFarmSplittedBorder(cell, Side.top, FieldSide.side_0, GetPart(FarmPart0Name), grid);
-            AddFarmSplittedBorder(cell, Side.left, FieldSide.side_5, GetPart(FarmPart0Name), grid);
-
-            AddFarmSplittedBorder(cell, Side.top, FieldSide.side_7, GetPart(FarmPart1Name), grid);
-            AddFarmSplittedBorder(cell, Side.left, FieldSide.side_6, GetPart(FarmPart1Name), grid);
+            FarmToCityParts.Add(FarmPart0, new List<CityPart>() { CityPart1 });
         }
     }
 }

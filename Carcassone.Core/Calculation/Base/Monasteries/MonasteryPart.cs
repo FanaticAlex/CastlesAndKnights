@@ -1,11 +1,11 @@
-﻿namespace Carcassone.Core.Calculation.Base.Monasteries
+﻿using Carcassone.Core.Tiles;
+
+namespace Carcassone.Core.Calculation.Base.Monasteries
 {
     public class MonasteryPart : ObjectPart
     {
-        public string? CellId { get; set; }
-
-        public MonasteryPart(string partName, string cardName)
-            : base(partName, cardName)
+        public MonasteryPart(string partName, Tile tile)
+            : base(partName, tile)
         {
             PartType = "Monastery";
         }

@@ -1,9 +1,11 @@
-﻿namespace Carcassone.Core.Calculation.Base.Cities
+﻿using Carcassone.Core.Tiles;
+
+namespace Carcassone.Core.Calculation.Base.Cities
 {
     public class CityPart : ObjectPart
     {
-        public CityPart(string partName, string cardId, bool isThereShield = false)
-            : base(partName, cardId)
+        public CityPart(string partName, Tile tile, bool isThereShield = false)
+            : base(partName, tile)
         {
             PartType = "City";
             IsThereShield = isThereShield;

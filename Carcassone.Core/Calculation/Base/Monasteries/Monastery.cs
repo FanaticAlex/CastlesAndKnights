@@ -8,68 +8,57 @@ using System.Linq;
 
 namespace Carcassone.Core.Calculation.Base.Monasteries
 {
-    public class Monastery : IClosingObject, IOwnedObject
+    public class Monastery : BaseGameObject, ICompletableGameObject, IHasOwner
     {
         private readonly Grid _grid;
         private const int MaxConnectedTiles = 9;
-        private MonasteryPart _baseChurchPart;
-
-        public bool IsFinished => GetNeighboutTilesCount() == MaxConnectedTiles;
+        private Cell _centralCell;
 
         public Monastery(MonasteryPart basePart, Cell cell, Grid grid)
         {
-            _baseChurchPart = basePart;
+            Parts.Add(basePart);
+            _centralCell = cell;
             _grid = grid;
         }
 
-        public string? GetOwnerName(TileStack cardPool)
+        public override int GetScore()
         {
-            return _baseChurchPart.Chip?.OwnerName ?? _baseChurchPart.Flag?.OwnerName;
+            // one neighbout tile = one score point
+            return IsComplete() ? MaxConnectedTiles * 2 : GetNeighboutTilesCount();
         }
 
-        public bool IsPlayerOwner(GamePlayer player, TileStack cardPool)
+        public bool IsComplete()
         {
-            return GetOwnerName(cardPool) == player.Name;
-        }
-
-        /// <summary>
-        /// закрыть церковь если в ней 9 карт и вернуть фишку
-        /// </summary>
-        public void TryToClose(GamePlayersPool playersPool, TileStack cardPool)
-        {
-            if (IsFinished)
-            {
-                if (_baseChurchPart.Chip?.OwnerName != null)
-                {
-                    var player = playersPool.GetPlayer(_baseChurchPart.Chip.OwnerName);
-                    player.ReturnChipAndSetFlag(_baseChurchPart);
-                }
-            }
+            return (GetNeighboutTilesCount() == MaxConnectedTiles);
         }
 
         /// <summary>
-        /// 1 карта = 1 очко. если завершено 1 карта = 2 очка.
+        /// завершить церковь если в ней 9 карт и вернуть фишку
         /// </summary>
-        /// <returns></returns>
-        public int GetPoints()
+        public void TryCompleteAndReturnChips()
         {
-            return IsFinished ? MaxConnectedTiles * 2 : GetNeighboutTilesCount();
+            if (IsComplete())
+                Parts.First().Chip?.Owner?.ReturnChipAndSetFlag(Parts.First());
+        }
+
+        public bool IsPlayerOwner(GamePlayer player)
+        {
+            return HasOwnerHelper.IsPlayerOwner(player, this);
         }
 
         private int GetNeighboutTilesCount()
         {
-            var centralCell = _grid.GetCell(_baseChurchPart.CellId);
             var tilesCount = 1; // bace monastery tile
 
             // are there cards in neighbour cells
-            if (!string.IsNullOrEmpty(_grid.GetNeighbour(centralCell, 1, 0)?.CardName)) tilesCount++;
-            if (!string.IsNullOrEmpty(_grid.GetNeighbour(centralCell, -1, 0)?.CardName)) tilesCount++;
-            if (!string.IsNullOrEmpty(_grid.GetNeighbour(centralCell, 0, 1)?.CardName)) tilesCount++;
-            if (!string.IsNullOrEmpty(_grid.GetNeighbour(centralCell, 0, -1)?.CardName)) tilesCount++;
-            if (!string.IsNullOrEmpty(_grid.GetNeighbour(centralCell, 1, 1)?.CardName)) tilesCount++;
-            if (!string.IsNullOrEmpty(_grid.GetNeighbour(centralCell, -1, -1)?.CardName)) tilesCount++;
-            if (!string.IsNullOrEmpty(_grid.GetNeighbour(centralCell, -1, 1)?.CardName)) tilesCount++;
-            if (!string.IsNullOrEmpty(_grid.GetNeighbour(centralCell, 1, -1)?.CardName)) tilesCount++;
+            if (_grid.GetNeighbour(_centralCell, 1, 0)?.Tile != null) tilesCount++;
+            if (_grid.GetNeighbour(_centralCell, -1, 0)?.Tile != null) tilesCount++;
+            if (_grid.GetNeighbour(_centralCell, 0, 1)?.Tile != null) tilesCount++;
+            if (_grid.GetNeighbour(_centralCell, 0, -1)?.Tile != null) tilesCount++;
+            if (_grid.GetNeighbour(_centralCell, 1, 1)?.Tile != null) tilesCount++;
+            if (_grid.GetNeighbour(_centralCell, -1, -1)?.Tile != null) tilesCount++;
+            if (_grid.GetNeighbour(_centralCell, -1, 1)?.Tile != null) tilesCount++;
+            if (_grid.GetNeighbour(_centralCell, 1, -1)?.Tile != null) tilesCount++;
 
             return tilesCount;
         }

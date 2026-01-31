@@ -12,7 +12,7 @@ namespace Carcassone.Core.Tests.Cards
         public void GetCardTest()
         {
             var stack = new TileStack();
-            var baseExt = new BaseRules();
+            var baseExt = new BaseRules(null);
             baseExt.AddTiles(stack);
 
             var cccc = stack.GetTile("CCCC(0)");

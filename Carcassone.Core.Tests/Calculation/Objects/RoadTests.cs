@@ -33,12 +33,12 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove0);
                 
-            var roads = room.ScoreCalculator.RoadsManager.Objects;
-            Assert.Equal(4, roads.Count);
+            var roads = room.GetAllRoads();
+            Assert.Equal(4, roads.Count());
             foreach (var road in roads)
             {
-                Assert.Equal(1, road.GetPoints(room.TileStack));
-                Assert.False(road.IsFinished);
+                Assert.Equal(1, road.GetScore());
+                Assert.False(road.IsComplete());
             }
         }
 
@@ -102,12 +102,12 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove3);
 
-            var roads = room.ScoreCalculator.RoadsManager.Objects;
+            var roads = room.GetAllRoads();
             Assert.Single(roads);
             var road = roads.Single();
-            Assert.Equal(8, road.GetPoints(room.TileStack));
-            Assert.True(road.IsFinished);
-            Assert.Single(road.PartsIds.Select(id => room.TileStack.GetPart(id)).Where(p => p.Flag != null));
+            Assert.Equal(8, road.GetScore());
+            Assert.True(road.IsComplete());
+            Assert.Single(road.Parts.Where(p => p.Flag != null));
         }
 
         /// <summary>
@@ -150,12 +150,12 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove1);
 
-            var roads = room.ScoreCalculator.RoadsManager.Objects;
-            Assert.Equal(3, roads.Count);
-            var road = roads.First(r => r.IsFinished);
-            Assert.Equal(4, road.GetPoints(room.TileStack));
-            Assert.True(road.IsFinished);
-            Assert.Single(road.PartsIds.Select(id => room.TileStack.GetPart(id)).Where(p => p.Flag != null));
+            var roads = room.GetAllRoads();
+            Assert.Equal(3, roads.Count());
+            var road = roads.First(r => r.IsComplete());
+            Assert.Equal(4, road.GetScore());
+            Assert.True(road.IsComplete());
+            Assert.Single(road.Parts.Where(p => p.Flag != null));
         }
     }
 }

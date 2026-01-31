@@ -27,49 +27,39 @@ namespace Carcassone.Core.Calculation.Base.Tiles
 
         public CRRR(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var CityPart = new CityPart(CityPartName, Id);
+            var CityPart = new CityPart(CityPartName, this);
+            CityPart.Sides.Add(Side.top);
             Parts.Add(CityPart);
 
-            var roadPart0 = new RoadPart(roadPart0Name, Id);
+            var roadPart0 = new RoadPart(roadPart0Name, this);
+            roadPart0.Sides.Add(Side.right);
             Parts.Add(roadPart0);
 
-            var roadPart1 = new RoadPart(roadPart1Name, Id);
+            var roadPart1 = new RoadPart(roadPart1Name, this);
+            roadPart1.Sides.Add(Side.bottom);
             Parts.Add(roadPart1);
 
-            var roadPart2 = new RoadPart(roadPart2Name, Id);
+            var roadPart2 = new RoadPart(roadPart2Name, this);
+            roadPart2.Sides.Add(Side.left);
             Parts.Add(roadPart2);
 
-            var FarmPart0 = new FarmPart(FarmPart0Name, Id);
+            var FarmPart0 = new FarmPart(FarmPart0Name, this);
+            FarmPart0.Sides.Add(Side.side_1);
+            FarmPart0.Sides.Add(Side.side_6);
             Parts.Add(FarmPart0);
 
-            var FarmPart1 = new FarmPart(FarmPart1Name, Id);
+            var FarmPart1 = new FarmPart(FarmPart1Name, this);
+            FarmPart1.Sides.Add(Side.side_2);
+            FarmPart1.Sides.Add(Side.side_3);
             Parts.Add(FarmPart1);
 
-            var FarmPart2 = new FarmPart(FarmPart2Name, Id);
+            var FarmPart2 = new FarmPart(FarmPart2Name, this);
+            FarmPart2.Sides.Add(Side.side_4);
+            FarmPart2.Sides.Add(Side.side_5);
             Parts.Add(FarmPart2);
 
 
-            FarmToCityParts.Add(FarmPart0.PartId, new List<string>() { CityPart.PartId });
-        }
-
-        public override void ConnectCell(Cell cell, Grid grid)
-        {
-            AddBorderToPart(cell, Side.top, GetPart(CityPartName), grid);
-
-            AddBorderToPart(cell, Side.right, GetPart(roadPart0Name), grid);
-
-            AddBorderToPart(cell, Side.bottom, GetPart(roadPart1Name), grid);
-
-            AddBorderToPart(cell, Side.left, GetPart(roadPart2Name), grid);
-
-            AddFarmSplittedBorder(cell, Side.right, FieldSide.side_1, GetPart(FarmPart0Name), grid);
-            AddFarmSplittedBorder(cell, Side.left, FieldSide.side_6, GetPart(FarmPart0Name), grid);
-
-            AddFarmSplittedBorder(cell, Side.right, FieldSide.side_2, GetPart(FarmPart1Name), grid);
-            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_3, GetPart(FarmPart1Name), grid);
-
-            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_4, GetPart(FarmPart2Name), grid);
-            AddFarmSplittedBorder(cell, Side.left, FieldSide.side_5, GetPart(FarmPart2Name), grid);
+            FarmToCityParts.Add(FarmPart0, new List<CityPart>() { CityPart });
         }
     }
 }

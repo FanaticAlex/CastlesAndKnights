@@ -4,7 +4,11 @@ using System.Text;
 
 namespace Carcassone.Core.Calculation.RiverExtension.Rivers
 {
-    public class River: ClosingMultipartObject
+    public class River : BaseGameObject
     {
+        public override int GetScore()
+        {
+            return 0;
+        }
     }
 }

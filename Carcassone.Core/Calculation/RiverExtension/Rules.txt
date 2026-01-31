@@ -1,2 +1,0 @@
-﻿1. 12 river tiles
-2. there is only one river object in a game

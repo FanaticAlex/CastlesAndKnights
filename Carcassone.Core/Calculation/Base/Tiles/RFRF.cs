@@ -21,28 +21,22 @@ namespace Carcassone.Core.Calculation.Base.Tiles
 
         public RFRF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var roadPart1 = new RoadPart(roadPartName, Id);
+            var roadPart1 = new RoadPart(roadPartName, this);
+            roadPart1.Sides.Add(Side.top);
+            roadPart1.Sides.Add(Side.bottom);
             Parts.Add(roadPart1);
 
-            var FarmPart1 = new FarmPart(FarmPartName, Id);
+            var FarmPart1 = new FarmPart(FarmPartName, this);
+            FarmPart1.Sides.Add(Side.side_0);
+            FarmPart1.Sides.Add(Side.right);
+            FarmPart1.Sides.Add(Side.side_3);
             Parts.Add(FarmPart1);
 
-            var FarmPart2 = new FarmPart(FarmPart1Name, Id);
+            var FarmPart2 = new FarmPart(FarmPart1Name, this);
+            FarmPart2.Sides.Add(Side.side_4);
+            FarmPart2.Sides.Add(Side.left);
+            FarmPart2.Sides.Add(Side.side_7);
             Parts.Add(FarmPart2);
-        }
-
-        public override void ConnectCell(Cell cell, Grid grid)
-        {
-            AddBorderToPart(cell, Side.top, GetPart(roadPartName), grid);
-            AddBorderToPart(cell, Side.bottom, GetPart(roadPartName), grid);
-
-            AddFarmSplittedBorder(cell, Side.top, FieldSide.side_0, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, Side.right, GetPart(FarmPartName), grid);
-            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_3, GetPart(FarmPartName), grid);
-
-            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_4, GetPart(FarmPart1Name), grid);
-            AddBorderToPart(cell, Side.left, GetPart(FarmPart1Name), grid);
-            AddFarmSplittedBorder(cell, Side.top, FieldSide.side_7, GetPart(FarmPart1Name), grid);
         }
     }
 }

@@ -1,4 +1,8 @@
 ﻿using Carcassone.Core.Board;
+using Carcassone.Core.Calculation.Base.Cities;
+using Carcassone.Core.Calculation.Base.Farms;
+using Carcassone.Core.Calculation.Base.Monasteries;
+using Carcassone.Core.Calculation.Base.Roads;
 using Carcassone.Core.Calculation.Base.Tiles;
 using Carcassone.Core.Tiles;
 using System;
@@ -9,21 +13,33 @@ namespace Carcassone.Core.Calculation.Base
 {
     public class BaseRules: IGameExtension
     {
-        public bool CanPutTileInCell(Cell cell, Tile tile, Grid grid, TileStack tileStack)
+        public List<IGameObjectsManager> Managers { get; } = new List<IGameObjectsManager>();
+
+        public BaseRules(Grid grid)
+        {
+            var citiesManager = new CitiesManager();
+            Managers.Add(citiesManager);
+            Managers.Add(new RoadsManager());
+            Managers.Add(new FarmsManager(citiesManager));
+            Managers.Add(new MonasteriesManager(grid));
+        }
+
+        /// <summary>
+        /// Base rules of connecting tiles
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <param name="tile"></param>
+        /// <param name="grid"></param>
+        /// <param name="tileStack"></param>
+        /// <returns></returns>
+        public bool CanPutTileInCell(Cell cell, Tile tile, Grid grid)
         {
             if (cell.IsContainingTile()) return false; // if there is a tile already
 
-            var neighbourTopTileName = grid.GetNeighbour(cell, Side.top)?.CardName;
-            Tile? neighbourTopTile = neighbourTopTileName != null ? tileStack.GetTile(neighbourTopTileName) : null;
-
-            var neighbourLeftTileName = grid.GetNeighbour(cell, Side.left)?.CardName;
-            Tile? neighbourLeftTile = neighbourLeftTileName != null ? tileStack.GetTile(neighbourLeftTileName) : null;
-
-            var neighbourBottomTileName = grid.GetNeighbour(cell, Side.bottom)?.CardName;
-            Tile? neighbourBottomTile = neighbourBottomTileName != null ? tileStack.GetTile(neighbourBottomTileName) : null;
-
-            var neighbourRightTileName = grid.GetNeighbour(cell, Side.right)?.CardName;
-            Tile? neighbourRightTile = neighbourRightTileName != null ? tileStack.GetTile(neighbourRightTileName) : null;
+            Tile? neighbourTopTile = grid.GetNeighbour(cell, Side.top)?.Tile;
+            Tile? neighbourLeftTile = grid.GetNeighbour(cell, Side.left)?.Tile;
+            Tile? neighbourBottomTile = grid.GetNeighbour(cell, Side.bottom)?.Tile;
+            Tile? neighbourRightTile = grid.GetNeighbour(cell, Side.right)?.Tile;
 
             // карту можно положить в поле, если в соседних с полем областях либо нет карт
             // либо границы карты которую кладем и соседней карты совпадают
@@ -38,6 +54,10 @@ namespace Carcassone.Core.Calculation.Base
             return false;
         }
 
+        /// <summary>
+        /// Base set of tiles
+        /// </summary>
+        /// <param name="stack"></param>
         public void AddTiles(TileStack stack)
         {
             stack.CreateTiles(typeof(CCCC), 1, 10);

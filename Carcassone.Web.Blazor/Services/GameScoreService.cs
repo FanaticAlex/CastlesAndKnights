@@ -48,7 +48,7 @@ namespace Carcassone.Web.Blazor.Services
                 var playerResult = new PlayerFinalResult()
                 {
                     CarcassoneUser = await _userManager.FindByNameAsync(player.Name),
-                    FinalScore = playerScore.GetOverallScore(),
+                    FinalScore = playerScore.OverallScore,
                     Rank = playerScore.Rank
                 };
 

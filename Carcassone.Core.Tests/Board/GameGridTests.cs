@@ -14,8 +14,8 @@ namespace Carcassone.Core.Tests.Board
             var center = grid.GetCell(0, 0);
             Assert.Single(grid.Cells);
             Assert.NotNull(center);
-            Assert.Equal(0, center.X);
-            Assert.Equal(0, center.Y);
+            Assert.Equal(0, center.Location.X);
+            Assert.Equal(0, center.Location.Y);
 
             var card = new CCCC("CCCC", 0);
             grid.PutTile(card, center);

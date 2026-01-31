@@ -49,7 +49,7 @@ namespace Carcassone.Core.Players
                 throw new Exception("Объект не принадлежит игроку, невозможно установить флаг.");
 
             var chip = part.Chip;
-            chip.OwnerName = Name;
+            chip.Owner = this;
             СhipList.Add(chip);
 
             part.Chip = null;
@@ -101,9 +101,9 @@ namespace Carcassone.Core.Players
             }
 
             // ходы дающие наибольшее число очков
-            var maxScore = dic.Max(item => item.Value.GetOverallScore());
+            var maxScore = dic.Max(item => item.Value.OverallScore);
             var bestScoreMove = dic
-                .Where(item => item.Value.GetOverallScore() == maxScore)
+                .Where(item => item.Value.OverallScore == maxScore)
                 .First();
             return bestScoreMove.Key;
         }
@@ -133,7 +133,7 @@ namespace Carcassone.Core.Players
                     continue;
 
 
-                gameCopy.PutTileInCell(tile, cell); 
+                gameCopy.AddTile(tile, cell); 
 
                 // ходы с установкой фишки
                 var partNames = gameCopy.GetAvailableParts(tile.Id).Select(p => p.PartName).ToList();

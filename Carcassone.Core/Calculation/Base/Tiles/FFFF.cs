@@ -19,21 +19,15 @@ namespace Carcassone.Core.Calculation.Base.Tiles
 
         public FFFF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var churchPart = new MonasteryPart(churchPartName, Id);
+            var churchPart = new MonasteryPart(churchPartName, this);
             Parts.Add(churchPart);
 
-            var FarmPart1 = new FarmPart(FarmPartName, Id);
+            var FarmPart1 = new FarmPart(FarmPartName, this);
+            FarmPart1.Sides.Add(Side.top);
+            FarmPart1.Sides.Add(Side.right);
+            FarmPart1.Sides.Add(Side.bottom);
+            FarmPart1.Sides.Add(Side.left);
             Parts.Add(FarmPart1);
-        }
-
-        public override void ConnectCell(Cell cell, Grid grid)
-        {
-            ((MonasteryPart)GetPart(churchPartName)).CellId = cell.Id;
-
-            AddBorderToPart(cell, Side.top, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, Side.right, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, Side.bottom, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, Side.left, GetPart(FarmPartName), grid);
         }
     }
 }

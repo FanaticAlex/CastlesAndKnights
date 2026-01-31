@@ -22,18 +22,19 @@ namespace Carcassone.Core.Board
             CreateCell(0, 0); // create initial cell
         }
 
-        public void PutTile(Tile card, Cell cell)
+        public void PutTile(Tile tile, Cell cell)
         {
             lock (_lockObj)
             {
                 // create 4 new cells around placed card
-                CreateCell(cell.X, cell.Y + 1);
-                CreateCell(cell.X, cell.Y - 1);
-                CreateCell(cell.X + 1, cell.Y);
-                CreateCell(cell.X - 1, cell.Y);
+                CreateCell(cell.Location.X, cell.Location.Y + 1);
+                CreateCell(cell.Location.X, cell.Location.Y - 1);
+                CreateCell(cell.Location.X + 1, cell.Location.Y);
+                CreateCell(cell.Location.X - 1, cell.Location.Y);
 
-                // connect card to cell
-                cell.CardName = card.Id;
+                // connect tile and cell
+                cell.Tile = tile;
+                tile.Cell = cell;
             }
         }
 
@@ -44,10 +45,10 @@ namespace Carcassone.Core.Board
 
             return side switch
             {
-                Side.top => GetCellWithoutThrowing(cell.X, cell.Y + 1),
-                Side.bottom => GetCellWithoutThrowing(cell.X, cell.Y - 1),
-                Side.right => GetCellWithoutThrowing(cell.X + 1, cell.Y),
-                Side.left => GetCellWithoutThrowing(cell.X - 1, cell.Y),
+                Side.top => GetCellWithoutThrowing(cell.Location.X, cell.Location.Y + 1),
+                Side.bottom => GetCellWithoutThrowing(cell.Location.X, cell.Location.Y - 1),
+                Side.right => GetCellWithoutThrowing(cell.Location.X + 1, cell.Location.Y),
+                Side.left => GetCellWithoutThrowing(cell.Location.X - 1, cell.Location.Y),
                 _ => throw new KeyNotFoundException(),
             };
         }
@@ -57,12 +58,12 @@ namespace Carcassone.Core.Board
             if (cell == null)
                 return null;
 
-            return GetCellWithoutThrowing(cell.X + deltaX, cell.Y + deltaY);
+            return GetCellWithoutThrowing(cell.Location.X + deltaX, cell.Location.Y + deltaY);
         }
 
         public List<Cell> GetEmptyCells()
         {
-            return Cells.ToList().Where(c => string.IsNullOrEmpty(c.CardName)).ToList();
+            return Cells.ToList().Where(c => (c.Tile == null)).ToList();
         }
 
         public List<Cell> GetAvailableCells()

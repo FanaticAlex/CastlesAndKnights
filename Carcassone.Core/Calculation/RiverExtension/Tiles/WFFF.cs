@@ -19,22 +19,17 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 
         public WFFF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var RiverPart0 = new RiverPart(RiverPart0Name, Id);
+            var RiverPart0 = new RiverPart(RiverPart0Name, this);
+            RiverPart0.Sides.Add(Side.top);
             Parts.Add(RiverPart0);
 
-            var FarmPart1 = new FarmPart(FarmPartName, Id);
+            var FarmPart1 = new FarmPart(FarmPartName, this);
+            FarmPart1.Sides.Add(Side.side_0);
+            FarmPart1.Sides.Add(Side.side_7);
+            FarmPart1.Sides.Add(Side.right);
+            FarmPart1.Sides.Add(Side.bottom);
+            FarmPart1.Sides.Add(Side.left);
             Parts.Add(FarmPart1);
-        }
-
-        public override void ConnectCell(Cell cell, Grid grid)
-        {
-            AddBorderToPart(cell, Side.top, GetPart(RiverPart0Name), grid);
-
-            AddFarmSplittedBorder(cell, Side.top, FieldSide.side_0, GetPart(FarmPartName), grid);
-            AddFarmSplittedBorder(cell, Side.top, FieldSide.side_7, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, Side.right, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, Side.bottom, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, Side.left, GetPart(FarmPartName), grid);
         }
     }
 }

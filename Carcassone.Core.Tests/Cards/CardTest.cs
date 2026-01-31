@@ -15,7 +15,7 @@ namespace Carcassone.Core.Tests.Cards
         public void RotateCardTest()
         {
             var card = new CCCC("CCCC", 0);
-            card.RotateCard();
+            card.RotateTile();
             Assert.Equal(1, card.RotationsCount);
         }
     }

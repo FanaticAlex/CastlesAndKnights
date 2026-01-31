@@ -21,27 +21,20 @@ namespace Carcassone.Core.Calculation.Base.Tiles
 
         public FFRF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var roadPart3 = new RoadPart(roadPartName, Id);
+            var roadPart3 = new RoadPart(roadPartName, this);
+            roadPart3.Sides.Add(Side.bottom);
             Parts.Add(roadPart3);
 
-            var churchPart = new MonasteryPart(churchPartName, Id);
+            var churchPart = new MonasteryPart(churchPartName, this);
             Parts.Add(churchPart);
 
-            var FarmPart1 = new FarmPart(FarmPartName, Id);
+            var FarmPart1 = new FarmPart(FarmPartName, this);
+            FarmPart1.Sides.Add(Side.top);
+            FarmPart1.Sides.Add(Side.right);
+            FarmPart1.Sides.Add(Side.left);
+            FarmPart1.Sides.Add(Side.side_3);
+            FarmPart1.Sides.Add(Side.side_4);
             Parts.Add(FarmPart1);
-        }
-
-        public override void ConnectCell(Cell cell, Grid grid)
-        {
-            AddBorderToPart(cell, Side.bottom, GetPart(roadPartName), grid);
-
-            ((MonasteryPart)GetPart(churchPartName)).CellId = cell.Id;
-
-            AddBorderToPart(cell, Side.top, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, Side.right, GetPart(FarmPartName), grid);
-            AddBorderToPart(cell, Side.left, GetPart(FarmPartName), grid);
-            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_3, GetPart(FarmPartName), grid);
-            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_4, GetPart(FarmPartName), grid);
         }
     }
 }

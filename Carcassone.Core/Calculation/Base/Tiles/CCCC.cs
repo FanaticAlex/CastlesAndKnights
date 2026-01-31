@@ -19,20 +19,12 @@ namespace Carcassone.Core.Calculation.Base.Tiles
 
         public CCCC(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var CityPart = new CityPart(cityPartName, Id);
+            var CityPart = new CityPart(cityPartName, this);
             CityPart.Sides.Add(Side.top);
             CityPart.Sides.Add(Side.right);
             CityPart.Sides.Add(Side.bottom);
             CityPart.Sides.Add(Side.left);
             Parts.Add(CityPart);
-        }
-
-        public override void ConnectCell(Cell cell, Grid grid)
-        {
-            AddBorderToPart(cell, Side.top, GetPart(cityPartName), grid);
-            AddBorderToPart(cell, Side.right, GetPart(cityPartName), grid);
-            AddBorderToPart(cell, Side.bottom, GetPart(cityPartName), grid);
-            AddBorderToPart(cell, Side.left, GetPart(cityPartName), grid);
         }
     }
 }

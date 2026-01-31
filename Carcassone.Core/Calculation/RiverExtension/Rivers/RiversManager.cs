@@ -1,29 +1,32 @@
-﻿using Carcassone.Core.Tiles;
+﻿using Carcassone.Core.Board;
+using Carcassone.Core.Players;
+using Carcassone.Core.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Carcassone.Core.Calculation.RiverExtension.Rivers
 {
-    public class RiversManager
+    // TODO: Redundant
+    public class RiversManager : IGameObjectsManager
     {
         public River River { get; set; } = new River();
 
-        public void ProcessPart(ObjectPart part, TileStack tilesStack)
+        public IEnumerable<BaseGameObject> GetGameObjects()
         {
-            if (River.PartsIds.Count == 0) // starting the river
-            {
-                River.AddPart(part, tilesStack);
-                return;
-            }
+            return new List<River>() { River };
+        }
 
-            if (River.CanConnect(part))
-            {
-                River.AddPart(part, tilesStack);
-                return;
-            }
-             
-            throw new Exception("Can't connect river part");
+        public int GetPlayerScore(GamePlayer player)
+        {
+            return 0;
+        }
+
+        public void ProcessPart(ObjectPart part, Cell cell)
+        {
+            if (!(part is RiverPart)) return;
+
+            River.Parts.Add(part);
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Carcassone.Core.Tiles;
 using Carcassone.Core.Players;
 using Xunit;
+using System.Linq;
 
 namespace Carcassone.Core.Tests.Buisness
 {
-    public class ChurchTests
+    public class MonasteryTests
     {
         /// <summary>
         /// 9 полей с картой церкви в центальной фишка игрока.
@@ -45,8 +46,9 @@ namespace Carcassone.Core.Tests.Buisness
                 PartName = "Church_0"
             };
             room.MakeMove(gameMove0);
-            Assert.Single(room.ScoreCalculator.Churches);
-            Assert.Equal(1, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).ChurchesScore);
+
+            Assert.Single(room.GetAllMonastery());
+            Assert.Equal(1, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
 
             var gameMove1 = new GameMove()
             {
@@ -57,8 +59,8 @@ namespace Carcassone.Core.Tests.Buisness
                 PartName = null
             };
             room.MakeMove(gameMove1);
-            Assert.Single(room.ScoreCalculator.Churches);
-            Assert.Equal(2, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).ChurchesScore);
+            Assert.Single(room.GetAllMonastery());
+            Assert.Equal(2, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
 
             var gameMove2 = new GameMove()
             {
@@ -69,8 +71,8 @@ namespace Carcassone.Core.Tests.Buisness
                 PartName = null
             };
             room.MakeMove(gameMove2);
-            Assert.Single(room.ScoreCalculator.Churches);
-            Assert.Equal(3, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).ChurchesScore);
+            Assert.Single(room.GetAllMonastery());
+            Assert.Equal(3, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
 
             var gameMove3 = new GameMove()
             {
@@ -81,8 +83,8 @@ namespace Carcassone.Core.Tests.Buisness
                 PartName = null
             };
             room.MakeMove(gameMove3);
-            Assert.Single(room.ScoreCalculator.Churches);
-            Assert.Equal(4, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).ChurchesScore);
+            Assert.Single(room.GetAllMonastery());
+            Assert.Equal(4, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
 
             var gameMove4 = new GameMove()
             {
@@ -93,8 +95,8 @@ namespace Carcassone.Core.Tests.Buisness
                 PartName = null
             };
             room.MakeMove(gameMove4);
-            Assert.Single(room.ScoreCalculator.Churches);
-            Assert.Equal(5, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).ChurchesScore);
+            Assert.Single(room.GetAllMonastery());
+            Assert.Equal(5, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
 
             var gameMove5 = new GameMove()
             {
@@ -105,8 +107,8 @@ namespace Carcassone.Core.Tests.Buisness
                 PartName = null
             };
             room.MakeMove(gameMove5);
-            Assert.Single(room.ScoreCalculator.Churches);
-            Assert.Equal(6, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).ChurchesScore);
+            Assert.Single(room.GetAllMonastery());
+            Assert.Equal(6, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
 
             var gameMove6 = new GameMove()
             {
@@ -117,8 +119,8 @@ namespace Carcassone.Core.Tests.Buisness
                 PartName = null
             };
             room.MakeMove(gameMove6);
-            Assert.Single(room.ScoreCalculator.Churches);
-            Assert.Equal(7, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).ChurchesScore);
+            Assert.Single(room.GetAllMonastery());
+            Assert.Equal(7, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
 
             var gameMove7 = new GameMove()
             {
@@ -129,8 +131,8 @@ namespace Carcassone.Core.Tests.Buisness
                 PartName = null
             };
             room.MakeMove(gameMove7);
-            Assert.Single(room.ScoreCalculator.Churches);
-            Assert.Equal(8, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).ChurchesScore);
+            Assert.Single(room.GetAllMonastery());
+            Assert.Equal(8, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
 
             var gameMove8 = new GameMove()
             {
@@ -141,10 +143,10 @@ namespace Carcassone.Core.Tests.Buisness
                 PartName = null
             };
             room.MakeMove(gameMove8);
-            Assert.Single(room.ScoreCalculator.Churches);
-            Assert.Equal(18, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).ChurchesScore);
+            Assert.Single(room.GetAllMonastery());
+            Assert.Equal(18, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
 
-            Assert.True(room.ScoreCalculator.Churches[0].IsFinished);
+            Assert.True(room.GetAllMonastery().ElementAt(0).IsComplete());
         }
     }
 }

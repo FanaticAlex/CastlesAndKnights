@@ -2,53 +2,74 @@
 using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Tiles;
 using Newtonsoft.Json;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace Carcassone.Core.Calculation
 {
     public class TileBorder
     {
-        public string FirstCellId { get; set; }
+        public PointF Location { get; set; }
 
-        public string SecondCellId { get; set; }
-
-        public FieldSide? FarmSide { get; set; }
-
-        public string TileId { get; set; }
-
-        [JsonConstructor]
-        public TileBorder() { }
-
-        public TileBorder(Cell? first, Cell? second, Tile tile)
+        public TileBorder(Cell cell, Side side)
         {
-            if (first == null || second == null)
-                throw new System.Exception($"Cell can not be null. Tile: {tile.Id}, first: {first?.Id}, second: {second?.Id}");
+            SizeF size = new SizeF(0, 0);
+            switch (side)
+            {
+                case Side.top:    size = new SizeF( 0   ,  0.5f); break;
+                case Side.right:  size = new SizeF( 0.5f,  0); break;
+                case Side.bottom: size = new SizeF( 0   , -0.5f); break;
+                case Side.left:   size = new SizeF(-0.5f,  0); break;
 
-            FirstCellId = first.Id;
-            SecondCellId = second.Id;
-            TileId = tile.Id;
+                case Side.side_0: size = new SizeF( 0.25f,  0.5f); break;
+                case Side.side_1: size = new SizeF( 0.5f ,  0.25f); break;
+                case Side.side_2: size = new SizeF( 0.5f , -0.25f); break;
+                case Side.side_3: size = new SizeF( 0.25f, -0.5f); break;
+                case Side.side_4: size = new SizeF(-0.25f, -0.5f); break;
+                case Side.side_5: size = new SizeF(-0.5f , -0.25f); break;
+                case Side.side_6: size = new SizeF(-0.5f ,  0.25f); break;
+                case Side.side_7: size = new SizeF(-0.25f , 0.5f); break;
+            }
+
+            Location = PointF.Add(cell.Location, size);
         }
 
         public static bool Equial(TileBorder border1, TileBorder border2)
         {
-            if (border1.FirstCellId == null || border1.SecondCellId == null)
-                return false;
-
-            if (border2.FirstCellId == null || border2.SecondCellId == null)
-                return false;
-
-            if (border1.FirstCellId == border2.FirstCellId &&
-                border1.SecondCellId == border2.SecondCellId)
-            {
-                return true;
-            }
-
-            if (border1.FirstCellId == border2.SecondCellId &&
-                border1.SecondCellId == border2.FirstCellId)
+            if (border1.Location == border2.Location)
             {
                 return true;
             }
 
             return false;
+        }
+    }
+
+    public class BorderComparer : IEqualityComparer<TileBorder>
+    {
+        public bool Equals(TileBorder x, TileBorder y)
+        {
+            //Check whether the compared objects reference the same data.
+            if (Object.ReferenceEquals(x, y)) return true;
+
+            //Check whether any of the compared objects is null.
+            if (Object.ReferenceEquals(x, null) || Object.ReferenceEquals(y, null))
+                return false;
+
+            return x.Location == y.Location;
+        }
+
+        public int GetHashCode(TileBorder b)
+        {
+            //Check whether the object is null
+            if (Object.ReferenceEquals(b, null)) return 0;
+
+            //Get hash code for the Name field if it is not null.
+            int code = b.Location == null ? 0 : b.Location.GetHashCode();
+
+            return code;
         }
     }
 }

@@ -1,6 +1,10 @@
 ﻿using Carcassone.Core.Board;
 using Carcassone.Core.Calculation;
 using Carcassone.Core.Calculation.Base;
+using Carcassone.Core.Calculation.Base.Cities;
+using Carcassone.Core.Calculation.Base.Farms;
+using Carcassone.Core.Calculation.Base.Monasteries;
+using Carcassone.Core.Calculation.Base.Roads;
 using Carcassone.Core.Calculation.RiverExtension;
 using Carcassone.Core.Players;
 using Carcassone.Core.Tiles;
@@ -14,19 +18,18 @@ namespace Carcassone.Core
 {
 
     /// <summary>
-    /// Store all single game data.
+    /// Store all game data.
     /// </summary>
     public class GameRoom
     {
-        public List<GameMove> Moves { get; set; } = new List<GameMove>();
+        private List<GameMove> Moves { get; set; } = new List<GameMove>();
 
         /// <summary>
-        /// Extensions contains rules of the game.
+        /// Extensions contain rules of the game.
         /// </summary>
         private List<IGameExtension> Extensions { get; } = new List<IGameExtension>();
 
         public TileStack TileStack { get; set; }
-        public ScoreCalculator ScoreCalculator { get; set; }
         public Grid GameGrid { get; set; }
         public GamePlayersPool PlayersPool { get; set; }
 
@@ -40,7 +43,10 @@ namespace Carcassone.Core
         {
             Id = Guid.NewGuid().ToString();
 
-            Extensions.Add(new BaseRules());
+            GameGrid = new Grid();
+            PlayersPool = new GamePlayersPool();
+
+            Extensions.Add(new BaseRules(GameGrid));
             Extensions.Add(new RiverExtension());
 
             // compose stack from all tiles of all extensions
@@ -49,10 +55,6 @@ namespace Carcassone.Core
                 extension.AddTiles(TileStack);
 
             TileStack.Shaffle();
-
-            ScoreCalculator = new ScoreCalculator();
-            GameGrid = new Grid();
-            PlayersPool = new GamePlayersPool();
         }
 
         /// <summary>
@@ -86,13 +88,40 @@ namespace Carcassone.Core
         {
             var room = JsonConvert.DeserializeObject<GameRoom>(save) ?? throw new Exception($"Can't load the game from save {save}");
             TileStack = room.TileStack;
-            ScoreCalculator = room.ScoreCalculator;
             GameGrid = room.GameGrid;
             PlayersPool = room.PlayersPool;
         }
 
-        public PlayerScore GetPlayerScore(string playerName) =>
-            ScoreCalculator.GetPlayerScore(playerName, PlayersPool, TileStack);
+        public IEnumerable<BaseGameObject> GetAllGameObjects()
+        {
+            return Extensions.SelectMany(e => e.Managers.SelectMany(m => m.GetGameObjects()));
+        }
+
+        public IEnumerable<City> GetAllCities()
+        {
+            return GetAllGameObjects().Where(o => o is City).Select(o => (City)o);
+        }
+        public IEnumerable<Road> GetAllRoads()
+        {
+            return GetAllGameObjects().Where(o => o is Road).Select(o => (Road)o);
+        }
+
+        public IEnumerable<Farm> GetAllFarms()
+        {
+            return GetAllGameObjects().Where(o => o is Farm).Select(o => (Farm)o);
+        }
+
+        public IEnumerable<Monastery> GetAllMonastery()
+        {
+            return GetAllGameObjects().Where(o => o is Monastery).Select(o => (Monastery)o);
+        }
+
+        public PlayerScore GetPlayerScore(string playerName)
+        {
+            var scores = GetPlayersScores(PlayersPool, TileStack);
+            var score = scores.Single(s => s.PlayerName == playerName);
+            return score;
+        }
 
         public Tile GetTile(string cardId) => TileStack.GetTile(cardId);
 
@@ -135,56 +164,52 @@ namespace Carcassone.Core
             return GameGrid.GetUnavailableCells();
         }
 
-        public List<ObjectPart> GetAvailableParts(string tileName)
+        public List<ObjectPart> GetAvailableParts(string tileID)
         {
-            var tile = GetTile(tileName);
-            var list = tile.Parts.Where(p => !p.IsPartOfOwnedObject).ToList();
+            var tile = GetTile(tileID);
+            var partsOfOwnedObjects = GetAllGameObjects().Where(o => HasOwnerHelper.HasOwner(o)).SelectMany(o => o.Parts);
+            var list = new List<ObjectPart>();
+            foreach (var part in tile.Parts)
+            {
+                if (!(partsOfOwnedObjects.Contains(part)))
+                list.Add(part);
+            }
+
             return list;
-        }
-
-        public void PutTileInCell(Tile tile, Cell cell)
-        {
-            if (tile == null)
-                throw new Exception("Card can't be null");
-
-            if (cell == null)
-                throw new Exception("Cell can't be null");
-
-            if (!CanPutTileInCell(cell, tile))
-                throw new Exception("Card can't be put");
-
-            GameGrid.PutTile(tile, cell);
-            tile.ConnectCell(cell, GameGrid);
-            ScoreCalculator.AddTile(tile, cell, GameGrid, TileStack);
-        }
-
-        public void PutChipOnTile(ObjectPart partObject, string playerName)
-        {
-            var player = PlayersPool.GetPlayer(playerName);
-            if (player == null) throw new NullReferenceException("Player not found: " + playerName);
-
-            partObject.Chip = player.TakeChip();
         }
 
         public void MakeMove(GameMove gameMove)
         {
             if (gameMove == null) throw new ArgumentNullException("Move obj can not be null");
-
+            
             var cell = GameGrid.GetCell(gameMove.CellId);
-            var tile = TileStack.GetTile(gameMove.TileId);
-            tile.RotateCard(gameMove.TileRotation);
-            PutTileInCell(tile, cell);
+            if (cell == null) throw new Exception("Cell can't be null");
 
+            var tile = TileStack.GetTile(gameMove.TileId);
+            if (tile == null) throw new Exception("Card can't be null");
+
+
+            // PutChipOnTile
             if ((gameMove.PlayerName != null) && (gameMove.PartName != null))
             {
+                var player = PlayersPool.GetPlayer(gameMove.PlayerName);
+                if (player == null) throw new NullReferenceException("Player not found: " + gameMove.PlayerName);
+
                 var part = tile.GetPart(gameMove.PartName);
-                PutChipOnTile(part, gameMove.PlayerName);
+                part.Chip = player.TakeChip();
             }
 
-            Moves.Add(gameMove);
 
-            // расчеты
-            ScoreCalculator.CloseObjectsAndReturnChips(PlayersPool, TileStack);
+            tile.RotateCard(gameMove.TileRotation);
+
+
+            if (!CanPutTileInCell(cell, tile))
+                throw new Exception("Card can't be put");
+
+            GameGrid.PutTile(tile, cell);
+            AddTile(tile, cell);
+
+            Moves.Add(gameMove);
 
             TileStack.DiscardTile(tile);
             TileStack.CurrentCard = GetNextTile();
@@ -203,7 +228,7 @@ namespace Carcassone.Core
         {
             return GameGrid.Cells
                 .Where(c => c.IsContainingTile())
-                .Select(c => TileStack.GetTile(c.CardName))
+                .Select(c => c.Tile)
                 .ToList();
         }
 
@@ -266,7 +291,7 @@ namespace Carcassone.Core
         {
             for (int i = 0; i < 4; i++) // можно сделать до 4х поворотов 4й - исходное положение (в конце)
             {
-                tile.RotateCard();
+                tile.RotateTile();
                 if (CanPutTileInCell(cell, tile))
                     return true;
             }
@@ -278,9 +303,53 @@ namespace Carcassone.Core
         {
             var result = true;
             foreach(var extension in Extensions)
-                result &= extension.CanPutTileInCell(cell, tile, GameGrid, TileStack);
+                result &= extension.CanPutTileInCell(cell, tile, GameGrid);
 
             return result;
+        }
+
+        /// <summary>
+        /// Add tile and update objects
+        /// </summary>
+        /// <param name="tile"></param>
+        public void AddTile(Tile tile, Cell cell)
+        {
+            foreach (ObjectPart part in tile.Parts)
+                foreach (var manager in Extensions.SelectMany(e => e.Managers))
+                    manager.ProcessPart(part, cell);
+        }
+
+        private IEnumerable<PlayerScore> GetPlayersScores(GamePlayersPool plyersPool, TileStack cardPool)
+        {
+            var scores = new List<PlayerScore>();
+            foreach (var player in plyersPool.GamePlayers)
+            {
+                var overallScore = 0;
+                foreach (var manager in Extensions.SelectMany(e => e.Managers))
+                {
+                    overallScore += manager.GetPlayerScore(player);
+                }
+
+                var score = new PlayerScore()
+                {
+                    PlayerName = player.Name,
+                    OverallScore = overallScore,
+                    ChipCount = player.СhipList.Count
+                };
+                scores.Add(score);
+            }
+
+            scores.Sort(delegate (PlayerScore x, PlayerScore y)
+            {
+                return y.OverallScore.CompareTo(x.OverallScore);
+            });
+
+            foreach (var score in scores)
+            {
+                score.Rank = scores.IndexOf(score);
+            }
+
+            return scores;
         }
     }
 }

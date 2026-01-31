@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Carcassone.Core.Board;
 using Carcassone.Core.Calculation;
+using Carcassone.Core.Calculation.Base.Cities;
 using Carcassone.Core.Calculation.Base.Farms;
 using Newtonsoft.Json;
 
@@ -18,10 +19,8 @@ namespace Carcassone.Core.Tiles
         /// Вручную соединенные замки и поля,
         /// это нужно для подсчета какие замки присоденены к полям при подсчете очков за поля
         /// </summary>
-        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        public Dictionary<string, List<string>> FarmToCityParts { get; set; } = new Dictionary<string, List<string>>();
+        public Dictionary<FarmPart, List<CityPart>> FarmToCityParts { get; set; } = new Dictionary<FarmPart, List<CityPart>>();
 
-        [JsonProperty(ItemConverterType = typeof(PartConverter), ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public List<ObjectPart> Parts { get; set; } = new List<ObjectPart>();
 
         public string Id { get; set; }
@@ -40,6 +39,8 @@ namespace Carcassone.Core.Tiles
 
 
         public int RotationsCount { get; set; }
+
+        public Cell Cell { get; set; }
 
         public Tile(string cardType, int cardNumber)
         {
@@ -64,47 +65,16 @@ namespace Carcassone.Core.Tiles
             return list.Single();
         }
 
-        public void AddBorderToPart(Cell cell, Side side, ObjectPart? part, Grid grid)
+        public List<CityPart> GetConnectedCityParts(FarmPart part)
         {
-            if (part == null) throw new ArgumentNullException(nameof(part));
-
-            var rotatedSide = GetRotatedSide(side, RotationsCount);
-            var border = new TileBorder(cell, grid.GetNeighbour(cell, rotatedSide), this);
-            part.Borders.Add(border);
-        }
-
-        public void AddFarmSplittedBorder(
-            Cell cell, Side side, FieldSide sidePart, ObjectPart? part, Grid grid)
-        {
-            if (part == null) throw new ArgumentNullException(nameof(part));
-
-            if ((side == Side.top && sidePart != FieldSide.side_0 && sidePart != FieldSide.side_7) ||
-                (side == Side.right && sidePart != FieldSide.side_1 && sidePart != FieldSide.side_2) ||
-                (side == Side.bottom && sidePart != FieldSide.side_3 && sidePart != FieldSide.side_4) ||
-                (side == Side.left && sidePart != FieldSide.side_5 && sidePart != FieldSide.side_6))
+            var CityParts = new List<CityPart>();
+            if (FarmToCityParts.Keys.Contains(part))
             {
-                throw new Exception($"Wrong side order in part {part.PartId}");
-            }
-
-            side = GetRotatedSide(side, RotationsCount);
-            sidePart = GetRotatedSidePart(sidePart, RotationsCount);
-            var Farm1Border0 = new TileBorder(cell, grid.GetNeighbour(cell, side), this);
-            Farm1Border0.FarmSide = sidePart;
-            part.Borders.Add(Farm1Border0);
-        }
-
-        public List<string> GetConnectedCityParts(FarmPart part)
-        {
-            var CityParts = new List<string>();
-            if (FarmToCityParts.Keys.Contains(part.PartId))
-            {
-                CityParts = FarmToCityParts[part.PartId];
+                CityParts = FarmToCityParts[part];
             }
 
             return CityParts;
         }
-
-        public abstract void ConnectCell(Cell field, Grid grid);
 
         public void RotateCard(int rotation)
         {
@@ -112,14 +82,14 @@ namespace Carcassone.Core.Tiles
             if (rotation >= 4) throw new ArgumentOutOfRangeException("неверное число поворотов");
 
             do
-                RotateCard();
+                RotateTile();
             while (RotationsCount != rotation);
         }
 
         /// <summary>
-        /// Поворачивает карту на 90 по часовой стрелке градусов счетчик поворотов увеличивается на 1
+        /// Rotate card at 90 degree clockwise. Rotation counter increases by 1
         /// </summary>
-        public void RotateCard()
+        public void RotateTile()
         {
             var tempTop = TopEdgeType;
             var tempLeft = LeftEdgeType;
@@ -133,30 +103,33 @@ namespace Carcassone.Core.Tiles
 
             RotationsCount += 1;
             RotationsCount %= 4;
+
+            // rotate parts of object on a tile as well
+            foreach(var part in Parts)
+            {
+                for (int i = 0; i < part.Sides.Count; i++)
+                    part.Sides[i] = GetRotatedSide(part.Sides[i], 1);
+            }
         }
 
-        /// <summary>
-        /// Трансформация исходной стороны с учетом поворота карты
-        /// </summary>
-        /// <param name="side"></param>
-        /// <param name="rotationCount"></param>
-        /// <returns></returns>
         private static Side GetRotatedSide(Side side, int rotationCount)
         {
-            var result = ((byte)side + rotationCount) % 4;
-            return (Side)result;
-        }
-
-        /// <summary>
-        /// Поворот стороны
-        /// </summary>
-        /// <param name="side"></param>
-        /// <param name="rotationCount"></param>
-        /// <returns></returns>
-        private static FieldSide GetRotatedSidePart(FieldSide side, int rotationCount)
-        {
-            var result = ((byte)side + rotationCount * 2) % 8;
-            return (FieldSide)result;
+            switch (side)
+            {
+                case Side.top: return Side.right;
+                case Side.right: return Side.bottom;
+                case Side.bottom: return Side.left;
+                case Side.left: return Side.top;
+                case Side.side_0: return Side.side_2;
+                case Side.side_1: return Side.side_3;
+                case Side.side_2: return Side.side_4;
+                case Side.side_3: return Side.side_5;
+                case Side.side_4: return Side.side_6;
+                case Side.side_5: return Side.side_7;
+                case Side.side_6: return Side.side_0;
+                case Side.side_7: return Side.side_1;
+                default: throw new NotImplementedException();
+            }
         }
     }
 }

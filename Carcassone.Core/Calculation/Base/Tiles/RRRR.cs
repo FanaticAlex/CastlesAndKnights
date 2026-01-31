@@ -26,52 +26,41 @@ namespace Carcassone.Core.Calculation.Base.Tiles
 
         public RRRR(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var roadPart1 = new RoadPart(roadPartName, Id);
+            var roadPart1 = new RoadPart(roadPartName, this);
+            roadPart1.Sides.Add(Side.top);
             Parts.Add(roadPart1);
 
-            var roadPart2 = new RoadPart(roadPart1Name, Id);
+            var roadPart2 = new RoadPart(roadPart1Name, this);
+            roadPart2.Sides.Add(Side.right);
             Parts.Add(roadPart2);
 
-            var roadPart3 = new RoadPart(roadPart2Name, Id);
+            var roadPart3 = new RoadPart(roadPart2Name, this);
+            roadPart3.Sides.Add(Side.bottom);
             Parts.Add(roadPart3);
 
-            var roadPart4 = new RoadPart(roadPart3Name, Id);
+            var roadPart4 = new RoadPart(roadPart3Name, this);
+            roadPart4.Sides.Add(Side.left);
             Parts.Add(roadPart4);
 
-            var FarmPart1 = new FarmPart(FarmPartName, Id);
+            var FarmPart1 = new FarmPart(FarmPartName, this);
+            FarmPart1.Sides.Add(Side.side_0);
+            FarmPart1.Sides.Add(Side.side_1);
             Parts.Add(FarmPart1);
 
-            var FarmPart2 = new FarmPart(FarmPart1Name, Id);
+            var FarmPart2 = new FarmPart(FarmPart1Name, this);
+            FarmPart2.Sides.Add(Side.side_2);
+            FarmPart2.Sides.Add(Side.side_3);
             Parts.Add(FarmPart2);
 
-            var FarmPart3 = new FarmPart(FarmPart2Name, Id);
+            var FarmPart3 = new FarmPart(FarmPart2Name, this);
+            FarmPart3.Sides.Add(Side.side_4);
+            FarmPart3.Sides.Add(Side.side_5);
             Parts.Add(FarmPart3);
 
-            var FarmPart4 = new FarmPart(FarmPart3Name, Id);
+            var FarmPart4 = new FarmPart(FarmPart3Name, this);
+            FarmPart4.Sides.Add(Side.side_6);
+            FarmPart4.Sides.Add(Side.side_7);
             Parts.Add(FarmPart4);
-        }
-
-        public override void ConnectCell(Cell cell, Grid grid)
-        {
-            AddBorderToPart(cell, Side.top, GetPart(roadPartName), grid);
-
-            AddBorderToPart(cell, Side.right, GetPart(roadPart1Name), grid);
-
-            AddBorderToPart(cell, Side.bottom, GetPart(roadPart2Name), grid);
-
-            AddBorderToPart(cell, Side.left, GetPart(roadPart3Name), grid);
-
-            AddFarmSplittedBorder(cell, Side.top, FieldSide.side_0, GetPart(FarmPartName), grid);
-            AddFarmSplittedBorder(cell, Side.right, FieldSide.side_1, GetPart(FarmPartName), grid);
-
-            AddFarmSplittedBorder(cell, Side.right, FieldSide.side_2, GetPart(FarmPart1Name), grid);
-            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_3, GetPart(FarmPart1Name), grid);
-
-            AddFarmSplittedBorder(cell, Side.bottom, FieldSide.side_4, GetPart(FarmPart2Name), grid);
-            AddFarmSplittedBorder(cell, Side.left, FieldSide.side_5, GetPart(FarmPart2Name), grid);
-
-            AddFarmSplittedBorder(cell, Side.left, FieldSide.side_6, GetPart(FarmPart3Name), grid);
-            AddFarmSplittedBorder(cell, Side.top, FieldSide.side_7, GetPart(FarmPart3Name), grid);
         }
     }
 }

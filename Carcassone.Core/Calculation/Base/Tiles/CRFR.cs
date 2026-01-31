@@ -24,35 +24,28 @@ namespace Carcassone.Core.Calculation.Base.Tiles
 
         public CRFR(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var CityPart = new CityPart(CityPartName, Id);
+            var CityPart = new CityPart(CityPartName, this);
+            CityPart.Sides.Add(Side.top);
             Parts.Add(CityPart);
 
-            var roadPart = new RoadPart(roadPartName, Id);
+            var roadPart = new RoadPart(roadPartName, this);
+            roadPart.Sides.Add(Side.left);
+            roadPart.Sides.Add(Side.right);
             Parts.Add(roadPart);
 
-            var FarmPart1 = new FarmPart(FarmPartName, Id);
+            var FarmPart1 = new FarmPart(FarmPartName, this);
+            FarmPart1.Sides.Add(Side.side_1);
+            FarmPart1.Sides.Add(Side.side_6);
             Parts.Add(FarmPart1);
 
-            var FarmPart2 = new FarmPart(FarmPart1Name, Id);
+            var FarmPart2 = new FarmPart(FarmPart1Name, this);
+            FarmPart2.Sides.Add(Side.side_2);
+            FarmPart2.Sides.Add(Side.bottom);
+            FarmPart2.Sides.Add(Side.side_5);
             Parts.Add(FarmPart2);
 
 
-            FarmToCityParts.Add(FarmPart1.PartId, new List<string>() { CityPart.PartId });
-        }
-
-        public override void ConnectCell(Cell cell, Grid grid)
-        {
-            AddBorderToPart(cell, Side.top, GetPart(CityPartName), grid);
-
-            AddBorderToPart(cell, Side.left, GetPart(roadPartName), grid);
-            AddBorderToPart(cell, Side.right, GetPart(roadPartName), grid);
-
-            AddFarmSplittedBorder(cell, Side.right, FieldSide.side_1, GetPart(FarmPartName), grid);
-            AddFarmSplittedBorder(cell, Side.left, FieldSide.side_6, GetPart(FarmPartName), grid);
-
-            AddFarmSplittedBorder(cell, Side.right, FieldSide.side_2, GetPart(FarmPart1Name), grid);
-            AddBorderToPart(cell, Side.bottom, GetPart(FarmPart1Name), grid);
-            AddFarmSplittedBorder(cell, Side.left, FieldSide.side_5, GetPart(FarmPart1Name), grid);
+            FarmToCityParts.Add(FarmPart1, new List<CityPart>() { CityPart });
         }
     }
 }

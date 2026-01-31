@@ -4,14 +4,11 @@ namespace Carcassone.Core.Players
 {
     public class Flag
     {
-        public string OwnerName { get; set; }
-
-        [JsonConstructor]
-        public Flag() { }
+        public GamePlayer Owner { get; set; }
 
         public Flag(GamePlayer owner)
         {
-            OwnerName = owner.Name;
+            Owner = owner;
         }
     }
 }

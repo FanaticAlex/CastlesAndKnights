@@ -8,7 +8,8 @@ namespace Carcassone.Core.Calculation
 {
     internal interface IGameExtension
     {
-        bool CanPutTileInCell(Cell cell, Tile tile, Grid grid, TileStack tileStack);
+        List<IGameObjectsManager> Managers { get; }
+        bool CanPutTileInCell(Cell cell, Tile tile, Grid grid);
         public void AddTiles(TileStack stack);
     }
 }
