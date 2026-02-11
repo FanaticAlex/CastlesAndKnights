@@ -19,13 +19,11 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void CalculationTest_CrossRoad()
         {
-            var room = new GameRoom();
-            var name = "bob";
-            var bob = room.PlayersPool.AddPlayer(name, PlayerType.Human);
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
 
             var gameMove0 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "RRRR(0)",
                 TileRotation = 0,
                 CellId = $"{0}_{0}",
@@ -58,13 +56,11 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void CalculationTest_RoadRing()
         {
-            var room = new GameRoom();
-            var name = "bob";
-            var bob = room.PlayersPool.AddPlayer(name, PlayerType.Human);
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
 
             var gameMove0 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFRR(0)",
                 TileRotation = 2,
                 CellId = $"{0}_{0}",
@@ -74,7 +70,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFRR(1)",
                 TileRotation = 3,
                 CellId = $"{0}_{1}",
@@ -84,7 +80,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFRR(2)",
                 TileRotation = 0,
                 CellId = $"{1}_{1}",
@@ -94,7 +90,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove3 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFRR(3)",
                 TileRotation = 1,
                 CellId = $"{1}_{0}",
@@ -126,13 +122,11 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void CalculationTest_FlatRoad()
         {
-            var room = new GameRoom();
-            var name = "bob";
-            room.PlayersPool.AddPlayer(name, PlayerType.Human);
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
 
             var gameMove0 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFRF(0)",
                 TileRotation = 0,
                 CellId = $"{0}_{0}",
@@ -142,7 +136,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FRRR(0)",
                 TileRotation = 2,
                 CellId = $"{0}_{-1}",

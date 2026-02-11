@@ -42,7 +42,7 @@ namespace Carcassone.Web.Blazor.Services
         public async Task AddGameResults(GameRoom room)
         {
             var playedGame = new PlayedGame();
-            foreach (var player in room.PlayersPool.GamePlayers)
+            /*foreach (var player in room.PlayersPool.GamePlayers)
             {
                 var playerScore = room.GetPlayerScore(player.Name);
                 var playerResult = new PlayerFinalResult()
@@ -54,7 +54,7 @@ namespace Carcassone.Web.Blazor.Services
 
                 _context.PlayerFinalResultList.Add(playerResult);
                 playedGame.PlayerFinalResultList.Add(playerResult);
-            }
+            }*/
 
             _context.PlayedGameList.Add(playedGame);
             _context.SaveChanges();

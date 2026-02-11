@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Carcassone.Core.Calculation.Base.Cities
 {
-    public class City : MergableObject, ICompletableGameObject, IHasOwner
+    public class City : MergableObject, ICompletableGameObject
     {
         public override int GetScore()
         {
@@ -27,11 +27,6 @@ namespace Carcassone.Core.Calculation.Base.Cities
         public void TryCompleteAndReturnChips()
         {
             ObjectCompletitionHelper.TryCompleteAndReturnChips(this);
-        }
-
-        public bool IsPlayerOwner(GamePlayer player)
-        {
-            return HasOwnerHelper.IsPlayerOwner(player, this);
         }
     }
 }

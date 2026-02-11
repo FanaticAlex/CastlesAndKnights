@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Carcassone.Core.Calculation.Base.Monasteries
 {
-    public class Monastery : BaseGameObject, ICompletableGameObject, IHasOwner
+    public class Monastery : BaseGameObject, ICompletableGameObject
     {
         private readonly Grid _grid;
         private const int MaxConnectedTiles = 9;
@@ -39,11 +39,6 @@ namespace Carcassone.Core.Calculation.Base.Monasteries
         {
             if (IsComplete())
                 Parts.First().Chip?.Owner?.ReturnChipAndSetFlag(Parts.First());
-        }
-
-        public bool IsPlayerOwner(GamePlayer player)
-        {
-            return HasOwnerHelper.IsPlayerOwner(player, this);
         }
 
         private int GetNeighboutTilesCount()

@@ -5,31 +5,46 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Carcassone.Core.Tiles;
+using System.Drawing;
 
 namespace Carcassone.Core.Players
 {
+    public class PlayerInfo
+    {
+        public PlayerInfo(string name, PlayerType playerType, string color, int meeplesCount)
+        {
+            Name = name;
+            PlayerType = playerType;
+            Color = color;
+            MeeplesCount = meeplesCount;
+        }
+
+        public string Name { get; }
+        public PlayerType PlayerType { get;  }
+        public string Color { get; }
+        public int MeeplesCount { get; set; }
+    }
+
     /// <summary>
     /// Players proprties in particular room
     /// </summary>
     public class GamePlayer
     {
-        public GamePlayer(string _name, PlayerType _type, string color, int chipCount)
-        {
-            Name = _name;
-            PlayerType = _type;
-            Color = color;
+        private List<Chip> СhipList { get; set; } = new List<Chip>();
 
-            for (var i = 0; i < chipCount; i++)
+        public GamePlayer(PlayerInfo info)
+        {
+            Info = info;
+
+            for (var i = 0; i < info.MeeplesCount; i++)
             {
                 var chip = new Chip(this);
                 СhipList.Add(chip);
             }
         }
 
-        public string Name { get; set; }
-        public PlayerType PlayerType { get; set; }
-        public string Color { get; set; }
-        public List<Chip> СhipList { get; set; } = new List<Chip>();
+        public PlayerInfo Info { get; set; }
 
         public bool IsAIProcessing {  get; set; }
 
@@ -40,6 +55,7 @@ namespace Carcassone.Core.Players
 
             var chip = СhipList[0];
             СhipList.Remove(chip);
+            Info.MeeplesCount = Info.MeeplesCount - 1;
             return chip;
         }
 
@@ -51,6 +67,7 @@ namespace Carcassone.Core.Players
             var chip = part.Chip;
             chip.Owner = this;
             СhipList.Add(chip);
+            Info.MeeplesCount = Info.MeeplesCount + 1;
 
             part.Chip = null;
             part.Flag = new Flag(this);
@@ -61,14 +78,10 @@ namespace Carcassone.Core.Players
             if (room == null)
                 throw new Exception("The room cannot be null.");
 
-            var card = room.TileStack.CurrentCard;
-            if (card == null)
-                return; // игра уже окончена
-
             IsAIProcessing = true;
 
             // where to put a card
-            List<GameMove> possibleMoves = GetPossibleMoves(room, card.Id);
+            List<GameMove> possibleMoves = room.GetAvailableMoves();
             GameMove bestMove = GetBestMove(room, possibleMoves);
             room.MakeMove(bestMove);
 
@@ -83,13 +96,11 @@ namespace Carcassone.Core.Players
             var dic = new Dictionary<GameMove, PlayerScore>();
             foreach (GameMove move in possibleMoves)
             {
-                var gameCopy1 = new GameRoom();
-                gameCopy1.Load(room.Save());
+                var gameCopy1 = room.Copy();
                 gameCopy1.MakeMove(move);
-                var expectedScore = gameCopy1.GetPlayerScore(this.Name);
+                var expectedScore = gameCopy1.GetPlayerScore(this.Info.Name);
                 dic.Add(move, expectedScore);
             }
-
 
             // ходы возвращающие фишки
             var maxReturnChips = dic.Max(item => (item.Value.ChipCount - СhipList.Count));
@@ -106,57 +117,6 @@ namespace Carcassone.Core.Players
                 .Where(item => item.Value.OverallScore == maxScore)
                 .First();
             return bestScoreMove.Key;
-        }
-
-        private List<GameMove> GetPossibleMoves(GameRoom room, string tileId)
-        {
-            var roomSave = room.Save();
-            var availableCells = room.GetCellsToPutCard(tileId).Select(item => item.Id).ToList();
-
-            var maxCalculations = 10;
-            switch (PlayerType)
-            {
-                case PlayerType.AI_Easy: maxCalculations = 5; break;
-                case PlayerType.AI_Normal: maxCalculations = 25; break;
-                case PlayerType.AI_Hard: maxCalculations = 200; break;
-            }
-
-            var possibleMoves = new List<GameMove>();
-            foreach (var cellId in availableCells)
-            {
-                var gameCopy = new GameRoom();
-                gameCopy.Load(roomSave);
-                var tile = gameCopy.TileStack.GetTile(tileId);
-                var cell = gameCopy.GameGrid.GetCell(cellId);
-                
-                if (!gameCopy.RotateTileTilFit(cell, tile)) // если карта не подходит
-                    continue;
-
-
-                gameCopy.AddTile(tile, cell); 
-
-                // ходы с установкой фишки
-                var partNames = gameCopy.GetAvailableParts(tile.Id).Select(p => p.PartName).ToList();
-                partNames.Add(null); // ход без установки фишки
-                foreach (var partName in partNames)
-                {
-                    var gameMove1 = new GameMove()
-                    {
-                        TileId = tile.Id,
-                        TileRotation = tile.RotationsCount,
-                        PlayerName = Name,
-                        CellId = cell.Id,
-                        PartName = partName,
-                    };
-
-                    possibleMoves.Add(gameMove1);
-                }
-
-                if (possibleMoves.Count >= maxCalculations) // ограничение по времени выполнения
-                    return possibleMoves;
-            }
-
-            return possibleMoves;
         }
     }
 }

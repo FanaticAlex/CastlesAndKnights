@@ -6,7 +6,10 @@ using System.Text;
 
 namespace Carcassone.Core.Calculation
 {
-    internal interface IGameExtension
+    /// <summary>
+    /// Contain rules of the game.
+    /// </summary>
+    internal interface IGameRules
     {
         List<IGameObjectsManager> Managers { get; }
         bool CanPutTileInCell(Cell cell, Tile tile, Grid grid);

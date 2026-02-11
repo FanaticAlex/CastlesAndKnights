@@ -1,6 +1,7 @@
 ﻿using Carcassone.Core.Players;
 using Carcassone.Core.Tiles;
 using System;
+using System.Linq;
 using Xunit;
 
 namespace Carcassone.Core.Tests.RiverExtension
@@ -26,19 +27,27 @@ namespace Carcassone.Core.Tests.RiverExtension
         {
             // 1. river card do not connects if rotation is wrong
 
-            var room = new GameRoom();
-            var name = "bob";
-            room.PlayersPool.AddPlayer(name, PlayerType.Human);
-            room.Start();
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = TestHelper.Bob,
+                TileId = "FFWF(0)",
+                TileRotation = 0,
+                CellId = $"{0}_{0}",
+                PartName = "Farm_0"
+            };
+            room.MakeMove(gameMove0);
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FWRW(0)",
                 TileRotation = 0,
                 CellId = $"{0}_{-1}",
                 PartName = "Farm_0"
             };
+
             Assert.Throws<Exception>(() => room.MakeMove(gameMove1));
         }
 
@@ -50,11 +59,11 @@ namespace Carcassone.Core.Tests.RiverExtension
         ///   |   +   |
         ///       W
         ///       
-        ///       F
-        ///   |       |
-        /// W |+++O+++| W   (поворот на 1)
-        ///   |   |   |
-        ///       R
+        ///       W
+        ///   |   +   |
+        /// R |---O   | F   (поворот на 1)
+        ///   |   +   |
+        ///       W
         /// </summary>
 
         [Fact]
@@ -62,22 +71,27 @@ namespace Carcassone.Core.Tests.RiverExtension
         {
             // 1. river card connects correctly to another river card
 
-            var room = new GameRoom();
-            var name = "bob";
-            room.PlayersPool.AddPlayer(name, PlayerType.Human);
-            room.Start();
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = TestHelper.Bob,
+                TileId = "FFWF(0)",
+                TileRotation = 0,
+                CellId = $"{0}_{0}",
+                PartName = "Farm_0"
+            };
+            room.MakeMove(gameMove0);
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FWRW(0)",
                 TileRotation = 1,
                 CellId = $"{0}_{-1}",
                 PartName = "Farm_0"
             };
             room.MakeMove(gameMove1);
-
-            Assert.Equal(1, room.TileStack.GetTile("FWRW(0)").RotationsCount);
         }
 
         [Fact]
@@ -88,28 +102,31 @@ namespace Carcassone.Core.Tests.RiverExtension
             // 3. the last river card is WFFF
             // 4. there is no river cards after WFFF
 
-            var room = new GameRoom();
-            Assert.Equal("FFWF(0)", room.TileStack.GetTopTile().Id);
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+
+            Assert.Equal("FFWF(0)", room.GetCurrentTile().Id);
 
             Tile tile = null;
             do
             {
-                tile = room.TileStack.GetTopTile();
-                room.TileStack.DiscardTile(tile);
+                tile = room.GetCurrentTile();
+                var moves = room.GetAvailableMoves();
+                room.MakeMove(moves.First());
             }
-            while (room.TileStack.GetTopTile().Id.Contains("W"));
+            while (room.GetCurrentTile().Id.Contains("W"));
 
             Assert.Equal("WFFF(0)", tile.Id);
 
             do
             {
-                tile = room.TileStack.GetTopTile();
+                tile = room.GetCurrentTile();
                 if (tile.Id.Contains("W"))
                     throw new Exception("Missplaced river card " + tile.Id);
 
-                room.TileStack.DiscardTile(tile);
+                var moves = room.GetAvailableMoves();
+                room.MakeMove(moves.First());
             }
-            while (room.TileStack.GetTopTile() != null) ;
+            while (room.GetCurrentTile() != null) ;
         }
     }
 }

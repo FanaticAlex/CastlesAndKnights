@@ -8,7 +8,7 @@ namespace Carcassone.Web.Blazor.Services
 
         public GameRoom CreateRoom()
         {
-            var server = new GameRoom();
+            GameRoom server = null; //GameRoom.GetGameWithRiverExt();
             _rooms.Add(server);
             return server;
         }
@@ -27,7 +27,7 @@ namespace Carcassone.Web.Blazor.Services
         public List<string> GetAvailableRoomsId()
         {
             return _rooms
-                .Where(room => !room.IsStarted)
+                //.Where(room => !room.IsStarted)
                 .Where(room => !room.IsFinished)
                 .Select(room => room.Id).ToList();
         }

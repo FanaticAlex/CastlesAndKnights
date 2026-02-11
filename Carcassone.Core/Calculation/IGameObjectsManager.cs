@@ -9,7 +9,6 @@ namespace Carcassone.Core.Calculation
     {
         IEnumerable<BaseGameObject> GetGameObjects();
         void ProcessPart(ObjectPart part, Cell cell);
-        int GetPlayerScore(GamePlayer player);
     }
 }
 

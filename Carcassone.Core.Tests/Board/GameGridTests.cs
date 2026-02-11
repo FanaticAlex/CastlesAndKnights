@@ -17,8 +17,8 @@ namespace Carcassone.Core.Tests.Board
             Assert.Equal(0, center.Location.X);
             Assert.Equal(0, center.Location.Y);
 
-            var card = new CCCC("CCCC", 0);
-            grid.PutTile(card, center);
+            var tile = new CCCC("CCCC", 0);
+            grid.PutTile(center, tile);
             Assert.Equal(5, grid.Cells.Count);
         }
     }

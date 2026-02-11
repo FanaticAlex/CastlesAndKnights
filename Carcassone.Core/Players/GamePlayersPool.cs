@@ -1,9 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Carcassone.Core.Players
 {
+    public static class ListHelper
+    {
+        public static bool HasDuplicates<T>(this List<T> list)
+        {
+            // If the count of distinct items is less than the total count, there are duplicates.
+            return list.Count() != list.Distinct().Count();
+        }
+    }
+
     /// <summary>
     /// Класс управляющий пулом игроков одной игровой комнаты.
     /// </summary>
@@ -15,13 +25,26 @@ namespace Carcassone.Core.Players
         public List<GamePlayer> GamePlayers { get; } = new List<GamePlayer>();
         public int CurrentPlayerIndex { get; set; }
 
-        public GamePlayersPool()
+        public GamePlayersPool(List<PlayerInfo> playerInfos)
         {
+            if (playerInfos.Count >= _maximumPlayersCount)
+                throw new Exception($"Maximum player count is {_maximumPlayersCount}");
+
+            if (playerInfos.Select(i => i.Name).ToList().HasDuplicates())
+                throw new Exception($"There is a duplicate player's name");
+
+            if (playerInfos.Select(i => i.Color).ToList().HasDuplicates())
+                throw new Exception($"There is a duplicate player's color");
+
+            foreach (var playerInfo in playerInfos)
+            {
+                GamePlayers.Add(new GamePlayer(playerInfo));
+            }
         }
 
         public GamePlayer GetPlayer(string playerName)
         {
-            var playerItems = GamePlayers.Where(_player => _player.Name == playerName);
+            var playerItems = GamePlayers.Where(_player => _player.Info.Name == playerName);
             if (playerItems.Count() == 0)
                 return null;
 
@@ -33,43 +56,6 @@ namespace Carcassone.Core.Players
 
         public GamePlayer GetCurrentPlayer() => GamePlayers[CurrentPlayerIndex];
 
-        public GamePlayer GetHumanPlayer(GameRoom room, string playerName)
-        {
-            var player = GetCurrentPlayer();
-            if (player.Name != playerName)
-                throw new Exception($"Its '{player.Name}' turn!");
-
-            if (player.PlayerType != PlayerType.Human)
-                throw new Exception($"Its AI '{player.Name}' turn!");
-
-            return player;
-        }
-
-        public void DeletePlayer(string name)
-        {
-            var player = GamePlayers.FirstOrDefault(_player => _player.Name == name);
-            if (player == null)
-                return;
-
-            GamePlayers.Remove(player);
-        }
-
-        public GamePlayer AddPlayer(string name, PlayerType _type)
-        {
-            if (GamePlayers.Count >= _maximumPlayersCount)
-                throw new Exception($"Cant add player. Maximum player count is {_maximumPlayersCount}");
-
-            // если этот игрок уже подключен
-            var gamePlayer = GamePlayers.FirstOrDefault(_player => _player.Name == name);
-            if (gamePlayer != null)
-                throw new Exception($"Игрок '{name}' уже подключен.");
-
-            var color = GetFreeColor();
-            var newGamePlayer = new GamePlayer(name, _type, color, _playerChipCount);
-            GamePlayers.Add(newGamePlayer);
-            return newGamePlayer;
-        }
-
         public void MoveToNextPlayer()
         {
             // передать ход
@@ -80,7 +66,7 @@ namespace Carcassone.Core.Players
 
         private string GetFreeColor()
         {
-            var takenColors = GamePlayers.Select(player => player.Color).ToList();
+            var takenColors = GamePlayers.Select(player => player.Info.Color).ToList();
 
             if (!takenColors.Contains("Blue"))
                 return "Blue";

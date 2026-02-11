@@ -23,13 +23,11 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void GetScore()
         {
-            var room = new GameRoom();
-            var name = "Jack";
-            var gamePlayer = room.PlayersPool.AddPlayer(name, PlayerType.Human);
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "CRFR(0)",
                 TileRotation = 2,
                 CellId = $"{0}_{0}",
@@ -39,7 +37,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "CFFF(0)",
                 TileRotation = 0,
                 CellId = $"{0}_{-1}",
@@ -52,23 +50,23 @@ namespace Carcassone.Core.Tests.Buisness
             var city = room.GetAllCities().Single();
             Assert.True(city.IsComplete());
             Assert.Equal(4, city.GetScore());
-            Assert.True(city.IsPlayerOwner(gamePlayer));
+            Assert.True(city.IsPlayerOwner(TestHelper.Bob));
             
             // check farms
             Assert.Equal(3, room.GetAllFarms().Count());
             var farm0 = room.GetAllFarms().ElementAt(0);
-            Assert.True(farm0.IsPlayerOwner(gamePlayer));
+            Assert.True(farm0.IsPlayerOwner(TestHelper.Bob));
             Assert.Equal(3, farm0.GetScore());
 
             var farm1 = room.GetAllFarms().ElementAt(1);
-            Assert.False(farm1.IsPlayerOwner(gamePlayer));
+            Assert.False(farm1.IsPlayerOwner(TestHelper.Bob));
             Assert.Equal(0, farm1.GetScore());
 
             var farm2 = room.GetAllFarms().ElementAt(2);
-            Assert.False(farm2.IsPlayerOwner(gamePlayer));
+            Assert.False(farm2.IsPlayerOwner(TestHelper.Bob));
             Assert.Equal(3, farm2.GetScore());
 
-            Assert.Equal(7, room.GetPlayerScore(gamePlayer.Name).OverallScore);
+            Assert.Equal(7, room.GetPlayerScore(TestHelper.Bob).OverallScore);
         }
 
         /// <summary>
@@ -87,13 +85,11 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void GetScore1()
         {
-            var room = new GameRoom();
-            var name = "owner1";
-            var owner1 = room.PlayersPool.AddPlayer(name, PlayerType.Human);
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "RRWW(0)",
                 TileRotation = 0,
                 CellId = $"{0}_{0}",
@@ -103,7 +99,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "WCCW(0)",
                 TileRotation = 0,
                 CellId = $"{0}_{-1}",
@@ -111,7 +107,7 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove2);
 
-            var score = room.GetPlayerScore(owner1.Name);
+            var score = room.GetPlayerScore(TestHelper.Bob);
             Assert.Equal(0, score.OverallScore);
 
             Assert.Single(room.GetAllCities());
@@ -145,13 +141,11 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void GetScore2()
         {
-            var room = new GameRoom();
-            var name = "owner1";
-            var owner1 = room.PlayersPool.AddPlayer(name, PlayerType.Human);
-            
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+
             var gameMove0 = new GameMove()
             {
-                PlayerName = owner1.Name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFWF(0)",
                 TileRotation = 1,
                 CellId = $"{0}_{0}",
@@ -161,7 +155,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = owner1.Name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FWWF(0)",
                 TileRotation = 0,
                 CellId = $"{-1}_{0}",
@@ -171,7 +165,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = owner1.Name,
+                PlayerName = TestHelper.Bob,
                 TileId = "WFWF(0)",
                 TileRotation = 0,
                 CellId = $"{-1}_{-1}",
@@ -199,13 +193,11 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void GetScore3()
         {
-            var room = new GameRoom();
-            var name = "owner1";
-            var owner1 = room.PlayersPool.AddPlayer(name, PlayerType.Human);
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = owner1.Name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFWF(0)",
                 TileRotation = 0,
                 CellId = $"{0}_{0}",
@@ -216,7 +208,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = owner1.Name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FWRW(0)",
                 TileRotation = 1,
                 CellId = $"{0}_{-1}",
@@ -246,13 +238,11 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void GetScore4()
         {
-            var room = new GameRoom();
-            var name = "owner1";
-            var owner1 = room.PlayersPool.AddPlayer(name, PlayerType.Human);
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = owner1.Name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFWF(0)",
                 TileRotation = 0,
                 CellId = $"{0}_{0}",
@@ -262,7 +252,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = owner1.Name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FWWF(0)",
                 TileRotation = 2,
                 CellId = $"{0}_{-1}",
@@ -290,13 +280,11 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void GetScore5()
         {
-            var room = new GameRoom();
-            var name = "owner1";
-            var owner1 = room.PlayersPool.AddPlayer(name, PlayerType.Human);
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = owner1.Name,
+                PlayerName = TestHelper.Bob,
                 TileId = "RRWW(0)",
                 TileRotation = 0,
                 CellId = $"{0}_{0}",
@@ -306,7 +294,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = owner1.Name,
+                PlayerName = TestHelper.Bob,
                 TileId = "WCWR(0)",
                 TileRotation = 0,
                 CellId = $"{0}_{-1}",
@@ -315,7 +303,6 @@ namespace Carcassone.Core.Tests.Buisness
             room.MakeMove(gameMove2);
 
             var card2 = room.GetTile("WCWR(0)");
-            Assert.Equal(6, room.GetAvailableParts("WCWR(0)").Count());
 
             Assert.Equal(5, room.GetAllFarms().Count());
 

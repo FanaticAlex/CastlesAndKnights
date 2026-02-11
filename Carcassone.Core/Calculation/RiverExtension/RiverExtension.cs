@@ -17,7 +17,7 @@ namespace Carcassone.Core.Calculation.RiverExtension
     /// 6. all river cards should be used
     /// 7. river only flows down or left and never up or right
     /// </summary>
-    public class RiverExtension: IGameExtension
+    public class RiverExtension: IGameRules
     {
         public List<IGameObjectsManager> Managers { get; } = new List<IGameObjectsManager>();
 

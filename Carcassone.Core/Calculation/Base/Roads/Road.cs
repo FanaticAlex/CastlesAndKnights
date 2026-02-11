@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Carcassone.Core.Calculation.Base.Roads
 {
-    public class Road : MergableObject, ICompletableGameObject, IHasOwner
+    public class Road : MergableObject, ICompletableGameObject
     {
         public override int GetScore()
         {
@@ -24,11 +24,6 @@ namespace Carcassone.Core.Calculation.Base.Roads
         public void TryCompleteAndReturnChips()
         {
             ObjectCompletitionHelper.TryCompleteAndReturnChips(this);
-        }
-
-        public bool IsPlayerOwner(GamePlayer player)
-        {
-            return HasOwnerHelper.IsPlayerOwner(player, this);
         }
     }
 }

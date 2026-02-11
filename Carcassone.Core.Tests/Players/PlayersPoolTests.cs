@@ -9,22 +9,15 @@ namespace Carcassone.Core.Tests.Players
         [Fact]
         public void Workflow()
         {
-            var pool = new GamePlayersPool();
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob, TestHelper.AI_1);
+            
+            Assert.Equal(room.GetCurrentPlayer().Info.Name, TestHelper.Bob);
+            room.MakeMove(room.GetAvailableMoves().First());
 
-            var bobName = "bob";
-            pool.AddPlayer(bobName, PlayerType.Human);
-            var bob = pool.GetPlayer(bobName);
-            Assert.Equal(bobName, bob.Name);
+            Assert.Equal(room.GetCurrentPlayer().Info.Name, TestHelper.AI_1);
+            room.MakeMove(room.GetAvailableMoves().First());
 
-            var player1Name = "AI_1";
-            pool.AddPlayer(player1Name, PlayerType.AI_Easy);
-            var ai_1 = pool.GetPlayer(player1Name);
-            Assert.Equal(PlayerType.AI_Easy, ai_1.PlayerType);
-
-            Assert.True("bob" == pool.GetCurrentPlayer().Name, "Неверно установлен первый игрок");
-
-            pool.MoveToNextPlayer();
-            Assert.True(pool.GetCurrentPlayer() == pool.GamePlayers[1], "Игроки не переключаются");
+            Assert.Equal(room.GetCurrentPlayer().Info.Name, TestHelper.Bob);
         }
     }
 }

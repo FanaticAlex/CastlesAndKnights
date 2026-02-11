@@ -1,6 +1,9 @@
 using Carcassone.Core.Board;
+using Carcassone.Core.Calculation.RiverExtension.Tiles;
 using Carcassone.Core.Players;
 using Carcassone.Core.Tiles;
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
 using Xunit;
 
@@ -11,62 +14,79 @@ namespace Carcassone.Core.Tests.Room
         [Fact]
         public void WorkflowAI()
         {
-            var room = new GameRoom();
-            room.PlayersPool.AddPlayer("AI_1", PlayerType.AI_Easy);
-            room.PlayersPool.AddPlayer("AI_2", PlayerType.AI_Easy);
-            room.Start();
+            var room = TestHelper.GetDefaultGame(TestHelper.AI_1, TestHelper.AI_2);
 
             do
             {
-                var player = room.PlayersPool.GetCurrentPlayer();
+                var player = room.GetCurrentPlayer();
                 player.ProcessMove(room);
             }
             while (!room.IsFinished);
 
             Assert.True(room.IsFinished);
-            Assert.NotEqual(0, room.GetPlayerScore(room.PlayersPool.GamePlayers[0].Name).OverallScore);
-            Assert.NotEqual(0, room.GetPlayerScore(room.PlayersPool.GamePlayers[1].Name).OverallScore);
+            var scores = room.GetPlayersScores();
+            Assert.NotEqual(2, scores.Count());
+            Assert.NotEqual(0, scores.ElementAt(0).OverallScore);
+            Assert.NotEqual(0, scores.ElementAt(1).OverallScore);
         }
 
         [Fact]
         public void GetCurrentCardTest()
         {
-            var room = new GameRoom();
-            room.PlayersPool.AddPlayer("bob", PlayerType.Human);
-            room.Start();
-            var card = room.TileStack.CurrentCard;
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            var card = room.GetCurrentTile();
             Assert.NotNull(card);
         }
 
         [Fact]
         public void GetCardsRemainInPoolTest()
         {
-            var room = new GameRoom();
-            Assert.Equal(82, room.TileStack.GetRemainTiles().Count);
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            Assert.Equal(82, room.GetRemainTilesCount());
         }
 
+
+        /// <summary>
+        ///       F
+        ///   |       |
+        /// F |   +   | F
+        ///   |   +   |
+        ///       W
+        ///           
+        ///       W
+        ///   |   +   |
+        /// R |---O   | F
+        ///   |   +   |
+        ///       W
+        /// </summary>
         [Fact]
         public void SaveLoadTest()
         {
-            var room = new GameRoom();
-            room.PlayersPool.AddPlayer("player1", PlayerType.Human);
-
-            Assert.Single(room.GameGrid.Cells);
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
 
             var gameMove0 = new GameMove()
             {
-                PlayerName = "player1",
+                PlayerName = TestHelper.Bob,
                 TileId = "FFWF(0)",
                 TileRotation = 0,
                 CellId = $"{0}_{0}",
-                PartName = null
+                PartName = "Farm_0"
             };
             room.MakeMove(gameMove0);
 
-            var save = room.Save();
-            room.Load(save);
+            var gameMove1 = new GameMove()
+            {
+                PlayerName = TestHelper.Bob,
+                TileId = "FWRW(0)",
+                TileRotation = 1,
+                CellId = $"{0}_{-1}",
+                PartName = "Monastery_0"
+            };
+            room.MakeMove(gameMove1);
+            Assert.Equal(2, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
-            Assert.Equal(5, room.GameGrid.Cells.Count);
+            var copy = room.Copy();
+            Assert.Equal(2, copy.GetPlayerScore(TestHelper.Bob).OverallScore);
         }
     }
 }

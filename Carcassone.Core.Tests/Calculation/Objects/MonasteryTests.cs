@@ -32,14 +32,11 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void GetPointsTest()
         {
-            var room = new GameRoom();
-            var name = "Jack";
-            room.PlayersPool.AddPlayer(name, PlayerType.Human);
-            room.PlayersPool.MoveToNextPlayer();
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
 
             var gameMove0 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFFF(0)",
                 TileRotation = 0,
                 CellId = $"{0}_{0}",
@@ -48,11 +45,11 @@ namespace Carcassone.Core.Tests.Buisness
             room.MakeMove(gameMove0);
 
             Assert.Single(room.GetAllMonastery());
-            Assert.Equal(1, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
+            Assert.Equal(1, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "RFRF(0)",
                 TileRotation = 1,
                 CellId = $"{0}_{1}",
@@ -60,11 +57,11 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove1);
             Assert.Single(room.GetAllMonastery());
-            Assert.Equal(2, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
+            Assert.Equal(2, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFRR(0)",
                 TileRotation = 0,
                 CellId = $"{1}_{1}",
@@ -72,11 +69,11 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove2);
             Assert.Single(room.GetAllMonastery());
-            Assert.Equal(3, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
+            Assert.Equal(3, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
             var gameMove3 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFRR(1)",
                 TileRotation = 3,
                 CellId = $"{-1}_{1}",
@@ -84,11 +81,11 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove3);
             Assert.Single(room.GetAllMonastery());
-            Assert.Equal(4, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
+            Assert.Equal(4, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
             var gameMove4 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "RFRF(1)",
                 TileRotation = 0,
                 CellId = $"{-1}_{0}",
@@ -96,11 +93,11 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove4);
             Assert.Single(room.GetAllMonastery());
-            Assert.Equal(5, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
+            Assert.Equal(5, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
             var gameMove5 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "RFRF(2)",
                 TileRotation = 0,
                 CellId = $"{1}_{0}",
@@ -108,11 +105,11 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove5);
             Assert.Single(room.GetAllMonastery());
-            Assert.Equal(6, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
+            Assert.Equal(6, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
             var gameMove6 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "RFRF(3)",
                 TileRotation = 1,
                 CellId = $"{0}_{-1}",
@@ -120,11 +117,11 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove6);
             Assert.Single(room.GetAllMonastery());
-            Assert.Equal(7, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
+            Assert.Equal(7, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
             var gameMove7 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFRR(2)",
                 TileRotation = 1,
                 CellId = $"{1}_{-1}",
@@ -132,11 +129,11 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove7);
             Assert.Single(room.GetAllMonastery());
-            Assert.Equal(8, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
+            Assert.Equal(8, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
             var gameMove8 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFRR(3)",
                 TileRotation = 2,
                 CellId = $"{-1}_{-1}",
@@ -144,7 +141,7 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove8);
             Assert.Single(room.GetAllMonastery());
-            Assert.Equal(18, room.GetPlayerScore(room.PlayersPool.GetCurrentPlayer().Name).OverallScore);
+            Assert.Equal(18, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
             Assert.True(room.GetAllMonastery().ElementAt(0).IsComplete());
         }

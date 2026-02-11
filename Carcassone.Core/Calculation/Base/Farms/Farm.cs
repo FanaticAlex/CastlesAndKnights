@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Carcassone.Core.Calculation.Base.Farms
 {
-    public class Farm : MergableObject, IHasOwner
+    public class Farm : MergableObject
     {
         private CitiesManager _citiesManager;
 
@@ -41,11 +41,6 @@ namespace Carcassone.Core.Calculation.Base.Farms
 
             var completedConnectedCitys = connectedCitys.Distinct();
             return 3 * completedConnectedCitys.Count();
-        }
-
-        public bool IsPlayerOwner(GamePlayer player)
-        {
-            return HasOwnerHelper.IsPlayerOwner(player, this);
         }
     }
 }

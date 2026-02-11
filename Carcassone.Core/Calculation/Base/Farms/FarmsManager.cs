@@ -20,14 +20,6 @@ namespace Carcassone.Core.Calculation.Base.Farms
             _citiesManager = citiesManager;
         }
 
-        public int GetPlayerScore(GamePlayer player)
-        {
-            return Farms
-                .Where(f => f.IsPlayerOwner(player))
-                .Select(f => f.GetScore())
-                .Sum();
-        }
-
         public void ProcessPart(ObjectPart part, Cell cell)
         {
             if (!(part is FarmPart)) return;

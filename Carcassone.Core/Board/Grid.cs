@@ -22,7 +22,7 @@ namespace Carcassone.Core.Board
             CreateCell(0, 0); // create initial cell
         }
 
-        public void PutTile(Tile tile, Cell cell)
+        public void PutTile(Cell cell, Tile tile)
         {
             lock (_lockObj)
             {

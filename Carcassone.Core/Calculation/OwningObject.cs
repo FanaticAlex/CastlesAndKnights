@@ -6,11 +6,6 @@ using System.Linq;
 
 namespace Carcassone.Core.Calculation
 {
-    public interface IHasOwner
-    {
-        bool IsPlayerOwner(GamePlayer player);
-    }
-
     public static class HasOwnerHelper
     {
         public static bool HasOwner(BaseGameObject obj)
@@ -18,12 +13,12 @@ namespace Carcassone.Core.Calculation
             return GetOwners(obj).Any();
         }
 
-        public static bool IsPlayerOwner(GamePlayer player, BaseGameObject obj)
+        public static bool IsPlayerOwner(string playerName, BaseGameObject obj)
         {
-            return GetOwners(obj).Contains(player);
+            return GetOwners(obj).Contains(playerName);
         }
 
-        private static List<GamePlayer> GetOwners(BaseGameObject obj)
+        private static IEnumerable<string> GetOwners(BaseGameObject obj)
         {
             // if there is flags count only flags (object completed)
             var flagOwners = obj.Parts
@@ -32,7 +27,7 @@ namespace Carcassone.Core.Calculation
                 .Distinct()
                 .ToList();
 
-            if (flagOwners.Any()) return flagOwners;
+            if (flagOwners.Any()) return flagOwners.Select(p => p.Info.Name);
 
 
             // if object is not completed count chips
@@ -54,7 +49,7 @@ namespace Carcassone.Core.Calculation
 
             // without owners
             if (!ownersToChipCount.Any())
-                return new List<GamePlayer>();
+                return new List<string>();
 
             // владельцы - игроки у которых максимальное число фишек на обьекте.
             var maxChip = ownersToChipCount.Values.Max();
@@ -62,7 +57,7 @@ namespace Carcassone.Core.Calculation
                 .Where(pair => pair.Value == maxChip)
                 .Select(pair => pair.Key)
                 .ToList();
-            return owners;
+            return owners.Select(p => p.Info.Name);
         }
     }
 }

@@ -17,14 +17,6 @@ namespace Carcassone.Core.Calculation.Base.Monasteries
             _grid = grid;
         }
 
-        public int GetPlayerScore(GamePlayer player)
-        {
-            return Monasteries
-                .Where(m => m.IsPlayerOwner(player))
-                .Select(m => m.GetScore())
-                .Sum();
-        }
-
         public void ProcessPart(ObjectPart part, Cell cell)
         {
             if (!(part is MonasteryPart)) return;

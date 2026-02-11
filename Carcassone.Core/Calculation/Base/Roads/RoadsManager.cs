@@ -22,14 +22,6 @@ namespace Carcassone.Core.Calculation.Base.Roads
             return Roads;
         }
 
-        public int GetPlayerScore(GamePlayer player)
-        {
-            return Roads
-                .Where(r => r.IsPlayerOwner(player))
-                .Select(r => r.GetScore())
-                .Sum();
-        }
-
         public void ProcessPart(ObjectPart part, Cell cell)
         {
             if (!(part is RoadPart)) return;

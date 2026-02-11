@@ -15,8 +15,6 @@ namespace Carcassone.Core.Tiles
         private List<Tile> _remain = new List<Tile>();
         private readonly List<Tile> _discardedTiles = new List<Tile>();
 
-        public Tile? CurrentCard { get; set; }
-
         public void AddTiles(List<Tile> tiles)
         {
             _remain.AddRange(tiles);
@@ -60,11 +58,6 @@ namespace Carcassone.Core.Tiles
 
             _remain.Remove(card);
             _discardedTiles.Add(card);
-        }
-
-        public ObjectPart GetPart(string partId)
-        {
-            return GetAllTiles().SelectMany(c => c.Parts).FirstOrDefault(p => p.PartId == partId);
         }
 
         public void Shaffle()

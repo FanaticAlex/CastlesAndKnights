@@ -24,13 +24,11 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void CalculationTest_NotClosedCity()
         {
-            var room = new GameRoom();
-            var name = "bob";
-            room.PlayersPool.AddPlayer(name, PlayerType.Human);
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
 
             var gameMove0 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFWF(0)",
                 TileRotation = 0,
                 CellId = $"{0}_{0}",
@@ -40,7 +38,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "CWCW(0)",
                 TileRotation = 1,
                 CellId = $"{0}_{-1}",
@@ -52,11 +50,11 @@ namespace Carcassone.Core.Tests.Buisness
             Assert.True(Citys.Count() == 2);
             Assert.False(Citys.ElementAt(0).IsComplete());
             Assert.False(Citys.ElementAt(1).IsComplete());
-            Assert.True(Citys.ElementAt(0).IsPlayerOwner(room.PlayersPool.GetPlayer(name)));
             
-            var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name).Name);
+            var score = room.GetPlayerScore(TestHelper.Bob);
+            Assert.True(Citys.ElementAt(0).IsPlayerOwner(TestHelper.Bob));
             Assert.Equal(1, score.OverallScore);
-            Assert.Equal(6, room.PlayersPool.GetPlayer(name).СhipList.Count);
+            Assert.Equal(6, score.ChipCount);
         }
 
         /// <summary>
@@ -76,13 +74,11 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void CalculationTest_DoubleCity()
         {
-            var room = new GameRoom();
-            var name = "bob";
-            room.PlayersPool.AddPlayer(name, PlayerType.Human);
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
 
             var gameMove0 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "CFFF(0)",
                 TileRotation = 2,
                 CellId = $"{0}_{0}",
@@ -92,7 +88,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "CFFF(1)",
                 TileRotation = 0,
                 CellId = $"{0}_{-1}",
@@ -105,12 +101,12 @@ namespace Carcassone.Core.Tests.Buisness
             var City = Citys.Single();
             Assert.True(City.IsComplete());
             Assert.Equal(4, City.GetScore());
-            Assert.True(City.IsPlayerOwner(room.PlayersPool.GetPlayer(name)));
+            Assert.True(City.IsPlayerOwner(TestHelper.Bob));
             Assert.Contains(City.Parts, p => p.Flag != null);
 
-            var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name).Name);
+            var score = room.GetPlayerScore(TestHelper.Bob);
             Assert.Equal(4, score.OverallScore);
-            Assert.Equal(7, room.PlayersPool.GetPlayer(name).СhipList.Count);
+            Assert.Equal(7, score.ChipCount);
         }
 
 
@@ -137,13 +133,11 @@ namespace Carcassone.Core.Tests.Buisness
         [Fact]
         public void CalculationTest_TwoRiverCities()
         {
-            var room = new GameRoom();
-            var name = "bob";
-            room.PlayersPool.AddPlayer(name, PlayerType.Human);
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
 
             var gameMove0 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "FFWF(0)",
                 TileRotation = 1,
                 CellId = $"{0}_{0}",
@@ -153,7 +147,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove1 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "CWCW(0)",
                 TileRotation = 0,
                 CellId = $"{-1}_{0}",
@@ -163,7 +157,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove2 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "CFFF(0)",
                 TileRotation = 2,
                 CellId = $"{-1}_{1}",
@@ -173,7 +167,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var gameMove3 = new GameMove()
             {
-                PlayerName = name,
+                PlayerName = TestHelper.Bob,
                 TileId = "CFFF(1)",
                 TileRotation = 0,
                 CellId = $"{-1}_{-1}",
@@ -187,12 +181,12 @@ namespace Carcassone.Core.Tests.Buisness
             var City = Citys.ElementAt(1);
             Assert.Equal(4, City.GetScore());
             Assert.True(City.IsComplete());
-            Assert.True(City.IsPlayerOwner(room.PlayersPool.GetPlayer(name)));
+            Assert.True(City.IsPlayerOwner(TestHelper.Bob));
             Assert.Contains(City.Parts, p => p.Flag != null);
 
-            var score = room.GetPlayerScore(room.PlayersPool.GetPlayer(name).Name);
+            var score = room.GetPlayerScore(TestHelper.Bob);
             Assert.Equal(4, score.OverallScore);
-            Assert.Equal(7, room.PlayersPool.GetPlayer(name).СhipList.Count);
+            Assert.Equal(7, score.ChipCount);
         }
     }
 }

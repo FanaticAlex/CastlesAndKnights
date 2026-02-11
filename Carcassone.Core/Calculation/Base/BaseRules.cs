@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Carcassone.Core.Calculation.Base
 {
-    public class BaseRules: IGameExtension
+    public class BaseRules: IGameRules
     {
         public List<IGameObjectsManager> Managers { get; } = new List<IGameObjectsManager>();
 

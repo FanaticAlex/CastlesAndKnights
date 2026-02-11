@@ -13,14 +13,6 @@ namespace Carcassone.Core.Calculation.Base.Cities
 
         public List<City> Cities { get; set; } = new List<City>();
 
-        public int GetPlayerScore(GamePlayer player)
-        {
-            return Cities
-                .Where(c => c.IsPlayerOwner(player))
-                .Select(c => c.GetScore())
-                .Sum();
-        }
-
         public void ProcessPart(ObjectPart part, Cell cell)
         {
             if (!(part is CityPart)) return;
