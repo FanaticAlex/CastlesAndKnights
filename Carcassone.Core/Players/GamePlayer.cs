@@ -1,12 +1,8 @@
 ﻿using Carcassone.Core.Calculation;
-using Carcassone.Core.Board;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Carcassone.Core.Tiles;
-using System.Drawing;
 
 namespace Carcassone.Core.Players
 {
@@ -31,7 +27,7 @@ namespace Carcassone.Core.Players
     /// </summary>
     public class GamePlayer
     {
-        private List<Chip> СhipList { get; set; } = new List<Chip>();
+        private List<Meeple> MeepleList { get; set; } = new List<Meeple>();
 
         public GamePlayer(PlayerInfo info)
         {
@@ -39,8 +35,8 @@ namespace Carcassone.Core.Players
 
             for (var i = 0; i < info.MeeplesCount; i++)
             {
-                var chip = new Chip(this);
-                СhipList.Add(chip);
+                var meeple = new Meeple(this);
+                MeepleList.Add(meeple);
             }
         }
 
@@ -48,28 +44,28 @@ namespace Carcassone.Core.Players
 
         public bool IsAIProcessing {  get; set; }
 
-        public Chip? TakeChip()
+        public Meeple? TakeMeeple()
         {
-            if (СhipList.Count == 0)
+            if (MeepleList.Count == 0)
                 return null;
 
-            var chip = СhipList[0];
-            СhipList.Remove(chip);
+            var meeple = MeepleList[0];
+            MeepleList.Remove(meeple);
             Info.MeeplesCount = Info.MeeplesCount - 1;
-            return chip;
+            return meeple;
         }
 
-        public void ReturnChipAndSetFlag(ObjectPart part)
+        public void ReturnMeepleAndSetFlag(ObjectPart part)
         {
-            if (part.Chip == null)
+            if (part.Meeple == null)
                 throw new Exception("Объект не принадлежит игроку, невозможно установить флаг.");
 
-            var chip = part.Chip;
-            chip.Owner = this;
-            СhipList.Add(chip);
+            var meeple = part.Meeple;
+            meeple.Owner = this;
+            MeepleList.Add(meeple);
             Info.MeeplesCount = Info.MeeplesCount + 1;
 
-            part.Chip = null;
+            part.Meeple = null;
             part.Flag = new Flag(this);
         }
 
@@ -103,12 +99,12 @@ namespace Carcassone.Core.Players
             }
 
             // ходы возвращающие фишки
-            var maxReturnChips = dic.Max(item => (item.Value.ChipCount - СhipList.Count));
-            var returnChipsMoves = dic
-                .Where(item => (item.Value.ChipCount - СhipList.Count) == maxReturnChips);
-            if (maxReturnChips > 0 && returnChipsMoves.Count() > 0)
+            var maxReturnMeeples = dic.Max(item => (item.Value.MeeplesCount - MeepleList.Count));
+            var returnMeeplesMoves = dic
+                .Where(item => (item.Value.MeeplesCount - MeepleList.Count) == maxReturnMeeples);
+            if (maxReturnMeeples > 0 && returnMeeplesMoves.Count() > 0)
             {
-                return returnChipsMoves.FirstOrDefault().Key;
+                return returnMeeplesMoves.FirstOrDefault().Key;
             }
 
             // ходы дающие наибольшее число очков

@@ -1,5 +1,4 @@
-﻿using Carcassone.Core.Board;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;

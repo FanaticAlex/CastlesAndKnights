@@ -1,5 +1,4 @@
 ﻿using Carcassone.Core.Tiles;
-using Carcassone.Core.Board;
 
 namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 {

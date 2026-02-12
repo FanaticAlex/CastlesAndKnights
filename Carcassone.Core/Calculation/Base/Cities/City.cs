@@ -24,9 +24,9 @@ namespace Carcassone.Core.Calculation.Base.Cities
             return ObjectCompletitionHelper.IsCompleteByBorder(this);
         }
 
-        public void TryCompleteAndReturnChips()
+        public void TryCompleteAndReturnMeeples()
         {
-            ObjectCompletitionHelper.TryCompleteAndReturnChips(this);
+            ObjectCompletitionHelper.TryCompleteAndReturnMeeples(this);
         }
     }
 }

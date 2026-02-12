@@ -4,7 +4,7 @@
     {
         public string PlayerName { get; set; }
 
-        public int ChipCount { get; set; }
+        public int MeeplesCount { get; set; }
 
         public int Rank { get; set; }
 

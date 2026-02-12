@@ -1,152 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Carcassone.Core.GameRoom">
-    <Position X="11.5" Y="0.75" Width="1.25" />
+    <Position X="6.75" Y="0.75" Width="2" />
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
       <Compartment Name="Events" Collapsed="true" />
     </Compartments>
-    <AssociationLine Name="ExtensionsManager" Type="Carcassone.Core.Extensions.ExtensionsManager" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="12.75" Y="1.323" />
-        <Point X="24.803" Y="1.323" />
-        <Point X="24.803" Y="5.5" />
-      </Path>
-    </AssociationLine>
-    <AssociationLine Name="GameGrid" Type="Carcassone.Core.Board.Grid" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="12.75" Y="2.176" />
-        <Point X="17" Y="2.176" />
-        <Point X="17" Y="5.5" />
-      </Path>
-    </AssociationLine>
-    <AssociationLine Name="PlayersPool" Type="Carcassone.Core.Players.GamePlayersPool" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="12.75" Y="1.777" />
-        <Point X="21.188" Y="1.777" />
-        <Point X="21.188" Y="5.5" />
-      </Path>
-    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AQIDgZCQQCgDAAAABAwAAAAASABBAkAABgAAAACAAAA=</HashCode>
+      <HashCode>CUQCCAgAEgABAAAABA4YAEAgAhAAEgUABAABAAAHAAA=</HashCode>
       <FileName>GameRoom.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="ExtensionsManager" />
-      <Property Name="CardsPool" />
-      <Property Name="ScoreCalculator" />
-      <Property Name="GameGrid" />
-      <Property Name="PlayersPool" />
+      <Field Name="_gameGrid" />
+      <Field Name="_playersPool" />
+      <Field Name="_tileStack" />
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
-      <Property Name="Moves" />
+      <Field Name="_moves" />
+      <Field Name="_rules" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="Carcassone.Core.Calculation.Objects.City">
-    <Position X="7" Y="10.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Calculation\Objects\City.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Carcassone.Core.Calculation.Objects.Farm" BaseTypeListCollapsed="true">
-    <Position X="11" Y="10.5" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>AAAAIIAAABAAAAAAAAAAAAAAQAAAAIAAAQAAGAAAAAA=</HashCode>
-      <FileName>Calculation\Objects\Farm.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
-  </Class>
-  <Class Name="Carcassone.Core.Calculation.Objects.Road">
-    <Position X="9" Y="10.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Calculation\Objects\Road.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Carcassone.Core.Calculation.PlayerScore">
-    <Position X="5" Y="6.25" Width="1.5" />
+    <Position X="14" Y="8" Width="1.5" />
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>ACEBAACAAAAAAAQQAAAAAAAAACgAAAAAAAQAIAAUAAA=</HashCode>
+      <HashCode>AAEBAEAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
       <FileName>Calculation\PlayerScore.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Carcassone.Core.Calculation.ScoreCalculator">
-    <Position X="9.25" Y="5.5" Width="1.75" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>AIAAIAAAAAAAAAAAAAgSAAAQAAAAAAAABAAAAQAAAAA=</HashCode>
-      <FileName>Calculation\ScoreCalculator.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="CitysManager" />
-    </ShowAsAssociation>
-  </Class>
-  <Class Name="Carcassone.Core.Extensions.River.RiverExtension">
-    <Position X="24" Y="7.25" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Extensions\River\RiverExtension.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Carcassone.Core.Extensions.ExtensionsManager">
-    <Position X="24" Y="5.5" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Extensions\ExtensionsManager.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="RiverExtension" />
-    </ShowAsAssociation>
-  </Class>
-  <Class Name="Carcassone.Core.Players.Chip">
-    <Position X="0.5" Y="11.25" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAQAAAAAAAAA=</HashCode>
-      <FileName>Players\Chip.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="Type" />
-    </ShowAsAssociation>
-  </Class>
-  <Class Name="Carcassone.Core.Players.Flag">
-    <Position X="2.25" Y="11.25" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Players\Flag.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Carcassone.Core.Players.GamePlayer">
-    <Position X="20.5" Y="8" Width="1.5" />
+    <Position X="14.25" Y="5.5" Width="1.5" />
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAAAACgAAEQAAQAAABAAAAABgAAAAAA=</HashCode>
+      <HashCode>AAAAIAAAAAAAAAABAAgAAAAAAACAABAAAAAAAEAAAgA=</HashCode>
       <FileName>Players\GamePlayer.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Info" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="Carcassone.Core.Players.GamePlayersPool">
-    <Position X="20.5" Y="5.5" Width="1.5" />
+    <Position X="13.5" Y="2.5" Width="2" />
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAIAAAiAAAABAAAEAAAAACAAABAAAAAgAAIAAAAA=</HashCode>
+      <HashCode>AAAAAIAAAiAAAABAAAEAAAAAAAAABAAAIAAAAIAAAAA=</HashCode>
       <FileName>Players\GamePlayersPool.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -154,109 +57,96 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Carcassone.Core.GameMove">
-    <Position X="7" Y="2.25" Width="1.5" />
+    <Position X="10.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAIAAAgAgAA=</HashCode>
+      <HashCode>AAEAAAAAAAAAAAAAAAIAAAAACAIAAAAAAAAAAAAAgAA=</HashCode>
       <FileName>GameMove.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Carcassone.Core.Board.Grid">
-    <Position X="16.25" Y="5.5" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>QAAAEAAAgAAAAACAAAIAAAAAACBAAQAAgAAAAAAAACA=</HashCode>
-      <FileName>Board\Grid.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Property Name="Cells" />
-    </ShowAsCollectionAssociation>
-  </Class>
-  <Class Name="Carcassone.Core.Board.Cell">
-    <Position X="16.25" Y="7.25" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>ACACAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAYAQ=</HashCode>
-      <FileName>Board\Cell.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Carcassone.Core.Tiles.Stack">
-    <Position X="1.25" Y="1.75" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>AEBABAAAAAABAIAEAAAABAAQQAAAACABAAAAAAAAEAA=</HashCode>
-      <FileName>Tiles\Stack.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="CurrentCard" />
-    </ShowAsAssociation>
-  </Class>
   <Class Name="Carcassone.Core.Tiles.Tile">
-    <Position X="1.25" Y="4" Width="1.5" />
+    <Position X="1.5" Y="4.5" Width="1.5" />
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>IKACCAABAAAAAAAAABEIAAAABBgAACgAAAAYAAAAKAA=</HashCode>
+      <HashCode>IAACAAgBAAAAAAAAAFIAAAAAABhAAKgAAAAIAAAEKAA=</HashCode>
       <FileName>Tiles\Tile.cs</FileName>
     </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Parts" />
+    </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="Carcassone.Core.Calculation.MultipartObjectsManager&lt;T&gt;">
-    <Position X="9.5" Y="8" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
+  <Class Name="Carcassone.Core.Grid">
+    <Position X="10.25" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAgA=</HashCode>
-      <FileName>Calculation\MultipartObjectsManager.cs</FileName>
+      <HashCode>AQAAEAAAAAAAAAAAAAAAAAIAAAAAAAAAAIAAAAAAACA=</HashCode>
+      <FileName>Grid.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Carcassone.Core.Calculation.Objects.Monastery">
-    <Position X="12.75" Y="10.5" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
+  <Class Name="Carcassone.Core.Players.PlayerInfo">
+    <Position X="16.5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAMAAAAIAAAAAAAIAAAAAAAgAAAIAABAAAAAAIAIA=</HashCode>
-      <FileName>Calculation\Objects\Monastery.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAEQAAAAAAAAgAAAAgAAAAAA=</HashCode>
+      <FileName>Players\GamePlayer.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
+    <ShowAsAssociation>
+      <Property Name="PlayerType" />
+    </ShowAsAssociation>
   </Class>
-  <Interface Name="Carcassone.Core.Calculation.Objects.IClosingObject" Collapsed="true">
-    <Position X="11" Y="13.75" Width="1.5" />
+  <Class Name="Carcassone.Core.Tiles.TileStack">
+    <Position X="1.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAIA=</HashCode>
-      <FileName>Calculation\Objects\IClosingObject.cs</FileName>
+      <HashCode>AUBAAAAAAAABAAAEAAAIACAAAAAQAEAAgAAAAAAAEAA=</HashCode>
+      <FileName>Tiles\TileStack.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="_remain" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Carcassone.Core.Calculation.ObjectPart">
+    <Position X="0.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAAAQAAAAAAACQAAQAAIAAAAAAAAAAgQA=</HashCode>
+      <FileName>Calculation\ObjectPart.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Meeple" />
+      <Property Name="Flag" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Carcassone.Core.Players.Meeple">
+    <Position X="3" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Players\Meeple.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Carcassone.Core.Players.Flag">
+    <Position X="3" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Players\Flag.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Carcassone.Core.Calculation.IGameRules">
+    <Position X="4.5" Y="3.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAgAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Calculation\IGameRules.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Managers" />
+    </ShowAsCollectionAssociation>
+  </Interface>
+  <Interface Name="Carcassone.Core.Calculation.IGameObjectsManager">
+    <Position X="4.5" Y="5.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Calculation\IGameObjectsManager.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Carcassone.Core.Calculation.Objects.IMultipartObject" Collapsed="true">
-    <Position X="12.75" Y="13.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAQAACAAAAAA=</HashCode>
-      <FileName>Calculation\Objects\IMultipartObject.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="Carcassone.Core.Calculation.Objects.IOwnedObject" Collapsed="true">
-    <Position X="14.5" Y="13.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
-      <FileName>Calculation\Objects\IOwnedObject.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Enum Name="Carcassone.Core.Players.ChipType" Collapsed="true">
-    <Position X="0.5" Y="13" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAEAAAAAAAAAAAQAAAAAggAAAAAAAAEAAAA=</HashCode>
-      <FileName>Players\ChipType.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
   <Enum Name="Carcassone.Core.Players.PlayerType" Collapsed="true">
-    <Position X="20.5" Y="10.25" Width="1.5" />
+    <Position X="16.5" Y="8" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAAAAACAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAQCAAA=</HashCode>
       <FileName>Players\PlayerType.cs</FileName>

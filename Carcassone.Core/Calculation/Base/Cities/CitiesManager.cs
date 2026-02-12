@@ -1,7 +1,4 @@
-﻿using Carcassone.Core.Board;
-using Carcassone.Core.Calculation.Base.Roads;
-using Carcassone.Core.Players;
-using Carcassone.Core.Tiles;
+﻿using Carcassone.Core.Tiles;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,7 +17,7 @@ namespace Carcassone.Core.Calculation.Base.Cities
             _merger.ProcessPart(Cities, part);
 
             foreach (City city in Cities)
-                city.TryCompleteAndReturnChips();
+                city.TryCompleteAndReturnMeeples();
         }
 
         public List<City> GetCompleteCities()

@@ -1,5 +1,4 @@
-﻿using Carcassone.Core.Board;
-using Carcassone.Core.Tiles;
+﻿using Carcassone.Core.Tiles;
 using System.Collections;
 using System.Collections.Generic;
 using Carcassone.Core.Calculation.Base.Cities;

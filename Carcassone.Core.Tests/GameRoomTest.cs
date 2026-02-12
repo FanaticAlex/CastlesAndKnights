@@ -1,8 +1,3 @@
-using Carcassone.Core.Board;
-using Carcassone.Core.Calculation.RiverExtension.Tiles;
-using Carcassone.Core.Players;
-using Carcassone.Core.Tiles;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Xml.Linq;

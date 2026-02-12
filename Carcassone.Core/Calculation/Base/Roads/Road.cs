@@ -21,9 +21,9 @@ namespace Carcassone.Core.Calculation.Base.Roads
             return ObjectCompletitionHelper.IsCompleteByBorder(this);
         }
 
-        public void TryCompleteAndReturnChips()
+        public void TryCompleteAndReturnMeeples()
         {
-            ObjectCompletitionHelper.TryCompleteAndReturnChips(this);
+            ObjectCompletitionHelper.TryCompleteAndReturnMeeples(this);
         }
     }
 }

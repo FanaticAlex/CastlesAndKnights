@@ -1,8 +1,6 @@
-﻿using Carcassone.Core.Board;
-using Carcassone.Core.Calculation;
+﻿using Carcassone.Core.Calculation;
 using Carcassone.Core.Calculation.Base.Cities;
 using Carcassone.Core.Calculation.Base.Farms;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -77,10 +75,10 @@ namespace Carcassone.Core.Tiles
             return CityParts;
         }
 
-        public void RotateCard(int rotation)
+        public void RotateTileTo(int rotation)
         {
             if (rotation < 0) throw new ArgumentOutOfRangeException("неверное число поворотов");
-            if (rotation >= 4) throw new ArgumentOutOfRangeException("неверное число поворотов");
+            if (rotation > 3) throw new ArgumentOutOfRangeException("неверное число поворотов");
 
             do
                 RotateTile();

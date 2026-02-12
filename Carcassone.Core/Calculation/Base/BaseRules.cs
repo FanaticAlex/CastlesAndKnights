@@ -1,5 +1,4 @@
-﻿using Carcassone.Core.Board;
-using Carcassone.Core.Calculation.Base.Cities;
+﻿using Carcassone.Core.Calculation.Base.Cities;
 using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Calculation.Base.Monasteries;
 using Carcassone.Core.Calculation.Base.Roads;

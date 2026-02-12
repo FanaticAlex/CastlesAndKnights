@@ -1,9 +1,7 @@
-﻿using Carcassone.Core.Board;
-using Carcassone.Core.Players;
+﻿using Carcassone.Core.Players;
 using Carcassone.Core.Tiles;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Carcassone.Core.Calculation.RiverExtension.Rivers
 {

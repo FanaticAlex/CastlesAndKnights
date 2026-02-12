@@ -1,11 +1,10 @@
 ﻿using Carcassone.Core.Tiles;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace Carcassone.Core.Board
+namespace Carcassone.Core
 {
     /// <summary>
     /// Represents the game board where players put tiles

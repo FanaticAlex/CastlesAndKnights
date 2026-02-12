@@ -1,8 +1,4 @@
-﻿using Carcassone.Core.Board;
-using Carcassone.Core.Calculation.Base.Cities;
-using Carcassone.Core.Players;
-using Carcassone.Core.Tiles;
-using Newtonsoft.Json;
+﻿using Carcassone.Core.Calculation.Base.Cities;
 using System;
 using System.Collections;
 using System.Collections.Generic;

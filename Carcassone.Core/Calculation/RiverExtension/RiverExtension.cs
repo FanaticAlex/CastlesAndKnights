@@ -1,5 +1,4 @@
-﻿using Carcassone.Core.Board;
-using Carcassone.Core.Calculation.RiverExtension.Rivers;
+﻿using Carcassone.Core.Calculation.RiverExtension.Rivers;
 using Carcassone.Core.Calculation.RiverExtension.Tiles;
 using Carcassone.Core.Tiles;
 using System.Collections.Generic;

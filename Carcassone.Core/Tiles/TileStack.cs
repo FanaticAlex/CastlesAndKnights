@@ -1,7 +1,4 @@
-﻿using Carcassone.Core.Calculation;
-using Carcassone.Core.Calculation.Base.Tiles;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 

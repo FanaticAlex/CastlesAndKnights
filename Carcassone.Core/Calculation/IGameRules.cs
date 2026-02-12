@@ -1,5 +1,4 @@
-﻿using Carcassone.Core.Board;
-using Carcassone.Core.Tiles;
+﻿using Carcassone.Core.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

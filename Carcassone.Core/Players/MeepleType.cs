@@ -1,6 +1,6 @@
 ﻿namespace Carcassone.Core.Players
 {
-    public enum ChipType
+    public enum MeepleType
     {
         Knight,
         Bishop,

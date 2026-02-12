@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Carcassone.Core.Tiles;
-using Carcassone.Core.Board;
 using Carcassone.Core.Players;
 using System.Linq;
 using System.Drawing;
@@ -35,10 +34,10 @@ namespace Carcassone.Core.Calculation.Base.Monasteries
         /// <summary>
         /// завершить церковь если в ней 9 карт и вернуть фишку
         /// </summary>
-        public void TryCompleteAndReturnChips()
+        public void TryCompleteAndReturnMeeples()
         {
             if (IsComplete())
-                Parts.First().Chip?.Owner?.ReturnChipAndSetFlag(Parts.First());
+                Parts.First().Meeple?.Owner?.ReturnMeepleAndSetFlag(Parts.First());
         }
 
         private int GetNeighboutTilesCount()

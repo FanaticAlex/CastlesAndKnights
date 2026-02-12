@@ -1,5 +1,4 @@
-﻿using Carcassone.Core.Board;
-using Carcassone.Core.Players;
+﻿using Carcassone.Core.Players;
 using Carcassone.Core.Tiles;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,7 +11,7 @@ namespace Carcassone.Core.Calculation
     /// </summary>
     public abstract class ObjectPart
     {
-        public Chip? Chip { get; set; }
+        public Meeple? Meeple { get; set; }
         public Flag? Flag { get; set; }
 
         public string PartId { get; set; }

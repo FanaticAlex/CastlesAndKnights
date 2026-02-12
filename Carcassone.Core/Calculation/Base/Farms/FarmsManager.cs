@@ -1,7 +1,4 @@
-﻿using Carcassone.Core.Board;
-using Carcassone.Core.Calculation.Base.Cities;
-using Carcassone.Core.Calculation.Base.Roads;
-using Carcassone.Core.Players;
+﻿using Carcassone.Core.Calculation.Base.Cities;
 using Carcassone.Core.Tiles;
 using System.Collections.Generic;
 using System.Linq;

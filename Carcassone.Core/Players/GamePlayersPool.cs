@@ -20,7 +20,7 @@ namespace Carcassone.Core.Players
     public class GamePlayersPool
     {
         private static readonly int _maximumPlayersCount = 5;
-        private static readonly int _playerChipCount = 7;
+        private static readonly int _playerMeeplesCount = 7;
 
         public List<GamePlayer> GamePlayers { get; } = new List<GamePlayer>();
         public int CurrentPlayerIndex { get; set; }

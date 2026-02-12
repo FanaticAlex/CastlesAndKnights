@@ -1,5 +1,4 @@
-﻿using Carcassone.Core.Board;
-using Carcassone.Core.Calculation.Base.Farms;
+﻿using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Calculation.Base.Roads;
 using Carcassone.Core.Calculation.RiverExtension.Rivers;
 using Carcassone.Core.Tiles;

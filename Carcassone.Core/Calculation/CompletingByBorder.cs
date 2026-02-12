@@ -7,18 +7,18 @@ namespace Carcassone.Core.Calculation
     interface ICompletableGameObject
     {
         bool IsComplete();
-        void TryCompleteAndReturnChips();
+        void TryCompleteAndReturnMeeples();
     }
 
     static class ObjectCompletitionHelper
     {
-        public static void TryCompleteAndReturnChips<T>(T obj) where T : BaseGameObject, ICompletableGameObject
+        public static void TryCompleteAndReturnMeeples<T>(T obj) where T : BaseGameObject, ICompletableGameObject
         {
             if (obj.IsComplete())
             {
                 foreach (var part in obj.Parts)
                 {
-                    part.Chip?.Owner?.ReturnChipAndSetFlag(part);
+                    part.Meeple?.Owner?.ReturnMeepleAndSetFlag(part);
                 }
             }
         }

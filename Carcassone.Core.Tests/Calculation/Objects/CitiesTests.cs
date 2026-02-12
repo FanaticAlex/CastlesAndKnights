@@ -55,7 +55,7 @@ namespace Carcassone.Core.Tests.Buisness
             var score = room.GetPlayerScore(TestHelper.Bob);
             Assert.True(Citys.ElementAt(0).IsPlayerOwner(TestHelper.Bob));
             Assert.Equal(1, score.OverallScore);
-            Assert.Equal(6, score.ChipCount);
+            Assert.Equal(6, score.MeeplesCount);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var score = room.GetPlayerScore(TestHelper.Bob);
             Assert.Equal(4, score.OverallScore);
-            Assert.Equal(7, score.ChipCount);
+            Assert.Equal(7, score.MeeplesCount);
         }
 
 
@@ -187,7 +187,7 @@ namespace Carcassone.Core.Tests.Buisness
 
             var score = room.GetPlayerScore(TestHelper.Bob);
             Assert.Equal(4, score.OverallScore);
-            Assert.Equal(7, score.ChipCount);
+            Assert.Equal(7, score.MeeplesCount);
         }
     }
 }

@@ -30,31 +30,31 @@ namespace Carcassone.Core.Calculation
             if (flagOwners.Any()) return flagOwners.Select(p => p.Info.Name);
 
 
-            // if object is not completed count chips
-            var ownersToChipCount = new Dictionary<GamePlayer, int>();
+            // if object is not completed count meeples
+            var ownersToMeepleCount = new Dictionary<GamePlayer, int>();
             foreach (var part in obj.Parts)
             {
-                if (part.Chip != null)
+                if (part.Meeple != null)
                 {
-                    if (ownersToChipCount.ContainsKey(part.Chip.Owner))
+                    if (ownersToMeepleCount.ContainsKey(part.Meeple.Owner))
                     {
-                        ownersToChipCount[part.Chip.Owner] += 1;
+                        ownersToMeepleCount[part.Meeple.Owner] += 1;
                     }
                     else
                     {
-                        ownersToChipCount[part.Chip.Owner] = 1;
+                        ownersToMeepleCount[part.Meeple.Owner] = 1;
                     }
                 }
             }
 
             // without owners
-            if (!ownersToChipCount.Any())
+            if (!ownersToMeepleCount.Any())
                 return new List<string>();
 
             // владельцы - игроки у которых максимальное число фишек на обьекте.
-            var maxChip = ownersToChipCount.Values.Max();
-            var owners = ownersToChipCount
-                .Where(pair => pair.Value == maxChip)
+            var maxMeeples = ownersToMeepleCount.Values.Max();
+            var owners = ownersToMeepleCount
+                .Where(pair => pair.Value == maxMeeples)
                 .Select(pair => pair.Key)
                 .ToList();
             return owners.Select(p => p.Info.Name);

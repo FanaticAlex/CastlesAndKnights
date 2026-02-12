@@ -1,5 +1,4 @@
-﻿using Carcassone.Core.Board;
-using Carcassone.Core.Calculation.Base.Cities;
+﻿using Carcassone.Core.Calculation.Base.Cities;
 using Carcassone.Core.Calculation.Base.Roads;
 using Carcassone.Core.Players;
 using Carcassone.Core.Tiles;
@@ -27,7 +26,7 @@ namespace Carcassone.Core.Calculation.Base.Monasteries
             Monasteries.Add(church);
 
             foreach (var monastery in Monasteries)
-                monastery.TryCompleteAndReturnChips();
+                monastery.TryCompleteAndReturnMeeples();
         }
 
         public IEnumerable<BaseGameObject> GetGameObjects()

@@ -1,7 +1,4 @@
-﻿using Carcassone.Core.Board;
-using Carcassone.Core.Calculation.Base.Farms;
-using Carcassone.Core.Tiles;
-using Newtonsoft.Json;
+﻿using Carcassone.Core.Tiles;
 using System;
 using System.Collections;
 using System.Collections.Generic;

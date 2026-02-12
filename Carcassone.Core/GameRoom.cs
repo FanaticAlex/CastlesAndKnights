@@ -1,5 +1,4 @@
-﻿using Carcassone.Core.Board;
-using Carcassone.Core.Calculation;
+﻿using Carcassone.Core.Calculation;
 using Carcassone.Core.Calculation.Base;
 using Carcassone.Core.Calculation.Base.Cities;
 using Carcassone.Core.Calculation.Base.Farms;
@@ -9,7 +8,6 @@ using Carcassone.Core.Calculation.RiverExtension;
 using Carcassone.Core.Calculation.RiverExtension.Rivers;
 using Carcassone.Core.Players;
 using Carcassone.Core.Tiles;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -128,7 +126,7 @@ namespace Carcassone.Core
                 {
                     PlayerName = player.Info.Name,
                     OverallScore = playerObjects.Select(o => o.GetScore()).Sum(),
-                    ChipCount = player.Info.MeeplesCount,
+                    MeeplesCount = player.Info.MeeplesCount,
                 };
 
                 scores.Add(score);
@@ -163,7 +161,7 @@ namespace Carcassone.Core
             {
                 for (var rotation = 0; rotation < 4; rotation++)
                 {
-                    tile.RotateCard(rotation);
+                    tile.RotateTileTo(rotation);
                     if (CanPutTileInCell(location, tile))
                     {
                         // without meeple
@@ -190,7 +188,7 @@ namespace Carcassone.Core
                     }
                 }
 
-                tile.RotateCard(1); // rotate to initial position
+                tile.RotateTileTo(0); // rotate to initial position
             }
 
             return gameMoves;
@@ -267,18 +265,18 @@ namespace Carcassone.Core
             if (tile == null) throw new Exception("Card can't be null");
 
 
-            // PutChipOnTile
+            // PutMeepleOnTile
             if ((gameMove.PlayerName != null) && (gameMove.PartName != null))
             {
                 var player = _playersPool.GetPlayer(gameMove.PlayerName);
                 if (player == null) throw new NullReferenceException("Player not found: " + gameMove.PlayerName);
 
                 var part = tile.GetPart(gameMove.PartName);
-                part.Chip = player.TakeChip();
+                part.Meeple = player.TakeMeeple();
             }
 
 
-            tile.RotateCard(gameMove.TileRotation);
+            tile.RotateTileTo(gameMove.TileRotation);
 
             if (!CanPutTileInCell(location, tile))
                 throw new Exception("Card can't be put");
@@ -364,7 +362,5 @@ namespace Carcassone.Core
                 foreach (var manager in _rules.SelectMany(e => e.Managers))
                     manager.ProcessPart(part, tile);
         }
-
-        
     }
 }
