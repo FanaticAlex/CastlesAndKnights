@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Carcassone.Core.Board
@@ -11,92 +12,53 @@ namespace Carcassone.Core.Board
     /// </summary>
     public class Grid
     {
-        private object _lockObj = new object();
-
-        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        public List<Cell> Cells { get; set; }
+        public List<Tile> _tilesInGame;
 
         public Grid()
         {
-            Cells = new List<Cell>();
-            CreateCell(0, 0); // create initial cell
+            _tilesInGame = new List<Tile>();
         }
 
-        public void PutTile(Cell cell, Tile tile)
+        public void PutTile(Point location, Tile tile)
         {
-            lock (_lockObj)
-            {
-                // create 4 new cells around placed card
-                CreateCell(cell.Location.X, cell.Location.Y + 1);
-                CreateCell(cell.Location.X, cell.Location.Y - 1);
-                CreateCell(cell.Location.X + 1, cell.Location.Y);
-                CreateCell(cell.Location.X - 1, cell.Location.Y);
-
-                // connect tile and cell
-                cell.Tile = tile;
-                tile.Cell = cell;
-            }
+            tile.Location = location;
+            _tilesInGame.Add(tile);
         }
 
-        public Cell? GetNeighbour(Cell? cell, Side side)
+        public Tile? GetNeighbour(Point location, Side side)
         {
-            if (cell == null)
-                return null;
-
             return side switch
             {
-                Side.top => GetCellWithoutThrowing(cell.Location.X, cell.Location.Y + 1),
-                Side.bottom => GetCellWithoutThrowing(cell.Location.X, cell.Location.Y - 1),
-                Side.right => GetCellWithoutThrowing(cell.Location.X + 1, cell.Location.Y),
-                Side.left => GetCellWithoutThrowing(cell.Location.X - 1, cell.Location.Y),
+                Side.top => GetTile(new Point(location.X, location.Y + 1)),
+                Side.bottom => GetTile(new Point(location.X, location.Y - 1)),
+                Side.right => GetTile(new Point(location.X + 1, location.Y)),
+                Side.left => GetTile(new Point(location.X - 1, location.Y)),
                 _ => throw new KeyNotFoundException(),
             };
         }
 
-        public Cell? GetNeighbour(Cell? cell, int deltaX, int deltaY)
+        public IEnumerable<Point> GetEmptyCells()
         {
-            if (cell == null)
-                return null;
+            var allPoints = new List<Point>
+            {
+                new Point(0, 0) // add initial location
+            };
 
-            return GetCellWithoutThrowing(cell.Location.X + deltaX, cell.Location.Y + deltaY);
+            var tilePoints = _tilesInGame.Select(t => t.Location);
+            foreach (var tile in _tilesInGame)
+            {
+                allPoints.Add(tile.Location + new Size(0, 1));
+                allPoints.Add(tile.Location + new Size(0, -1));
+                allPoints.Add(tile.Location + new Size(1, 0));
+                allPoints.Add(tile.Location + new Size(-1, 0));
+            }
+
+            return allPoints.Except(tilePoints).Distinct();
         }
 
-        public List<Cell> GetEmptyCells()
+        public Tile GetTile(Point location)
         {
-            return Cells.ToList().Where(c => (c.Tile == null)).ToList();
-        }
-
-        public List<Cell> GetAvailableCells()
-        {
-            return Cells.ToList().Where(c => !c.NotAvailable).ToList();
-        }
-
-        public List<Cell> GetUnavailableCells()
-        {
-            return Cells.ToList().Where(c => c.NotAvailable).ToList();
-        }
-
-        public Cell GetCell(int x, int y) => GetCell(Cell.GetCellID(x,y));
-
-        public Cell GetCell(string cellId)
-        {
-            var cell = Cells.ToList().FirstOrDefault(c => c.Id == cellId);
-            if (cell == null)
-                throw new Exception($"No cell {cellId} found");
-
-            return cell;
-        }
-
-        private void CreateCell(int x, int y)
-        {
-            var cell = GetCellWithoutThrowing(x, y);
-            if (cell == null)
-                Cells.Add(new Cell(x, y));
-        }
-
-        private Cell GetCellWithoutThrowing(int x, int y)
-        {
-            return Cells.ToList().FirstOrDefault(c => c.Id == Cell.GetCellID(x, y));
+            return _tilesInGame.FirstOrDefault(t => t.Location == location);
         }
     }
 }

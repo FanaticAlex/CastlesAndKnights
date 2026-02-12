@@ -7,7 +7,7 @@ namespace Carcassone.Core.Board
     /// <summary>
     /// Cell on a board grid, can contain card.
     /// </summary>
-    public class Cell
+    /*public class Cell
     {
         public Cell(int x, int y)
         {
@@ -24,5 +24,5 @@ namespace Carcassone.Core.Board
         public static string GetCellID(int x, int y) => $"{x}_{y}";
 
         public bool IsContainingTile() => (Tile != null);
-    }
+    }*/
 }

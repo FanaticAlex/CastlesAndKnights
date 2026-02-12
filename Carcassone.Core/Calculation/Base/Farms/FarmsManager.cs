@@ -20,7 +20,7 @@ namespace Carcassone.Core.Calculation.Base.Farms
             _citiesManager = citiesManager;
         }
 
-        public void ProcessPart(ObjectPart part, Cell cell)
+        public void ProcessPart(ObjectPart part, Tile tile)
         {
             if (!(part is FarmPart)) return;
 

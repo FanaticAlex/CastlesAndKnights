@@ -1,6 +1,8 @@
 ﻿using Carcassone.Core.Board;
 using Carcassone.Core.Calculation.Base.Tiles;
 using Carcassone.Core.Tiles;
+using System.Drawing;
+using System.Linq;
 using Xunit;
 
 namespace Carcassone.Core.Tests.Board
@@ -11,15 +13,12 @@ namespace Carcassone.Core.Tests.Board
         public void GetCenterTest()
         {
             var grid = new Grid();
-            var center = grid.GetCell(0, 0);
-            Assert.Single(grid.Cells);
-            Assert.NotNull(center);
-            Assert.Equal(0, center.Location.X);
-            Assert.Equal(0, center.Location.Y);
-
             var tile = new CCCC("CCCC", 0);
-            grid.PutTile(center, tile);
-            Assert.Equal(5, grid.Cells.Count);
+            grid.PutTile(new Point(0, 0), tile);
+
+            Assert.Equal(new Point(0, 0), tile.Location);
+            Assert.Equal(tile, grid.GetTile(new Point(0, 0)));
+            Assert.Equal(4, grid.GetEmptyCells().Count());
         }
     }
 }

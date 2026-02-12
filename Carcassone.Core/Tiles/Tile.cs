@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Carcassone.Core.Board;
+﻿using Carcassone.Core.Board;
 using Carcassone.Core.Calculation;
 using Carcassone.Core.Calculation.Base.Cities;
 using Carcassone.Core.Calculation.Base.Farms;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace Carcassone.Core.Tiles
 {
@@ -40,7 +41,7 @@ namespace Carcassone.Core.Tiles
 
         public int RotationsCount { get; set; }
 
-        public Cell Cell { get; set; }
+        public Point Location { get; set; }
 
         public Tile(string cardType, int cardNumber)
         {

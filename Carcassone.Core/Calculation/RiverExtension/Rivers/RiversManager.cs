@@ -22,7 +22,7 @@ namespace Carcassone.Core.Calculation.RiverExtension.Rivers
             return 0;
         }
 
-        public void ProcessPart(ObjectPart part, Cell cell)
+        public void ProcessPart(ObjectPart part, Tile tile)
         {
             if (!(part is RiverPart)) return;
 

@@ -32,8 +32,8 @@ namespace Carcassone.Core.Calculation
 
         public List<TileBorder> GetBorders()
         {
-            var cell = Tile.Cell;
-            return Sides.Select(s => new TileBorder(cell, s)).ToList();
+            var location = Tile.Location;
+            return Sides.Select(s => new TileBorder(location, s)).ToList();
         }
     }
 }

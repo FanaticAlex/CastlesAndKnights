@@ -2,7 +2,9 @@
 using Carcassone.Core.Calculation.Base.Cities;
 using Carcassone.Core.Calculation.Base.Roads;
 using Carcassone.Core.Players;
+using Carcassone.Core.Tiles;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Carcassone.Core.Calculation.Base.Monasteries
@@ -17,11 +19,11 @@ namespace Carcassone.Core.Calculation.Base.Monasteries
             _grid = grid;
         }
 
-        public void ProcessPart(ObjectPart part, Cell cell)
+        public void ProcessPart(ObjectPart part, Tile tile)
         {
             if (!(part is MonasteryPart)) return;
 
-            var church = new Monastery((MonasteryPart)part, cell, _grid);
+            var church = new Monastery((MonasteryPart)part, tile, _grid);
             Monasteries.Add(church);
 
             foreach (var monastery in Monasteries)

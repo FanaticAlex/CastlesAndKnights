@@ -7,6 +7,7 @@ using Carcassone.Core.Calculation.Base.Tiles;
 using Carcassone.Core.Tiles;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace Carcassone.Core.Calculation.Base
@@ -32,14 +33,12 @@ namespace Carcassone.Core.Calculation.Base
         /// <param name="grid"></param>
         /// <param name="tileStack"></param>
         /// <returns></returns>
-        public bool CanPutTileInCell(Cell cell, Tile tile, Grid grid)
+        public bool CanPutTileInCell(Point location, Tile tile, Grid grid)
         {
-            if (cell.IsContainingTile()) return false; // if there is a tile already
-
-            Tile? neighbourTopTile = grid.GetNeighbour(cell, Side.top)?.Tile;
-            Tile? neighbourLeftTile = grid.GetNeighbour(cell, Side.left)?.Tile;
-            Tile? neighbourBottomTile = grid.GetNeighbour(cell, Side.bottom)?.Tile;
-            Tile? neighbourRightTile = grid.GetNeighbour(cell, Side.right)?.Tile;
+            Tile? neighbourTopTile = grid.GetNeighbour(location, Side.top);
+            Tile? neighbourLeftTile = grid.GetNeighbour(location, Side.left);
+            Tile? neighbourBottomTile = grid.GetNeighbour(location, Side.bottom);
+            Tile? neighbourRightTile = grid.GetNeighbour(location, Side.right);
 
             // карту можно положить в поле, если в соседних с полем областях либо нет карт
             // либо границы карты которую кладем и соседней карты совпадают

@@ -1,5 +1,6 @@
 ﻿using Carcassone.Core.Calculation.Base.Cities;
 using Carcassone.Core.Players;
+using System.Drawing;
 using System.Linq;
 using Xunit;
 
@@ -30,7 +31,7 @@ namespace Carcassone.Core.Tests.Buisness
                 PlayerName = TestHelper.Bob,
                 TileId = "CRFR(0)",
                 TileRotation = 2,
-                CellId = $"{0}_{0}",
+                Location = new Point(0, 0),
                 PartName = "Farm_0"
             };
             room.MakeMove(gameMove1);
@@ -40,7 +41,7 @@ namespace Carcassone.Core.Tests.Buisness
                 PlayerName = TestHelper.Bob,
                 TileId = "CFFF(0)",
                 TileRotation = 0,
-                CellId = $"{0}_{-1}",
+                Location = new Point(0, -1),
                 PartName = "City_0"
             };
             room.MakeMove(gameMove2);
@@ -92,7 +93,7 @@ namespace Carcassone.Core.Tests.Buisness
                 PlayerName = TestHelper.Bob,
                 TileId = "RRWW(0)",
                 TileRotation = 0,
-                CellId = $"{0}_{0}",
+                Location = new Point(0, 0),
                 PartName = null
             };
             room.MakeMove(gameMove1);
@@ -102,7 +103,7 @@ namespace Carcassone.Core.Tests.Buisness
                 PlayerName = TestHelper.Bob,
                 TileId = "WCCW(0)",
                 TileRotation = 0,
-                CellId = $"{0}_{-1}",
+                Location = new Point(0, -1),
                 PartName = "Farm_0"
             };
             room.MakeMove(gameMove2);
@@ -148,7 +149,7 @@ namespace Carcassone.Core.Tests.Buisness
                 PlayerName = TestHelper.Bob,
                 TileId = "FFWF(0)",
                 TileRotation = 1,
-                CellId = $"{0}_{0}",
+                Location = new Point(0, 0),
                 PartName = null
             };
             room.MakeMove(gameMove0);
@@ -158,7 +159,7 @@ namespace Carcassone.Core.Tests.Buisness
                 PlayerName = TestHelper.Bob,
                 TileId = "FWWF(0)",
                 TileRotation = 0,
-                CellId = $"{-1}_{0}",
+                Location = new Point(-1, 0),
                 PartName = null
             };
             room.MakeMove(gameMove1);
@@ -168,7 +169,7 @@ namespace Carcassone.Core.Tests.Buisness
                 PlayerName = TestHelper.Bob,
                 TileId = "WFWF(0)",
                 TileRotation = 0,
-                CellId = $"{-1}_{-1}",
+                Location = new Point(-1, -1),
                 PartName = null
             };
             room.MakeMove(gameMove2);
@@ -200,7 +201,7 @@ namespace Carcassone.Core.Tests.Buisness
                 PlayerName = TestHelper.Bob,
                 TileId = "FFWF(0)",
                 TileRotation = 0,
-                CellId = $"{0}_{0}",
+                Location = new Point(0, 0),
                 PartName = null
             };
             room.MakeMove(gameMove1);
@@ -211,7 +212,7 @@ namespace Carcassone.Core.Tests.Buisness
                 PlayerName = TestHelper.Bob,
                 TileId = "FWRW(0)",
                 TileRotation = 1,
-                CellId = $"{0}_{-1}",
+                Location = new Point(0, -1),
                 PartName = null
             };
             room.MakeMove(gameMove2);
@@ -245,7 +246,7 @@ namespace Carcassone.Core.Tests.Buisness
                 PlayerName = TestHelper.Bob,
                 TileId = "FFWF(0)",
                 TileRotation = 0,
-                CellId = $"{0}_{0}",
+                Location = new Point(0, 0),
                 PartName = null
             };
             room.MakeMove(gameMove1);
@@ -255,7 +256,7 @@ namespace Carcassone.Core.Tests.Buisness
                 PlayerName = TestHelper.Bob,
                 TileId = "FWWF(0)",
                 TileRotation = 2,
-                CellId = $"{0}_{-1}",
+                Location = new Point(0, -1),
                 PartName = null
             };
             room.MakeMove(gameMove2);
@@ -287,7 +288,7 @@ namespace Carcassone.Core.Tests.Buisness
                 PlayerName = TestHelper.Bob,
                 TileId = "RRWW(0)",
                 TileRotation = 0,
-                CellId = $"{0}_{0}",
+                Location = new Point(0, 0),
                 PartName = "Farm_1"
             };
             room.MakeMove(gameMove1);
@@ -297,7 +298,7 @@ namespace Carcassone.Core.Tests.Buisness
                 PlayerName = TestHelper.Bob,
                 TileId = "WCWR(0)",
                 TileRotation = 0,
-                CellId = $"{0}_{-1}",
+                Location = new Point(0, -1),
                 PartName = null
             };
             room.MakeMove(gameMove2);

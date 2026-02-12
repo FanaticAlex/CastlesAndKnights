@@ -13,7 +13,7 @@ namespace Carcassone.Core.Calculation
     {
         public PointF Location { get; set; }
 
-        public TileBorder(Cell cell, Side side)
+        public TileBorder(Point location, Side side)
         {
             SizeF size = new SizeF(0, 0);
             switch (side)
@@ -33,7 +33,7 @@ namespace Carcassone.Core.Calculation
                 case Side.side_7: size = new SizeF(-0.25f , 0.5f); break;
             }
 
-            Location = PointF.Add(cell.Location, size);
+            Location = PointF.Add(location, size);
         }
 
         public static bool Equial(TileBorder border1, TileBorder border2)

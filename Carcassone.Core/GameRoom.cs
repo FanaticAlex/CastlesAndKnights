@@ -23,6 +23,12 @@ namespace Carcassone.Core
         River
     }
 
+    public class Locations
+    {
+        public List<Point> Awailable { get; set; } = new List<Point>();
+        public List<Point> UnAwailable { get; set; } = new List<Point>();
+    }
+
     /// <summary>
     /// Store all game data.
     /// </summary>
@@ -148,21 +154,21 @@ namespace Carcassone.Core
             return _tileStack.GetRemainTiles().Count;
         }
 
-        public List<GameMove> GetAvailableMoves()
+        public List<GameMove> GetAvailableMoves() // TODO need optimization
         {
             var gameMoves = new List<GameMove>();
             var tile = _tileStack.GetTopTile();
-            var cells = GetCellsToPutTile(tile);
-            foreach (var cell in cells)
+            var locations = GetCellsToPutTile(tile);
+            foreach (var location in locations)
             {
                 for (var rotation = 0; rotation < 4; rotation++)
                 {
                     tile.RotateCard(rotation);
-                    if (CanPutTileInCell(cell, tile))
+                    if (CanPutTileInCell(location, tile))
                     {
                         // without meeple
                         var move0 = new GameMove();
-                        move0.CellId = cell.Id;
+                        move0.Location = location;
                         move0.TileId = tile.Id;
                         move0.TileRotation = rotation;
                         move0.PartName = null;
@@ -170,11 +176,11 @@ namespace Carcassone.Core
                         gameMoves.Add(move0);
 
                         // with meeple
-                        var parts = GetAvailableParts(cell, tile);
+                        var parts = GetAvailableParts(location, tile);
                         foreach (var part in parts)
                         {
                             var move = new GameMove();
-                            move.CellId = cell.Id;
+                            move.Location = location;
                             move.TileId = tile.Id;
                             move.TileRotation = rotation;
                             move.PartName = part.PartName;
@@ -190,14 +196,14 @@ namespace Carcassone.Core
             return gameMoves;
         }
 
-        private List<Cell> GetCellsToPutTile(Tile tile)
+        private List<Point> GetCellsToPutTile(Tile tile)
         {
-            var list = new List<Cell>();
+            var list = new List<Point>();
             if (tile == null)
                 return list;
 
-            var cells = _gameGrid.GetAvailableCells();
-            foreach (var cell in cells)
+            var locations = GetCellsStatus().Awailable;
+            foreach (var cell in locations)
             {
                 if (CanPutTileInCellWithRotation(cell, tile))
                     list.Add(cell);
@@ -206,10 +212,10 @@ namespace Carcassone.Core
             return list;
         }
 
-        private List<ObjectPart> GetAvailableParts(Cell cell, Tile tile)
+        private List<ObjectPart> GetAvailableParts(Point location, Tile tile)
         {
             var copy = this.Copy();
-            copy.AddTile(cell, tile);
+            copy.AddTile(location, tile);
 
             var partsOfOwnedObjects = copy.GetAllGameObjects()
                 .Where(o => HasOwnerHelper.HasOwner(o))
@@ -226,8 +232,9 @@ namespace Carcassone.Core
             return list;
         }
 
-        public List<Cell> RecalculateNotAvailableCells()
+        public Locations GetCellsStatus()
         {
+            var status = new Locations();
             var emptyCells = _gameGrid.GetEmptyCells();
             foreach (var cell in emptyCells)
             {
@@ -242,18 +249,19 @@ namespace Carcassone.Core
                 }
 
                 if (!canPut)
-                    cell.NotAvailable = true;
+                    status.UnAwailable.Add(cell);
+                else
+                    status.Awailable.Add(cell);
             }
 
-            return _gameGrid.GetUnavailableCells();
+            return status;
         }
 
         public void MakeMove(GameMove gameMove)
         {
             if (gameMove == null) throw new ArgumentNullException("Move obj can not be null");
             
-            var cell = _gameGrid.GetCell(gameMove.CellId);
-            if (cell == null) throw new Exception("Cell can't be null");
+            var location = gameMove.Location;
 
             var tile = _tileStack.GetTile(gameMove.TileId);
             if (tile == null) throw new Exception("Card can't be null");
@@ -272,14 +280,19 @@ namespace Carcassone.Core
 
             tile.RotateCard(gameMove.TileRotation);
 
-
-            if (!CanPutTileInCell(cell, tile))
+            if (!CanPutTileInCell(location, tile))
                 throw new Exception("Card can't be put");
 
-            AddTile(cell, tile);
+            AddTile(location, tile);
 
             _moves.Add(gameMove);
             _tileStack.DiscardTile(tile);
+
+            if (GetCurrentTile() == null) // Check for finishing the game
+            {
+                IsFinished = true;
+                Finished?.Invoke(this, null);
+            }
 
             if (gameMove.PlayerName != null)
                 _playersPool.MoveToNextPlayer();
@@ -287,38 +300,25 @@ namespace Carcassone.Core
 
         public List<Tile> GetActiveTiles()
         {
-            return _gameGrid.Cells
-                .Where(c => c.IsContainingTile())
-                .Select(c => c.Tile)
-                .ToList();
+            return _gameGrid._tilesInGame;
         }
 
         public Tile? GetCurrentTile()
         {
-            do
+            while (_tileStack.GetTopTile() != null)
             {
                 var topTile = _tileStack.GetTopTile();
-                if (topTile == null)
-                {
-                    IsFinished = true;
-                    Finished?.Invoke(this, null);
-                    return null;
-                }
-
-                if (GetAvailableMoves().Any())
+                if (GetCellsToPutTile(topTile).Any())
                     return topTile;
                 else
                     _tileStack.DiscardTile(topTile);
-            }
-            while (!_tileStack.IsEmpty());
+            };
 
             return null;
         }
 
-        public bool CanPutTileInCellWithRotation(Cell cell, Tile? tile)
+        public bool CanPutTileInCellWithRotation(Point location, Tile tile)
         {
-            if (cell.IsContainingTile()) return false;
-
             if (tile == null) return false;
 
             // чтобы не поворачивать оригинальную карту поворачиваем копию
@@ -329,26 +329,26 @@ namespace Carcassone.Core
             copy.BottomEdgeType = tile.BottomEdgeType;
             copy.RightEdgeType = tile.RightEdgeType;
 
-            return RotateTileTilFit(cell, copy);
+            return RotateTileTilFit(location, copy);
         }
 
-        private bool RotateTileTilFit(Cell cell, Tile tile)
+        private bool RotateTileTilFit(Point location, Tile tile)
         {
             for (int i = 0; i < 4; i++) // можно сделать до 4х поворотов 4й - исходное положение (в конце)
             {
                 tile.RotateTile();
-                if (CanPutTileInCell(cell, tile))
+                if (CanPutTileInCell(location, tile))
                     return true;
             }
 
             return false;
         }
 
-        private bool CanPutTileInCell(Cell cell, Tile tile)
+        private bool CanPutTileInCell(Point location, Tile tile)
         {
             var result = true;
             foreach(var extension in _rules)
-                result &= extension.CanPutTileInCell(cell, tile, _gameGrid);
+                result &= extension.CanPutTileInCell(location, tile, _gameGrid);
 
             return result;
         }
@@ -357,14 +357,12 @@ namespace Carcassone.Core
         /// Add tile and update objects
         /// </summary>
         /// <param name="tile"></param>
-        public void AddTile(Cell cell, Tile tile)
+        public void AddTile(Point location, Tile tile)
         {
-            if (!(_gameGrid.Cells.Contains(cell))) throw new Exception("Sell is unknown");
-
-            _gameGrid.PutTile(cell, tile);
+            _gameGrid.PutTile(location, tile);
             foreach (ObjectPart part in tile.Parts)
                 foreach (var manager in _rules.SelectMany(e => e.Managers))
-                    manager.ProcessPart(part, cell);
+                    manager.ProcessPart(part, tile);
         }
 
         

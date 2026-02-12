@@ -13,7 +13,7 @@ namespace Carcassone.Core.Calculation.Base.Cities
 
         public List<City> Cities { get; set; } = new List<City>();
 
-        public void ProcessPart(ObjectPart part, Cell cell)
+        public void ProcessPart(ObjectPart part, Tile tile)
         {
             if (!(part is CityPart)) return;
 

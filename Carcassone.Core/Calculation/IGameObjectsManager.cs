@@ -2,13 +2,14 @@
 using Carcassone.Core.Players;
 using Carcassone.Core.Tiles;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Carcassone.Core.Calculation
 {
     public interface IGameObjectsManager
     {
         IEnumerable<BaseGameObject> GetGameObjects();
-        void ProcessPart(ObjectPart part, Cell cell);
+        void ProcessPart(ObjectPart part, Tile tile);
     }
 }
 

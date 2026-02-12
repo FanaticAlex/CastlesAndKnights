@@ -3,6 +3,7 @@ using Carcassone.Core.Calculation.RiverExtension.Rivers;
 using Carcassone.Core.Calculation.RiverExtension.Tiles;
 using Carcassone.Core.Tiles;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Carcassone.Core.Calculation.RiverExtension
 {
@@ -26,14 +27,14 @@ namespace Carcassone.Core.Calculation.RiverExtension
             Managers.Add(new RiversManager());
         }
 
-        public bool CanPutTileInCell(Cell cell, Tile tile, Grid grid)
+        public bool CanPutTileInCell(Point location, Tile tile, Grid grid)
         {
             // направление реки всегда должно быть вниз и влево
             var isRiverCard = tile.Id.Contains("W");
             if (isRiverCard)
             {
-                Tile? neighbourTopCard = grid.GetNeighbour(cell, Side.top)?.Tile;
-                Tile? neighbourRightCard = grid.GetNeighbour(cell, Side.right)?.Tile;
+                Tile? neighbourTopCard = grid.GetNeighbour(location, Side.top);
+                Tile? neighbourRightCard = grid.GetNeighbour(location, Side.right);
 
                 bool isTopFree = (neighbourTopCard == null);
                 bool isRightFree = (neighbourRightCard == null);

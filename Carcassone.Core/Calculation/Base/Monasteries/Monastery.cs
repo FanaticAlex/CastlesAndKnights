@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Carcassone.Core.Tiles;
 using Carcassone.Core.Board;
 using Carcassone.Core.Players;
-using Newtonsoft.Json;
 using System.Linq;
+using System.Drawing;
 
 namespace Carcassone.Core.Calculation.Base.Monasteries
 {
@@ -12,12 +12,12 @@ namespace Carcassone.Core.Calculation.Base.Monasteries
     {
         private readonly Grid _grid;
         private const int MaxConnectedTiles = 9;
-        private Cell _centralCell;
+        private Tile _monasteryTile;
 
-        public Monastery(MonasteryPart basePart, Cell cell, Grid grid)
+        public Monastery(MonasteryPart basePart, Tile tile, Grid grid)
         {
             Parts.Add(basePart);
-            _centralCell = cell;
+            _monasteryTile = tile;
             _grid = grid;
         }
 
@@ -46,14 +46,14 @@ namespace Carcassone.Core.Calculation.Base.Monasteries
             var tilesCount = 1; // bace monastery tile
 
             // are there cards in neighbour cells
-            if (_grid.GetNeighbour(_centralCell, 1, 0)?.Tile != null) tilesCount++;
-            if (_grid.GetNeighbour(_centralCell, -1, 0)?.Tile != null) tilesCount++;
-            if (_grid.GetNeighbour(_centralCell, 0, 1)?.Tile != null) tilesCount++;
-            if (_grid.GetNeighbour(_centralCell, 0, -1)?.Tile != null) tilesCount++;
-            if (_grid.GetNeighbour(_centralCell, 1, 1)?.Tile != null) tilesCount++;
-            if (_grid.GetNeighbour(_centralCell, -1, -1)?.Tile != null) tilesCount++;
-            if (_grid.GetNeighbour(_centralCell, -1, 1)?.Tile != null) tilesCount++;
-            if (_grid.GetNeighbour(_centralCell, 1, -1)?.Tile != null) tilesCount++;
+            if (_grid.GetTile(_monasteryTile.Location + new Size(1, 0)) != null) tilesCount++;
+            if (_grid.GetTile(_monasteryTile.Location + new Size(-1, 0)) != null) tilesCount++;
+            if (_grid.GetTile(_monasteryTile.Location + new Size(0, 1)) != null) tilesCount++;
+            if (_grid.GetTile(_monasteryTile.Location + new Size(0, -1)) != null) tilesCount++;
+            if (_grid.GetTile(_monasteryTile.Location + new Size(1, 1)) != null) tilesCount++;
+            if (_grid.GetTile(_monasteryTile.Location + new Size(-1, -1)) != null) tilesCount++;
+            if (_grid.GetTile(_monasteryTile.Location + new Size(-1, 1)) != null) tilesCount++;
+            if (_grid.GetTile(_monasteryTile.Location + new Size(1, -1)) != null) tilesCount++;
 
             return tilesCount;
         }

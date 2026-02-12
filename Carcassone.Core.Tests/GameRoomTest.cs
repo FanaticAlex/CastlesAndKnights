@@ -3,6 +3,7 @@ using Carcassone.Core.Calculation.RiverExtension.Tiles;
 using Carcassone.Core.Players;
 using Carcassone.Core.Tiles;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Xml.Linq;
 using Xunit;
@@ -25,7 +26,7 @@ namespace Carcassone.Core.Tests.Room
 
             Assert.True(room.IsFinished);
             var scores = room.GetPlayersScores();
-            Assert.NotEqual(2, scores.Count());
+            Assert.Equal(2, scores.Count());
             Assert.NotEqual(0, scores.ElementAt(0).OverallScore);
             Assert.NotEqual(0, scores.ElementAt(1).OverallScore);
         }
@@ -69,7 +70,7 @@ namespace Carcassone.Core.Tests.Room
                 PlayerName = TestHelper.Bob,
                 TileId = "FFWF(0)",
                 TileRotation = 0,
-                CellId = $"{0}_{0}",
+                Location = new Point(0, 0),
                 PartName = "Farm_0"
             };
             room.MakeMove(gameMove0);
@@ -79,7 +80,7 @@ namespace Carcassone.Core.Tests.Room
                 PlayerName = TestHelper.Bob,
                 TileId = "FWRW(0)",
                 TileRotation = 1,
-                CellId = $"{0}_{-1}",
+                Location = new Point(0, -1),
                 PartName = "Monastery_0"
             };
             room.MakeMove(gameMove1);

@@ -1,6 +1,7 @@
 ﻿using Carcassone.Core.Players;
 using Carcassone.Core.Tiles;
 using System;
+using System.Drawing;
 using System.Linq;
 using Xunit;
 
@@ -34,7 +35,7 @@ namespace Carcassone.Core.Tests.RiverExtension
                 PlayerName = TestHelper.Bob,
                 TileId = "FFWF(0)",
                 TileRotation = 0,
-                CellId = $"{0}_{0}",
+                Location = new Point(0, 0),
                 PartName = "Farm_0"
             };
             room.MakeMove(gameMove0);
@@ -44,7 +45,7 @@ namespace Carcassone.Core.Tests.RiverExtension
                 PlayerName = TestHelper.Bob,
                 TileId = "FWRW(0)",
                 TileRotation = 0,
-                CellId = $"{0}_{-1}",
+                Location = new Point(0, -1),
                 PartName = "Farm_0"
             };
 
@@ -78,7 +79,7 @@ namespace Carcassone.Core.Tests.RiverExtension
                 PlayerName = TestHelper.Bob,
                 TileId = "FFWF(0)",
                 TileRotation = 0,
-                CellId = $"{0}_{0}",
+                Location = new Point(0, 0),
                 PartName = "Farm_0"
             };
             room.MakeMove(gameMove0);
@@ -88,7 +89,7 @@ namespace Carcassone.Core.Tests.RiverExtension
                 PlayerName = TestHelper.Bob,
                 TileId = "FWRW(0)",
                 TileRotation = 1,
-                CellId = $"{0}_{-1}",
+                Location = new Point(0, -1),
                 PartName = "Farm_0"
             };
             room.MakeMove(gameMove1);

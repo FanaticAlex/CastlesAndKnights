@@ -22,7 +22,7 @@ namespace Carcassone.Core.Calculation.Base.Roads
             return Roads;
         }
 
-        public void ProcessPart(ObjectPart part, Cell cell)
+        public void ProcessPart(ObjectPart part, Tile tile)
         {
             if (!(part is RoadPart)) return;
 
