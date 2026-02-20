@@ -1,28 +1,58 @@
 ﻿using Carcassone.Core;
-using Carcassone.Core.Cards;
-using Carcassone.Core.Fields;
+using Carcassone.Core.Calculation;
 using Carcassone.Core.Players;
+using Carcassone.Core.Tiles;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
+    public class AvailableMoves
+    {
+        public List<GameMove> _moves = new List<GameMove>();
+
+        public AvailableMoves(List<GameMove> moves)
+        {
+            _moves = moves;
+        }
+
+        public bool CanPut(Point cell)
+        {
+            return _moves.Select(m => m.Location).Distinct().Contains(cell);
+        }
+
+        public IEnumerable<int> GetAvailableRotations(Point cell) 
+        {
+            return _moves
+                .Where(m => m.Location == cell)
+                .Select(m => m.TileRotation)
+                .Distinct();
+        }
+
+        public IEnumerable<GameMove> GetMoves(Point cell, int rotation)
+        {
+            return _moves
+                .Where(m => m.Location == cell)
+                .Where(m => m.TileRotation == rotation);
+        }
+    }
+
     /// <summary>
     /// Содержит данные об игре и управляет ходами одного игрока, а так же обновлением игры
     /// </summary>
     public class GameBehaviour : MonoBehaviour
     {
         private FieldsController _fieldsController;
-        private CardsController _cardsController;
-        private PlayerController _playerController;
+        private TilesController _tilesController;
         private ScoreController _scoreController;
-
-        private Timer _updateTimer;
+        private CameraBehaviour _cameraBehaviour;
 
         public GameObject SelectPartPanel;
         public GameObject FinalScoreUIPanel;
@@ -31,13 +61,12 @@ namespace Assets.Scripts
         public GameObject ExitAcceptPanel;
 
         private GameRoom _room;
+        private AvailableMoves _availableMoves;
 
-        private Field _selectedField;
-        private ObjectPart _selectedPart;
+        private int _selectedRotation;
+        private Point _selectedCell;
+        private string _selectedPart;
 
-        private GameRoom _preliminaryGameRoomWithNewCard;
-        private CameraBehaviour _cameraBehaviour;
-        private SoundEffectsPlayer _soundEffectPlayer;
 
         /// <summary>
         /// Инициализация сцены комнаты игры.
@@ -47,50 +76,17 @@ namespace Assets.Scripts
         void Start()
         {
             _cameraBehaviour = Camera.main.GetComponent<CameraBehaviour>();
-            _room = GameManager.Instance.Room;
+            _room = new GameRoom(GameParameters.Instance.Extensions, GameParameters.Instance.Players);
             _room.Finished += _room_Finished;
 
-            _fieldsController = new FieldsController(_room);
-            _cardsController = new CardsController(_room);
-            _scoreController = new ScoreController(FinalScoreUIPanel, FinalScoreUIPanelText, PlayerDetailScorePanel);
-            _playerController = new PlayerController(_cardsController);
-            _soundEffectPlayer = FindAnyObjectByType<SoundEffectsPlayer>();
+            _fieldsController = new FieldsController();
+            _tilesController = new TilesController();
 
-            VisualizeTurn(_room.Moves[0]);
-
-            _updateTimer = new Timer(0.5f);
-            _updateTimer.Elapsed += async (s, e) => await UpdateSpecial();
+            var players = _room.GetPlayers();
+            _scoreController = new ScoreController(players, FinalScoreUIPanel, FinalScoreUIPanelText, PlayerDetailScorePanel);
 
             ExitAcceptPanel.SetActive(false);
             SelectPartPanel.SetActive(false);
-        }
-
-        public void VisualizeTurn(GameMove gameMove)
-        {
-            var time = DateTime.Now;
-
-            // отображаем ход
-            var player = _room.PlayersPool.GetPlayer(gameMove.PlayerName);
-            var field = _room.FieldBoard.GetField(gameMove.FieldId);
-            var card = _room.CardsPool.GetCard(gameMove.CardId);
-            var part = card.GetPart(gameMove.PartName);
-
-            PutCardInField_OnlyUI(card, field, gameMove.CardRotation);
-            _playerController.UpdatePlayerLastMoveMarkerUI(card, player);
-            _cardsController._partsController.ShowFlagsAndChips();
-
-            _cardsController.ReloadCurrentCard();
-            _cardsController.UpdateCardRemainView();
-            _fieldsController.ShowAvailableFields(_room.CardsPool.CurrentCard);
-
-            _scoreController.UpdateScore();
-
-            var currentPlayer = _room.PlayersPool.GetCurrentPlayer();
-            _scoreController.UpdateCurrentPlayerMark(currentPlayer);
-
-            _cameraBehaviour.MoveCameraAtCard(_cardsController.GetCardPosition(card.Id)); // анимация
-
-            Logger.Info("Время отрисовки хода: " + (DateTime.Now - time).TotalSeconds);
         }
 
         /// <summary>
@@ -108,19 +104,20 @@ namespace Assets.Scripts
             if (_cameraBehaviour.State == TouchState.ZoomToCard) return;
 
             // если наш ход
-            var currentPlayer = _room.PlayersPool.GetCurrentPlayer();
+            var currentPlayer = _room.GetCurrentPlayer();
             if (currentPlayer.IsAIProcessing) return;
 
-            switch (currentPlayer.PlayerType)
+            switch (currentPlayer.Info.PlayerType)
             {
                 case PlayerType.Human:
-                    if (Input.GetMouseButtonUp(0)) TryToPutCardInField(currentPlayer.Name, _cardsController);
+                    InitiateSelectCellStage();
+                    if (Input.GetMouseButtonUp(0)) TryToSelectCell();
                     break;
                 case PlayerType.AI_Easy:
                 case PlayerType.AI_Normal:
                 case PlayerType.AI_Hard:
                     await Task.Run(() => currentPlayer.ProcessMove(_room));
-                    VisualizeTurn(_room.Moves.Last());
+                    VisualizeTurn(_room.GetMoves().Last());
                     break;
                 case PlayerType.NetworkPlayer:
                     // ждать сетевых игроков 
@@ -128,76 +125,102 @@ namespace Assets.Scripts
             }
         }
 
-        // для сетевой игры
-        private async Task UpdateSpecial()
+        public void VisualizeTurn(GameMove gameMove)
         {
-            // окончание игры
-            var isFinished = GameManager.Instance.Room.IsFinished;
-            if (isFinished)
+            var time = DateTime.Now;
+
+            var tile = _room.GetTile(gameMove.TileId);
+            _tilesController.PutNewTile(gameMove, tile);
+            ShowFlagsAndChips(_room.GetAllGameObjects());
+            _tilesController.UpdateRemainTilesIcon(_room.GetRemainTilesCount());
+
+            var players = _room.GetPlayers();
+            var scores = players.Select(p => _room.GetPlayerScore(p.Info.Name));
+            _scoreController.UpdateScore(scores);
+            _scoreController.UpdateCurrentPlayerMark(_room.GetCurrentPlayer());
+
+            var position = _tilesController.TilesUI[gameMove.TileId].GetTilePosition();
+            _cameraBehaviour.MoveCameraAtCard(position);
+
+            Logger.Info("Время отрисовки хода: " + (DateTime.Now - time).TotalSeconds);
+        }
+
+        /// <summary>
+        /// Расставляет флаги на захваченных объектах
+        /// </summary>
+        public void ShowFlagsAndChips(IEnumerable<BaseGameObject> objects)
+        {
+            foreach (var obj in objects)
             {
-                var currentPlayer = GameManager.Instance.Room.PlayersPool.GetCurrentPlayer();
-                this.enabled = false;
-                _scoreController.ShowEndGameWindow();
-               return;
+                foreach (var part in obj.Parts)
+                {
+                    if (part.Meeple != null)
+                        _tilesController.TilesUI[part.TileId].SetMeeple(part.PartName, part.Meeple.Owner.Info.Color);
+
+                    if (part.Flag != null)
+                        _tilesController.TilesUI[part.TileId].SetFlag(part.PartName, part.Flag.Owner.Info.Color);
+                }
             }
         }
 
         public void OnRotateButonClick()
         {
-            var currentCard = _room.CardsPool.CurrentCard;
-            PutCardInField_Preliminary(currentCard, _selectedField);
-            _cardsController.ReloadCurrentCard();
+            var rotations = _availableMoves.GetAvailableRotations(_selectedCell).ToList();
+            var currentRorarionIndex = rotations.IndexOf(_selectedRotation);
+            var nextRotationIndex = (currentRorarionIndex + 1) % rotations.Count;
+            var nextRotation = rotations[nextRotationIndex];
+            var moves = _availableMoves.GetMoves(_selectedCell, nextRotation);
+            InitiateSelectPartStage(moves);
         }
 
         public void OnPartSelected()
         {
-            var currentCard = _room.CardsPool.CurrentCard;
             // у всех частей обьекта анимацию убираем
-            _cardsController.HideAllCardMarks(currentCard);
+            var currentTile = _room.GetCurrentTile();
+            _tilesController.TilesUI[currentTile.Id].HideAllCardMarks();
 
             // у выбранного включаем
-            _selectedPart = GetSelectedPart(currentCard);
-            _cardsController.ShowPartMark(_selectedPart);
+            _selectedPart = GetSelectedPart(currentTile);
+            _tilesController.TilesUI[currentTile.Id].ShowPartMark(_selectedPart);
         }
 
         public void OnPutCardCancel()
         {
             // при отмене карта убирается из поля
-            _selectedField = null;
-            ResetCardGOTransform(_room.CardsPool.CurrentCard);
+            var currentTile = _room.GetCurrentTile();
+            _tilesController.TilesUI[currentTile.Id].ResetPositionRotation();
             SelectPartPanel.SetActive(false);
         }
 
         public void OnEndTurnButonClick()
         {
-            var currentCard = _room.CardsPool.CurrentCard;
-            var currentPlayer = GameManager.Instance.Room.PlayersPool.GetCurrentPlayer();
+            var currentTile = _room.GetCurrentTile();
+            var currentPlayer = _room.GetCurrentPlayer();
 
-            _selectedPart = GetSelectedPart(currentCard);
+            _selectedPart = GetSelectedPart(currentTile);
 
             var gameMove = new GameMove()
             {
-                PlayerName = currentPlayer.Name,
-                CardId = currentCard.Id,
-                CardRotation = currentCard.RotationsCount,
-                FieldId = _selectedField.Id,
-                PartName = _selectedPart?.PartName
+                PlayerName = currentPlayer.Info.Name,
+                TileId = currentTile.Id,
+                TileRotation = currentTile.RotationsCount,
+                Location = _selectedCell,
+                PartName = _selectedPart
             };
             _room.MakeMove(gameMove);
             VisualizeTurn(gameMove);
 
-            // TODO: отправить ход на сервер для сетевой игры
-
             // ход окончен
-            _cardsController.HideAllCardMarks(currentCard);
-            _selectedField = null;
+            _tilesController.TilesUI[currentTile.Id].HideAllCardMarks();
             _selectedPart = null;
             SelectPartPanel.SetActive(false);
         }
 
         public void OnShowPlayerDetailedScore(Text playerNamePanel)
         {
-            _scoreController.ShowDetailedScore(playerNamePanel);
+            var playerName = playerNamePanel.text;
+            var score = _room.GetPlayerScore(playerName);
+            _scoreController.ShowDetailedScore(playerNamePanel, score);
         }
 
         public void OnClosePlayerDetailedScore()
@@ -208,14 +231,14 @@ namespace Assets.Scripts
         public void OnEndGameBtn()
         {
             SceneManager.LoadScene("CreateRoom", LoadSceneMode.Single);
-            GameManager.Instance.SaveScore();
-            GameManager.Instance.ResetGame();
+            //GameParameters.Instance.SaveScore();
+            //GameParameters.Instance.ResetGame();
         }
 
         public void OnExitAcceptButtonClick()
         {
             SceneManager.LoadScene("CreateRoom", LoadSceneMode.Single);
-            GameManager.Instance.ResetGame();
+            //GameParameters.Instance.ResetGame();
         }
 
         public void OnExitCancelButtonClick()
@@ -223,97 +246,65 @@ namespace Assets.Scripts
             ExitAcceptPanel.SetActive(false);
         }
 
-        private void TryToPutCardInField(string playerName, CardsController cardsController)
+        private void InitiateSelectCellStage()
+        {
+            _fieldsController.ShowLocations(_room.GetCellsStatus());
+            _availableMoves = new AvailableMoves(_room.GetAvailableMoves());
+        }
+
+        private void TryToSelectCell()
         {
             if (SelectPartPanel.activeSelf) // если мы в состоянии выбора чати то не кликам на поля
                 return;
 
             // находим поле по которому был клик
             var hittedGO = GetHitedGameObject();
-            var selectedFieldId = _fieldsController.GetFieldByGameObject(hittedGO);
-            if (selectedFieldId == null)
+            var cellPoint = _fieldsController.GetFieldByGameObject(hittedGO);
+            if (cellPoint == null)
             {
-                Logger.Info("No field selected");
+                Logger.Info("No cell selected");
                 return;
             }
-            _selectedField = _room.FieldBoard.GetField(selectedFieldId);
+            _selectedCell = cellPoint.Value;
 
             // можно ли в это поле ставить текущую карту
-            var currentCard = _room.CardsPool.CurrentCard;
-            var canPutCard = _room.CanPutCardInFieldWithRotation(_selectedField, currentCard);
-            if (!canPutCard)
+            if (!_availableMoves.CanPut(_selectedCell))
             {
-                Logger.Info("Cant put a card!");
+                Logger.Info("Can't play to this location!");
                 return;
             }
 
-            _soundEffectPlayer.PlayPutCard();
-            PutCardInField_Preliminary(currentCard, _selectedField);
+            
+            var defaultRotation = _availableMoves.GetAvailableRotations(_selectedCell).First();
+            var moves = _availableMoves.GetMoves(_selectedCell, defaultRotation);
+            InitiateSelectPartStage(moves);
         }
 
-        private void PutCardInField_Preliminary(Card card, Field field)
+        private void InitiateSelectPartStage(IEnumerable<GameMove> availableMovesBySelectedCell)
         {
-            _room.RotateCardTilFit(field, card);
-            SetCardGOTransform(field, card);
+            var move = availableMovesBySelectedCell.First();
+            var tile = _room.GetTile(move.TileId);
+            _tilesController.PutNewTile(move, tile);
 
-            // сохраняем временную(предварительную) позицию игры с установленной картой для определния того куда ставить фишки
-            _preliminaryGameRoomWithNewCard = new GameRoom();
-            _preliminaryGameRoomWithNewCard.Load(_room.Save());
-            var field_Temp = _preliminaryGameRoomWithNewCard.FieldBoard.GetField(field.Id);
-            var card_Temp = _preliminaryGameRoomWithNewCard.CardsPool.GetCard(card.Id);
-            _preliminaryGameRoomWithNewCard.PutCardInField(card_Temp, field_Temp);
-
-            ShowSelectPartPanel();
-        }
-
-        private void PutCardInField_OnlyUI(Card card, Field field, int rotation)
-        {
-            card.RotateCard(rotation);
-            _fieldsController.CreateFieldsIfNotExistView();
-            SetCardGOTransform(field, card);
-            _fieldsController.CreateFieldsIfNotExistView();
-        }
-
-        private void SetCardGOTransform(Field field, Card card_Temp)
-        {
-            var fieldGO = _fieldsController.GetFieldGameObject(field.Id);
-            _cardsController.SetCardPositionRotation(card_Temp.Id, fieldGO.transform.position, card_Temp.RotationsCount);
-        }
-
-        private void ResetCardGOTransform(Card card)
-        {
-            _cardsController.ResetSetPositionRotation(card.Id);
-        }
-
-        private GameObject GetHitedGameObject()
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Physics.Raycast(ray, out RaycastHit hit, 100.0F);
-            return hit.collider?.gameObject;
-        }
-
-        private void ShowSelectPartPanel()
-        {
-            // дальше устанавливаем part
-            var currentCard = _room.CardsPool.CurrentCard;
-            var parts = _preliminaryGameRoomWithNewCard.GetAvailableParts(currentCard.Id);
-
-            var currentPlayer = GameManager.Instance.Room.PlayersPool.GetCurrentPlayer();
-            if (currentPlayer.СhipList.Count == 0)
+            var currentPlayer = _room.GetCurrentPlayer();
+            if (currentPlayer.Info.MeeplesCount == 0)
             {
                 Logger.Info("Player has no chip!");
                 OnEndTurnButonClick();
                 return;
             }
+            
+            var position = _tilesController.TilesUI[_room.GetCurrentTile().Id].GetTilePosition();
+            _cameraBehaviour.MoveCameraAtCard(position);
 
-            _cameraBehaviour.MoveCameraAtCard(_cardsController.GetCardPosition(currentCard.Id)); // анимация
-
-            SelectPartPanel.SetActive(true);
-            InitToggles(parts);
+            var parts = availableMovesBySelectedCell.Select(m => m.PartName).ToList();
+            SetSelectPartPanelToggles(parts);
         }
 
-        private void InitToggles(List<ObjectPart> parts)
+        private void SetSelectPartPanelToggles(List<string> parts)
         {
+            SelectPartPanel.SetActive(true);
+
             var toggleGroup = SelectPartPanel.transform.Find("ToggleGroup");
             for (int i = 0; i < 9; i++)
             {
@@ -324,7 +315,7 @@ namespace Assets.Scripts
                 if (i < parts.Count())
                 {
                     toggle.gameObject.SetActive(true);
-                    toggleLabel.GetComponent<Text>().text = parts[i].PartName;
+                    toggleLabel.GetComponent<Text>().text = parts[i];
                 }
                 else
                 {
@@ -339,10 +330,12 @@ namespace Assets.Scripts
 
         private void _room_Finished(object sender, EventArgs e)
         {
-            _scoreController.ShowEndGameWindow();
+            var players = _room.GetPlayers();
+            var scores = players.Select(p => _room.GetPlayerScore(p.Info.Name));
+            _scoreController.ShowEndGameWindow(scores);
         }
 
-        private ObjectPart GetSelectedPart(Card card)
+        private string GetSelectedPart(Tile tile)
         {
             if (!SelectPartPanel.activeSelf) return null; // окно не активно потому что нет вариантов для установки фишки
 
@@ -363,10 +356,17 @@ namespace Assets.Scripts
                 var toggleLabel = toggle.Find("Label").GetComponent<Text>();
 
                 if (toggleComponent.isOn)
-                    return card.Parts.Single(p => p.PartName == toggleLabel.text);
+                    return tile.Parts.Single(p => p.PartName == toggleLabel.text).PartName;
             }
 
             return null;
+        }
+
+        private GameObject GetHitedGameObject()
+        {
+            Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
+            Physics.Raycast(ray, out RaycastHit hit, 100.0F);
+            return hit.collider?.gameObject;
         }
     }
 }

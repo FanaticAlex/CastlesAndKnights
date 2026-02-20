@@ -62,13 +62,13 @@ namespace Carcassone.Core.Calculation.RiverExtension
             stack.CreateTiles(typeof(CWCW), 1, 1);
             stack.CreateTiles(typeof(FWRW), 1, 1);
             stack.CreateTiles(typeof(FWWF), 1, 1);
-            stack.CreateTiles(typeof(FWWF_1), 1, 1);
+            stack.CreateTiles(typeof(FWWF1), 1, 1);
             stack.CreateTiles(typeof(RRWW), 1, 1);
             stack.CreateTiles(typeof(RWRW), 1, 1);
             stack.CreateTiles(typeof(WCCW), 1, 1);
             stack.CreateTiles(typeof(WCWR), 1, 1);
             stack.CreateTiles(typeof(WFWF), 1, 1);
-            stack.CreateTiles(typeof(WFWF_1), 1, 1);
+            stack.CreateTiles(typeof(WFWF1), 1, 1);
 
             stack.CreateTiles(typeof(WFFF), 1, 2); // river mouth tile
         }

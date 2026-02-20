@@ -26,12 +26,11 @@ namespace Assets.Scripts
         /// </summary>
         /// <param name="players"></param>
         public ScoreController(
+            IEnumerable<GamePlayer> players,
             GameObject finalScoreUIPanel,
             GameObject finalScoreUIPanelText,
             GameObject playerDetailScorePanel)
         {
-            var players = GameManager.Instance.Room.PlayersPool.GamePlayers;
-
             _finalScoreUIPanel = finalScoreUIPanel;
             _finalScoreUIPanelText = finalScoreUIPanelText;
             _playerDetailScorePanel = playerDetailScorePanel;
@@ -54,8 +53,8 @@ namespace Assets.Scripts
                 var player = remainPlayers.FirstOrDefault();
                 if (player != null)
                 {
-                    _playersScorePanels.Add(player.Name, playerPanel);
-                    Color userColor = Constants.Colors[player.Color];
+                    _playersScorePanels.Add(player.Info.Name, playerPanel);
+                    Color userColor = Constants.Colors[player.Info.Color];
                     playerPanel.transform.Find("ColorPanel").GetComponentInChildren<Image>().color = userColor;
 
                     remainPlayers.Remove(player);
@@ -67,20 +66,18 @@ namespace Assets.Scripts
             }
         }
 
-        public void ShowDetailedScore(Text playerNamePanel)
+        public void ShowDetailedScore(Text playerNamePanel, PlayerScore score)
         {
-            var playerName = playerNamePanel.text;
             if (!_playerDetailScorePanel.activeSelf)
             {
                 _playerDetailScorePanel.SetActive(true);
                 var textComp = GameObject.Find("DetailedPlayerScore").GetComponent<TMP_Text>();
+                var playerName = playerNamePanel.text;
                 textComp.text = "Player score " + playerName + "\r\n";
-                var gamePlayer = GameManager.Instance.Room.PlayersPool.GetPlayer(playerName);
-                var score = GameManager.Instance.Room.GetPlayerScore(gamePlayer.Name);
-                textComp.text += $"Castles: {score.CastlesScore}({score.CastlesCount})\r\n";
-                textComp.text += $"Fields: {score.CornfieldsScore}({score.CornfieldsCount})\r\n";
-                textComp.text += $"Churches: {score.ChurchesScore}({score.ChurchesCount})\r\n";
-                textComp.text += $"Roads: {score.RoadsScore}({score.RoadsCount})\r\n";
+                //textComp.text += $"Castles: {score.CastlesScore}({score.CastlesCount})\r\n";
+                //textComp.text += $"Fields: {score.CornfieldsScore}({score.CornfieldsCount})\r\n";
+                //textComp.text += $"Churches: {score.ChurchesScore}({score.ChurchesCount})\r\n";
+                //textComp.text += $"Roads: {score.RoadsScore}({score.RoadsCount})\r\n";
             }
         }
 
@@ -89,11 +86,8 @@ namespace Assets.Scripts
             _playerDetailScorePanel.SetActive(false);
         }
 
-        public void UpdateScore()
+        public void UpdateScore(IEnumerable<PlayerScore> scores)
         {
-            var players = GameManager.Instance.Room.PlayersPool.GamePlayers;
-            var scores = players.Select(p => GameManager.Instance.Room.GetPlayerScore(p.Name));
-
             foreach (var score in scores)
             {
                 var playerScoreUI = _playersScorePanels[score.PlayerName];
@@ -102,9 +96,9 @@ namespace Assets.Scripts
                 nameUI.text = score.PlayerName;
 
                 var chipUI = playerScoreUI.transform.Find("ChipCount").GetComponent<Text>();
-                chipUI.text = $"Chip: {score.ChipCount}";
+                chipUI.text = $"Chip: {score.MeeplesCount}";
 
-                var overall = SumScore(score).ToString();
+                var overall = score.OverallScore.ToString();
                 playerScoreUI.transform.Find("InfoText").GetComponentInChildren<Text>().text = $"Score: {overall}";
             }
         }
@@ -113,23 +107,20 @@ namespace Assets.Scripts
         {
             foreach(var item in  _playersScorePanels)
             {
-                if (item.Key == currentPlayer?.Name)
+                if (item.Key == currentPlayer?.Info.Name)
                     item.Value.transform.Find("SelectedBorder").gameObject.SetActive(true);
                 else
                     item.Value.transform.Find("SelectedBorder").gameObject.SetActive(false);
             }
         }
 
-        public void ShowEndGameWindow()
+        public void ShowEndGameWindow(IEnumerable<PlayerScore> scores)
         {
             _finalScoreUIPanel.SetActive(true);
 
-            var players = GameManager.Instance.Room.PlayersPool.GamePlayers;
-            var scores = players.Select(p => GameManager.Instance.Room.GetPlayerScore(p.Name));
-
-            var winnerScore = scores.Max(x => SumScore(x));
+            var winnerScore = scores.Max(x => x.OverallScore);
             var winners = scores
-                .Where(x => SumScore(x) == winnerScore)
+                .Where(x => x.OverallScore == winnerScore)
                 .Select(x => x.PlayerName)
                 .ToList();
             _finalScoreUIPanelText.GetComponent<TMP_Text>().text = $"The winner is {string.Join(",", winners)} \r\n";
@@ -139,13 +130,8 @@ namespace Assets.Scripts
             foreach (var score in scores)
             {
                 _finalScoreUIPanelText.GetComponent<TMP_Text>().text +=
-                    $"{score.PlayerName} : {SumScore(score)} \r\n";
+                    $"{score.PlayerName} : {score.OverallScore} \r\n";
             }
-        }
-
-        private int SumScore(PlayerScore score)
-        {
-            return score.CastlesScore + score.CornfieldsScore + score.ChurchesScore + score.RoadsScore;
         }
     }
 }

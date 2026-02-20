@@ -11,9 +11,9 @@ namespace Carcassone.Core.Calculation.Base.Tiles
     ///   |/     \|
     ///       F
     /// </summary>
-    public class FCFC_2 : FCFC_1
+    public class FCFC2 : FCFC1
     {
-        public FCFC_2(string cardType, int cardNumber) : base(cardType, cardNumber)
+        public FCFC2(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
             ((CityPart)GetPart(CityPartName)).IsThereShield = true;
         }

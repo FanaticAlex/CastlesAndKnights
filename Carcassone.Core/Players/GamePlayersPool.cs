@@ -20,7 +20,7 @@ namespace Carcassone.Core.Players
     public class GamePlayersPool
     {
         private static readonly int _maximumPlayersCount = 5;
-        private static readonly int _playerMeeplesCount = 7;
+        public static readonly int PlayerMeeplesCount = 7;
 
         public List<GamePlayer> GamePlayers { get; } = new List<GamePlayer>();
         public int CurrentPlayerIndex { get; set; }
@@ -62,31 +62,6 @@ namespace Carcassone.Core.Players
             // если ход сделан то ход передается следующему игроку
             CurrentPlayerIndex++;
             CurrentPlayerIndex %= GamePlayers.Count;
-        }
-
-        private string GetFreeColor()
-        {
-            var takenColors = GamePlayers.Select(player => player.Info.Color).ToList();
-
-            if (!takenColors.Contains("Blue"))
-                return "Blue";
-
-            if (!takenColors.Contains("Gray"))
-                return "Gray";
-
-            if (!takenColors.Contains("Green"))
-                return "Green";
-
-            if (!takenColors.Contains("Red"))
-                return "Red";
-
-            /*if (!takenColors.Contains("White"))
-                return "White";*/
-
-            if (!takenColors.Contains("Yellow"))
-                return "Yellow";
-
-            throw new System.Exception("нет свободных ячеек для игроков");
         }
     }
 }

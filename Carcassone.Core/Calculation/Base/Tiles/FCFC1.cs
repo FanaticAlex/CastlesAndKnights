@@ -13,13 +13,13 @@ namespace Carcassone.Core.Calculation.Base.Tiles
     ///   |/     \|
     ///       F
     /// </summary>
-    public class FCFC_1 : Tile
+    public class FCFC1 : Tile
     {
         protected string CityPartName = "City_0";
         protected string FarmPartName = "Farm_0";
         protected string FarmPart1Name = "Farm_1";
 
-        public FCFC_1(string cardType, int cardNumber) : base(cardType, cardNumber)
+        public FCFC1(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
             var CityPart = new CityPart(CityPartName, this);
             CityPart.Sides.Add(Side.right);
@@ -34,8 +34,8 @@ namespace Carcassone.Core.Calculation.Base.Tiles
             FarmPart2.Sides.Add(Side.bottom);
             Parts.Add(FarmPart2);
 
-            FarmToCityParts.Add(FarmPart1, new List<CityPart>() { CityPart });
-            FarmToCityParts.Add(FarmPart2, new List<CityPart>() { CityPart });
+            FarmPart1.ConnectedCityParts.Add(CityPart);
+            FarmPart2.ConnectedCityParts.Add(CityPart);
         }
     }
 }

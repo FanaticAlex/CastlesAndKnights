@@ -7,9 +7,9 @@
     ///   |   +   |
     ///       W
     /// </summary>
-    public class WFWF_1 : WFWF
+    public class WFWF1 : WFWF
     {
-        public WFWF_1(string cardType, int cardNumber) : base(cardType, cardNumber)
+        public WFWF1(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
         }
     }

@@ -7,13 +7,13 @@ namespace Carcassone.Core.Calculation.Base.Tiles
     /// <summary>
     ///       C
     ///   | *  __/|
-    /// C | __/  _| R
-    ///   |/   /  |
-    ///       R
+    /// C | __/   | F
+    ///   |/      |
+    ///       F
     /// </summary>
-    public class CRRC_1 : CRRC
+    public class CFFC1 : CFFC
     {
-        public CRRC_1(string cardType, int cardNumber) : base(cardType, cardNumber)
+        public CFFC1(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
             ((CityPart)GetPart(CityPartName)).IsThereShield = true;
         }

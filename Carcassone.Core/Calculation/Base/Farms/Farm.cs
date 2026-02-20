@@ -25,7 +25,7 @@ namespace Carcassone.Core.Calculation.Base.Farms
             var connectedCitys = new List<City>();
             foreach (var FarmPart in Parts)
             {
-                var connectedCityParts = FarmPart.Tile.GetConnectedCityParts((FarmPart)FarmPart);
+                var connectedCityParts = ((FarmPart)FarmPart).ConnectedCityParts;
 
                 foreach (var city in completeCities)
                 {

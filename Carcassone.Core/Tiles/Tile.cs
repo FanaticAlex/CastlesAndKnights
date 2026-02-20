@@ -14,17 +14,11 @@ namespace Carcassone.Core.Tiles
     /// </summary>
     public abstract class Tile
     {
-        /// <summary>
-        /// Вручную соединенные замки и поля,
-        /// это нужно для подсчета какие замки присоденены к полям при подсчете очков за поля
-        /// </summary>
-        public Dictionary<FarmPart, List<CityPart>> FarmToCityParts { get; set; } = new Dictionary<FarmPart, List<CityPart>>();
-
         public List<ObjectPart> Parts { get; set; } = new List<ObjectPart>();
 
-        public string Id { get; set; }
-        public string CardType { get; set; }
-        public int CardNumber { get; set; }
+        public string Id { get; set; } // tileType_tileNumber
+        public string TileType { get; set; }
+        public int TileNumber { get; set; }
 
         /// <summary>
         /// define where in a tile stack pile this card should apear
@@ -39,13 +33,22 @@ namespace Carcassone.Core.Tiles
 
         public int RotationsCount { get; set; }
 
-        public Point Location { get; set; }
+        public Point _location;
+        public Point Location
+        {
+            get { return _location; }
+            set
+            {
+                _location = value;
+                Parts.ForEach(p => p.Location = _location);
+            }
+        }
 
         public Tile(string cardType, int cardNumber)
         {
             Id = GetTileId(cardType, cardNumber);
-            CardType = cardType;
-            CardNumber = cardNumber;
+            TileType = cardType;
+            TileNumber = cardNumber;
             TopEdgeType = cardType[0];
             RightEdgeType = cardType[1];
             BottomEdgeType = cardType[2];
@@ -62,17 +65,6 @@ namespace Carcassone.Core.Tiles
             if (list.Count() > 1) throw new InvalidOperationException("Не может быть два обьекта с одним названием");
 
             return list.Single();
-        }
-
-        public List<CityPart> GetConnectedCityParts(FarmPart part)
-        {
-            var CityParts = new List<CityPart>();
-            if (FarmToCityParts.Keys.Contains(part))
-            {
-                CityParts = FarmToCityParts[part];
-            }
-
-            return CityParts;
         }
 
         public void RotateTileTo(int rotation)

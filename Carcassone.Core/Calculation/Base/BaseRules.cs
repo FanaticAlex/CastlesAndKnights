@@ -60,23 +60,23 @@ namespace Carcassone.Core.Calculation.Base
         {
             stack.CreateTiles(typeof(CCCC), 1, 10);
             stack.CreateTiles(typeof(CCFC), 3, 10);
-            stack.CreateTiles(typeof(CCFC_1), 1, 10);
+            stack.CreateTiles(typeof(CCFC1), 1, 10);
             stack.CreateTiles(typeof(CCFF), 2, 10);
             stack.CreateTiles(typeof(CCRC), 1, 10);
-            stack.CreateTiles(typeof(CCRC_1), 2, 10);
+            stack.CreateTiles(typeof(CCRC1), 2, 10);
             stack.CreateTiles(typeof(CFFC), 3, 10);
-            stack.CreateTiles(typeof(CFFC_1), 2, 10);
+            stack.CreateTiles(typeof(CFFC1), 2, 10);
             stack.CreateTiles(typeof(CFFF), 5, 10);
             stack.CreateTiles(typeof(CFRR), 3, 10);
             stack.CreateTiles(typeof(CRFR), 3, 10);
             stack.CreateTiles(typeof(CRRC), 3, 10);
-            stack.CreateTiles(typeof(CRRC_1), 2, 10);
+            stack.CreateTiles(typeof(CRRC1), 2, 10);
             stack.CreateTiles(typeof(CRRF), 3, 10);
             stack.CreateTiles(typeof(CRRR), 3, 10);
 
             stack.CreateTiles(typeof(FCFC), 3, 10);
-            stack.CreateTiles(typeof(FCFC_1), 1, 10);
-            stack.CreateTiles(typeof(FCFC_2), 2, 10);
+            stack.CreateTiles(typeof(FCFC1), 1, 10);
+            stack.CreateTiles(typeof(FCFC2), 2, 10);
             stack.CreateTiles(typeof(FFFF), 4, 10);
             stack.CreateTiles(typeof(FFRF), 2, 10);
             stack.CreateTiles(typeof(FFRR), 8, 10);

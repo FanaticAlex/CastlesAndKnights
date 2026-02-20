@@ -57,8 +57,8 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
             roadPart.Sides.Add(Side.left);
             Parts.Add(roadPart);
 
-            FarmToCityParts.Add(FarmPart0, new List<CityPart>() { CityPart0 });
-            FarmToCityParts.Add(FarmPart1, new List<CityPart>() { CityPart0 });
+            FarmPart0.ConnectedCityParts.Add(CityPart0);
+            FarmPart1.ConnectedCityParts.Add(CityPart0);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Carcassone.Core.Calculation.Base.Tiles
             FarmPart.Sides.Add(Side.bottom);
             Parts.Add(FarmPart);
          
-            FarmToCityParts.Add(FarmPart, new List<CityPart>() { CityPart });
+            FarmPart.ConnectedCityParts.Add(CityPart);
         }
     }
 }

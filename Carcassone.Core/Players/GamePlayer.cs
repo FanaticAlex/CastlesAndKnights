@@ -6,9 +6,19 @@ using System.Linq;
 
 namespace Carcassone.Core.Players
 {
+    public enum PlayerColor
+    {
+        Blue,
+        Gray,
+        Green,
+        Red,
+        //White,
+        Yellow
+    }
+
     public class PlayerInfo
     {
-        public PlayerInfo(string name, PlayerType playerType, string color, int meeplesCount)
+        public PlayerInfo(string name, PlayerType playerType, PlayerColor color, int meeplesCount)
         {
             Name = name;
             PlayerType = playerType;
@@ -18,7 +28,7 @@ namespace Carcassone.Core.Players
 
         public string Name { get; }
         public PlayerType PlayerType { get;  }
-        public string Color { get; }
+        public PlayerColor Color { get; }
         public int MeeplesCount { get; set; }
     }
 

@@ -15,7 +15,7 @@ namespace Carcassone.Core.Tests
         public static GameRoom GetDefaultGame(string player)
         {
             var ext = new List<Extension>() { Extension.River };
-            var players = new List<PlayerInfo>() { new PlayerInfo(player, PlayerType.Human, "red", 7) };
+            var players = new List<PlayerInfo>() { new PlayerInfo(player, PlayerType.Human, PlayerColor.Red, 7) };
             var room = new GameRoom(ext, players);
             return room;
         }
@@ -25,8 +25,8 @@ namespace Carcassone.Core.Tests
             var ext = new List<Extension>() { Extension.River };
             var players = new List<PlayerInfo>()
             {
-                new PlayerInfo(player1, PlayerType.Human, "blue", 7),
-                new PlayerInfo(player2, PlayerType.Human, "green", 7),
+                new PlayerInfo(player1, PlayerType.Human, PlayerColor.Blue, 7),
+                new PlayerInfo(player2, PlayerType.Human, PlayerColor.Green, 7),
             };
             var room = new GameRoom(ext, players);
             return room;

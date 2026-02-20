@@ -55,7 +55,7 @@ namespace Assets.Scripts.Menu
             var newPlayerType = PlayerTypeHelper.ToPlayerType(typeStr);
             var newPlayerName = PlayerNameGO.GetComponent<TMP_InputField>().text;
 
-            GameManager.Instance.AddPlayer(newPlayerName, newPlayerType);
+            GameParameters.Instance.AddPlayer(newPlayerName, newPlayerType);
             NewPlayerPanel.SetActive(false);
 
             UpdatePlayerList(PlayersList);
@@ -78,7 +78,7 @@ namespace Assets.Scripts.Menu
 
         private void UpdatePlayerList(Transform playersListGO)
         {
-            var playersList = GameManager.Instance.Players;
+            var playersList = GameParameters.Instance.Players;
 
             // Remove Players
             foreach (Transform child in playersListGO)
@@ -103,7 +103,7 @@ namespace Assets.Scripts.Menu
         public void OnDeletePlayerBtn(string name)
         {
             GetSoundEffectsPlayer().PlayClick();
-            GameManager.Instance.DeletePlayer(name);
+            GameParameters.Instance.DeletePlayer(name);
             UpdatePlayerList(PlayersList);
 
             NewPlayerPanel.SetActive(false);

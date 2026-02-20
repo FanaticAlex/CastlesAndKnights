@@ -9,9 +9,9 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
     ///   |   +   |
     ///       W
     /// </summary>
-    public class FWWF_1 : FWWF
+    public class FWWF1 : FWWF
     {
-        public FWWF_1(string cardType, int cardNumber) : base(cardType, cardNumber)
+        public FWWF1(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
         }
     }

@@ -1,9 +1,7 @@
 ﻿using Carcassone.Core;
-using Carcassone.Core.Cards;
-using Carcassone.Core.Fields;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using UnityEngine;
 
@@ -15,25 +13,18 @@ namespace Assets.Scripts
     /// </summary>
     internal class FieldsController
     {
-        private Dictionary<string, GameObject> _fieldsToGameObject = new();
+        private Dictionary<Point, GameObject> _fieldsToGameObject = new();
         private readonly GameObject _fieldPrefab;
         private readonly GameObject _desk;
 
-        private GameRoom _room;
 
-        public FieldsController(GameRoom room)
+        public FieldsController()
         {
-            _room = room;
             _fieldPrefab = (GameObject)Resources.Load("Additional/FieldPrefab", typeof(GameObject));
             _desk = new GameObject("desk");
         }
 
-        public GameObject GetFieldGameObject(string fieldId)
-        {
-            return _fieldsToGameObject[fieldId];
-        }
-
-        public string GetFieldByGameObject(GameObject go)
+        public Point? GetFieldByGameObject(GameObject go)
         {
             if (go == null) { return null; }
 
@@ -48,66 +39,54 @@ namespace Assets.Scripts
             return null;
         }
 
-        /// <summary>
-        /// Пересчитать доступные поля
-        /// </summary>
-        /// <param name="card"></param>
-        public void ShowAvailableFields(Card card)
+        public void ShowLocations(Locations locations)
         {
-            if (card == null) // конец игры
+            // add new locations
+            foreach (var location in locations.Awailable)
+                if (!_fieldsToGameObject.Keys.Contains(location))
+                    CreateLocation(location);
+
+            // mark locations
+            foreach (var location in _fieldsToGameObject.Keys)
             {
-                foreach (var field in _fieldsToGameObject.Keys)
-                    SetFieldNotAvailable(field);
-
-                return;
-            }
-
-            var moveFields = _room.GetFieldsToPutCard(card?.Id);
-            var fieldIds = _fieldsToGameObject.Keys;
-            foreach (var fieldId in fieldIds)
-            {
-                var field = _room.FieldBoard.GetField(fieldId);
-                if (moveFields.Contains(field))
-                    SetFieldAvailable(fieldId);
-                else
-                    SetFieldInvisible(fieldId);
-            }
-
-            // недоступные поля
-            var notAvailableFields = _room.RecalculateNotAvailableFields();
-            foreach (var field in notAvailableFields)
-                SetFieldNotAvailable(field.Id);
-        }
-
-        public void CreateFieldsIfNotExistView()
-        {
-            foreach (var field in _room.FieldBoard.Fields)
-            {
-                if (!_fieldsToGameObject.Keys.Contains(field.Id))
+                if (locations.Awailable.Contains(location))
                 {
-                    var fieldObject = GameObject.Instantiate(_fieldPrefab, _desk.transform);
-                    fieldObject.transform.position = new Vector3(field.X, field.Y, 0);
-                    fieldObject.name = field.Id;
-                    _fieldsToGameObject.Add(field.Id, fieldObject);
+                    SetAvailable(location);
+                }
+                else if (locations.UnAwailable.Contains(location))
+                {
+                    SetUnAvailable(location);
+                }
+                else
+                {
+                    Hide(location);
                 }
             }
         }
 
-        private void SetFieldAvailable(string fieldId)
+        public void CreateLocation(Point location)
+        {
+            var fieldObject = GameObject.Instantiate(_fieldPrefab, _desk.transform);
+            fieldObject.transform.position = new Vector3(location.X, location.Y, 0);
+            fieldObject.name = $"{location.X}_{location.Y}";
+            _fieldsToGameObject.Add(location, fieldObject);
+        }
+
+        private void SetAvailable(Point location)
         {
             var image = (Sprite)Resources.Load("Additional/possible", typeof(Sprite));
-            _fieldsToGameObject[fieldId].GetComponent<SpriteRenderer>().sprite = image;
+            _fieldsToGameObject[location].GetComponent<SpriteRenderer>().sprite = image;
         }
 
-        private void SetFieldNotAvailable(string fieldId)
+        private void SetUnAvailable(Point location)
         {
             var image = (Sprite)Resources.Load("Additional/impossible", typeof(Sprite));
-            _fieldsToGameObject[fieldId].GetComponent<SpriteRenderer>().sprite = image;
+            _fieldsToGameObject[location].GetComponent<SpriteRenderer>().sprite = image;
         }
 
-        private void SetFieldInvisible(string fieldId)
+        private void Hide(Point location)
         {
-            _fieldsToGameObject[fieldId].GetComponent<SpriteRenderer>().sprite = null;
+            _fieldsToGameObject[location].GetComponent<SpriteRenderer>().sprite = null;
         }
     }
 }

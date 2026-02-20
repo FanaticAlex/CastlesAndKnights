@@ -77,12 +77,12 @@ namespace Carcassone.Core.Tiles
         public void CreateTiles(Type tileType, byte count, int priority)
         {
             var tiles = new List<Tile>();
-            for (int i = 0; i < count; i++)
+            for (int tileNumber = 0; tileNumber < count; tileNumber++)
             {
                 var tileTypeStr = tileType.Name.Replace(tileType.Namespace ?? string.Empty, string.Empty);
-                var tile = (Tile?)Activator.CreateInstance(tileType, tileTypeStr, i);
+                var tile = (Tile?)Activator.CreateInstance(tileType, tileTypeStr, tileNumber);
                 if (tile == null)
-                    throw new Exception($"Can't create card of type {tileTypeStr}: {i}");
+                    throw new Exception($"Can't create card of type {tileTypeStr}: {tileNumber}");
 
                 tile.StackPriority = priority;
                 tiles.Add(tile);

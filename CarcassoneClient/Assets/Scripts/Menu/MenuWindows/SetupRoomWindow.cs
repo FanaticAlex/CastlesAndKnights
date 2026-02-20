@@ -42,13 +42,6 @@ namespace Assets.Scripts.Menu
 
             PlayersListGO = GameObject.Find("PlayersList")?.transform?.Find("Viewport")?.Find("Content");
             Assert.IsNotNull(PlayersListGO);
-
-            // добавляем себя
-            if (GameManager.Instance.Room.PlayersPool.GamePlayers.Count == 0)
-            {
-                var defaultUser = GameManager.Instance.GetDefaultPlayer();
-                GameManager.Instance.Room.PlayersPool.AddPlayer(defaultUser.Name, defaultUser.PlayerType);
-            }
             
             UpdateUI();
         }
@@ -57,8 +50,8 @@ namespace Assets.Scripts.Menu
         {
             UpdatePlayerList(PlayersListGO);
 
-            var playersCount = GameManager.Instance.Room.PlayersPool.GamePlayers.Count();
-            var humansPlayers = GameManager.Instance.Room.PlayersPool.GamePlayers.Where(p => p.PlayerType == PlayerType.Human).Count();
+            var playersCount = GameParameters.Instance.Players.Count;
+            var humansPlayers = GameParameters.Instance.Players.Where(p => p.PlayerType == PlayerType.Human).Count();
             StartGameBtn.GetComponent<Button>().interactable = (playersCount > 1) && (humansPlayers > 0);
             AddPlayerBtn.GetComponent<Button>().interactable = (playersCount < 5);
         }
@@ -71,7 +64,7 @@ namespace Assets.Scripts.Menu
         // панель добавления игрока
         public void OnShowAddPlayerPanelBtnClick()
         {
-            if (GameManager.Instance.Room.PlayersPool.GamePlayers.Count() >= 5)
+            if (GameParameters.Instance.Players.Count() >= 5)
                 throw new Exception("Cant create player, 5 players max");
 
             GetSoundEffectsPlayer().PlayClick();
@@ -84,12 +77,12 @@ namespace Assets.Scripts.Menu
             GetSoundEffectsPlayer().PlayClick();
             NewPlayerPanel.SetActive(false);
 
-            if (GameManager.Instance.Room.PlayersPool.GamePlayers.Count() >= 5)
+            if (GameParameters.Instance.Players.Count() >= 5)
                 throw new Exception("Cant create player, 5 players max");
 
             var playerName = PlayerNameGO.GetComponent<TMP_Dropdown>().captionText.text;
-            var player = GameManager.Instance.GetPlayer(playerName);
-            GameManager.Instance.Room.PlayersPool.AddPlayer(player.Name, player.PlayerType);
+            var player = GameParameters.Instance.GetPlayer(playerName);
+            GameParameters.Instance.AddPlayer(player.Name, player.PlayerType);
 
             UpdateUI();
         }
@@ -103,7 +96,6 @@ namespace Assets.Scripts.Menu
         public void OnStartGameBtnClick()
         {
             GetSoundEffectsPlayer().PlayClick();
-            GameManager.Instance.Room.Start();
             SceneManager.LoadScene("RoomScene");
         }
 
@@ -116,13 +108,13 @@ namespace Assets.Scripts.Menu
         public void OnDeletePlayerBtn(string name)
         {
             GetSoundEffectsPlayer().PlayClick();
-            GameManager.Instance.Room.PlayersPool.DeletePlayer(name);
+            GameParameters.Instance.DeletePlayer(name);
             UpdateUI();
         }
 
         private void UpdatePlayerList(Transform playersListGO)
         {
-            var playersList = GameManager.Instance.Room.PlayersPool.GamePlayers;
+            var playersList = GameParameters.Instance.Players;
 
             // Remove Players
             foreach (Transform child in playersListGO)
@@ -146,7 +138,7 @@ namespace Assets.Scripts.Menu
 
         private void ShowNewPlayerPanel()
         {
-            var activePlayersNames = GameManager.Instance.Room.PlayersPool.GamePlayers.Select(p => p.Name);
+            var activePlayersNames = GameParameters.Instance.Players.Select(p => p.Name);
             var freePlayers = PlayersManager.Load().Where(p => !activePlayersNames.Contains(p.Name));
             var list = new List<TMP_Dropdown.OptionData>();
             PlayerNameGO.GetComponent<TMP_Dropdown>().options.Clear();

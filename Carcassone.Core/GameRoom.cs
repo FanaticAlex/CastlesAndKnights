@@ -78,6 +78,16 @@ namespace Carcassone.Core
             return copy;
         }
 
+        public List<GamePlayer> GetPlayers()
+        {
+            return _playersPool.GamePlayers;
+        }
+
+        public IEnumerable<GameMove> GetMoves()
+        {
+            return _moves;
+        }
+
         public IEnumerable<BaseGameObject> GetAllGameObjects()
         {
             return _rules.SelectMany(e => e.Managers.SelectMany(m => m.GetGameObjects()));
@@ -315,13 +325,13 @@ namespace Carcassone.Core
             return null;
         }
 
-        public bool CanPutTileInCellWithRotation(Point location, Tile tile)
+        private bool CanPutTileInCellWithRotation(Point location, Tile tile)
         {
             if (tile == null) return false;
 
             // чтобы не поворачивать оригинальную карту поворачиваем копию
             var type = tile.GetType();
-            var copy = (Tile)Activator.CreateInstance(type, tile.CardType, tile.CardNumber);
+            var copy = (Tile)Activator.CreateInstance(type, tile.TileType, tile.TileNumber);
             copy.TopEdgeType = tile.TopEdgeType;
             copy.LeftEdgeType = tile.LeftEdgeType;
             copy.BottomEdgeType = tile.BottomEdgeType;
@@ -355,7 +365,7 @@ namespace Carcassone.Core
         /// Add tile and update objects
         /// </summary>
         /// <param name="tile"></param>
-        public void AddTile(Point location, Tile tile)
+        private void AddTile(Point location, Tile tile)
         {
             _gameGrid.PutTile(location, tile);
             foreach (ObjectPart part in tile.Parts)
