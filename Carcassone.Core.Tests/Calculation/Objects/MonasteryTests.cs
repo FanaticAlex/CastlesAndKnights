@@ -41,7 +41,7 @@ namespace Carcassone.Core.Tests.Buisness
                 TileId = "FFFF(0)",
                 TileRotation = 0,
                 Location = new Point(0, 0),
-                PartName = "Church_0"
+                PartName = "Monastery_0"
             };
             room.MakeMove(gameMove0);
 

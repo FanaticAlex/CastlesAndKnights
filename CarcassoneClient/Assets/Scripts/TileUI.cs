@@ -22,20 +22,24 @@ namespace Assets.Scripts
 
         public TileUI(Tile tile)
         {
-            GameObject prefab = GetTilePrefab(tile.TileType);
-            var tileObject = GameObject.Instantiate(prefab) ?? throw new Exception();
-            tileObject.GetComponent<BoxCollider>().enabled = false;
+            GO = GetTileGO(tile.TileType);
+            GO.GetComponent<BoxCollider>().enabled = false;
 
             foreach (var part in tile.Parts)
             {
-                var partGameObject = tileObject.transform.Find(part.PartName).gameObject;
+                var partGameObject = GO.transform.Find(part.PartName).gameObject;
                 partGameObject.SetActive(false);
                 _partIdToGameObject.Add(part.PartName, partGameObject);
             }
 
             // Border
-            GameObject borderPrefab = (GameObject)Resources.Load("Cards/Tile_border", typeof(GameObject));
-            _tile3DBorderGO = GameObject.Instantiate(borderPrefab) ?? throw new Exception();
+            _tile3DBorderGO = GetTileBorderGO();
+        }
+
+        public void SetActive(bool active)
+        {
+            GO.SetActive(active);
+            _tile3DBorderGO.SetActive(active);
         }
 
         public void ResetPositionRotation()
@@ -59,7 +63,8 @@ namespace Assets.Scripts
 
         public void ShowPartMark(string partName)
         {
-            _partIdToGameObject[partName].SetActive(true);
+            if (_partIdToGameObject.Keys.Contains(partName))
+                _partIdToGameObject[partName].SetActive(true);
         }
 
         public void SetFlag(string partName, PlayerColor color)
@@ -97,12 +102,25 @@ namespace Assets.Scripts
             return GO.transform.position;
         }
 
-        private static GameObject GetTilePrefab(string tileType)
+        private static GameObject GetTileGO(string tileType)
         {
-            var prefab = (GameObject)Resources.Load("Cards/" + tileType, typeof(GameObject));
+            var prefab = (GameObject)Resources.Load("Tiles/" + tileType, typeof(GameObject));
             if (prefab == null)
-                prefab = (GameObject)Resources.Load("Cards/River/" + tileType, typeof(GameObject));
-            return prefab;
+                prefab = (GameObject)Resources.Load("Tiles/River/" + tileType, typeof(GameObject));
+
+            if (prefab == null)
+                throw new Exception("cant find tile " + tileType);
+
+            return GameObject.Instantiate(prefab) ?? throw new Exception("can't initiate tile GO" + tileType);
+        }
+
+        private GameObject GetTileBorderGO()
+        {
+            GameObject borderPrefab = (GameObject)Resources.Load("Tiles/Tile_border", typeof(GameObject));
+            if (borderPrefab == null)
+                throw new Exception("cant find border  prefab");
+
+            return GameObject.Instantiate(borderPrefab) ?? throw new Exception("cant initiate border");
         }
     }
 }

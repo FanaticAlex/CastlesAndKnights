@@ -6,7 +6,7 @@ namespace Assets.Scripts
 {
     public static class Constants
     {
-        public static GameObject Chip => (GameObject)Resources.Load("Chip/Chip", typeof(GameObject));
+        public static GameObject Chip => (GameObject)Resources.Load("Meeples/Chip", typeof(GameObject));
 
         public static GameObject Flag => (GameObject)Resources.Load("Flags/Flag", typeof(GameObject));
 

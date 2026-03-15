@@ -130,7 +130,7 @@ namespace Assets.Scripts
             var time = DateTime.Now;
 
             var tile = _room.GetTile(gameMove.TileId);
-            _tilesController.PutNewTile(gameMove, tile);
+            _tilesController.PlaceTile(gameMove, tile);
             ShowFlagsAndChips(_room.GetAllGameObjects());
             _tilesController.UpdateRemainTilesIcon(_room.GetRemainTilesCount());
 
@@ -166,10 +166,10 @@ namespace Assets.Scripts
         public void OnRotateButonClick()
         {
             var rotations = _availableMoves.GetAvailableRotations(_selectedCell).ToList();
-            var currentRorarionIndex = rotations.IndexOf(_selectedRotation);
-            var nextRotationIndex = (currentRorarionIndex + 1) % rotations.Count;
-            var nextRotation = rotations[nextRotationIndex];
-            var moves = _availableMoves.GetMoves(_selectedCell, nextRotation);
+            var currentRotationIndex = rotations.IndexOf(_selectedRotation);
+            var nextRotationIndex = (currentRotationIndex + 1) % rotations.Count;
+            _selectedRotation = rotations[nextRotationIndex];
+            var moves = _availableMoves.GetMoves(_selectedCell, _selectedRotation);
             InitiateSelectPartStage(moves);
         }
 
@@ -203,7 +203,7 @@ namespace Assets.Scripts
             {
                 PlayerName = currentPlayer.Info.Name,
                 TileId = currentTile.Id,
-                TileRotation = currentTile.RotationsCount,
+                TileRotation = _selectedRotation,
                 Location = _selectedCell,
                 PartName = _selectedPart
             };
@@ -248,6 +248,8 @@ namespace Assets.Scripts
 
         private void InitiateSelectCellStage()
         {
+            var tile = _room.GetCurrentTile();
+            _tilesController.SetCurrentTileIcon(tile, _selectedRotation);
             _fieldsController.ShowLocations(_room.GetCellsStatus());
             _availableMoves = new AvailableMoves(_room.GetAvailableMoves());
         }
@@ -284,7 +286,7 @@ namespace Assets.Scripts
         {
             var move = availableMovesBySelectedCell.First();
             var tile = _room.GetTile(move.TileId);
-            _tilesController.PutNewTile(move, tile);
+            _tilesController.PlaceTile(move, tile);
 
             var currentPlayer = _room.GetCurrentPlayer();
             if (currentPlayer.Info.MeeplesCount == 0)
@@ -306,7 +308,7 @@ namespace Assets.Scripts
             SelectPartPanel.SetActive(true);
 
             var toggleGroup = SelectPartPanel.transform.Find("ToggleGroup");
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < 10; i++)
             {
                 var toggleName = "Toggle" + i;
                 var toggle = toggleGroup.Find(toggleName);
@@ -323,9 +325,9 @@ namespace Assets.Scripts
                 }
             }
 
-            var noneToggle = toggleGroup.Find("Toggle_None");
-            var noneToggleComponent = noneToggle.GetComponent<Toggle>();
-            noneToggleComponent.isOn = true;
+            var defaultToggle = toggleGroup.Find("Toggle0");
+            var defaultToggleComponent = defaultToggle.GetComponent<Toggle>();
+            defaultToggleComponent.isOn = true;
         }
 
         private void _room_Finished(object sender, EventArgs e)
@@ -341,14 +343,8 @@ namespace Assets.Scripts
 
             var toggleGroup = SelectPartPanel.transform.Find("ToggleGroup");
 
-            // не устанавливать фишку
-            var noneToggle = toggleGroup.Find("Toggle_None");
-            var noneToggleComponent = noneToggle.GetComponent<Toggle>();
-            if (noneToggleComponent.isOn)
-                return null;
-
             // установить фишку в части обьекта
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < 10; i++)
             {
                 var toggleName = "Toggle" + i;
                 var toggle = toggleGroup.Find(toggleName);
@@ -356,7 +352,7 @@ namespace Assets.Scripts
                 var toggleLabel = toggle.Find("Label").GetComponent<Text>();
 
                 if (toggleComponent.isOn)
-                    return tile.Parts.Single(p => p.PartName == toggleLabel.text).PartName;
+                    return toggleLabel.text;
             }
 
             return null;

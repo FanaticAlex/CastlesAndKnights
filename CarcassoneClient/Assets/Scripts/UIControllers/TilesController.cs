@@ -29,30 +29,29 @@ namespace Assets.Scripts
             _soundEffectPlayer = GameObject.FindAnyObjectByType<SoundEffectsPlayer>();
         }
 
-        public void PutNewTile(GameMove gameMove, Tile tile)
+        public void PlaceTile(GameMove gameMove, Tile tile)
         {
-            var newTileUI = new TileUI(tile);
-            newTileUI.SetPositionRotation(gameMove.Location, gameMove.TileRotation);
-            TilesUI.Add(tile.Id, newTileUI);
+            var tUI = GetTileUI(tile);
+            tUI.SetActive(true);
+            tUI.SetPositionRotation(gameMove.Location, gameMove.TileRotation);
 
             placeCardEffect.transform.position = new Vector3(gameMove.Location.X, gameMove.Location.Y, 0);
             placeCardEffect.Play();
 
             UpdatePlayerLastMoveMarkerUI(gameMove.TileId, gameMove.PlayerName);
-            SetCurrentTileIcon(gameMove.TileId, gameMove.TileRotation);
             _soundEffectPlayer.PlayPutCard();
         }
 
         /// <summary>
         /// Обновление UI текущей карты
         /// </summary>
-        public void SetCurrentTileIcon(string tileId, int rotation)
+        public void SetCurrentTileIcon(Tile tile, int rotation)
         {
-            if (tileId == null)
+            if (tile == null)
                 return;
 
             // изображение на панели
-            var cardGO = TilesUI[tileId].GO;
+            var cardGO = GetTileUI(tile).GO;
             currentCardImageGO.GetComponent<Image>().sprite = cardGO.GetComponent<SpriteRenderer>().sprite;
             currentCardImageGO.transform.localRotation = Quaternion.Euler(0, 0, rotation * -90);
         }
@@ -79,6 +78,19 @@ namespace Assets.Scripts
             var markObject = _playerToMarkers[player.Name];
             var cardPosition = TilesUI[tileId].GetTilePosition();
             markObject.transform.position = cardPosition + new Vector3(0, 0, -1.3f);
+        }
+
+        private TileUI GetTileUI(Tile tile)
+        {
+            if (TilesUI.ContainsKey(tile.Id))
+                return TilesUI[tile.Id];
+            else
+            {
+                var newTileUI = new TileUI(tile);
+                newTileUI.SetActive(false);
+                TilesUI.Add(tile.Id, newTileUI);
+                return newTileUI;
+            }
         }
     }
 }

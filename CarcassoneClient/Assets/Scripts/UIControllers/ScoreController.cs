@@ -76,7 +76,7 @@ namespace Assets.Scripts
                 textComp.text = "Player score " + playerName + "\r\n";
                 //textComp.text += $"Castles: {score.CastlesScore}({score.CastlesCount})\r\n";
                 //textComp.text += $"Fields: {score.CornfieldsScore}({score.CornfieldsCount})\r\n";
-                //textComp.text += $"Churches: {score.ChurchesScore}({score.ChurchesCount})\r\n";
+                //textComp.text += $"Monasteries: {score.ChurchesScore}({score.ChurchesCount})\r\n";
                 //textComp.text += $"Roads: {score.RoadsScore}({score.RoadsCount})\r\n";
             }
         }

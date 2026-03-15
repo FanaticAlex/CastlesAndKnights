@@ -29,7 +29,7 @@ namespace Assets.Scripts
             var players = PlayersManager.Load();
             foreach (var player in players)
             {
-                var newPlayer = new PlayerInfo(player.Name, player.Type, PlayerColor.Red, GamePlayersPool.PlayerMeeplesCount);
+                var newPlayer = new PlayerInfo(player.Name, player.Type, GetAvailableColor(Players), GamePlayersPool.PlayerMeeplesCount);
                 Players.Add(newPlayer);
             }
         }
@@ -79,6 +79,20 @@ namespace Assets.Scripts
         public void ResetGame()
         {
             //Room = new GameRoom();
+        }
+
+        public PlayerColor GetAvailableColor(List<PlayerInfo> players)
+        {
+            var takenColors = players.Select(p => p.Color).ToList();
+            foreach(var color in Enum.GetValues(typeof(PlayerColor)))
+            {
+                if (takenColors.Contains((PlayerColor)color))
+                    continue;
+
+                return (PlayerColor)color;
+            }
+
+            throw new Exception("There is no free colors left");
         }
     }
 }

@@ -13,13 +13,13 @@ namespace Carcassone.Core.Calculation.Base.Tiles
     /// </summary>
     public class FFFF : Tile
     {
-        protected string churchPartName = "Church_0";
+        protected string monasteryPartName = "Monastery_0";
         protected string FarmPartName = "Farm_0";
 
         public FFFF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var churchPart = new MonasteryPart(churchPartName, this);
-            Parts.Add(churchPart);
+            var monasteryPart = new MonasteryPart(monasteryPartName, this);
+            Parts.Add(monasteryPart);
 
             var FarmPart1 = new FarmPart(FarmPartName, this);
             FarmPart1.Sides.Add(Side.top);

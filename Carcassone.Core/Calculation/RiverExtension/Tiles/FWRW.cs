@@ -17,7 +17,7 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
     public class FWRW : Tile
     {
         protected string RiverPart0Name = "River_0";
-        protected string churchPartName = "Monastery_0";
+        protected string monasteryPartName = "Monastery_0";
         protected string FarmPart0Name = "Farm_0";
         protected string FarmPart1Name = "Farm_1";
         protected string FarmPart2Name = "Farm_2";
@@ -30,7 +30,7 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
             RiverPart0.Sides.Add(Side.left);
             Parts.Add(RiverPart0);
 
-            var monasteryPart = new MonasteryPart(churchPartName, this);
+            var monasteryPart = new MonasteryPart(monasteryPartName, this);
             Parts.Add(monasteryPart);
 
             var FarmPart1 = new FarmPart(FarmPart0Name, this);

@@ -22,8 +22,8 @@ namespace Carcassone.Core.Calculation.Base.Monasteries
         {
             if (!(part is MonasteryPart)) return;
 
-            var church = new Monastery((MonasteryPart)part, tile, _grid);
-            Monasteries.Add(church);
+            var item = new Monastery((MonasteryPart)part, tile, _grid);
+            Monasteries.Add(item);
 
             foreach (var monastery in Monasteries)
                 monastery.TryCompleteAndReturnMeeples();

@@ -15,7 +15,7 @@ namespace Carcassone.Core.Calculation.Base.Tiles
     public class FFRF : Tile
     {
         protected string roadPartName = "Road_0";
-        protected string churchPartName = "Church_0";
+        protected string monasteryPartName = "Monastery_0";
         protected string FarmPartName = "Farm_0";
 
         public FFRF(string cardType, int cardNumber) : base(cardType, cardNumber)
@@ -24,8 +24,8 @@ namespace Carcassone.Core.Calculation.Base.Tiles
             roadPart3.Sides.Add(Side.bottom);
             Parts.Add(roadPart3);
 
-            var churchPart = new MonasteryPart(churchPartName, this);
-            Parts.Add(churchPart);
+            var monasteryPart = new MonasteryPart(monasteryPartName, this);
+            Parts.Add(monasteryPart);
 
             var FarmPart1 = new FarmPart(FarmPartName, this);
             FarmPart1.Sides.Add(Side.top);
