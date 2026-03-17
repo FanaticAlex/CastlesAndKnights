@@ -29,7 +29,7 @@ namespace Assets.Scripts
             var players = PlayersManager.Load();
             foreach (var player in players)
             {
-                var newPlayer = new PlayerInfo(player.Name, player.Type, GetAvailableColor(Players), GamePlayersPool.PlayerMeeplesCount);
+                var newPlayer = new PlayerInfo(player.Name, player.Type, GetAvailableColor(Players));
                 Players.Add(newPlayer);
             }
         }
@@ -49,7 +49,7 @@ namespace Assets.Scripts
 
         public void AddPlayer(string playerName, PlayerType playerType)
         {
-            var newPlayer = new PlayerInfo(playerName, playerType, PlayerColor.Red, GamePlayersPool.PlayerMeeplesCount);
+            var newPlayer = new PlayerInfo(playerName, playerType, PlayerColor.Red);
             Players.Add(newPlayer);
         }
 

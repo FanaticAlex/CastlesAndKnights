@@ -39,28 +39,37 @@ namespace Assets.Scripts
             return null;
         }
 
-        public void ShowLocations(Locations locations)
+        public void ShowLocations(Locations locations, AvailableMoves moves)
         {
-            // add new locations
+            foreach (var location in _fieldsToGameObject.Keys.ToList())
+            {
+                if (locations.Awailable.Contains(location))
+                    continue;
+                if (locations.UnAwailable.Contains(location))
+                    continue;
+
+                GameObject.Destroy(_fieldsToGameObject[location]);
+                _fieldsToGameObject.Remove(location);
+            }
+
+            var locationsToPutCard = moves.GetLocations();
             foreach (var location in locations.Awailable)
+            {
                 if (!_fieldsToGameObject.Keys.Contains(location))
                     CreateLocation(location);
 
-            // mark locations
-            foreach (var location in _fieldsToGameObject.Keys)
-            {
-                if (locations.Awailable.Contains(location))
-                {
+                if (locationsToPutCard.Contains(location))
                     SetAvailable(location);
-                }
-                else if (locations.UnAwailable.Contains(location))
-                {
-                    SetUnAvailable(location);
-                }
                 else
-                {
                     Hide(location);
-                }
+            }
+
+            foreach (var location in locations.UnAwailable)
+            {
+                if (!_fieldsToGameObject.Keys.Contains(location))
+                    CreateLocation(location);
+
+                SetUnAvailable(location);
             }
         }
 

@@ -136,7 +136,7 @@ namespace Carcassone.Core
                 {
                     PlayerName = player.Info.Name,
                     OverallScore = playerObjects.Select(o => o.GetScore()).Sum(),
-                    MeeplesCount = player.Info.MeeplesCount,
+                    MeeplesCount = player.GetMeeplesCount(),
                 };
 
                 scores.Add(score);
@@ -276,7 +276,7 @@ namespace Carcassone.Core
 
 
             // PutMeepleOnTile
-            if ((gameMove.PlayerName != null) && (gameMove.PartName != null))
+            if ((!string.IsNullOrEmpty(gameMove.PlayerName)) && (!string.IsNullOrEmpty(gameMove.PartName)))
             {
                 var player = _playersPool.GetPlayer(gameMove.PlayerName);
                 if (player == null) throw new NullReferenceException("Player not found: " + gameMove.PlayerName);

@@ -18,18 +18,16 @@ namespace Carcassone.Core.Players
 
     public class PlayerInfo
     {
-        public PlayerInfo(string name, PlayerType playerType, PlayerColor color, int meeplesCount)
+        public PlayerInfo(string name, PlayerType playerType, PlayerColor color)
         {
             Name = name;
             PlayerType = playerType;
             Color = color;
-            MeeplesCount = meeplesCount;
         }
 
         public string Name { get; }
         public PlayerType PlayerType { get;  }
         public PlayerColor Color { get; }
-        public int MeeplesCount { get; set; }
     }
 
     /// <summary>
@@ -37,13 +35,15 @@ namespace Carcassone.Core.Players
     /// </summary>
     public class GamePlayer
     {
+        private int _meeplesMaxCount = 7; 
+
         private List<Meeple> MeepleList { get; set; } = new List<Meeple>();
 
         public GamePlayer(PlayerInfo info)
         {
             Info = info;
 
-            for (var i = 0; i < info.MeeplesCount; i++)
+            for (var i = 0; i < _meeplesMaxCount; i++)
             {
                 var meeple = new Meeple(this);
                 MeepleList.Add(meeple);
@@ -54,6 +54,8 @@ namespace Carcassone.Core.Players
 
         public bool IsAIProcessing {  get; set; }
 
+        public int GetMeeplesCount() => MeepleList.Count;
+
         public Meeple? TakeMeeple()
         {
             if (MeepleList.Count == 0)
@@ -61,7 +63,6 @@ namespace Carcassone.Core.Players
 
             var meeple = MeepleList[0];
             MeepleList.Remove(meeple);
-            Info.MeeplesCount = Info.MeeplesCount - 1;
             return meeple;
         }
 
@@ -73,7 +74,6 @@ namespace Carcassone.Core.Players
             var meeple = part.Meeple;
             meeple.Owner = this;
             MeepleList.Add(meeple);
-            Info.MeeplesCount = Info.MeeplesCount + 1;
 
             part.Meeple = null;
             part.Flag = new Flag(this);

@@ -42,6 +42,17 @@ namespace Assets.Scripts
                 .Where(m => m.Location == cell)
                 .Where(m => m.TileRotation == rotation);
         }
+
+        public IEnumerable<Point> GetLocations()
+        {
+            return _moves.Select(m => m.Location).Distinct();
+        }
+    }
+
+    enum GameState
+    {
+        ChoosingLocation,
+        ChoosingMeeple,
     }
 
     /// <summary>
@@ -66,6 +77,8 @@ namespace Assets.Scripts
         private int _selectedRotation;
         private Point _selectedCell;
         private string _selectedPart;
+
+        private bool _moveInitiated;
 
 
         /// <summary>
@@ -110,7 +123,7 @@ namespace Assets.Scripts
             switch (currentPlayer.Info.PlayerType)
             {
                 case PlayerType.Human:
-                    InitiateSelectCellStage();
+                    if (!_moveInitiated) InitiateSelectCellStage();
                     if (Input.GetMouseButtonUp(0)) TryToSelectCell();
                     break;
                 case PlayerType.AI_Easy:
@@ -143,6 +156,8 @@ namespace Assets.Scripts
             _cameraBehaviour.MoveCameraAtCard(position);
 
             Logger.Info("Время отрисовки хода: " + (DateTime.Now - time).TotalSeconds);
+
+            _moveInitiated = false;
         }
 
         /// <summary>
@@ -250,8 +265,9 @@ namespace Assets.Scripts
         {
             var tile = _room.GetCurrentTile();
             _tilesController.SetCurrentTileIcon(tile, _selectedRotation);
-            _fieldsController.ShowLocations(_room.GetCellsStatus());
             _availableMoves = new AvailableMoves(_room.GetAvailableMoves());
+            _fieldsController.ShowLocations(_room.GetCellsStatus(), _availableMoves);
+            _moveInitiated = true;
         }
 
         private void TryToSelectCell()
@@ -276,9 +292,8 @@ namespace Assets.Scripts
                 return;
             }
 
-            
-            var defaultRotation = _availableMoves.GetAvailableRotations(_selectedCell).First();
-            var moves = _availableMoves.GetMoves(_selectedCell, defaultRotation);
+            _selectedRotation = _availableMoves.GetAvailableRotations(_selectedCell).First();
+            var moves = _availableMoves.GetMoves(_selectedCell, _selectedRotation);
             InitiateSelectPartStage(moves);
         }
 
@@ -289,7 +304,7 @@ namespace Assets.Scripts
             _tilesController.PlaceTile(move, tile);
 
             var currentPlayer = _room.GetCurrentPlayer();
-            if (currentPlayer.Info.MeeplesCount == 0)
+            if (currentPlayer.GetMeeplesCount() == 0)
             {
                 Logger.Info("Player has no chip!");
                 OnEndTurnButonClick();
