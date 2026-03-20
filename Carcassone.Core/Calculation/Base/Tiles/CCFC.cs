@@ -22,13 +22,13 @@ namespace Carcassone.Core.Calculation.Base.Tiles
         public CCFC(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
             var CityPart = new CityPart(CityPartName, this);
-            CityPart.Sides.Add(Side.top);
-            CityPart.Sides.Add(Side.right);
-            CityPart.Sides.Add(Side.left);
+            CityPart.AddSide(Side.top);
+            CityPart.AddSide(Side.right);
+            CityPart.AddSide(Side.left);
             Parts.Add(CityPart);
 
             var FarmPart = new FarmPart(FarmPartName, this);
-            FarmPart.Sides.Add(Side.bottom);
+            FarmPart.AddSide(Side.bottom);
             Parts.Add(FarmPart);
 
             FarmPart.ConnectedCityParts.Add(CityPart);

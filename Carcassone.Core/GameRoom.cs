@@ -268,30 +268,27 @@ namespace Carcassone.Core
         public void MakeMove(GameMove gameMove)
         {
             if (gameMove == null) throw new ArgumentNullException("Move obj can not be null");
-            
-            var location = gameMove.Location;
 
             var tile = _tileStack.GetTile(gameMove.TileId);
             if (tile == null) throw new Exception("Card can't be null");
 
+            var player = _playersPool.GetPlayer(gameMove.PlayerName);
+            if (player == null) throw new NullReferenceException("Player not found: " + gameMove.PlayerName);
+
 
             // PutMeepleOnTile
-            if ((!string.IsNullOrEmpty(gameMove.PlayerName)) && (!string.IsNullOrEmpty(gameMove.PartName)))
+            if (!string.IsNullOrEmpty(gameMove.PartName))
             {
-                var player = _playersPool.GetPlayer(gameMove.PlayerName);
-                if (player == null) throw new NullReferenceException("Player not found: " + gameMove.PlayerName);
-
                 var part = tile.GetPart(gameMove.PartName);
                 part.Meeple = player.TakeMeeple();
             }
 
-
             tile.RotateTileTo(gameMove.TileRotation);
 
-            if (!CanPutTileInCell(location, tile))
+            if (!CanPutTileInCell(gameMove.Location, tile))
                 throw new Exception("Card can't be put");
 
-            AddTile(location, tile);
+            AddTile(gameMove.Location, tile);
 
             _moves.Add(gameMove);
             _tileStack.DiscardTile(tile);

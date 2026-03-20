@@ -21,20 +21,20 @@ namespace Carcassone.Core.Calculation.Base.Tiles
         public RFRF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
             var roadPart1 = new RoadPart(roadPartName, this);
-            roadPart1.Sides.Add(Side.top);
-            roadPart1.Sides.Add(Side.bottom);
+            roadPart1.AddSide(Side.top);
+            roadPart1.AddSide(Side.bottom);
             Parts.Add(roadPart1);
 
             var FarmPart1 = new FarmPart(FarmPartName, this);
-            FarmPart1.Sides.Add(Side.side_0);
-            FarmPart1.Sides.Add(Side.right);
-            FarmPart1.Sides.Add(Side.side_3);
+            FarmPart1.AddSide(Side.side_0);
+            FarmPart1.AddSide(Side.right);
+            FarmPart1.AddSide(Side.side_3);
             Parts.Add(FarmPart1);
 
             var FarmPart2 = new FarmPart(FarmPart1Name, this);
-            FarmPart2.Sides.Add(Side.side_4);
-            FarmPart2.Sides.Add(Side.left);
-            FarmPart2.Sides.Add(Side.side_7);
+            FarmPart2.AddSide(Side.side_4);
+            FarmPart2.AddSide(Side.left);
+            FarmPart2.AddSide(Side.side_7);
             Parts.Add(FarmPart2);
         }
     }

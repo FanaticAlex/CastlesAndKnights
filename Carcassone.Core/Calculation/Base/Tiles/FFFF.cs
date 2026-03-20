@@ -22,10 +22,10 @@ namespace Carcassone.Core.Calculation.Base.Tiles
             Parts.Add(monasteryPart);
 
             var FarmPart1 = new FarmPart(FarmPartName, this);
-            FarmPart1.Sides.Add(Side.top);
-            FarmPart1.Sides.Add(Side.right);
-            FarmPart1.Sides.Add(Side.bottom);
-            FarmPart1.Sides.Add(Side.left);
+            FarmPart1.AddSide(Side.top);
+            FarmPart1.AddSide(Side.right);
+            FarmPart1.AddSide(Side.bottom);
+            FarmPart1.AddSide(Side.left);
             Parts.Add(FarmPart1);
         }
     }

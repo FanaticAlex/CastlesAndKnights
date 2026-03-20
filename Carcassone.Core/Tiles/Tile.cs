@@ -25,14 +25,14 @@ namespace Carcassone.Core.Tiles
         /// </summary>
         public int StackPriority { get; set; }
 
-        public char TopEdgeType => TileType[((0 + RotationsCount) % 4)];
-        public char RightEdgeType => TileType[((1 + RotationsCount) % 4)];
-        public char BottomEdgeType => TileType[((2 + RotationsCount) % 4)];
-        public char LeftEdgeType => TileType[((3 + RotationsCount) % 4)];
+        public char TopEdgeType => GetEdge(Side.top, RotationsCount);
+        public char RightEdgeType => GetEdge(Side.right, RotationsCount);
+        public char BottomEdgeType => GetEdge(Side.bottom, RotationsCount);
+        public char LeftEdgeType => GetEdge(Side.left, RotationsCount);
 
         public Point Location { get; set; }
 
-        public int RotationsCount { get; set; }
+        public int RotationsCount { get; set; } // {0,1,2,3}
 
         public Tile(string _tileType, int _tileNumber)
         {
@@ -70,33 +70,38 @@ namespace Carcassone.Core.Tiles
         {
             RotationsCount += 1;
             RotationsCount %= 4;
-
-            // rotate parts of object on a tile as well
-            foreach(var part in Parts)
-            {
-                for (int i = 0; i < part.Sides.Count; i++)
-                    part.Sides[i] = GetRotatedSide(part.Sides[i], 1);
-            }
         }
 
-        private static Side GetRotatedSide(Side side, int rotationCount)
+        private char GetEdge(Side side, int rotationCoun)
+        {
+            var rotatedSide = side;
+            for (int i = 0; i < rotationCoun; i++)
+            {
+                rotatedSide = RotateOnce(rotatedSide);
+            }
+                
+            switch (rotatedSide)
+            {
+                case Side.top: return TileType[0];
+                case Side.right: return TileType[1];
+                case Side.bottom: return TileType[2];
+                case Side.left: return TileType[3];
+            }
+            
+            throw new ArgumentException();
+        }
+
+        private Side RotateOnce(Side side)
         {
             switch (side)
             {
-                case Side.top: return Side.right;
-                case Side.right: return Side.bottom;
-                case Side.bottom: return Side.left;
-                case Side.left: return Side.top;
-                case Side.side_0: return Side.side_2;
-                case Side.side_1: return Side.side_3;
-                case Side.side_2: return Side.side_4;
-                case Side.side_3: return Side.side_5;
-                case Side.side_4: return Side.side_6;
-                case Side.side_5: return Side.side_7;
-                case Side.side_6: return Side.side_0;
-                case Side.side_7: return Side.side_1;
-                default: throw new NotImplementedException();
+                case Side.top: return Side.left;
+                case Side.right: return Side.top;
+                case Side.bottom: return Side.right;
+                case Side.left: return Side.bottom;
             }
+
+            throw new ArgumentException();
         }
     }
 }

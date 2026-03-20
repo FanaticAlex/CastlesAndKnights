@@ -26,39 +26,39 @@ namespace Carcassone.Core.Calculation.Base.Tiles
         public RRRR(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
             var roadPart1 = new RoadPart(roadPartName, this);
-            roadPart1.Sides.Add(Side.top);
+            roadPart1.AddSide(Side.top);
             Parts.Add(roadPart1);
 
             var roadPart2 = new RoadPart(roadPart1Name, this);
-            roadPart2.Sides.Add(Side.right);
+            roadPart2.AddSide(Side.right);
             Parts.Add(roadPart2);
 
             var roadPart3 = new RoadPart(roadPart2Name, this);
-            roadPart3.Sides.Add(Side.bottom);
+            roadPart3.AddSide(Side.bottom);
             Parts.Add(roadPart3);
 
             var roadPart4 = new RoadPart(roadPart3Name, this);
-            roadPart4.Sides.Add(Side.left);
+            roadPart4.AddSide(Side.left);
             Parts.Add(roadPart4);
 
             var FarmPart1 = new FarmPart(FarmPartName, this);
-            FarmPart1.Sides.Add(Side.side_0);
-            FarmPart1.Sides.Add(Side.side_1);
+            FarmPart1.AddSide(Side.side_0);
+            FarmPart1.AddSide(Side.side_1);
             Parts.Add(FarmPart1);
 
             var FarmPart2 = new FarmPart(FarmPart1Name, this);
-            FarmPart2.Sides.Add(Side.side_2);
-            FarmPart2.Sides.Add(Side.side_3);
+            FarmPart2.AddSide(Side.side_2);
+            FarmPart2.AddSide(Side.side_3);
             Parts.Add(FarmPart2);
 
             var FarmPart3 = new FarmPart(FarmPart2Name, this);
-            FarmPart3.Sides.Add(Side.side_4);
-            FarmPart3.Sides.Add(Side.side_5);
+            FarmPart3.AddSide(Side.side_4);
+            FarmPart3.AddSide(Side.side_5);
             Parts.Add(FarmPart3);
 
             var FarmPart4 = new FarmPart(FarmPart3Name, this);
-            FarmPart4.Sides.Add(Side.side_6);
-            FarmPart4.Sides.Add(Side.side_7);
+            FarmPart4.AddSide(Side.side_6);
+            FarmPart4.AddSide(Side.side_7);
             Parts.Add(FarmPart4);
         }
     }

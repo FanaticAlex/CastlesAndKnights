@@ -22,14 +22,6 @@ namespace Carcassone.Core.Tiles
             return _remain;
         }
 
-        public List<Tile> GetAllTiles()
-        {
-            var all = new List<Tile>();
-            all.AddRange(GetRemainTiles());
-            all.AddRange(_discardedTiles);
-            return all;
-        }
-
         public Tile GetTile(string tileId)
         {
             var tile = GetAllTiles().FirstOrDefault(t => t.Id == tileId);
@@ -37,11 +29,6 @@ namespace Carcassone.Core.Tiles
                 throw new Exception($"Tile {tileId} not found");
 
             return tile;
-        }
-
-        public bool IsEmpty()
-        {
-            return _remain.Count == 0;
         }
 
         public Tile? GetTopTile()
@@ -89,6 +76,14 @@ namespace Carcassone.Core.Tiles
             }
 
             _remain.AddRange(tiles);
+        }
+
+        private List<Tile> GetAllTiles()
+        {
+            var all = new List<Tile>();
+            all.AddRange(GetRemainTiles());
+            all.AddRange(_discardedTiles);
+            return all;
         }
     }
 }

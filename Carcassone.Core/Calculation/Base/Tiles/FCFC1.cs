@@ -22,16 +22,16 @@ namespace Carcassone.Core.Calculation.Base.Tiles
         public FCFC1(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
             var CityPart = new CityPart(CityPartName, this);
-            CityPart.Sides.Add(Side.right);
-            CityPart.Sides.Add(Side.left);
+            CityPart.AddSide(Side.right);
+            CityPart.AddSide(Side.left);
             Parts.Add(CityPart);
 
             var FarmPart1 = new FarmPart(FarmPartName, this);
-            FarmPart1.Sides.Add(Side.top);
+            FarmPart1.AddSide(Side.top);
             Parts.Add(FarmPart1);
 
             var FarmPart2 = new FarmPart(FarmPart1Name, this);
-            FarmPart2.Sides.Add(Side.bottom);
+            FarmPart2.AddSide(Side.bottom);
             Parts.Add(FarmPart2);
 
             FarmPart1.ConnectedCityParts.Add(CityPart);

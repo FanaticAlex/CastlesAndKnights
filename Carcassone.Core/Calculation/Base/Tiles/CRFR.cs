@@ -24,23 +24,23 @@ namespace Carcassone.Core.Calculation.Base.Tiles
         public CRFR(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
             var CityPart = new CityPart(CityPartName, this);
-            CityPart.Sides.Add(Side.top);
+            CityPart.AddSide(Side.top);
             Parts.Add(CityPart);
 
             var roadPart = new RoadPart(roadPartName, this);
-            roadPart.Sides.Add(Side.left);
-            roadPart.Sides.Add(Side.right);
+            roadPart.AddSide(Side.left);
+            roadPart.AddSide(Side.right);
             Parts.Add(roadPart);
 
             var FarmPart1 = new FarmPart(FarmPartName, this);
-            FarmPart1.Sides.Add(Side.side_1);
-            FarmPart1.Sides.Add(Side.side_6);
+            FarmPart1.AddSide(Side.side_1);
+            FarmPart1.AddSide(Side.side_6);
             Parts.Add(FarmPart1);
 
             var FarmPart2 = new FarmPart(FarmPart1Name, this);
-            FarmPart2.Sides.Add(Side.side_2);
-            FarmPart2.Sides.Add(Side.bottom);
-            FarmPart2.Sides.Add(Side.side_5);
+            FarmPart2.AddSide(Side.side_2);
+            FarmPart2.AddSide(Side.bottom);
+            FarmPart2.AddSide(Side.side_5);
             Parts.Add(FarmPart2);
 
 

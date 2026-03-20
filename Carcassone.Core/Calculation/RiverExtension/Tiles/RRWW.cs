@@ -23,30 +23,30 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
         public RRWW(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
             var RiverPart0 = new RiverPart(RiverPart0Name, this);
-            RiverPart0.Sides.Add(Side.bottom);
-            RiverPart0.Sides.Add(Side.left);
+            RiverPart0.AddSide(Side.bottom);
+            RiverPart0.AddSide(Side.left);
             Parts.Add(RiverPart0);
 
             var FarmPart0 = new FarmPart(FarmPart0Name, this);
-            FarmPart0.Sides.Add(Side.side_0);
-            FarmPart0.Sides.Add(Side.side_1);
+            FarmPart0.AddSide(Side.side_0);
+            FarmPart0.AddSide(Side.side_1);
             Parts.Add(FarmPart0);
 
             var FarmPart1 = new FarmPart(FarmPart1Name, this);
-            FarmPart1.Sides.Add(Side.side_2);
-            FarmPart1.Sides.Add(Side.side_3);
-            FarmPart1.Sides.Add(Side.side_6);
-            FarmPart1.Sides.Add(Side.side_7);
+            FarmPart1.AddSide(Side.side_2);
+            FarmPart1.AddSide(Side.side_3);
+            FarmPart1.AddSide(Side.side_6);
+            FarmPart1.AddSide(Side.side_7);
             Parts.Add(FarmPart1);
 
             var FarmPart2 = new FarmPart(FarmPart2Name, this);
-            FarmPart2.Sides.Add(Side.side_4);
-            FarmPart2.Sides.Add(Side.side_5);
+            FarmPart2.AddSide(Side.side_4);
+            FarmPart2.AddSide(Side.side_5);
             Parts.Add(FarmPart2);
 
             var roadPart = new RoadPart(roadPartName, this);
-            roadPart.Sides.Add(Side.top);
-            roadPart.Sides.Add(Side.right);
+            roadPart.AddSide(Side.top);
+            roadPart.AddSide(Side.right);
             Parts.Add(roadPart);
         }
     }

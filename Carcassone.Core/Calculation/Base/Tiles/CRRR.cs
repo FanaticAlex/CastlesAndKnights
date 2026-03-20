@@ -27,34 +27,34 @@ namespace Carcassone.Core.Calculation.Base.Tiles
         public CRRR(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
             var CityPart = new CityPart(CityPartName, this);
-            CityPart.Sides.Add(Side.top);
+            CityPart.AddSide(Side.top);
             Parts.Add(CityPart);
 
             var roadPart0 = new RoadPart(roadPart0Name, this);
-            roadPart0.Sides.Add(Side.right);
+            roadPart0.AddSide(Side.right);
             Parts.Add(roadPart0);
 
             var roadPart1 = new RoadPart(roadPart1Name, this);
-            roadPart1.Sides.Add(Side.bottom);
+            roadPart1.AddSide(Side.bottom);
             Parts.Add(roadPart1);
 
             var roadPart2 = new RoadPart(roadPart2Name, this);
-            roadPart2.Sides.Add(Side.left);
+            roadPart2.AddSide(Side.left);
             Parts.Add(roadPart2);
 
             var FarmPart0 = new FarmPart(FarmPart0Name, this);
-            FarmPart0.Sides.Add(Side.side_1);
-            FarmPart0.Sides.Add(Side.side_6);
+            FarmPart0.AddSide(Side.side_1);
+            FarmPart0.AddSide(Side.side_6);
             Parts.Add(FarmPart0);
 
             var FarmPart1 = new FarmPart(FarmPart1Name, this);
-            FarmPart1.Sides.Add(Side.side_2);
-            FarmPart1.Sides.Add(Side.side_3);
+            FarmPart1.AddSide(Side.side_2);
+            FarmPart1.AddSide(Side.side_3);
             Parts.Add(FarmPart1);
 
             var FarmPart2 = new FarmPart(FarmPart2Name, this);
-            FarmPart2.Sides.Add(Side.side_4);
-            FarmPart2.Sides.Add(Side.side_5);
+            FarmPart2.AddSide(Side.side_4);
+            FarmPart2.AddSide(Side.side_5);
             Parts.Add(FarmPart2);
 
 

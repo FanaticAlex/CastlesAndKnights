@@ -25,26 +25,26 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
         public CWCW(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
             var RiverPart0 = new RiverPart(RiverPart0Name, this);
-            RiverPart0.Sides.Add(Side.right);
-            RiverPart0.Sides.Add(Side.left);
+            RiverPart0.AddSide(Side.right);
+            RiverPart0.AddSide(Side.left);
             Parts.Add(RiverPart0);
 
             var CityPart0 = new CityPart(CityPart0Name, this);
-            CityPart0.Sides.Add(Side.top);
+            CityPart0.AddSide(Side.top);
             Parts.Add(CityPart0);
 
             var CityPart1 = new CityPart(CityPart1Name, this);
-            CityPart1.Sides.Add(Side.bottom);
+            CityPart1.AddSide(Side.bottom);
             Parts.Add(CityPart1);
 
             var FarmPart0 = new FarmPart(FarmPart0Name, this);
-            FarmPart0.Sides.Add(Side.side_1);
-            FarmPart0.Sides.Add(Side.side_6);
+            FarmPart0.AddSide(Side.side_1);
+            FarmPart0.AddSide(Side.side_6);
             Parts.Add(FarmPart0);
 
             var FarmPart1 = new FarmPart(FarmPart1Name, this);
-            FarmPart1.Sides.Add(Side.side_2);
-            FarmPart1.Sides.Add(Side.side_5);
+            FarmPart1.AddSide(Side.side_2);
+            FarmPart1.AddSide(Side.side_5);
             Parts.Add(FarmPart1);
 
 

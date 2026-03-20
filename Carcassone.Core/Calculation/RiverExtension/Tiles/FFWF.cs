@@ -20,15 +20,15 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
         public FFWF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
             var RiverPart0 = new RiverPart(RiverPart0Name, this);
-            RiverPart0.Sides.Add(Side.bottom);
+            RiverPart0.AddSide(Side.bottom);
             Parts.Add(RiverPart0);
 
             var FarmPart = new FarmPart(FarmPartName, this);
-            FarmPart.Sides.Add(Side.left);
-            FarmPart.Sides.Add(Side.top);
-            FarmPart.Sides.Add(Side.right);
-            FarmPart.Sides.Add(Side.side_3);
-            FarmPart.Sides.Add(Side.side_4);
+            FarmPart.AddSide(Side.left);
+            FarmPart.AddSide(Side.top);
+            FarmPart.AddSide(Side.right);
+            FarmPart.AddSide(Side.side_3);
+            FarmPart.AddSide(Side.side_4);
             Parts.Add(FarmPart);
         }
     }

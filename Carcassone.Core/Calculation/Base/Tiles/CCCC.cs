@@ -18,10 +18,10 @@ namespace Carcassone.Core.Calculation.Base.Tiles
         public CCCC(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
             var CityPart = new CityPart(cityPartName, this);
-            CityPart.Sides.Add(Side.top);
-            CityPart.Sides.Add(Side.right);
-            CityPart.Sides.Add(Side.bottom);
-            CityPart.Sides.Add(Side.left);
+            CityPart.AddSide(Side.top);
+            CityPart.AddSide(Side.right);
+            CityPart.AddSide(Side.bottom);
+            CityPart.AddSide(Side.left);
             Parts.Add(CityPart);
         }
     }
