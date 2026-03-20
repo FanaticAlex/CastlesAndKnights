@@ -306,11 +306,6 @@ namespace Carcassone.Core
                 _playersPool.MoveToNextPlayer();
         }
 
-        public List<Tile> GetActiveTiles()
-        {
-            return _gameGrid._tilesInGame;
-        }
-
         public Tile? GetCurrentTile()
         {
             while (_tileStack.GetTopTile() != null)
@@ -329,27 +324,18 @@ namespace Carcassone.Core
         {
             if (tile == null) return false;
 
-            // чтобы не поворачивать оригинальную карту поворачиваем копию
-            var type = tile.GetType();
-            var copy = (Tile)Activator.CreateInstance(type, tile.TileType, tile.TileNumber);
-            copy.TopEdgeType = tile.TopEdgeType;
-            copy.LeftEdgeType = tile.LeftEdgeType;
-            copy.BottomEdgeType = tile.BottomEdgeType;
-            copy.RightEdgeType = tile.RightEdgeType;
+            var originalRotation = tile.RotationsCount;
 
-            return RotateTileTilFit(location, copy);
-        }
-
-        private bool RotateTileTilFit(Point location, Tile tile)
-        {
+            var isFit = false;
             for (int i = 0; i < 4; i++) // можно сделать до 4х поворотов 4й - исходное положение (в конце)
             {
                 tile.RotateTile();
                 if (CanPutTileInCell(location, tile))
-                    return true;
+                    isFit = true;
             }
 
-            return false;
+            tile.RotateTileTo(originalRotation);
+            return isFit;
         }
 
         private bool CanPutTileInCell(Point location, Tile tile)

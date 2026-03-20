@@ -14,24 +14,23 @@ namespace Carcassone.Core.Calculation
         public Meeple? Meeple { get; set; }
         public Flag? Flag { get; set; }
 
-        public string PartId => TileId + PartName;
-        public string TileId {  get; set; }
+        public string PartId => Tile.Id + PartName;
+        public Tile Tile {  get; set; }
         public string PartName { get; set; }
         public string PartType { get; set; }
-        public Point Location { get; set; }
 
         public List<Side> Sides { get; set; } = new List<Side>();
 
         public ObjectPart(string partName, Tile tile)
         {
-            TileId = tile.Id;
+            Tile = tile;
             PartName = partName;
             PartType = string.Empty;
         }
 
         public List<TileBorder> GetBorders()
         {
-            return Sides.Select(s => new TileBorder(Location, s)).ToList();
+            return Sides.Select(s => new TileBorder(Tile.Location, s)).ToList();
         }
     }
 }

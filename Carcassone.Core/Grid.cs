@@ -11,17 +11,17 @@ namespace Carcassone.Core
     /// </summary>
     public class Grid
     {
-        public List<Tile> _tilesInGame;
+        public Dictionary<Point, Tile> _tilesInGame; // optimization for search
 
         public Grid()
         {
-            _tilesInGame = new List<Tile>();
+            _tilesInGame = new Dictionary<Point, Tile>();
         }
 
         public void PutTile(Point location, Tile tile)
         {
             tile.Location = location;
-            _tilesInGame.Add(tile);
+            _tilesInGame.Add(location, tile);
         }
 
         public Tile? GetNeighbour(Point location, Side side)
@@ -38,26 +38,26 @@ namespace Carcassone.Core
 
         public IEnumerable<Point> GetEmptyCells()
         {
-            var allPoints = new List<Point>
-            {
-                new Point(0, 0) // add initial location
-            };
+            var tilePoints = _tilesInGame.Keys;
 
-            var tilePoints = _tilesInGame.Select(t => t.Location);
-            foreach (var tile in _tilesInGame)
+            var allPoints = new List<Point> { new Point(0, 0) }; // add initial location 
+            foreach (var location in tilePoints)
             {
-                allPoints.Add(tile.Location + new Size(0, 1));
-                allPoints.Add(tile.Location + new Size(0, -1));
-                allPoints.Add(tile.Location + new Size(1, 0));
-                allPoints.Add(tile.Location + new Size(-1, 0));
+                allPoints.Add(location + new Size(0, 1));
+                allPoints.Add(location + new Size(0, -1));
+                allPoints.Add(location + new Size(1, 0));
+                allPoints.Add(location + new Size(-1, 0));
             }
 
             return allPoints.Except(tilePoints).Distinct();
         }
 
-        public Tile GetTile(Point location)
+        public Tile? GetTile(Point location)
         {
-            return _tilesInGame.FirstOrDefault(t => t.Location == location);
+            if (_tilesInGame.ContainsKey(location))
+                return _tilesInGame[location];
+
+            return null;
         }
     }
 }

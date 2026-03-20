@@ -25,34 +25,20 @@ namespace Carcassone.Core.Tiles
         /// </summary>
         public int StackPriority { get; set; }
 
-        public char TopEdgeType { get; set; }
-        public char RightEdgeType { get; set; }
-        public char BottomEdgeType { get; set; }
-        public char LeftEdgeType { get; set; }
+        public char TopEdgeType => TileType[((0 + RotationsCount) % 4)];
+        public char RightEdgeType => TileType[((1 + RotationsCount) % 4)];
+        public char BottomEdgeType => TileType[((2 + RotationsCount) % 4)];
+        public char LeftEdgeType => TileType[((3 + RotationsCount) % 4)];
 
+        public Point Location { get; set; }
 
         public int RotationsCount { get; set; }
 
-        public Point _location;
-        public Point Location
+        public Tile(string _tileType, int _tileNumber)
         {
-            get { return _location; }
-            set
-            {
-                _location = value;
-                Parts.ForEach(p => p.Location = _location);
-            }
-        }
-
-        public Tile(string cardType, int cardNumber)
-        {
-            Id = GetTileId(cardType, cardNumber);
-            TileType = cardType;
-            TileNumber = cardNumber;
-            TopEdgeType = cardType[0];
-            RightEdgeType = cardType[1];
-            BottomEdgeType = cardType[2];
-            LeftEdgeType = cardType[3];
+            Id = GetTileId(_tileType, _tileNumber);
+            TileType = _tileType;
+            TileNumber = _tileNumber;
         }
 
         public static string GetTileId(string cardType, int cardNumber) => $"{cardType}({cardNumber})";
@@ -82,16 +68,6 @@ namespace Carcassone.Core.Tiles
         /// </summary>
         public void RotateTile()
         {
-            var tempTop = TopEdgeType;
-            var tempLeft = LeftEdgeType;
-            var tempBottom = BottomEdgeType;
-            var tempRight = RightEdgeType;
-
-            TopEdgeType = tempLeft;
-            LeftEdgeType = tempBottom;
-            BottomEdgeType = tempRight;
-            RightEdgeType = tempTop;
-
             RotationsCount += 1;
             RotationsCount %= 4;
 

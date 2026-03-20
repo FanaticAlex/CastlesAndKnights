@@ -170,10 +170,10 @@ namespace Assets.Scripts
                 foreach (var part in obj.Parts)
                 {
                     if (part.Meeple != null)
-                        _tilesController.TilesUI[part.TileId].SetMeeple(part.PartName, part.Meeple.Owner.Info.Color);
+                        _tilesController.TilesUI[part.Tile.Id].SetMeeple(part.PartName, part.Meeple.Owner.Info.Color);
 
                     if (part.Flag != null)
-                        _tilesController.TilesUI[part.TileId].SetFlag(part.PartName, part.Flag.Owner.Info.Color);
+                        _tilesController.TilesUI[part.Tile.Id].SetFlag(part.PartName, part.Flag.Owner.Info.Color);
                 }
             }
         }

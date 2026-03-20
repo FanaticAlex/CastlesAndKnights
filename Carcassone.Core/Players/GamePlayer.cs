@@ -110,8 +110,7 @@ namespace Carcassone.Core.Players
 
             // ходы возвращающие фишки
             var maxReturnMeeples = dic.Max(item => (item.Value.MeeplesCount - MeepleList.Count));
-            var returnMeeplesMoves = dic
-                .Where(item => (item.Value.MeeplesCount - MeepleList.Count) == maxReturnMeeples);
+            var returnMeeplesMoves = dic.Where(item => (item.Value.MeeplesCount - MeepleList.Count) == maxReturnMeeples);
             if (maxReturnMeeples > 0 && returnMeeplesMoves.Count() > 0)
             {
                 return returnMeeplesMoves.FirstOrDefault().Key;
