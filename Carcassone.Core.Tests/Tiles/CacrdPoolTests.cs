@@ -5,13 +5,13 @@ using Xunit;
 
 namespace Carcassone.Core.Tests.Cards
 {
-    public class CardPoolTests
+    public class TileStackTests
     {
         [Fact]
         public void GetCardTest()
         {
             var stack = new TileStack();
-            var baseExt = new BaseRules(null);
+            var baseExt = new BaseRules();
             baseExt.AddTiles(stack);
 
             var cccc = stack.GetTile("CCCC(0)");

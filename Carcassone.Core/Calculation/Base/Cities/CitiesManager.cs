@@ -3,32 +3,29 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace Carcassone.Core.Calculation.Base.Cities
+namespace Carcassone.Core.Calculation.Base.Farms
 {
     public class CitiesManager : IGameObjectsManager
     {
         private ObjectsMerger<City> _merger = new ObjectsMerger<City>();
 
-        public List<City> Cities { get; set; } = new List<City>();
-
-        public void ProcessPart(ObjectPart part, Tile tile)
+        public IEnumerable<BaseGameObject> CalculateObjects(Tile tile, GameState state)
         {
-            if (!(part is CityPart)) return;
+            var cities = state.GetLastState().Calculated.OfType<City>();
+            var copies = cities.Select(o => o.Copy()).ToList();
 
-            _merger.ProcessPart(Cities, part);
+            foreach (var part in tile.Parts)
+            {
+                if (part is CityPart)
+                    _merger.ConnectPartWithObjects(copies, part, state);
+            }
 
-            foreach (City city in Cities)
-                city.TryCompleteAndReturnMeeples();
+            return copies;
         }
 
-        public List<City> GetCompleteCities()
+        public IEnumerable<BaseGameObject> GetGameObjects(GameState state)
         {
-            return Cities.Where(c => c.IsComplete()).ToList();
-        }
-
-        public IEnumerable<BaseGameObject> GetGameObjects()
-        {
-            return Cities;
+            return state.GetLastState().Calculated.OfType<City>();
         }
     }
 }

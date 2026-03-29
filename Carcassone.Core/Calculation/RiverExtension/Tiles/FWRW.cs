@@ -1,7 +1,6 @@
 ﻿using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Calculation.Base.Monasteries;
 using Carcassone.Core.Calculation.Base.Roads;
-using Carcassone.Core.Calculation.RiverExtension.Rivers;
 using Carcassone.Core.Tiles;
 
 namespace Carcassone.Core.Calculation.RiverExtension.Tiles
@@ -16,7 +15,6 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
     /// </summary>
     public class FWRW : Tile
     {
-        protected string RiverPart0Name = "River_0";
         protected string monasteryPartName = "Monastery_0";
         protected string FarmPart0Name = "Farm_0";
         protected string FarmPart1Name = "Farm_1";
@@ -25,11 +23,6 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 
         public FWRW(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var RiverPart0 = new RiverPart(RiverPart0Name, this);
-            RiverPart0.AddSide(Side.right);
-            RiverPart0.AddSide(Side.left);
-            Parts.Add(RiverPart0);
-
             var monasteryPart = new MonasteryPart(monasteryPartName, this);
             Parts.Add(monasteryPart);
 

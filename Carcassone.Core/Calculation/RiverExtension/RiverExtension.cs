@@ -1,5 +1,4 @@
-﻿using Carcassone.Core.Calculation.RiverExtension.Rivers;
-using Carcassone.Core.Calculation.RiverExtension.Tiles;
+﻿using Carcassone.Core.Calculation.RiverExtension.Tiles;
 using Carcassone.Core.Tiles;
 using System.Collections.Generic;
 using System.Drawing;
@@ -23,24 +22,23 @@ namespace Carcassone.Core.Calculation.RiverExtension
 
         public RiverExtension()
         {
-            Managers.Add(new RiversManager());
         }
 
-        public bool CanPutTileInCell(Point location, Tile tile, Grid grid)
+        public bool CanPutTileInCell(Point location, int rotation, Tile tile, GameState state)
         {
             // направление реки всегда должно быть вниз и влево
             var isRiverCard = tile.Id.Contains("W");
             if (isRiverCard)
             {
-                Tile? neighbourTopCard = grid.GetNeighbour(location, Side.top);
-                Tile? neighbourRightCard = grid.GetNeighbour(location, Side.right);
+                var neighbourTopCard = state.GetNeighbour(location, Side.top);
+                var neighbourRightCard = state.GetNeighbour(location, Side.right);
 
                 bool isTopFree = (neighbourTopCard == null);
                 bool isRightFree = (neighbourRightCard == null);
 
                 // проверям направление реки
-                bool isWaterDirectionTop = (isTopFree && tile.TopEdgeType == 'W');
-                bool isWaterDirectionRight = (isRightFree && tile.RightEdgeType == 'W');
+                bool isWaterDirectionTop = (isTopFree && Tile.GetEdge(tile.TileType, Side.top, rotation) == 'W');
+                bool isWaterDirectionRight = (isRightFree && Tile.GetEdge(tile.TileType, Side.right, rotation) == 'W');
 
                 // водную карту можно положить в поле, если в соседних с полем областях либо нет карт
                 // либо водные границы соседних карт совпадают

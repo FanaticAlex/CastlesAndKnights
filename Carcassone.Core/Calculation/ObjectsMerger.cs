@@ -9,19 +9,23 @@ namespace Carcassone.Core.Calculation
 {
     public abstract class MergableObject : BaseGameObject
     {
-        public List<TileBorder> OpenBorders { get; } = new List<TileBorder>();
+        public List<TileBorder> GetOpenBorders(GameState state)
+        {
+            var openBorders = new List<TileBorder>();
+            foreach (var part in Parts)
+            {
+                var newBorders = part.GetBorders(state);
+                var union1 = openBorders.Except(newBorders, new BorderComparer());
+                var union2 = newBorders.Except(openBorders, new BorderComparer());
+                openBorders = union1.Union(union2).ToList();
+            }
+
+            return openBorders;
+        }
 
         public void AddPart(ObjectPart part)
         {
             Parts.Add(part);
-
-            var newBorders = part.GetBorders();
-            var union1 = OpenBorders.Except(newBorders, new BorderComparer());
-            var union2 = newBorders.Except(OpenBorders, new BorderComparer());
-            var uniqueToEither = union1.Union(union2).ToList();
-
-            OpenBorders.Clear();
-            OpenBorders.AddRange(uniqueToEither);
         }
     }
 
@@ -31,29 +35,29 @@ namespace Carcassone.Core.Calculation
     /// <typeparam name="T"></typeparam>
     public class ObjectsMerger<T> where T : MergableObject
     {
-        public void ProcessPart(List<T> Objects, ObjectPart part)
+        public void ConnectPartWithObjects(List<T> objects, ObjectPart part, GameState state)
         {
-            var objectsToMerge = GetObjectsToConnectWithPart(part, Objects);
+            var objectsToMerge = GetObjectsToConnectWithPart(part, objects, state);
             var merged = Merge(part, objectsToMerge);
-            objectsToMerge.ForEach(c => Objects.Remove(c));
-            Objects.Add(merged);
+            objectsToMerge.ForEach(c => objects.Remove(c));
+            objects.Add(merged);
         }
 
-        protected List<T> GetObjectsToConnectWithPart(ObjectPart part, List<T> objects)
+        protected List<T> GetObjectsToConnectWithPart(ObjectPart part, List<T> objects, GameState state)
         {
             var objectsToMerge = new List<T>();
             foreach (var gameObject in objects)
             {
-                if (CanConnect(gameObject, part))
+                if (CanConnect(gameObject, part, state))
                     objectsToMerge.Add(gameObject);
             }
 
             return objectsToMerge;
         }
 
-        public bool CanConnect(T obj, ObjectPart part)
+        public bool CanConnect(T obj, ObjectPart part, GameState state)
         {
-            var commonBoders = obj.OpenBorders.Intersect(part.GetBorders(), new BorderComparer());
+            var commonBoders = obj.GetOpenBorders(state).Intersect(part.GetBorders(state), new BorderComparer());
             return commonBoders.Any();
         }
 

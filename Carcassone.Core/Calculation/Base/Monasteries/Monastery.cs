@@ -1,61 +1,56 @@
-﻿using System;
+﻿using Carcassone.Core.Tiles;
+using System;
 using System.Collections.Generic;
-using Carcassone.Core.Tiles;
-using Carcassone.Core.Players;
-using System.Linq;
 using System.Drawing;
+using System.Linq;
 
 namespace Carcassone.Core.Calculation.Base.Monasteries
 {
     public class Monastery : BaseGameObject, ICompletableGameObject
     {
-        private readonly Grid _grid;
         private const int MaxConnectedTiles = 9;
         private Tile _monasteryTile;
 
-        public Monastery(MonasteryPart basePart, Tile tile, Grid grid)
+        public Monastery(MonasteryPart basePart, Tile tile)
         {
             Parts.Add(basePart);
             _monasteryTile = tile;
-            _grid = grid;
         }
 
-        public override int GetScore()
+        public override int GetScore(GameState state)
         {
             // one neighbout tile = one score point
-            return IsComplete() ? MaxConnectedTiles * 2 : GetNeighboutTilesCount();
+            return IsComplete(state) ? MaxConnectedTiles * 2 : GetNeighboutTilesCount(state);
         }
 
-        public bool IsComplete()
+        public bool IsComplete(GameState state)
         {
-            return (GetNeighboutTilesCount() == MaxConnectedTiles);
+            return (GetNeighboutTilesCount(state) == MaxConnectedTiles);
         }
 
-        /// <summary>
-        /// завершить церковь если в ней 9 карт и вернуть фишку
-        /// </summary>
-        public void TryCompleteAndReturnMeeples()
+        private int GetNeighboutTilesCount(GameState state)
         {
-            if (IsComplete())
-                Parts.First().Meeple?.Owner?.ReturnMeepleAndSetFlag(Parts.First());
-        }
-
-        private int GetNeighboutTilesCount()
-        {
-            var tilesCount = 1; // bace monastery tile
+            var tilesCount = 1; // base monastery tile
 
             // are there cards in neighbour cells
-            var location = _monasteryTile.Location;
-            if (_grid.GetTile(location + new Size(1, 0)) != null) tilesCount++;
-            if (_grid.GetTile(location + new Size(-1, 0)) != null) tilesCount++;
-            if (_grid.GetTile(location + new Size(0, 1)) != null) tilesCount++;
-            if (_grid.GetTile(location + new Size(0, -1)) != null) tilesCount++;
-            if (_grid.GetTile(location + new Size(1, 1)) != null) tilesCount++;
-            if (_grid.GetTile(location + new Size(-1, -1)) != null) tilesCount++;
-            if (_grid.GetTile(location + new Size(-1, 1)) != null) tilesCount++;
-            if (_grid.GetTile(location + new Size(1, -1)) != null) tilesCount++;
+            var location = state.GetTileLocation(_monasteryTile.Id);
+            if (state.GetMove(location + new Size(1, 0)) != null) tilesCount++;
+            if (state.GetMove(location + new Size(-1, 0)) != null) tilesCount++;
+            if (state.GetMove(location + new Size(0, 1)) != null) tilesCount++;
+            if (state.GetMove(location + new Size(0, -1)) != null) tilesCount++;
+            if (state.GetMove(location + new Size(1, 1)) != null) tilesCount++;
+            if (state.GetMove(location + new Size(-1, -1)) != null) tilesCount++;
+            if (state.GetMove(location + new Size(-1, 1)) != null) tilesCount++;
+            if (state.GetMove(location + new Size(1, -1)) != null) tilesCount++;
 
             return tilesCount;
+        }
+
+        public Monastery Copy()
+        {
+            var copy = new Monastery((MonasteryPart)Parts.First(), _monasteryTile);
+            copy.Parts.AddRange(Parts);
+            return copy;
         }
     }
 }

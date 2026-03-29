@@ -8,11 +8,20 @@ namespace Carcassone.Core.Tests
     internal class TestHelper
     {
         public static string Bob = "bob";
+        public static string Jack = "jack";
 
         public static string AI_1 = "AI_1";
         public static string AI_2 = "AI_2";
 
         public static GameRoom GetDefaultGame(string player)
+        {
+            var ext = new List<Extension>() { };
+            var players = new List<PlayerInfo>() { new PlayerInfo(player, PlayerType.Human, PlayerColor.Red) };
+            var room = new GameRoom(ext, players);
+            return room;
+        }
+
+        public static GameRoom GetRiverGame(string player)
         {
             var ext = new List<Extension>() { Extension.River };
             var players = new List<PlayerInfo>() { new PlayerInfo(player, PlayerType.Human, PlayerColor.Red) };

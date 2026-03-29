@@ -28,7 +28,7 @@ namespace Carcassone.Web.Blazor.Services
         {
             return _rooms
                 //.Where(room => !room.IsStarted)
-                .Where(room => !room.IsFinished)
+                //.Where(room => !room.IsFinished)
                 .Select(room => room.Id).ToList();
         }
     }

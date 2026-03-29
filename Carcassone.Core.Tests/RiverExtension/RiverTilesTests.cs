@@ -1,4 +1,6 @@
-﻿using Carcassone.Core.Players;
+﻿using Carcassone.Core.Calculation.Base.Tiles;
+using Carcassone.Core.Calculation.RiverExtension.Tiles;
+using Carcassone.Core.Players;
 using Carcassone.Core.Tiles;
 using System;
 using System.Drawing;
@@ -29,6 +31,9 @@ namespace Carcassone.Core.Tests.RiverExtension
             // 1. river card do not connects if rotation is wrong
 
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(FFWF), 1, 0);
+            room.ForTests_CustomTile(typeof(FWRW), 1, 0);
 
             var gameMove0 = new GameMove()
             {
@@ -73,7 +78,10 @@ namespace Carcassone.Core.Tests.RiverExtension
             // 1. river card connects correctly to another river card
 
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
-            
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(FFWF), 1, 0);
+            room.ForTests_CustomTile(typeof(FWRW), 1, 0);
+
             var gameMove0 = new GameMove()
             {
                 PlayerName = TestHelper.Bob,
@@ -90,7 +98,7 @@ namespace Carcassone.Core.Tests.RiverExtension
                 TileId = "FWRW(0)",
                 TileRotation = 1,
                 Location = new Point(0, -1),
-                PartName = "Farm_0"
+                PartName = null
             };
             room.MakeMove(gameMove1);
         }
@@ -103,7 +111,7 @@ namespace Carcassone.Core.Tests.RiverExtension
             // 3. the last river card is WFFF
             // 4. there is no river cards after WFFF
 
-            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            var room = TestHelper.GetRiverGame(TestHelper.Bob);
 
             Assert.Equal("FFWF(0)", room.GetCurrentTile().Id);
 
@@ -111,7 +119,7 @@ namespace Carcassone.Core.Tests.RiverExtension
             do
             {
                 tile = room.GetCurrentTile();
-                var moves = room.GetAvailableMoves();
+                var moves = room.GetAvailableMoves(tile.Id);
                 room.MakeMove(moves.First());
             }
             while (room.GetCurrentTile().Id.Contains("W"));
@@ -124,7 +132,7 @@ namespace Carcassone.Core.Tests.RiverExtension
                 if (tile.Id.Contains("W"))
                     throw new Exception("Missplaced river card " + tile.Id);
 
-                var moves = room.GetAvailableMoves();
+                var moves = room.GetAvailableMoves(tile.Id);
                 room.MakeMove(moves.First());
             }
             while (room.GetCurrentTile() != null) ;

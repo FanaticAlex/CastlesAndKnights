@@ -1,4 +1,4 @@
-﻿using Carcassone.Core.Calculation.Base.Cities;
+﻿using Carcassone.Core.Calculation.Base.Farms;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,16 +8,9 @@ namespace Carcassone.Core.Calculation.Base.Farms
 {
     public class Farm : MergableObject
     {
-        private CitiesManager _citiesManager;
-
-        public void SetCitiesManager(CitiesManager citiesManager)
+        public override int GetScore(GameState state)
         {
-            _citiesManager = citiesManager;
-        }
-
-        public override int GetScore()
-        {
-            List<City> completeCities = _citiesManager.GetCompleteCities();
+            List<City> completeCities = GetCompleteCities(state);
 
             // count all connected completed cities
             // for every connected completed city 3 score point
@@ -37,6 +30,19 @@ namespace Carcassone.Core.Calculation.Base.Farms
 
             var completedConnectedCitys = connectedCitys.Distinct();
             return 3 * completedConnectedCitys.Count();
+        }
+
+        public List<City> GetCompleteCities(GameState state)
+        {
+            var cities = state.GetLastState().Calculated.OfType<City>();
+            return cities.Where(c => c.IsComplete(state)).ToList();
+        }
+
+        public Farm Copy()
+        {
+            var copy = new Farm();
+            copy.Parts.AddRange(Parts);
+            return copy;
         }
     }
 }

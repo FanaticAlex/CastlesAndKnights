@@ -11,10 +11,7 @@ namespace Carcassone.Core.Calculation
     public abstract class ObjectPart
     {
         private List<Side> _originalSides { get; set; } = new List<Side>();
-
-        public Meeple? Meeple { get; set; }
-        public Flag? Flag { get; set; }
-
+        public Meeple? Meeple { get; set; } 
         public string PartId => Tile.Id + PartName;
         public Tile Tile {  get; set; }
         public string PartName { get; set; }
@@ -32,11 +29,11 @@ namespace Carcassone.Core.Calculation
             PartType = string.Empty;
         }
 
-        public List<TileBorder> GetBorders()
+        public List<TileBorder> GetBorders(GameState state)
         {
             return _originalSides
-                .Select(s => GetRotatedSide(s, Tile.RotationsCount))
-                .Select(s => new TileBorder(Tile.Location, s)).ToList();
+                .Select(s => GetRotatedSide(s, state.GetTileRotation(Tile.Id)))
+                .Select(s => new TileBorder(state.GetTileLocation(Tile.Id), s)).ToList();
         }
 
         private static Side GetRotatedSide(Side side, int rotationCount)

@@ -1,18 +1,18 @@
 ﻿using Carcassone.Core.Calculation;
 using Carcassone.Core.Calculation.Base;
-using Carcassone.Core.Calculation.Base.Cities;
 using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Calculation.Base.Monasteries;
 using Carcassone.Core.Calculation.Base.Roads;
 using Carcassone.Core.Calculation.RiverExtension;
-using Carcassone.Core.Calculation.RiverExtension.Rivers;
 using Carcassone.Core.Players;
 using Carcassone.Core.Tiles;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 
 namespace Carcassone.Core
 {
@@ -27,37 +27,142 @@ namespace Carcassone.Core
         public List<Point> UnAwailable { get; set; } = new List<Point>();
     }
 
+
+    public class GameState
+    {
+        public  GameMove TrialMove { get; set; }
+        private List<MoveState> _movesStates { get; } = new List<MoveState>();
+
+        public void Add(MoveState state)
+        {
+            _movesStates.Add(state);
+        }
+
+        public void Remove(MoveState state)
+        {
+            _movesStates.Remove(state);
+        }
+
+        public Point GetTileLocation(string tileId)
+        {
+            if (TrialMove?.TileId == tileId) return TrialMove.Location;
+            return _movesStates.First(s => s.GameMove.TileId == tileId).GameMove.Location;
+        }
+
+        public int GetTileRotation(string tileId)
+        {
+            if (TrialMove?.TileId == tileId) return TrialMove.TileRotation;
+            return _movesStates.First(s => s.GameMove.TileId == tileId).GameMove.TileRotation;
+        }
+
+        public MoveState GetLastState()
+        {
+            if (IsFirstMove()) return new MoveState(null, new List<BaseGameObject>());
+
+            return _movesStates.Last();
+        }
+
+        public IEnumerable<GameMove> GetMoves()
+        {
+            return _movesStates.Select(s => s.GameMove);
+        }
+
+        public bool IsFirstMove()
+        {
+            return !_movesStates.Any();
+        }
+
+        public GameMove? GetNeighbour(Point location, Side side)
+        {
+            return side switch
+            {
+                Side.top => GetMove(new Point(location.X, location.Y + 1)),
+                Side.bottom => GetMove(new Point(location.X, location.Y - 1)),
+                Side.right => GetMove(new Point(location.X + 1, location.Y)),
+                Side.left => GetMove(new Point(location.X - 1, location.Y)),
+                _ => throw new KeyNotFoundException(),
+            };
+        }
+
+        public IEnumerable<Point> GetEmptyCells()
+        {
+            var tilesLocations = GetMoves().Select(m => m.Location);
+
+            var allPoints = new List<Point> { new Point(0, 0) }; // add initial location 
+            foreach (var location in tilesLocations)
+            {
+                allPoints.Add(location + new Size(0, 1));
+                allPoints.Add(location + new Size(0, -1));
+                allPoints.Add(location + new Size(1, 0));
+                allPoints.Add(location + new Size(-1, 0));
+            }
+
+            return allPoints.Except(tilesLocations).Distinct();
+        }
+
+        public GameMove? GetMove(Point location)
+        {
+            return _movesStates.FirstOrDefault(m => m.GameMove.Location == location)?.GameMove;
+        }
+    }
+
+    public class MoveState
+    {
+        public MoveState(GameMove move, List<BaseGameObject> gameObjects)
+        {
+            GameMove = move;
+            Calculated = gameObjects;
+        }
+
+        public GameMove GameMove { get; set; }
+
+        public List<BaseGameObject> Calculated { get; set; }
+
+        public IEnumerable<City> GetAllCities()
+        {
+            return Calculated.OfType<City>();
+        }
+        public IEnumerable<Road> GetAllRoads()
+        {
+            return Calculated.OfType<Road>();
+        }
+
+        public IEnumerable<Farm> GetAllFarms()
+        {
+            return Calculated.OfType<Farm>();
+        }
+
+        public IEnumerable<Monastery> GetAllMonastery()
+        {
+            return Calculated.OfType<Monastery>();
+        }
+    }
+
     /// <summary>
     /// Store all game data.
     /// </summary>
     public class GameRoom
     {
-        private List<GameMove> _moves = new List<GameMove>();
+        public GameState State { get; }
         private List<IGameRules> _rules;
         private TileStack _tileStack;
-        private Grid _gameGrid;
         private GamePlayersPool _playersPool;
 
+        private string _availableMovesCacheTile;
+        private List<GameMove> _availableMovesCache;
+        private Tile _cuerrentTileCache;
+
         public string Id { get; }
-        public bool IsFinished { get; set; }
-
-        public event EventHandler Finished;
-
-        private IEnumerable<Extension> _extentions;
-        private List<PlayerInfo> _players;
 
         public GameRoom(IEnumerable<Extension> extentions, List<PlayerInfo> players)
         {
-            _extentions = extentions;
-            _players = players;
-
             Id = Guid.NewGuid().ToString();
+            State = new GameState();
             _rules = new List<IGameRules>();
             _tileStack = new TileStack();
-            _gameGrid = new Grid();
             _playersPool = new GamePlayersPool(players);
 
-            _rules.Add(new BaseRules(_gameGrid));
+            _rules.Add(new BaseRules());
 
             if (extentions.Contains(Extension.River))
                 _rules.Add(new RiverExtension());
@@ -69,13 +174,19 @@ namespace Carcassone.Core
             _tileStack.Shaffle();
         }
 
-        public GameRoom Copy()
+        public MoveState GetLastState()
         {
-            var copy = new GameRoom(_extentions, _players);
-            foreach (var move in _moves)
-                copy.MakeMove(move);
+            return State.GetLastState();
+        }
 
-            return copy;
+        public void ForTests_ResetTilesStack()
+        {
+            _tileStack.ClearStack();
+        }
+
+        public void ForTests_CustomTile(Type type, byte count, int priority)
+        {
+            _tileStack.CreateTiles(type, count, priority);
         }
 
         public List<GamePlayer> GetPlayers()
@@ -83,38 +194,14 @@ namespace Carcassone.Core
             return _playersPool.GamePlayers;
         }
 
-        public IEnumerable<GameMove> GetMoves()
-        {
-            return _moves;
-        }
-
-        public IEnumerable<BaseGameObject> GetAllGameObjects()
-        {
-            return _rules.SelectMany(e => e.Managers.SelectMany(m => m.GetGameObjects()));
-        }
-
-        public IEnumerable<City> GetAllCities()
-        {
-            return GetAllGameObjects().Where(o => o is City).Select(o => (City)o);
-        }
-        public IEnumerable<Road> GetAllRoads()
-        {
-            return GetAllGameObjects().Where(o => o is Road).Select(o => (Road)o);
-        }
-
-        public IEnumerable<Farm> GetAllFarms()
-        {
-            return GetAllGameObjects().Where(o => o is Farm).Select(o => (Farm)o);
-        }
-
-        public IEnumerable<Monastery> GetAllMonastery()
-        {
-            return GetAllGameObjects().Where(o => o is Monastery).Select(o => (Monastery)o);
-        }
-
         public GamePlayer GetCurrentPlayer()
         {
             return _playersPool.GetCurrentPlayer();
+        }
+
+        public bool IsFinished()
+        {
+            return GetCurrentTile() == null;
         }
 
         public PlayerScore GetPlayerScore(string playerName)
@@ -129,14 +216,14 @@ namespace Carcassone.Core
             var scores = new List<PlayerScore>();
             foreach (var player in _playersPool.GamePlayers)
             {
-                var playerObjects = GetAllGameObjects()
+                var playerObjects = State.GetLastState().Calculated
                                     .Where(o => o.IsPlayerOwner(player.Info.Name));
 
                 var score = new PlayerScore()
                 {
                     PlayerName = player.Info.Name,
-                    OverallScore = playerObjects.Select(o => o.GetScore()).Sum(),
-                    MeeplesCount = player.GetMeeplesCount(),
+                    OverallScore = playerObjects.Select(o => o.GetScore(State)).Sum(),
+                    MeeplesCount = GetMeeplesCount(player),
                 };
 
                 scores.Add(score);
@@ -159,20 +246,21 @@ namespace Carcassone.Core
 
         public int GetRemainTilesCount()
         {
-            return _tileStack.GetRemainTiles().Count;
+            return _tileStack.GetRemainTiles().Count();
         }
 
-        public List<GameMove> GetAvailableMoves() // TODO need optimization
+        public List<GameMove> GetAvailableMoves(string tileId)
         {
+            if (_availableMovesCacheTile == tileId) return _availableMovesCache; // optimization 
+
             var gameMoves = new List<GameMove>();
-            var tile = _tileStack.GetTopTile();
+            var tile = _tileStack.GetTile(tileId);
             var locations = GetCellsToPutTile(tile);
             foreach (var location in locations)
             {
                 for (var rotation = 0; rotation < 4; rotation++)
                 {
-                    tile.RotateTileTo(rotation);
-                    if (CanPutTileInCell(location, tile))
+                    if (CanPutTileInCell(location, rotation, tile))
                     {
                         // without meeple
                         var move0 = new GameMove();
@@ -184,7 +272,7 @@ namespace Carcassone.Core
                         gameMoves.Add(move0);
 
                         // with meeple
-                        var parts = GetAvailableParts(location, tile);
+                        var parts = GetAvailableParts(move0);
                         foreach (var part in parts)
                         {
                             var move = new GameMove();
@@ -197,10 +285,10 @@ namespace Carcassone.Core
                         }
                     }
                 }
-
-                tile.RotateTileTo(0); // rotate to initial position
             }
 
+            _availableMovesCacheTile = tileId;
+            _availableMovesCache = gameMoves;
             return gameMoves;
         }
 
@@ -220,17 +308,17 @@ namespace Carcassone.Core
             return list;
         }
 
-        private List<ObjectPart> GetAvailableParts(Point location, Tile tile)
+        private List<ObjectPart> GetAvailableParts(GameMove move)
         {
-            var copy = this.Copy();
-            copy.AddTile(location, tile);
+            var state = CalculateNewMove(move);
 
-            var partsOfOwnedObjects = copy.GetAllGameObjects()
+            var partsOfOwnedObjects = state.Calculated
                 .Where(o => HasOwnerHelper.HasOwner(o))
                 .SelectMany(o => o.Parts)
                 .Select(p => p.PartId);
 
             var list = new List<ObjectPart>();
+            var tile = _tileStack.GetTile(move.TileId);
             foreach (var part in tile.Parts)
             {
                 if (!(partsOfOwnedObjects.Contains(part.PartId)))
@@ -243,7 +331,7 @@ namespace Carcassone.Core
         public Locations GetCellsStatus()
         {
             var status = new Locations();
-            var emptyCells = _gameGrid.GetEmptyCells();
+            var emptyCells = State.GetEmptyCells();
             foreach (var cell in emptyCells)
             {
                 var canPut = false;
@@ -269,77 +357,106 @@ namespace Carcassone.Core
         {
             if (gameMove == null) throw new ArgumentNullException("Move obj can not be null");
 
-            var tile = _tileStack.GetTile(gameMove.TileId);
-            if (tile == null) throw new Exception("Card can't be null");
-
-            var player = _playersPool.GetPlayer(gameMove.PlayerName);
-            if (player == null) throw new NullReferenceException("Player not found: " + gameMove.PlayerName);
-
-
-            // PutMeepleOnTile
-            if (!string.IsNullOrEmpty(gameMove.PartName))
-            {
-                var part = tile.GetPart(gameMove.PartName);
-                part.Meeple = player.TakeMeeple();
-            }
-
-            tile.RotateTileTo(gameMove.TileRotation);
-
-            if (!CanPutTileInCell(gameMove.Location, tile))
+            var availableMoves = GetAvailableMoves(gameMove.TileId);
+            if (!availableMoves.Contains(gameMove, new MoveComparer()))
                 throw new Exception("Card can't be put");
+            
+            var state = CalculateNewMove(gameMove);
+            State.Add(state);
+            
+            // pull new card
+            _tileStack.DiscardTopTile();
+            _cuerrentTileCache = null;
+            _availableMovesCache = null;
 
-            AddTile(gameMove.Location, tile);
+            _playersPool.MoveToNextPlayer();
+            _cuerrentTileCache = GetCurrentTile();
+        }
 
-            _moves.Add(gameMove);
-            _tileStack.DiscardTile(tile);
+        public void UndoLastMove()
+        {
+            var lastMove = State.GetLastState().GameMove;
+            var tile = _tileStack.GetTile(lastMove.TileId);
+            foreach (var part in tile.Parts)
+                part.Meeple = null;
 
-            if (GetCurrentTile() == null) // Check for finishing the game
-            {
-                IsFinished = true;
-                Finished?.Invoke(this, null);
-            }
+            State.Remove(State.GetLastState());
 
-            if (gameMove.PlayerName != null)
-                _playersPool.MoveToNextPlayer();
+            _tileStack.ReturnToTile(lastMove.TileId);
+            _cuerrentTileCache = null;
+            _availableMovesCache = null;
+
+            _playersPool.MoveToPreviousPlayer();
         }
 
         public Tile? GetCurrentTile()
         {
-            while (_tileStack.GetTopTile() != null)
+            if (_cuerrentTileCache != null) return _cuerrentTileCache;
+
+            var stopSearching = false;
+            while (!stopSearching)
             {
                 var topTile = _tileStack.GetTopTile();
-                if (GetCellsToPutTile(topTile).Any())
-                    return topTile;
-                else
-                    _tileStack.DiscardTile(topTile);
-            };
+                if (topTile == null) stopSearching = true;
 
-            return null;
+                if (GetCellsToPutTile(topTile).Any())
+                    stopSearching = true;
+                else
+                    _tileStack.DiscardTopTile();
+            }
+
+            _cuerrentTileCache = _tileStack.GetTopTile();
+            if (_cuerrentTileCache == null) return null;
+
+            _availableMovesCache = GetAvailableMoves(_cuerrentTileCache.Id);
+            return _cuerrentTileCache;
+        }
+
+        public int GetMeeplesCount(GamePlayer player)
+        {
+            var objects = State.GetLastState().Calculated;
+
+            var usedMeeples = 0;
+            foreach (var obj in objects)
+            {
+                var completableObj = obj as ICompletableGameObject;
+                if (completableObj != null)
+                {
+                    if (completableObj.IsComplete(State))
+                        continue;
+                }
+
+                foreach (var part in obj.Parts)
+                {
+                    if (part.Meeple?.Owner == player)
+                        usedMeeples++;
+                }
+            }
+
+            return GamePlayer.MeeplesMaxCount - usedMeeples; // TODO Create test to check correct add remove and limit meeples
         }
 
         private bool CanPutTileInCellWithRotation(Point location, Tile tile)
         {
             if (tile == null) return false;
 
-            var originalRotation = tile.RotationsCount;
-
             var isFit = false;
-            for (int i = 0; i < 4; i++) // можно сделать до 4х поворотов 4й - исходное положение (в конце)
+            for (int rotations = 0; rotations < 4; rotations++) // можно сделать до 4х поворотов 4й - исходное положение (в конце)
             {
-                tile.RotateTile();
-                if (CanPutTileInCell(location, tile))
+                if (CanPutTileInCell(location, rotations, tile))
                     isFit = true;
             }
 
-            tile.RotateTileTo(originalRotation);
             return isFit;
         }
 
-        private bool CanPutTileInCell(Point location, Tile tile)
+        private bool CanPutTileInCell(Point location, int rotation, Tile tile)
         {
+            if (State.IsFirstMove()) return true;
+
             var result = true;
             foreach(var extension in _rules)
-                result &= extension.CanPutTileInCell(location, tile, _gameGrid);
+                result &= extension.CanPutTileInCell(location, rotation, tile, State);
 
             return result;
         }
@@ -348,12 +465,30 @@ namespace Carcassone.Core
         /// Add tile and update objects
         /// </summary>
         /// <param name="tile"></param>
-        private void AddTile(Point location, Tile tile)
+        private MoveState CalculateNewMove(GameMove move)
         {
-            _gameGrid.PutTile(location, tile);
-            foreach (ObjectPart part in tile.Parts)
-                foreach (var manager in _rules.SelectMany(e => e.Managers))
-                    manager.ProcessPart(part, tile);
+            var tile = _tileStack.GetTile(move.TileId);
+            if (tile == null) throw new Exception("Tile can't be null");
+
+            // PutMeepleOnTile
+            var player = _playersPool.GetPlayer(move.PlayerName);
+            if (player == null) throw new NullReferenceException("Player not found: " + move.PlayerName);
+
+            if (!string.IsNullOrEmpty(move.PartName))
+            {
+                var part = tile.GetPart(move.PartName);
+                part.Meeple = player.TakeMeeple();
+            }
+
+            var allObj = new List<BaseGameObject>();
+            State.TrialMove = move; // for correct calculation of rotation and location of curent card
+            
+            foreach (var manager in _rules.SelectMany(e => e.Managers))
+                allObj.AddRange(manager.CalculateObjects(tile, State));
+
+            State.TrialMove = null;
+
+            return new MoveState(move, allObj);
         }
     }
 }

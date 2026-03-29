@@ -12,7 +12,7 @@ namespace Carcassone.Core.Calculation
     internal interface IGameRules
     {
         List<IGameObjectsManager> Managers { get; }
-        bool CanPutTileInCell(Point location, Tile tile, Grid grid);
+        bool CanPutTileInCell(Point location, int rotation, Tile tile, GameState state);
         public void AddTiles(TileStack stack);
     }
 }

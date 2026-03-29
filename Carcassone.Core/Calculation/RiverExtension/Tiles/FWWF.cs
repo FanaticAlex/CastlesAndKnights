@@ -1,5 +1,4 @@
 ﻿using Carcassone.Core.Calculation.Base.Farms;
-using Carcassone.Core.Calculation.RiverExtension.Rivers;
 using Carcassone.Core.Tiles;
 
 namespace Carcassone.Core.Calculation.RiverExtension.Tiles
@@ -19,11 +18,6 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 
         public FWWF(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var RiverPart0 = new RiverPart(RiverPart0Name, this);
-            RiverPart0.AddSide(Side.right);
-            RiverPart0.AddSide(Side.bottom);
-            Parts.Add(RiverPart0);
-
             var FarmPart1 = new FarmPart(FarmPart0Name, this);
             FarmPart1.AddSide(Side.top);
             FarmPart1.AddSide(Side.side_1);

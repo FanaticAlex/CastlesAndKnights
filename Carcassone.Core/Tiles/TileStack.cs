@@ -9,22 +9,17 @@ namespace Carcassone.Core.Tiles
     /// </summary>
     public class TileStack
     {
-        private List<Tile> _remain = new List<Tile>();
-        private readonly List<Tile> _discardedTiles = new List<Tile>();
+        private List<Tile> _tiles = new List<Tile>();
+        private int _currentTileIndex;
 
-        public void AddTiles(List<Tile> tiles)
+        public IEnumerable<Tile> GetRemainTiles()
         {
-            _remain.AddRange(tiles);
-        }
-
-        public List<Tile> GetRemainTiles()
-        {
-            return _remain;
+            return _tiles.Skip(_currentTileIndex);
         }
 
         public Tile GetTile(string tileId)
         {
-            var tile = GetAllTiles().FirstOrDefault(t => t.Id == tileId);
+            var tile = _tiles.FirstOrDefault(t => t.Id == tileId);
             if (tile == null)
                 throw new Exception($"Tile {tileId} not found");
 
@@ -33,32 +28,48 @@ namespace Carcassone.Core.Tiles
 
         public Tile? GetTopTile()
         {
-            return _remain.FirstOrDefault();
+            return GetRemainTiles().FirstOrDefault();
         }
 
-        public void DiscardTile(Tile? card)
+        public void DiscardTopTile()
         {
-            if (card == null) return;
+            if (GetTopTile() == null) return;
 
-            _remain.Remove(card);
-            _discardedTiles.Add(card);
+            _currentTileIndex++;
+        }
+
+        public void ReturnToTile(string? tileId)
+        {
+            if (tileId == null)
+            {
+                _currentTileIndex = 0;
+                return;
+            }
+
+            var tile = GetTile(tileId);
+            _currentTileIndex = _tiles.IndexOf(tile);
         }
 
         public void Shaffle()
         {
             // перетосовка
             var rnd = new System.Random();
-            int n = _remain.Count;
+            int n = _tiles.Count;
             while (n > 1)
             {
                 n--;
                 int k = rnd.Next(n + 1);
-                var value = _remain[k];
-                _remain[k] = _remain[n];
-                _remain[n] = value;
+                var value = _tiles[k];
+                _tiles[k] = _tiles[n];
+                _tiles[n] = value;
             }
 
-            _remain = _remain.OrderBy(tile => tile.StackPriority).ToList();
+            _tiles = _tiles.OrderBy(tile => tile.StackPriority).ToList();
+        }
+
+        public void ClearStack()
+        {
+            _tiles.Clear();
         }
 
         public void CreateTiles(Type tileType, byte count, int priority)
@@ -75,15 +86,7 @@ namespace Carcassone.Core.Tiles
                 tiles.Add(tile);
             }
 
-            _remain.AddRange(tiles);
-        }
-
-        private List<Tile> GetAllTiles()
-        {
-            var all = new List<Tile>();
-            all.AddRange(GetRemainTiles());
-            all.AddRange(_discardedTiles);
-            return all;
+            _tiles.AddRange(tiles);
         }
     }
 }

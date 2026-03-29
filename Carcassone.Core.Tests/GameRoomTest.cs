@@ -17,9 +17,9 @@ namespace Carcassone.Core.Tests.Room
                 var player = room.GetCurrentPlayer();
                 player.ProcessMove(room);
             }
-            while (!room.IsFinished);
+            while (!room.IsFinished());
 
-            Assert.True(room.IsFinished);
+            Assert.True(room.IsFinished());
             var scores = room.GetPlayersScores();
             Assert.Equal(2, scores.Count());
             Assert.NotEqual(0, scores.ElementAt(0).OverallScore);
@@ -38,51 +38,14 @@ namespace Carcassone.Core.Tests.Room
         public void GetCardsRemainInPoolTest()
         {
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
-            Assert.Equal(82, room.GetRemainTilesCount());
+            Assert.Equal(70, room.GetRemainTilesCount());
         }
 
-
-        /// <summary>
-        ///       F
-        ///   |       |
-        /// F |   +   | F
-        ///   |   +   |
-        ///       W
-        ///           
-        ///       W
-        ///   |   +   |
-        /// R |---O   | F
-        ///   |   +   |
-        ///       W
-        /// </summary>
         [Fact]
-        public void SaveLoadTest()
+        public void GetCardsRemainInPoolRiverTest()
         {
-            var room = TestHelper.GetDefaultGame(TestHelper.Bob);
-
-            var gameMove0 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FFWF(0)",
-                TileRotation = 0,
-                Location = new Point(0, 0),
-                PartName = "Farm_0"
-            };
-            room.MakeMove(gameMove0);
-
-            var gameMove1 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FWRW(0)",
-                TileRotation = 1,
-                Location = new Point(0, -1),
-                PartName = "Monastery_0"
-            };
-            room.MakeMove(gameMove1);
-            Assert.Equal(2, room.GetPlayerScore(TestHelper.Bob).OverallScore);
-
-            var copy = room.Copy();
-            Assert.Equal(2, copy.GetPlayerScore(TestHelper.Bob).OverallScore);
+            var room = TestHelper.GetRiverGame(TestHelper.Bob);
+            Assert.Equal(82, room.GetRemainTilesCount());
         }
     }
 }

@@ -1,7 +1,6 @@
-﻿using Carcassone.Core.Calculation.Base.Cities;
+﻿using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Calculation.Base.Roads;
-using Carcassone.Core.Calculation.RiverExtension.Rivers;
 using Carcassone.Core.Tiles;
 using System.Collections.Generic;
 
@@ -16,7 +15,6 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
     /// </summary>
     public class WCWR : Tile
     {
-        protected string RiverPart0Name = "River_0";
         protected string CityPart0Name = "City_0";
         protected string FarmPart0Name = "Farm_0";
         protected string FarmPart1Name = "Farm_1";
@@ -26,11 +24,6 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 
         public WCWR(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var RiverPart0 = new RiverPart(RiverPart0Name, this);
-            RiverPart0.AddSide(Side.top);
-            RiverPart0.AddSide(Side.bottom);
-            Parts.Add(RiverPart0);
-
             var CityPart0 = new CityPart(CityPart0Name, this);
             CityPart0.AddSide(Side.right);
             Parts.Add(CityPart0);

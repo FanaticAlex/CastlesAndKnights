@@ -1,5 +1,4 @@
-﻿using Carcassone.Core.Calculation.Base.Cities;
-using Carcassone.Core.Calculation.Base.Farms;
+﻿using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Calculation.Base.Monasteries;
 using Carcassone.Core.Calculation.Base.Roads;
 using Carcassone.Core.Calculation.Base.Tiles;
@@ -7,6 +6,7 @@ using Carcassone.Core.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 
 namespace Carcassone.Core.Calculation.Base
@@ -15,36 +15,31 @@ namespace Carcassone.Core.Calculation.Base
     {
         public List<IGameObjectsManager> Managers { get; } = new List<IGameObjectsManager>();
 
-        public BaseRules(Grid grid)
+        public BaseRules()
         {
             var citiesManager = new CitiesManager();
             Managers.Add(citiesManager);
             Managers.Add(new RoadsManager());
-            Managers.Add(new FarmsManager(citiesManager));
-            Managers.Add(new MonasteriesManager(grid));
+            Managers.Add(new FarmsManager());
+            Managers.Add(new MonasteriesManager());
         }
 
         /// <summary>
         /// Base rules of connecting tiles
         /// </summary>
-        /// <param name="cell"></param>
-        /// <param name="tile"></param>
-        /// <param name="grid"></param>
-        /// <param name="tileStack"></param>
-        /// <returns></returns>
-        public bool CanPutTileInCell(Point location, Tile tile, Grid grid)
+        public bool CanPutTileInCell(Point location, int rotation, Tile tile, GameState state)
         {
-            Tile? neighbourTopTile = grid.GetNeighbour(location, Side.top);
-            Tile? neighbourLeftTile = grid.GetNeighbour(location, Side.left);
-            Tile? neighbourBottomTile = grid.GetNeighbour(location, Side.bottom);
-            Tile? neighbourRightTile = grid.GetNeighbour(location, Side.right);
+            var neighbourTopTile = state.GetNeighbour(location, Side.top);
+            var neighbourLeftTile = state.GetNeighbour(location, Side.left);
+            var neighbourBottomTile = state.GetNeighbour(location, Side.bottom);
+            var neighbourRightTile = state.GetNeighbour(location, Side.right);
 
             // карту можно положить в поле, если в соседних с полем областях либо нет карт
             // либо границы карты которую кладем и соседней карты совпадают
-            if ((neighbourTopTile == null || neighbourTopTile.BottomEdgeType == tile.TopEdgeType) &&
-                (neighbourLeftTile == null || neighbourLeftTile.RightEdgeType == tile.LeftEdgeType) &&
-                (neighbourBottomTile == null || neighbourBottomTile.TopEdgeType == tile.BottomEdgeType) &&
-                (neighbourRightTile == null || neighbourRightTile.LeftEdgeType == tile.RightEdgeType))
+            if ((neighbourTopTile == null || Tile.GetEdge(neighbourTopTile.TileId, Side.bottom, neighbourTopTile.TileRotation) == Tile.GetEdge(tile.TileType, Side.top, rotation)) &&
+                (neighbourLeftTile == null || Tile.GetEdge(neighbourLeftTile.TileId, Side.right, neighbourLeftTile.TileRotation) == Tile.GetEdge(tile.TileType, Side.left, rotation)) &&
+                (neighbourBottomTile == null || Tile.GetEdge(neighbourBottomTile.TileId, Side.top, neighbourBottomTile.TileRotation) == Tile.GetEdge(tile.TileType, Side.bottom, rotation)) &&
+                (neighbourRightTile == null || Tile.GetEdge(neighbourRightTile.TileId, Side.left, neighbourRightTile.TileRotation) == Tile.GetEdge(tile.TileType, Side.right, rotation)))
             {
                 return true;
             }

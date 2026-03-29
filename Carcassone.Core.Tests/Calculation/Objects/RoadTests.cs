@@ -1,8 +1,9 @@
-﻿using Carcassone.Core.Tiles;
+﻿using Carcassone.Core.Calculation.Base.Tiles;
 using Carcassone.Core.Players;
+using Carcassone.Core.Tiles;
+using System.Drawing;
 using System.Linq;
 using Xunit;
-using System.Drawing;
 
 namespace Carcassone.Core.Tests.Buisness
 {
@@ -20,6 +21,8 @@ namespace Carcassone.Core.Tests.Buisness
         public void CalculationTest_CrossRoad()
         {
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(RRRR), 1, 0);
 
             var gameMove0 = new GameMove()
             {
@@ -30,13 +33,14 @@ namespace Carcassone.Core.Tests.Buisness
                 PartName = null
             };
             room.MakeMove(gameMove0);
-                
-            var roads = room.GetAllRoads();
+
+            var state = room.GetLastState();
+            var roads = state.GetAllRoads();
             Assert.Equal(4, roads.Count());
             foreach (var road in roads)
             {
-                Assert.Equal(1, road.GetScore());
-                Assert.False(road.IsComplete());
+                Assert.Equal(1, road.GetScore(room.State));
+                Assert.False(road.IsComplete(room.State));
             }
         }
 
@@ -57,6 +61,8 @@ namespace Carcassone.Core.Tests.Buisness
         public void CalculationTest_RoadRing()
         {
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(FFRR), 4, 0);
 
             var gameMove0 = new GameMove()
             {
@@ -98,12 +104,13 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove3);
 
-            var roads = room.GetAllRoads();
+            var state = room.GetLastState();
+            var roads = state.GetAllRoads();
             Assert.Single(roads);
             var road = roads.Single();
-            Assert.Equal(8, road.GetScore());
-            Assert.True(road.IsComplete());
-            Assert.Single(road.Parts.Where(p => p.Flag != null));
+            Assert.Equal(8, road.GetScore(room.State));
+            Assert.True(road.IsComplete(room.State));
+            Assert.Single(road.Parts.Where(p => p.Meeple != null));
         }
 
         /// <summary>
@@ -123,6 +130,9 @@ namespace Carcassone.Core.Tests.Buisness
         public void CalculationTest_FlatRoad()
         {
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(FFRF), 1, 0);
+            room.ForTests_CustomTile(typeof(FRRR), 1, 0);
 
             var gameMove0 = new GameMove()
             {
@@ -144,12 +154,13 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove1);
 
-            var roads = room.GetAllRoads();
+            var state = room.GetLastState();
+            var roads = state.GetAllRoads();
             Assert.Equal(3, roads.Count());
-            var road = roads.First(r => r.IsComplete());
-            Assert.Equal(4, road.GetScore());
-            Assert.True(road.IsComplete());
-            Assert.Single(road.Parts.Where(p => p.Flag != null));
+            var road = roads.First(r => r.IsComplete(room.State));
+            Assert.Equal(4, road.GetScore(room.State));
+            Assert.True(road.IsComplete(room.State));
+            Assert.Single(road.Parts.Where(p => p.Meeple != null));
         }
     }
 }

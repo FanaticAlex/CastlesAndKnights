@@ -1,4 +1,6 @@
-﻿using Carcassone.Core.Calculation.Base.Cities;
+﻿using Carcassone.Core.Calculation.Base.Farms;
+using Carcassone.Core.Calculation.Base.Tiles;
+using Carcassone.Core.Calculation.RiverExtension.Tiles;
 using Carcassone.Core.Players;
 using System.Drawing;
 using System.Linq;
@@ -25,6 +27,9 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore()
         {
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(CRFR), 1, 0);
+            room.ForTests_CustomTile(typeof(CFFF), 1, 0);
 
             var gameMove1 = new GameMove()
             {
@@ -47,25 +52,28 @@ namespace Carcassone.Core.Tests.Buisness
             room.MakeMove(gameMove2);
 
             // check castles
-            Assert.Single(room.GetAllCities());
-            var city = room.GetAllCities().Single();
-            Assert.True(city.IsComplete());
-            Assert.Equal(4, city.GetScore());
+            var state = room.GetLastState();
+            var Cities = state.GetAllCities();
+            Assert.Single(Cities);
+            var city = Cities.Single();
+            Assert.True(city.IsComplete(room.State));
+            Assert.Equal(4, city.GetScore(room.State));
             Assert.True(city.IsPlayerOwner(TestHelper.Bob));
             
             // check farms
-            Assert.Equal(3, room.GetAllFarms().Count());
-            var farm0 = room.GetAllFarms().ElementAt(0);
+            var farms = state.GetAllFarms();
+            Assert.Equal(3, farms.Count());
+            var farm0 = farms.ElementAt(0);
             Assert.True(farm0.IsPlayerOwner(TestHelper.Bob));
-            Assert.Equal(3, farm0.GetScore());
+            Assert.Equal(3, farm0.GetScore(room.State));
 
-            var farm1 = room.GetAllFarms().ElementAt(1);
+            var farm1 = farms.ElementAt(1);
             Assert.False(farm1.IsPlayerOwner(TestHelper.Bob));
-            Assert.Equal(0, farm1.GetScore());
+            Assert.Equal(0, farm1.GetScore(room.State));
 
-            var farm2 = room.GetAllFarms().ElementAt(2);
+            var farm2 = farms.ElementAt(2);
             Assert.False(farm2.IsPlayerOwner(TestHelper.Bob));
-            Assert.Equal(3, farm2.GetScore());
+            Assert.Equal(3, farm2.GetScore(room.State));
 
             Assert.Equal(7, room.GetPlayerScore(TestHelper.Bob).OverallScore);
         }
@@ -87,6 +95,9 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore1()
         {
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(RRWW), 1, 0);
+            room.ForTests_CustomTile(typeof(WCCW), 1, 0);
 
             var gameMove1 = new GameMove()
             {
@@ -111,18 +122,22 @@ namespace Carcassone.Core.Tests.Buisness
             var score = room.GetPlayerScore(TestHelper.Bob);
             Assert.Equal(0, score.OverallScore);
 
-            Assert.Single(room.GetAllCities());
-            Assert.Single(room.GetAllRoads());
-            Assert.Equal(3, room.GetAllFarms().Count());
+            var state = room.GetLastState();
+            var cities = state.GetAllCities();
+            var roads = state.GetAllRoads();
+            var farms = state.GetAllFarms();
+            Assert.Single(cities);
+            Assert.Single(roads);
+            Assert.Equal(3, farms.Count());
 
-            Assert.Equal(2, room.GetAllFarms().ElementAt(0).OpenBorders.Count);
-            Assert.Equal(0, room.GetAllFarms().ElementAt(0).GetScore());
+            Assert.Equal(2, farms.ElementAt(0).GetOpenBorders(room.State).Count);
+            Assert.Equal(0, farms.ElementAt(0).GetScore(room.State));
 
-            Assert.Equal(4, room.GetAllFarms().ElementAt(1).OpenBorders.Count);
-            Assert.Equal(0, room.GetAllFarms().ElementAt(1).GetScore());
+            Assert.Equal(4, farms.ElementAt(1).GetOpenBorders(room.State).Count);
+            Assert.Equal(0, farms.ElementAt(1).GetScore(room.State));
 
-            Assert.Equal(2, room.GetAllFarms().ElementAt(2).OpenBorders.Count);
-            Assert.Equal(0, room.GetAllFarms().ElementAt(2).GetScore());
+            Assert.Equal(2, farms.ElementAt(2).GetOpenBorders(room.State).Count);
+            Assert.Equal(0, farms.ElementAt(2).GetScore(room.State));
         }
 
         /// <summary>
@@ -143,6 +158,10 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore2()
         {
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(FFWF), 1, 0);
+            room.ForTests_CustomTile(typeof(FWWF), 1, 0);
+            room.ForTests_CustomTile(typeof(WFWF), 1, 0);
 
             var gameMove0 = new GameMove()
             {
@@ -174,8 +193,9 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove2);
 
-            Assert.Single(room.GetAllFarms());
-            Assert.Equal(9, room.GetAllFarms().ElementAt(0).OpenBorders.Count);
+            var farms = room.GetLastState().GetAllFarms();
+            Assert.Single(farms);
+            Assert.Equal(9, farms.ElementAt(0).GetOpenBorders(room.State).Count);
         }
 
         /// <summary>
@@ -195,6 +215,9 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore3()
         {
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(FFWF), 1, 0);
+            room.ForTests_CustomTile(typeof(FWRW), 1, 0);
 
             var gameMove1 = new GameMove()
             {
@@ -217,10 +240,11 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove2);
 
-            Assert.Equal(2, room.GetAllFarms().Count());
+            var farms = room.GetLastState().GetAllFarms();
+            Assert.Equal(2, farms.Count());
 
-            Assert.Equal(2, room.GetAllFarms().ElementAt(0).OpenBorders.Count);
-            Assert.Equal(6, room.GetAllFarms().ElementAt(1).OpenBorders.Count);
+            Assert.Equal(2, farms.ElementAt(0).GetOpenBorders(room.State).Count);
+            Assert.Equal(6, farms.ElementAt(1).GetOpenBorders(room.State).Count);
         }
 
         /// <summary>
@@ -240,6 +264,9 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore4()
         {
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(FFWF), 1, 0);
+            room.ForTests_CustomTile(typeof(FWWF), 1, 0);
 
             var gameMove1 = new GameMove()
             {
@@ -261,8 +288,9 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove2);
 
-            Assert.Single(room.GetAllFarms());
-            Assert.Equal(7, room.GetAllFarms().ElementAt(0).OpenBorders.Count);
+            var farms = room.GetLastState().GetAllFarms();
+            Assert.Single(farms);
+            Assert.Equal(7, farms.ElementAt(0).GetOpenBorders(room.State).Count);
         }
 
         /// <summary>
@@ -282,6 +310,9 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetScore5()
         {
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(RRWW), 1, 0);
+            room.ForTests_CustomTile(typeof(WCWR), 1, 0);
 
             var gameMove1 = new GameMove()
             {
@@ -305,13 +336,14 @@ namespace Carcassone.Core.Tests.Buisness
 
             var card2 = room.GetTile("WCWR(0)");
 
-            Assert.Equal(5, room.GetAllFarms().Count());
+            var farms = room.GetLastState().GetAllFarms();
+            Assert.Equal(5, farms.Count());
 
-            Assert.Equal(2, room.GetAllFarms().ElementAt(0).OpenBorders.Count);
-            Assert.Equal(3, room.GetAllFarms().ElementAt(1).OpenBorders.Count);
-            Assert.Equal(1, room.GetAllFarms().ElementAt(2).OpenBorders.Count);
-            Assert.Equal(2, room.GetAllFarms().ElementAt(3).OpenBorders.Count);
-            Assert.Equal(2, room.GetAllFarms().ElementAt(4).OpenBorders.Count);
+            Assert.Equal(2, farms.ElementAt(0).GetOpenBorders(room.State).Count);
+            Assert.Equal(3, farms.ElementAt(1).GetOpenBorders(room.State).Count);
+            Assert.Equal(1, farms.ElementAt(2).GetOpenBorders(room.State).Count);
+            Assert.Equal(2, farms.ElementAt(3).GetOpenBorders(room.State).Count);
+            Assert.Equal(2, farms.ElementAt(4).GetOpenBorders(room.State).Count);
         }
     }
 }

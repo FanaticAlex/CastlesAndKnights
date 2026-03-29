@@ -12,10 +12,12 @@ namespace Carcassone.Core.Tests.Players
             var room = TestHelper.GetDefaultGame(TestHelper.Bob, TestHelper.AI_1);
             
             Assert.Equal(room.GetCurrentPlayer().Info.Name, TestHelper.Bob);
-            room.MakeMove(room.GetAvailableMoves().First());
+            var tile1Id = room.GetCurrentTile().Id;
+            room.MakeMove(room.GetAvailableMoves(tile1Id).First());
 
             Assert.Equal(room.GetCurrentPlayer().Info.Name, TestHelper.AI_1);
-            room.MakeMove(room.GetAvailableMoves().First());
+            var tile2Id = room.GetCurrentTile().Id;
+            room.MakeMove(room.GetAvailableMoves(tile2Id).First());
 
             Assert.Equal(room.GetCurrentPlayer().Info.Name, TestHelper.Bob);
         }

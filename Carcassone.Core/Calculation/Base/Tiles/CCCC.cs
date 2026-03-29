@@ -1,4 +1,4 @@
-﻿using Carcassone.Core.Calculation.Base.Cities;
+﻿using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Tiles;
 
 namespace Carcassone.Core.Calculation.Base.Tiles

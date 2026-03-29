@@ -20,16 +20,6 @@ namespace Carcassone.Core.Calculation
 
         private static IEnumerable<string> GetOwners(BaseGameObject obj)
         {
-            // if there is flags count only flags (object completed)
-            var flagOwners = obj.Parts
-                .Where(part => part.Flag?.Owner != null)
-                .Select(part => part.Flag.Owner)
-                .Distinct()
-                .ToList();
-
-            if (flagOwners.Any()) return flagOwners.Select(p => p.Info.Name);
-
-
             // if object is not completed count meeples
             var ownersToMeepleCount = new Dictionary<GamePlayer, int>();
             foreach (var part in obj.Parts)

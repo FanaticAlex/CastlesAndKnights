@@ -1,8 +1,9 @@
-﻿using Carcassone.Core.Tiles;
+﻿using Carcassone.Core.Calculation.Base.Tiles;
 using Carcassone.Core.Players;
-using Xunit;
-using System.Linq;
+using Carcassone.Core.Tiles;
 using System.Drawing;
+using System.Linq;
+using Xunit;
 
 namespace Carcassone.Core.Tests.Buisness
 {
@@ -34,6 +35,11 @@ namespace Carcassone.Core.Tests.Buisness
         public void GetPointsTest()
         {
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(FFFF), 1, 0);
+            room.ForTests_CustomTile(typeof(RFRF), 4, 0);
+            room.ForTests_CustomTile(typeof(FFRR), 4, 0);
+
 
             var gameMove0 = new GameMove()
             {
@@ -45,7 +51,7 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove0);
 
-            Assert.Single(room.GetAllMonastery());
+            Assert.Single(room.GetLastState().GetAllMonastery());
             Assert.Equal(1, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
             var gameMove1 = new GameMove()
@@ -57,34 +63,10 @@ namespace Carcassone.Core.Tests.Buisness
                 PartName = null
             };
             room.MakeMove(gameMove1);
-            Assert.Single(room.GetAllMonastery());
+            Assert.Single(room.GetLastState().GetAllMonastery());
             Assert.Equal(2, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
             var gameMove2 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FFRR(0)",
-                TileRotation = 0,
-                Location = new Point(1, 1),
-                PartName = null
-            };
-            room.MakeMove(gameMove2);
-            Assert.Single(room.GetAllMonastery());
-            Assert.Equal(3, room.GetPlayerScore(TestHelper.Bob).OverallScore);
-
-            var gameMove3 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FFRR(1)",
-                TileRotation = 3,
-                Location = new Point(-1, 1),
-                PartName = null
-            };
-            room.MakeMove(gameMove3);
-            Assert.Single(room.GetAllMonastery());
-            Assert.Equal(4, room.GetPlayerScore(TestHelper.Bob).OverallScore);
-
-            var gameMove4 = new GameMove()
             {
                 PlayerName = TestHelper.Bob,
                 TileId = "RFRF(1)",
@@ -92,11 +74,11 @@ namespace Carcassone.Core.Tests.Buisness
                 Location = new Point(-1, 0),
                 PartName = null
             };
-            room.MakeMove(gameMove4);
-            Assert.Single(room.GetAllMonastery());
-            Assert.Equal(5, room.GetPlayerScore(TestHelper.Bob).OverallScore);
+            room.MakeMove(gameMove2);
+            Assert.Single(room.GetLastState().GetAllMonastery());
+            Assert.Equal(3, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
-            var gameMove5 = new GameMove()
+            var gameMove3 = new GameMove()
             {
                 PlayerName = TestHelper.Bob,
                 TileId = "RFRF(2)",
@@ -104,11 +86,11 @@ namespace Carcassone.Core.Tests.Buisness
                 Location = new Point(1, 0),
                 PartName = null
             };
-            room.MakeMove(gameMove5);
-            Assert.Single(room.GetAllMonastery());
-            Assert.Equal(6, room.GetPlayerScore(TestHelper.Bob).OverallScore);
+            room.MakeMove(gameMove3);
+            Assert.Single(room.GetLastState().GetAllMonastery());
+            Assert.Equal(4, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
-            var gameMove6 = new GameMove()
+            var gameMove4 = new GameMove()
             {
                 PlayerName = TestHelper.Bob,
                 TileId = "RFRF(3)",
@@ -116,8 +98,32 @@ namespace Carcassone.Core.Tests.Buisness
                 Location = new Point(0, -1),
                 PartName = null
             };
+            room.MakeMove(gameMove4);
+            Assert.Single(room.GetLastState().GetAllMonastery());
+            Assert.Equal(5, room.GetPlayerScore(TestHelper.Bob).OverallScore);
+
+            var gameMove5 = new GameMove()
+            {
+                PlayerName = TestHelper.Bob,
+                TileId = "FFRR(0)",
+                TileRotation = 0,
+                Location = new Point(1, 1),
+                PartName = null
+            };
+            room.MakeMove(gameMove5);
+            Assert.Single(room.GetLastState().GetAllMonastery());
+            Assert.Equal(6, room.GetPlayerScore(TestHelper.Bob).OverallScore);
+
+            var gameMove6 = new GameMove()
+            {
+                PlayerName = TestHelper.Bob,
+                TileId = "FFRR(1)",
+                TileRotation = 3,
+                Location = new Point(-1, 1),
+                PartName = null
+            };
             room.MakeMove(gameMove6);
-            Assert.Single(room.GetAllMonastery());
+            Assert.Single(room.GetLastState().GetAllMonastery());
             Assert.Equal(7, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
             var gameMove7 = new GameMove()
@@ -129,7 +135,7 @@ namespace Carcassone.Core.Tests.Buisness
                 PartName = null
             };
             room.MakeMove(gameMove7);
-            Assert.Single(room.GetAllMonastery());
+            Assert.Single(room.GetLastState().GetAllMonastery());
             Assert.Equal(8, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
             var gameMove8 = new GameMove()
@@ -141,10 +147,10 @@ namespace Carcassone.Core.Tests.Buisness
                 PartName = null
             };
             room.MakeMove(gameMove8);
-            Assert.Single(room.GetAllMonastery());
+            Assert.Single(room.GetLastState().GetAllMonastery());
             Assert.Equal(18, room.GetPlayerScore(TestHelper.Bob).OverallScore);
 
-            Assert.True(room.GetAllMonastery().ElementAt(0).IsComplete());
+            Assert.True(room.GetLastState().GetAllMonastery().ElementAt(0).IsComplete(room.State));
         }
     }
 }

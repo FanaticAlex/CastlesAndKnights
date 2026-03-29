@@ -6,26 +6,14 @@ namespace Carcassone.Core.Calculation
 {
     interface ICompletableGameObject
     {
-        bool IsComplete();
-        void TryCompleteAndReturnMeeples();
+        bool IsComplete(GameState state);
     }
 
     static class ObjectCompletitionHelper
     {
-        public static void TryCompleteAndReturnMeeples<T>(T obj) where T : BaseGameObject, ICompletableGameObject
+        public static bool IsCompleteByBorder(MergableObject obj, GameState state)
         {
-            if (obj.IsComplete())
-            {
-                foreach (var part in obj.Parts)
-                {
-                    part.Meeple?.Owner?.ReturnMeepleAndSetFlag(part);
-                }
-            }
-        }
-
-        public static bool IsCompleteByBorder(MergableObject obj)
-        {
-            return (obj.OpenBorders.Count == 0);
+            return (obj.GetOpenBorders(state).Count == 0);
         }
     }
 }

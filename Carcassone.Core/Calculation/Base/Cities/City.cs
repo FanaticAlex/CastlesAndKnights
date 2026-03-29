@@ -3,30 +3,32 @@ using Carcassone.Core.Tiles;
 using System;
 using System.Linq;
 
-namespace Carcassone.Core.Calculation.Base.Cities
+namespace Carcassone.Core.Calculation.Base.Farms
 {
     public class City : MergableObject, ICompletableGameObject
     {
-        public override int GetScore()
+        public override int GetScore(GameState state)
         {
             // one part gives one score point
             // part with shield gives two score point
             var score = Parts.Sum(part => ((CityPart)part).IsThereShield ? 2 : 1);
             
-            if (IsComplete())
+            if (IsComplete(state))
                 score *= 2;
 
             return score;
         }
 
-        public bool IsComplete()
+        public bool IsComplete(GameState state)
         {
-            return ObjectCompletitionHelper.IsCompleteByBorder(this);
+            return ObjectCompletitionHelper.IsCompleteByBorder(this, state);
         }
 
-        public void TryCompleteAndReturnMeeples()
+        public City Copy()
         {
-            ObjectCompletitionHelper.TryCompleteAndReturnMeeples(this);
+            var copy = new City();
+            copy.Parts.AddRange(Parts);
+            return copy;
         }
     }
 }

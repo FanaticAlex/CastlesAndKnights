@@ -12,21 +12,23 @@ namespace Carcassone.Core.Calculation.Base.Roads
     {
         private ObjectsMerger<Road> _merger = new ObjectsMerger<Road>();
 
-        public List<Road> Roads { get; set; } = new List<Road>();
-
-        public IEnumerable<BaseGameObject> GetGameObjects()
+        public IEnumerable<BaseGameObject> CalculateObjects(Tile tile, GameState state)
         {
-            return Roads;
+            var roads = state.GetLastState().Calculated.OfType<Road>();
+            var copies = roads.Select(r => r.Copy()).ToList();
+
+            foreach (var part in tile.Parts)
+            {
+                if (part is RoadPart)
+                    _merger.ConnectPartWithObjects(copies, part, state);
+            }
+
+            return copies;
         }
 
-        public void ProcessPart(ObjectPart part, Tile tile)
+        public IEnumerable<BaseGameObject> GetGameObjects(GameState state)
         {
-            if (!(part is RoadPart)) return;
-
-            _merger.ProcessPart(Roads, part);
-
-            foreach (var road in Roads)
-                road.TryCompleteAndReturnMeeples();
+            return state.GetLastState().Calculated.OfType<Road>();
         }
     }
 }

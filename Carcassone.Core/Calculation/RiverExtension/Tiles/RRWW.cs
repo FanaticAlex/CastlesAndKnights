@@ -1,6 +1,5 @@
 ﻿using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Calculation.Base.Roads;
-using Carcassone.Core.Calculation.RiverExtension.Rivers;
 using Carcassone.Core.Tiles;
 
 namespace Carcassone.Core.Calculation.RiverExtension.Tiles
@@ -22,11 +21,6 @@ namespace Carcassone.Core.Calculation.RiverExtension.Tiles
 
         public RRWW(string cardType, int cardNumber) : base(cardType, cardNumber)
         {
-            var RiverPart0 = new RiverPart(RiverPart0Name, this);
-            RiverPart0.AddSide(Side.bottom);
-            RiverPart0.AddSide(Side.left);
-            Parts.Add(RiverPart0);
-
             var FarmPart0 = new FarmPart(FarmPart0Name, this);
             FarmPart0.AddSide(Side.side_0);
             FarmPart0.AddSide(Side.side_1);

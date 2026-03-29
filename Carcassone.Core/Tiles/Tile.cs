@@ -1,6 +1,4 @@
 ﻿using Carcassone.Core.Calculation;
-using Carcassone.Core.Calculation.Base.Cities;
-using Carcassone.Core.Calculation.Base.Farms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -25,15 +23,6 @@ namespace Carcassone.Core.Tiles
         /// </summary>
         public int StackPriority { get; set; }
 
-        public char TopEdgeType => GetEdge(Side.top, RotationsCount);
-        public char RightEdgeType => GetEdge(Side.right, RotationsCount);
-        public char BottomEdgeType => GetEdge(Side.bottom, RotationsCount);
-        public char LeftEdgeType => GetEdge(Side.left, RotationsCount);
-
-        public Point Location { get; set; }
-
-        public int RotationsCount { get; set; } // {0,1,2,3}
-
         public Tile(string _tileType, int _tileNumber)
         {
             Id = GetTileId(_tileType, _tileNumber);
@@ -53,26 +42,7 @@ namespace Carcassone.Core.Tiles
             return list.Single();
         }
 
-        public void RotateTileTo(int rotation)
-        {
-            if (rotation < 0) throw new ArgumentOutOfRangeException("неверное число поворотов");
-            if (rotation > 3) throw new ArgumentOutOfRangeException("неверное число поворотов");
-
-            do
-                RotateTile();
-            while (RotationsCount != rotation);
-        }
-
-        /// <summary>
-        /// Rotate card at 90 degree clockwise. Rotation counter increases by 1
-        /// </summary>
-        public void RotateTile()
-        {
-            RotationsCount += 1;
-            RotationsCount %= 4;
-        }
-
-        private char GetEdge(Side side, int rotationCoun)
+        public static char GetEdge(string tileType, Side side, int rotationCoun)
         {
             var rotatedSide = side;
             for (int i = 0; i < rotationCoun; i++)
@@ -82,16 +52,16 @@ namespace Carcassone.Core.Tiles
                 
             switch (rotatedSide)
             {
-                case Side.top: return TileType[0];
-                case Side.right: return TileType[1];
-                case Side.bottom: return TileType[2];
-                case Side.left: return TileType[3];
+                case Side.top: return tileType[0];
+                case Side.right: return tileType[1];
+                case Side.bottom: return tileType[2];
+                case Side.left: return tileType[3];
             }
             
             throw new ArgumentException();
         }
 
-        private Side RotateOnce(Side side)
+        private static Side RotateOnce(Side side)
         {
             switch (side)
             {

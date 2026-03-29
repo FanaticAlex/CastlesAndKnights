@@ -6,8 +6,8 @@ namespace Carcassone.Core.Calculation
 {
     public interface IGameObjectsManager
     {
-        IEnumerable<BaseGameObject> GetGameObjects();
-        void ProcessPart(ObjectPart part, Tile tile);
+        IEnumerable<BaseGameObject> GetGameObjects(GameState state);
+        IEnumerable<BaseGameObject> CalculateObjects(Tile tile, GameState state);
     }
 }
 

@@ -57,10 +57,14 @@ namespace Carcassone.Core.Players
 
         public void MoveToNextPlayer()
         {
-            // передать ход
-            // если ход сделан то ход передается следующему игроку
             CurrentPlayerIndex++;
             CurrentPlayerIndex %= GamePlayers.Count;
+        }
+
+        public void MoveToPreviousPlayer()
+        {
+            CurrentPlayerIndex--;
+            if (CurrentPlayerIndex < 0) CurrentPlayerIndex = GamePlayers.Count - 1;
         }
     }
 }

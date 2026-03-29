@@ -35,48 +35,20 @@ namespace Carcassone.Core.Players
     /// </summary>
     public class GamePlayer
     {
-        private int _meeplesMaxCount = 7; 
-
-        private List<Meeple> MeepleList { get; set; } = new List<Meeple>();
+        public const int MeeplesMaxCount = 7; 
 
         public GamePlayer(PlayerInfo info)
         {
             Info = info;
-
-            for (var i = 0; i < _meeplesMaxCount; i++)
-            {
-                var meeple = new Meeple(this);
-                MeepleList.Add(meeple);
-            }
         }
 
         public PlayerInfo Info { get; set; }
 
         public bool IsAIProcessing {  get; set; }
 
-        public int GetMeeplesCount() => MeepleList.Count;
-
         public Meeple? TakeMeeple()
         {
-            if (MeepleList.Count == 0)
-                return null;
-
-            var meeple = MeepleList[0];
-            MeepleList.Remove(meeple);
-            return meeple;
-        }
-
-        public void ReturnMeepleAndSetFlag(ObjectPart part)
-        {
-            if (part.Meeple == null)
-                throw new Exception("Объект не принадлежит игроку, невозможно установить флаг.");
-
-            var meeple = part.Meeple;
-            meeple.Owner = this;
-            MeepleList.Add(meeple);
-
-            part.Meeple = null;
-            part.Flag = new Flag(this);
+            return new Meeple(this);
         }
 
         public void ProcessMove(GameRoom room)
@@ -87,7 +59,8 @@ namespace Carcassone.Core.Players
             IsAIProcessing = true;
 
             // where to put a card
-            List<GameMove> possibleMoves = room.GetAvailableMoves();
+            var currentTile = room.GetCurrentTile();
+            List<GameMove> possibleMoves = room.GetAvailableMoves(currentTile.Id);
             GameMove bestMove = GetBestMove(room, possibleMoves);
             room.MakeMove(bestMove);
 
@@ -102,15 +75,15 @@ namespace Carcassone.Core.Players
             var dic = new Dictionary<GameMove, PlayerScore>();
             foreach (GameMove move in possibleMoves)
             {
-                var gameCopy1 = room.Copy();
-                gameCopy1.MakeMove(move);
-                var expectedScore = gameCopy1.GetPlayerScore(this.Info.Name);
+                room.MakeMove(move);
+                var expectedScore = room.GetPlayerScore(this.Info.Name);
                 dic.Add(move, expectedScore);
+                room.UndoLastMove();
             }
 
             // ходы возвращающие фишки
-            var maxReturnMeeples = dic.Max(item => (item.Value.MeeplesCount - MeepleList.Count));
-            var returnMeeplesMoves = dic.Where(item => (item.Value.MeeplesCount - MeepleList.Count) == maxReturnMeeples);
+            var maxReturnMeeples = dic.Max(item => (item.Value.MeeplesCount - room.GetMeeplesCount(this)));
+            var returnMeeplesMoves = dic.Where(item => (item.Value.MeeplesCount - room.GetMeeplesCount(this)) == maxReturnMeeples);
             if (maxReturnMeeples > 0 && returnMeeplesMoves.Count() > 0)
             {
                 return returnMeeplesMoves.FirstOrDefault().Key;

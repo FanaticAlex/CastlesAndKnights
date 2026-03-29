@@ -1,6 +1,6 @@
 ﻿using Carcassone.Core.Tiles;
 
-namespace Carcassone.Core.Calculation.Base.Cities
+namespace Carcassone.Core.Calculation.Base.Farms
 {
     public class CityPart : ObjectPart
     {

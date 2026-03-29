@@ -1,8 +1,11 @@
-﻿using Carcassone.Core.Tiles;
+﻿using Carcassone.Core.Calculation.Base.Tiles;
+using Carcassone.Core.Calculation.RiverExtension.Tiles;
 using Carcassone.Core.Players;
+using Carcassone.Core.Tiles;
+using System;
+using System.Drawing;
 using System.Linq;
 using Xunit;
-using System.Drawing;
 
 namespace Carcassone.Core.Tests.Buisness
 {
@@ -26,6 +29,9 @@ namespace Carcassone.Core.Tests.Buisness
         public void CalculationTest_NotClosedCity()
         {
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(FFWF), 1, 0);
+            room.ForTests_CustomTile(typeof(CWCW), 1, 0);
 
             var gameMove0 = new GameMove()
             {
@@ -47,13 +53,13 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove1);
 
-            var Citys = room.GetAllCities();
-            Assert.True(Citys.Count() == 2);
-            Assert.False(Citys.ElementAt(0).IsComplete());
-            Assert.False(Citys.ElementAt(1).IsComplete());
+            var Cities = room.GetLastState().GetAllCities();
+            Assert.True(Cities.Count() == 2);
+            Assert.False(Cities.ElementAt(0).IsComplete(room.State));
+            Assert.False(Cities.ElementAt(1).IsComplete(room.State));
             
             var score = room.GetPlayerScore(TestHelper.Bob);
-            Assert.True(Citys.ElementAt(0).IsPlayerOwner(TestHelper.Bob));
+            Assert.True(Cities.ElementAt(0).IsPlayerOwner(TestHelper.Bob));
             Assert.Equal(1, score.OverallScore);
             Assert.Equal(6, score.MeeplesCount);
         }
@@ -76,6 +82,8 @@ namespace Carcassone.Core.Tests.Buisness
         public void CalculationTest_DoubleCity()
         {
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(CFFF), 2, 0);
 
             var gameMove0 = new GameMove()
             {
@@ -97,13 +105,14 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove1);
 
-            var Citys = room.GetAllCities();
-            Assert.Single(Citys);
-            var City = Citys.Single();
-            Assert.True(City.IsComplete());
-            Assert.Equal(4, City.GetScore());
+            var state = room.GetLastState();
+            var Cities = state.GetAllCities();
+            Assert.Single(Cities);
+            var City = Cities.Single();
+            Assert.True(City.IsComplete(room.State));
+            Assert.Equal(4, City.GetScore(room.State));
             Assert.True(City.IsPlayerOwner(TestHelper.Bob));
-            Assert.Contains(City.Parts, p => p.Flag != null);
+            Assert.Contains(City.Parts, p => p.Meeple != null);
 
             var score = room.GetPlayerScore(TestHelper.Bob);
             Assert.Equal(4, score.OverallScore);
@@ -135,6 +144,10 @@ namespace Carcassone.Core.Tests.Buisness
         public void CalculationTest_TwoRiverCities()
         {
             var room = TestHelper.GetDefaultGame(TestHelper.Bob);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(FFWF), 1, 0);
+            room.ForTests_CustomTile(typeof(CWCW), 1, 0);
+            room.ForTests_CustomTile(typeof(CFFF), 2, 0);
 
             var gameMove0 = new GameMove()
             {
@@ -176,18 +189,113 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove3);
 
-            var Citys = room.GetAllCities();
-            Assert.Equal(2, Citys.Count());
+            var state = room.GetLastState();
+            var Cities = state.GetAllCities();
+            Assert.Equal(2, Cities.Count());
 
-            var City = Citys.ElementAt(1);
-            Assert.Equal(4, City.GetScore());
-            Assert.True(City.IsComplete());
+            var City = Cities.ElementAt(1);
+            Assert.Equal(4, City.GetScore(room.State));
+            Assert.True(City.IsComplete(room.State));
             Assert.True(City.IsPlayerOwner(TestHelper.Bob));
-            Assert.Contains(City.Parts, p => p.Flag != null);
+            Assert.Contains(City.Parts, p => p.Meeple != null);
 
             var score = room.GetPlayerScore(TestHelper.Bob);
             Assert.Equal(4, score.OverallScore);
             Assert.Equal(7, score.MeeplesCount);
+        }
+
+
+        /// <summary>
+        /// 
+        ///       F
+        ///   |       |
+        /// F | _____ | F
+        ///   |/     \|
+        ///       C
+        ///       
+        ///       C          
+        ///   |\     /|     
+        /// F | |   | | F  
+        ///   |/     \|      
+        ///       C           
+        /// 
+        ///       C
+        ///   |\_____/|
+        /// F |       | F
+        ///   |       |
+        ///       F
+        /// </summary>
+        [Fact]
+        public void CalculationTest_SeveralOwners()
+        {
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob, TestHelper.Jack);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(FCFC1), 1, 0);
+            room.ForTests_CustomTile(typeof(CFFF), 2, 0);
+
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = TestHelper.Bob,
+                TileId = "FCFC1(0)",
+                TileRotation = 1,
+                Location = new Point(0, 0),
+                PartName = "City_0"
+            };
+            room.MakeMove(gameMove0);
+
+            var gameMove2 = new GameMove()
+            {
+                PlayerName = TestHelper.Jack,
+                TileId = "CFFF(0)",
+                TileRotation = 2,
+                Location = new Point(-1, 1),
+                PartName = "City_0"
+            };
+            Assert.Throws<Exception>(() => room.MakeMove(gameMove2));
+        }
+
+        /// <summary>
+        /// 
+        ///       F
+        ///   |       |
+        /// F | _____ | F
+        ///   |/     \|
+        ///       C
+        ///       
+        ///       C          
+        ///   |\     /|     
+        /// F | |   | | F  
+        ///   |/     \|      
+        ///       C           
+        ///
+        /// </summary>
+        [Fact]
+        public void CalculationTest_OwnedObject()
+        {
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob, TestHelper.Jack);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(FCFC1), 1, 0);
+            room.ForTests_CustomTile(typeof(CFFF), 1, 0);
+
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = TestHelper.Bob,
+                TileId = "FCFC1(0)",
+                TileRotation = 1,
+                Location = new Point(0, 0),
+                PartName = "City_0"
+            };
+            room.MakeMove(gameMove0);
+
+            var gameMove2 = new GameMove()
+            {
+                PlayerName = TestHelper.Jack,
+                TileId = "CFFF(0)",
+                TileRotation = 2,
+                Location = new Point(0, 1),
+                PartName = "City_0"
+            };
+            Assert.Throws<Exception>(() => room.MakeMove(gameMove2));
         }
     }
 }
