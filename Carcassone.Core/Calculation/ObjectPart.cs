@@ -8,10 +8,12 @@ using System.Linq;
 
 namespace Carcassone.Core.Calculation
 {
+    /// <summary>
+    ///  Defines the common methods and abstraction for different object parts like castle part, road part etc.
+    /// </summary>
     public abstract class ObjectPart
     {
         private List<Side> _originalSides { get; set; } = new List<Side>();
-        public Meeple? Meeple { get; set; } 
         public string PartId => Tile.Id + PartName;
         public Tile Tile {  get; set; }
         public string PartName { get; set; }
@@ -29,7 +31,17 @@ namespace Carcassone.Core.Calculation
             PartType = string.Empty;
         }
 
-        public List<TileBorder> GetBorders(GameState state)
+        public virtual string? GetPartOwner(MoveState state)
+        {
+            // if there is such a move and meeple was placed in a part
+            var move = state.GameMoves.FirstOrDefault(s => s.TileId == Tile.Id);
+            if (move?.PartName == PartName)
+                return move.PlayerName;
+            else
+                return null;
+        }
+
+        public List<TileBorder> GetBorders(MoveState state)
         {
             return _originalSides
                 .Select(s => GetRotatedSide(s, state.GetTileRotation(Tile.Id)))

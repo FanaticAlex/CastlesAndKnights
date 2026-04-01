@@ -1,4 +1,6 @@
-﻿using Carcassone.Core.Calculation.Base.Tiles;
+﻿using Carcassone.Core.Calculation.Base.Cities;
+using Carcassone.Core.Calculation.Base.Farms;
+using Carcassone.Core.Calculation.Base.Tiles;
 using Carcassone.Core.Tiles;
 using System;
 using System.Collections.Generic;
@@ -73,6 +75,148 @@ namespace Carcassone.Core.Tests.Board
                 PartName = "City_0"
             };
             Assert.Throws<Exception>(() => room.MakeMove(gameMove1));
+        }
+
+        /// <summary>
+        ///       F                 F
+        ///   |    __/|        |\      |
+        /// F | __/   | C    C | |   --| R
+        ///   |/      |        |/   /  |
+        ///       C                 R
+        /// 
+        ///       C                 R
+        ///   |\_____/|        |   |   |
+        /// F |       | F    F |   |   | F
+        ///   |       |        |   |   |
+        ///       F                 R
+        ///       
+        ///       F
+        ///   |        |
+        /// F |        | F
+        ///   |        |
+        ///       F
+        /// </summary>
+        [Fact]
+        public void CalculationTest_MultipleOwners()
+        {
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob, TestHelper.Jack);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(CFFF), 1, 0);
+            room.ForTests_CustomTile(typeof(RFRF), 1, 0);
+            room.ForTests_CustomTile(typeof(FFFF), 1, 0);
+            room.ForTests_CustomTile(typeof(CFRR), 1, 0);
+            room.ForTests_CustomTile(typeof(CFFC), 1, 0);
+
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = TestHelper.Bob,
+                TileId = "CFFF(0)",
+                TileRotation = 0,
+                Location = new Point(0, 0),
+                PartName = "City_0"
+            };
+            room.MakeMove(gameMove0);
+
+            var gameMove1 = new GameMove()
+            {
+                PlayerName = TestHelper.Jack,
+                TileId = "RFRF(0)",
+                TileRotation = 0,
+                Location = new Point(1, 0),
+                PartName = null
+            };
+            room.MakeMove(gameMove1);
+
+            var gameMove2 = new GameMove()
+            {
+                PlayerName = TestHelper.Bob,
+                TileId = "FFFF(0)",
+                TileRotation = 0,
+                Location = new Point(0, -1),
+                PartName = null
+            };
+            room.MakeMove(gameMove2);
+
+            var gameMove3 = new GameMove()
+            {
+                PlayerName = TestHelper.Jack,
+                TileId = "CFRR(0)",
+                TileRotation = 3,
+                Location = new Point(1, 1),
+                PartName = "City_0"
+            };
+            room.MakeMove(gameMove3);
+
+            var gameMove4 = new GameMove()
+            {
+                PlayerName = TestHelper.Bob,
+                TileId = "CFFC(0)",
+                TileRotation = 2,
+                Location = new Point(0, 1),
+                PartName = "Farm_0"
+            };
+            room.MakeMove(gameMove4);
+
+
+            var cities = room.State.Calculated.OfType<City>();
+            Assert.Single(cities);
+            var city = cities.First();
+            Assert.True(city.IsComplete(room.State));
+
+            var scores = room.PlayersPool.GetPlayersScores(room.State).ToList();
+            Assert.Equal(TestHelper.Bob, scores[0].PlayerName);
+            Assert.Equal(6, scores[0].MeeplesCount);
+            Assert.Equal(9, scores[0].OverallScore);
+            Assert.Equal(0, scores[0].Rank);
+
+            Assert.Equal(TestHelper.Jack, scores[1].PlayerName);
+            Assert.Equal(7, scores[1].MeeplesCount);
+            Assert.Equal(6, scores[1].OverallScore);
+            Assert.Equal(1, scores[1].Rank);
+        }
+
+        /// <summary>
+        /// 
+        ///       F
+        ///   |       |
+        /// F | _____ | F
+        ///   |/     \|
+        ///       C
+        ///       
+        ///       C          
+        ///   |\     /|     
+        /// F | |   | | F  
+        ///   |/     \|      
+        ///       C           
+        ///
+        /// </summary>
+        [Fact]
+        public void CalculationTest_DisablePutMeepleAtOwnedObject()
+        {
+            var room = TestHelper.GetDefaultGame(TestHelper.Bob, TestHelper.Jack);
+            room.ForTests_ResetTilesStack();
+            room.ForTests_CustomTile(typeof(FCFC1), 1, 0);
+            room.ForTests_CustomTile(typeof(CFFF), 1, 0);
+
+            var gameMove0 = new GameMove()
+            {
+                PlayerName = TestHelper.Bob,
+                TileId = "FCFC1(0)",
+                TileRotation = 1,
+                Location = new Point(0, 0),
+                PartName = "City_0"
+            };
+            room.MakeMove(gameMove0);
+
+            var gameMove2 = new GameMove()
+            {
+                PlayerName = TestHelper.Jack,
+                TileId = "CFFF(0)",
+                TileRotation = 2,
+                Location = new Point(0, 1),
+                PartName = "City_0"
+            };
+            Assert.Throws<Exception>(() => room.MakeMove(gameMove2));
         }
     }
 }

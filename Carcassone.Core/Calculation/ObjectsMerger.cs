@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -9,7 +8,7 @@ namespace Carcassone.Core.Calculation
 {
     public abstract class MergableObject : BaseGameObject
     {
-        public List<TileBorder> GetOpenBorders(GameState state)
+        public List<TileBorder> GetOpenBorders(MoveState state)
         {
             var openBorders = new List<TileBorder>();
             foreach (var part in Parts)
@@ -35,29 +34,30 @@ namespace Carcassone.Core.Calculation
     /// <typeparam name="T"></typeparam>
     public class ObjectsMerger<T> where T : MergableObject
     {
-        public void ConnectPartWithObjects(List<T> objects, ObjectPart part, GameState state)
+        public void ConnectPartWithObjects(List<BaseGameObject> objects, ObjectPart connectingPart, MoveState state)
         {
-            var objectsToMerge = GetObjectsToConnectWithPart(part, objects, state);
-            var merged = Merge(part, objectsToMerge);
+            var objectsOfType = objects.OfType<T>();
+            var objectsToMerge = GetObjectsToConnectWithPart(connectingPart, objectsOfType, state);
+            var merged = Merge(connectingPart, objectsToMerge);
             objectsToMerge.ForEach(c => objects.Remove(c));
             objects.Add(merged);
         }
 
-        protected List<T> GetObjectsToConnectWithPart(ObjectPart part, List<T> objects, GameState state)
+        protected List<T> GetObjectsToConnectWithPart(ObjectPart connectingPart, IEnumerable<T> objects, MoveState state)
         {
             var objectsToMerge = new List<T>();
             foreach (var gameObject in objects)
             {
-                if (CanConnect(gameObject, part, state))
+                if (CanConnect(gameObject, connectingPart, state))
                     objectsToMerge.Add(gameObject);
             }
 
             return objectsToMerge;
         }
 
-        public bool CanConnect(T obj, ObjectPart part, GameState state)
+        public bool CanConnect(T obj, ObjectPart connectingPart, MoveState state)
         {
-            var commonBoders = obj.GetOpenBorders(state).Intersect(part.GetBorders(state), new BorderComparer());
+            var commonBoders = obj.GetOpenBorders(state).Intersect(connectingPart.GetBorders(state), new BorderComparer());
             return commonBoders.Any();
         }
 

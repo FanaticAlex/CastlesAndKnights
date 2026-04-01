@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Carcassone.Core.Calculation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -41,8 +42,35 @@ namespace Carcassone.Core.Players
             }
         }
 
+        public IEnumerable<PlayerScore> GetPlayersScores(MoveState state)
+        {
+            var scores = new List<PlayerScore>();
+            foreach (var player in GamePlayers)
+            {
+                var score = new PlayerScore(
+                    player.Info.Name,
+                    player.GetMeeplesCount(state),
+                    player.GetPlayerOverallScore(state));
+                scores.Add(score);
+            }
+
+            scores.Sort(delegate (PlayerScore x, PlayerScore y)
+            {
+                return y.OverallScore.CompareTo(x.OverallScore);
+            });
+
+            foreach (var score in scores)
+            {
+                score.Rank = scores.IndexOf(score);
+            }
+
+            return scores;
+        }
+
         public GamePlayer GetPlayer(string playerName)
         {
+            if (string.IsNullOrEmpty(playerName)) return null;
+
             var playerItems = GamePlayers.Where(_player => _player.Info.Name == playerName);
             if (playerItems.Count() == 0)
                 return null;

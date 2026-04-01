@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Carcassone.Core.Calculation.Base.Farms;
+using Carcassone.Core.Calculation.Base.Cities;
 
 namespace Carcassone.Core.Calculation.Base.Tiles
 {

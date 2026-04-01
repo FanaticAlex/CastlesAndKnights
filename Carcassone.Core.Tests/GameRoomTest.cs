@@ -20,10 +20,10 @@ namespace Carcassone.Core.Tests.Room
             while (!room.IsFinished());
 
             Assert.True(room.IsFinished());
-            var scores = room.GetPlayersScores();
-            Assert.Equal(2, scores.Count());
-            Assert.NotEqual(0, scores.ElementAt(0).OverallScore);
-            Assert.NotEqual(0, scores.ElementAt(1).OverallScore);
+            var ai1 = room.PlayersPool.GetPlayer(TestHelper.AI_1);
+            var ai2 = room.PlayersPool.GetPlayer(TestHelper.AI_2);
+            Assert.NotEqual(0, ai1.GetPlayerOverallScore(room.State));
+            Assert.NotEqual(0, ai2.GetPlayerOverallScore(room.State));
         }
 
         [Fact]

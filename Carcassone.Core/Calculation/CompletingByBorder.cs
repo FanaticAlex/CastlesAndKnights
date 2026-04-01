@@ -1,17 +1,15 @@
-﻿using Carcassone.Core.Players;
-using Carcassone.Core.Tiles;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Carcassone.Core.Calculation
 {
-    interface ICompletableGameObject
+    public interface ICompletableGameObject
     {
-        bool IsComplete(GameState state);
+        bool IsComplete(MoveState state);
     }
 
     static class ObjectCompletitionHelper
     {
-        public static bool IsCompleteByBorder(MergableObject obj, GameState state)
+        public static bool IsCompleteByBorder(MergableObject obj, MoveState state)
         {
             return (obj.GetOpenBorders(state).Count == 0);
         }

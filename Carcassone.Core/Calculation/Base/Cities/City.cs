@@ -1,13 +1,11 @@
-﻿using Carcassone.Core.Players;
-using Carcassone.Core.Tiles;
-using System;
+﻿using System;
 using System.Linq;
 
-namespace Carcassone.Core.Calculation.Base.Farms
+namespace Carcassone.Core.Calculation.Base.Cities
 {
     public class City : MergableObject, ICompletableGameObject
     {
-        public override int GetScore(GameState state)
+        public override int GetScore(MoveState state)
         {
             // one part gives one score point
             // part with shield gives two score point
@@ -19,12 +17,12 @@ namespace Carcassone.Core.Calculation.Base.Farms
             return score;
         }
 
-        public bool IsComplete(GameState state)
+        public bool IsComplete(MoveState state)
         {
             return ObjectCompletitionHelper.IsCompleteByBorder(this, state);
         }
 
-        public City Copy()
+        public override BaseGameObject Copy()
         {
             var copy = new City();
             copy.Parts.AddRange(Parts);

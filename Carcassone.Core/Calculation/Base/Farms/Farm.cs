@@ -1,4 +1,4 @@
-﻿using Carcassone.Core.Calculation.Base.Farms;
+﻿using Carcassone.Core.Calculation.Base.Cities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace Carcassone.Core.Calculation.Base.Farms
 {
     public class Farm : MergableObject
     {
-        public override int GetScore(GameState state)
+        public override int GetScore(MoveState state)
         {
             List<City> completeCities = GetCompleteCities(state);
 
@@ -32,13 +32,13 @@ namespace Carcassone.Core.Calculation.Base.Farms
             return 3 * completedConnectedCitys.Count();
         }
 
-        public List<City> GetCompleteCities(GameState state)
+        public List<City> GetCompleteCities(MoveState state)
         {
-            var cities = state.GetLastState().Calculated.OfType<City>();
+            var cities = state.Calculated.OfType<City>();
             return cities.Where(c => c.IsComplete(state)).ToList();
         }
 
-        public Farm Copy()
+        public override BaseGameObject Copy()
         {
             var copy = new Farm();
             copy.Parts.AddRange(Parts);

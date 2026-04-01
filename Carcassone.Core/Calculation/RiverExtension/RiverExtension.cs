@@ -24,7 +24,7 @@ namespace Carcassone.Core.Calculation.RiverExtension
         {
         }
 
-        public bool CanPutTileInCell(Point location, int rotation, Tile tile, GameState state)
+        public bool CanPutTileInCell(Point location, int rotation, Tile tile, MoveState state)
         {
             // направление реки всегда должно быть вниз и влево
             var isRiverCard = tile.Id.Contains("W");

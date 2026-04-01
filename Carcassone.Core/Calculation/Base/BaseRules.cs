@@ -1,4 +1,5 @@
-﻿using Carcassone.Core.Calculation.Base.Farms;
+﻿using Carcassone.Core.Calculation.Base.Cities;
+using Carcassone.Core.Calculation.Base.Farms;
 using Carcassone.Core.Calculation.Base.Monasteries;
 using Carcassone.Core.Calculation.Base.Roads;
 using Carcassone.Core.Calculation.Base.Tiles;
@@ -17,8 +18,7 @@ namespace Carcassone.Core.Calculation.Base
 
         public BaseRules()
         {
-            var citiesManager = new CitiesManager();
-            Managers.Add(citiesManager);
+            Managers.Add(new CitiesManager());
             Managers.Add(new RoadsManager());
             Managers.Add(new FarmsManager());
             Managers.Add(new MonasteriesManager());
@@ -27,7 +27,7 @@ namespace Carcassone.Core.Calculation.Base
         /// <summary>
         /// Base rules of connecting tiles
         /// </summary>
-        public bool CanPutTileInCell(Point location, int rotation, Tile tile, GameState state)
+        public bool CanPutTileInCell(Point location, int rotation, Tile tile, MoveState state)
         {
             var neighbourTopTile = state.GetNeighbour(location, Side.top);
             var neighbourLeftTile = state.GetNeighbour(location, Side.left);

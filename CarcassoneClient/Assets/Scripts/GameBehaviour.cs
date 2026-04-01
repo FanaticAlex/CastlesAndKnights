@@ -90,7 +90,6 @@ namespace Assets.Scripts
         {
             _cameraBehaviour = Camera.main.GetComponent<CameraBehaviour>();
             _room = new GameRoom(GameParameters.Instance.Extensions, GameParameters.Instance.Players);
-            _room.Finished += _room_Finished;
 
             _fieldsController = new FieldsController();
             _tilesController = new TilesController();
@@ -110,7 +109,13 @@ namespace Assets.Scripts
         {
             // TODO: клик по обьекту для просмотра владельцев
 
-            if (_room.IsFinished) return;
+            if (_room.IsFinished())
+            {
+                var players = _room.GetPlayers();
+                var scores = _room.PlayersPool.GetPlayersScores(_room.State);
+                _scoreController.ShowEndGameWindow(scores);
+                return;
+            }
 
             if (Input.GetKey(KeyCode.Escape)) ExitAcceptPanel.SetActive(true);
 
@@ -130,7 +135,7 @@ namespace Assets.Scripts
                 case PlayerType.AI_Normal:
                 case PlayerType.AI_Hard:
                     await Task.Run(() => currentPlayer.ProcessMove(_room));
-                    VisualizeTurn(_room.GetMoves().Last());
+                    VisualizeTurn(_room.State.GameMoves.Last());
                     break;
                 case PlayerType.NetworkPlayer:
                     // ждать сетевых игроков 
@@ -144,11 +149,11 @@ namespace Assets.Scripts
 
             var tile = _room.GetTile(gameMove.TileId);
             _tilesController.PlaceTile(gameMove, tile);
-            ShowFlagsAndChips(_room.GetAllGameObjects());
+            ShowFlagsAndChips(_room.State.Calculated);
             _tilesController.UpdateRemainTilesIcon(_room.GetRemainTilesCount());
 
             var players = _room.GetPlayers();
-            var scores = players.Select(p => _room.GetPlayerScore(p.Info.Name));
+            var scores = _room.PlayersPool.GetPlayersScores(_room.State);
             _scoreController.UpdateScore(scores);
             _scoreController.UpdateCurrentPlayerMark(_room.GetCurrentPlayer());
 
@@ -167,13 +172,19 @@ namespace Assets.Scripts
         {
             foreach (var obj in objects)
             {
+                // Todo move this code to core. Make it part of state of object
+                var isComplete = (obj as ICompletableGameObject)?.IsComplete(_room.State); 
+
                 foreach (var part in obj.Parts)
                 {
-                    if (part.Meeple != null)
-                        _tilesController.TilesUI[part.Tile.Id].SetMeeple(part.PartName, part.Meeple.Owner.Info.Color);
-
-                    if (part.Flag != null)
-                        _tilesController.TilesUI[part.Tile.Id].SetFlag(part.PartName, part.Flag.Owner.Info.Color);
+                    var owner = _room.PlayersPool.GetPlayer(part.GetPartOwner(_room.State));
+                    if (owner != null)
+                    {
+                        if (isComplete == true)
+                            _tilesController.TilesUI[part.Tile.Id].SetFlag(part.PartName, owner.Info.Color);
+                        else
+                            _tilesController.TilesUI[part.Tile.Id].SetMeeple(part.PartName, owner.Info.Color);
+                    }
                 }
             }
         }
@@ -234,7 +245,7 @@ namespace Assets.Scripts
         public void OnShowPlayerDetailedScore(Text playerNamePanel)
         {
             var playerName = playerNamePanel.text;
-            var score = _room.GetPlayerScore(playerName);
+            var score = _room.PlayersPool.GetPlayersScores(_room.State).FirstOrDefault(s => s.PlayerName == playerName);
             _scoreController.ShowDetailedScore(playerNamePanel, score);
         }
 
@@ -265,7 +276,7 @@ namespace Assets.Scripts
         {
             var tile = _room.GetCurrentTile();
             _tilesController.SetCurrentTileIcon(tile, _selectedRotation);
-            _availableMoves = new AvailableMoves(_room.GetAvailableMoves());
+            _availableMoves = new AvailableMoves(_room.GetAvailableMoves(tile.Id));
             _fieldsController.ShowLocations(_room.GetCellsStatus(), _availableMoves);
             _moveInitiated = true;
         }
@@ -304,7 +315,7 @@ namespace Assets.Scripts
             _tilesController.PlaceTile(move, tile);
 
             var currentPlayer = _room.GetCurrentPlayer();
-            if (currentPlayer.GetMeeplesCount() == 0)
+            if (currentPlayer.GetMeeplesCount(_room.State) == 0)
             {
                 Logger.Info("Player has no chip!");
                 OnEndTurnButonClick();
@@ -343,13 +354,6 @@ namespace Assets.Scripts
             var defaultToggle = toggleGroup.Find("Toggle0");
             var defaultToggleComponent = defaultToggle.GetComponent<Toggle>();
             defaultToggleComponent.isOn = true;
-        }
-
-        private void _room_Finished(object sender, EventArgs e)
-        {
-            var players = _room.GetPlayers();
-            var scores = players.Select(p => _room.GetPlayerScore(p.Info.Name));
-            _scoreController.ShowEndGameWindow(scores);
         }
 
         private string GetSelectedPart(Tile tile)

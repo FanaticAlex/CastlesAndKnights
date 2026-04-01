@@ -10,23 +10,13 @@ namespace Carcassone.Core.Calculation.Base.Farms
     {
         private ObjectsMerger<Farm> _merger = new ObjectsMerger<Farm>();
 
-        public IEnumerable<BaseGameObject> CalculateObjects(Tile tile, GameState state)
+        public void CalculateObjects(Tile tile, MoveState state)
         {
-            var farms = state.GetLastState().Calculated.OfType<Farm>();
-            var copies = farms.Select(f => f.Copy()).ToList();
-
             foreach (var part in tile.Parts)
             {
                 if (part is FarmPart)
-                    _merger.ConnectPartWithObjects(copies, part, state);
+                    _merger.ConnectPartWithObjects(state.Calculated, part, state);
             }
-
-            return copies;
-        }
-
-        public IEnumerable<BaseGameObject> GetGameObjects(GameState state)
-        {
-            return state.GetLastState().Calculated.OfType<Farm>();
         }
     }
 }

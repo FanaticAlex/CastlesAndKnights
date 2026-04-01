@@ -1,13 +1,11 @@
 ﻿using Carcassone.Core.Tiles;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace Carcassone.Core.Calculation
 {
     public interface IGameObjectsManager
     {
-        IEnumerable<BaseGameObject> GetGameObjects(GameState state);
-        IEnumerable<BaseGameObject> CalculateObjects(Tile tile, GameState state);
+        void CalculateObjects(Tile tile, MoveState state);
     }
 }
 

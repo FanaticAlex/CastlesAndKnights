@@ -1,6 +1,6 @@
 ﻿using Carcassone.Core.Tiles;
 using System.Collections.Generic;
-using Carcassone.Core.Calculation.Base.Farms;
+using Carcassone.Core.Calculation.Base.Cities;
 using Carcassone.Core.Calculation.Base.Farms;
 
 namespace Carcassone.Core.Calculation.Base.Tiles

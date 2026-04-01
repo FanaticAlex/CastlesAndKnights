@@ -17,18 +17,18 @@ namespace Carcassone.Core.Calculation.Base.Monasteries
             _monasteryTile = tile;
         }
 
-        public override int GetScore(GameState state)
+        public override int GetScore(MoveState state)
         {
             // one neighbout tile = one score point
             return IsComplete(state) ? MaxConnectedTiles * 2 : GetNeighboutTilesCount(state);
         }
 
-        public bool IsComplete(GameState state)
+        public bool IsComplete(MoveState state)
         {
             return (GetNeighboutTilesCount(state) == MaxConnectedTiles);
         }
 
-        private int GetNeighboutTilesCount(GameState state)
+        private int GetNeighboutTilesCount(MoveState state)
         {
             var tilesCount = 1; // base monastery tile
 
@@ -46,7 +46,7 @@ namespace Carcassone.Core.Calculation.Base.Monasteries
             return tilesCount;
         }
 
-        public Monastery Copy()
+        public override BaseGameObject Copy()
         {
             var copy = new Monastery((MonasteryPart)Parts.First(), _monasteryTile);
             copy.Parts.AddRange(Parts);

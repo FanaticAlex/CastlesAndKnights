@@ -34,8 +34,7 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove0);
 
-            var state = room.GetLastState();
-            var roads = state.GetAllRoads();
+            var roads = room.State.GetAllRoads();
             Assert.Equal(4, roads.Count());
             foreach (var road in roads)
             {
@@ -104,13 +103,12 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove3);
 
-            var state = room.GetLastState();
-            var roads = state.GetAllRoads();
+            var roads = room.State.GetAllRoads();
             Assert.Single(roads);
             var road = roads.Single();
             Assert.Equal(8, road.GetScore(room.State));
             Assert.True(road.IsComplete(room.State));
-            Assert.Single(road.Parts.Where(p => p.Meeple != null));
+            Assert.Single(road.Parts.Where(p => p.GetPartOwner(room.State) != null));
         }
 
         /// <summary>
@@ -154,13 +152,12 @@ namespace Carcassone.Core.Tests.Buisness
             };
             room.MakeMove(gameMove1);
 
-            var state = room.GetLastState();
-            var roads = state.GetAllRoads();
+            var roads = room.State.GetAllRoads();
             Assert.Equal(3, roads.Count());
             var road = roads.First(r => r.IsComplete(room.State));
             Assert.Equal(4, road.GetScore(room.State));
             Assert.True(road.IsComplete(room.State));
-            Assert.Single(road.Parts.Where(p => p.Meeple != null));
+            Assert.Single(road.Parts.Where(p => p.GetPartOwner(room.State) != null));
         }
     }
 }

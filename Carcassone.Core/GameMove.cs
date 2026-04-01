@@ -1,5 +1,4 @@
-﻿using Carcassone.Core.Calculation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -19,7 +18,7 @@ namespace Carcassone.Core
             return x.Location == y.Location &&
                    x.TileRotation == y.TileRotation &&
                    x.TileId == y.TileId &&
-                   x.PartName == y.PartName &&
+                   ((x.PartName == y.PartName) || (string.IsNullOrEmpty(x.PartName) && string.IsNullOrEmpty(y.PartName))) &&
                    x.PlayerName == y.PlayerName;
         }
 
@@ -54,8 +53,7 @@ namespace Carcassone.Core
         }
 
         public Point Location { get; set; }
-        public string? PartName { get; set; }
 
-        public MoveState? State { get; set; }
+        public string? PartName { get; set; }
     }
 }

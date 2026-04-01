@@ -1,13 +1,10 @@
-﻿using Carcassone.Core.Calculation.Base.Farms;
-using Carcassone.Core.Players;
-using Carcassone.Core.Tiles;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Carcassone.Core.Calculation.Base.Roads
 {
     public class Road : MergableObject, ICompletableGameObject
     {
-        public override int GetScore(GameState state)
+        public override int GetScore(MoveState state)
         {
             var score = Parts.Count;
 
@@ -17,12 +14,12 @@ namespace Carcassone.Core.Calculation.Base.Roads
             return score;
         }
 
-        public bool IsComplete(GameState state)
+        public bool IsComplete(MoveState state)
         {
             return ObjectCompletitionHelper.IsCompleteByBorder(this, state);
         }
 
-        public Road Copy()
+        public override BaseGameObject Copy()
         {
             var copy = new Road();
             copy.Parts.AddRange(Parts);
