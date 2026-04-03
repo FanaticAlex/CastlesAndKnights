@@ -51,7 +51,6 @@ namespace Carcassone.Core.Tests.Buisness
                 PartName = "Monastery_0"
             };
             room.MakeMove(gameMove0);
-
             Assert.Single(room.State.GetAllMonastery());
             Assert.Equal(1, bob.GetPlayerOverallScore(room.State));
 
@@ -151,7 +150,12 @@ namespace Carcassone.Core.Tests.Buisness
             Assert.Single(room.State.GetAllMonastery());
             Assert.Equal(18, bob.GetPlayerOverallScore(room.State));
 
-            Assert.True(room.State.GetAllMonastery().ElementAt(0).IsComplete(room.State));
+            var monastery = room.State.GetAllMonastery().ElementAt(0);
+            Assert.True(monastery.IsComplete(room.State));
+            Assert.Single(monastery.Parts);
+
+            Assert.Single(room.State.GetAllRoads());
+            Assert.Equal(2, room.State.GetAllFarms().Count());
         }
     }
 }

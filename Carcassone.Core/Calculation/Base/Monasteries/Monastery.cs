@@ -49,7 +49,6 @@ namespace Carcassone.Core.Calculation.Base.Monasteries
         public override BaseGameObject Copy()
         {
             var copy = new Monastery((MonasteryPart)Parts.First(), _monasteryTile);
-            copy.Parts.AddRange(Parts);
             return copy;
         }
     }

@@ -157,7 +157,7 @@ namespace Assets.Scripts
             _scoreController.UpdateScore(scores);
             _scoreController.UpdateCurrentPlayerMark(_room.GetCurrentPlayer());
 
-            var position = _tilesController.TilesUI[gameMove.TileId].GetTilePosition();
+            var position = _tilesController.GetTileUI(gameMove.TileId).GetTilePosition();
             _cameraBehaviour.MoveCameraAtCard(position);
 
             Logger.Info("Время отрисовки хода: " + (DateTime.Now - time).TotalSeconds);
@@ -180,10 +180,11 @@ namespace Assets.Scripts
                     var owner = _room.PlayersPool.GetPlayer(part.GetPartOwner(_room.State));
                     if (owner != null)
                     {
+                        var tileUI = _tilesController.GetTileUI(part.Tile.Id);
                         if (isComplete == true)
-                            _tilesController.TilesUI[part.Tile.Id].SetFlag(part.PartName, owner.Info.Color);
+                            tileUI.SetFlag(part.PartName, owner.Info.Color);
                         else
-                            _tilesController.TilesUI[part.Tile.Id].SetMeeple(part.PartName, owner.Info.Color);
+                            tileUI.SetMeeple(part.PartName, owner.Info.Color);
                     }
                 }
             }
@@ -203,18 +204,18 @@ namespace Assets.Scripts
         {
             // у всех частей обьекта анимацию убираем
             var currentTile = _room.GetCurrentTile();
-            _tilesController.TilesUI[currentTile.Id].HideAllCardMarks();
+            _tilesController.GetTileUI(currentTile.Id).HideAllCardMarks();
 
             // у выбранного включаем
             _selectedPart = GetSelectedPart(currentTile);
-            _tilesController.TilesUI[currentTile.Id].ShowPartMark(_selectedPart);
+            _tilesController.GetTileUI(currentTile.Id).ShowPartMark(_selectedPart);
         }
 
         public void OnPutCardCancel()
         {
             // при отмене карта убирается из поля
             var currentTile = _room.GetCurrentTile();
-            _tilesController.TilesUI[currentTile.Id].ResetPositionRotation();
+            _tilesController.GetTileUI(currentTile.Id).ResetPositionRotation();
             SelectPartPanel.SetActive(false);
         }
 
@@ -237,7 +238,7 @@ namespace Assets.Scripts
             VisualizeTurn(gameMove);
 
             // ход окончен
-            _tilesController.TilesUI[currentTile.Id].HideAllCardMarks();
+            _tilesController.GetTileUI(currentTile.Id).HideAllCardMarks();
             _selectedPart = null;
             SelectPartPanel.SetActive(false);
         }
@@ -322,7 +323,7 @@ namespace Assets.Scripts
                 return;
             }
             
-            var position = _tilesController.TilesUI[_room.GetCurrentTile().Id].GetTilePosition();
+            var position = _tilesController.GetTileUI(_room.GetCurrentTile().Id).GetTilePosition();
             _cameraBehaviour.MoveCameraAtCard(position);
 
             var parts = availableMovesBySelectedCell.Select(m => m.PartName).ToList();

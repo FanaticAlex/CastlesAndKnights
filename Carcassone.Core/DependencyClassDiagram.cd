@@ -7,21 +7,20 @@
       <Compartment Name="Events" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>CUQCCAgAEgABAAAABA4YAEAgAhAAEgUABAABAAAHAAA=</HashCode>
+      <HashCode>AUADECAAEgABAAAABABAAAAgAAAAAgUABQADBAAGAAA=</HashCode>
       <FileName>GameRoom.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="_gameGrid" />
-      <Field Name="_playersPool" />
       <Field Name="_tileStack" />
+      <Property Name="PlayersPool" />
+      <Property Name="State" />
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
-      <Field Name="_moves" />
       <Field Name="_rules" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Carcassone.Core.Calculation.PlayerScore">
-    <Position X="14" Y="8" Width="1.5" />
+    <Position X="16.5" Y="2.5" Width="1.5" />
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
@@ -36,7 +35,7 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAABAAgAAAAAAACAABAAAAAAAEAAAgA=</HashCode>
+      <HashCode>AAABIAAAAAAAAAAAAAgAAAQAAAAAABAAACAAAEAAAAA=</HashCode>
       <FileName>Players\GamePlayer.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -44,12 +43,12 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Carcassone.Core.Players.GamePlayersPool">
-    <Position X="13.5" Y="2.5" Width="2" />
+    <Position X="14.25" Y="2.5" Width="1.5" />
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAIAAAiAAAABAAAEAAAAAAAAABAAAIAAAAIAAAAA=</HashCode>
+      <HashCode>AAAAAIAAAgAAAABAAAEQAAAAAAAABAAAAAABAIAAAAA=</HashCode>
       <FileName>Players\GamePlayersPool.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -57,36 +56,29 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Carcassone.Core.GameMove">
-    <Position X="10.5" Y="0.5" Width="1.5" />
+    <Position X="9.75" Y="7.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAAAAAAAAAAAIAAAAACAIAAAAAAAAAAAAAgAA=</HashCode>
+      <HashCode>AAEAAAAAAAAAAAAAAAIBAAAACAIAAAAAAAAAAAAAgAA=</HashCode>
       <FileName>GameMove.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Carcassone.Core.Tiles.Tile">
-    <Position X="1.5" Y="4.5" Width="1.5" />
+    <Position X="0.5" Y="4.5" Width="1.5" />
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>IAACAAgBAAAAAAAAAFIAAAAAABhAAKgAAAAIAAAEKAA=</HashCode>
+      <HashCode>AAACAAAIAAAAAAAAAFgAAAAAAAAAACAAABBIAAAAAAA=</HashCode>
       <FileName>Tiles\Tile.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
       <Property Name="Parts" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="Carcassone.Core.Grid">
-    <Position X="10.25" Y="4" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AQAAEAAAAAAAAAAAAAAAAAIAAAAAAAAAAIAAAAAAACA=</HashCode>
-      <FileName>Grid.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Carcassone.Core.Players.PlayerInfo">
     <Position X="16.5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAEQAAAAAAAAgAAAAgAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAEQAAAAAAAAAAAAAgAAAAAA=</HashCode>
       <FileName>Players\GamePlayer.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -96,36 +88,36 @@
   <Class Name="Carcassone.Core.Tiles.TileStack">
     <Position X="1.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AUBAAAAAAAABAAAEAAAIACAAAAAQAEAAgAAAAAAAEAA=</HashCode>
+      <HashCode>AUAQCAAAAABAAAAAAAAIACAAAEAAAAAAAAAAAEAAEAA=</HashCode>
       <FileName>Tiles\TileStack.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
-      <Field Name="_remain" />
+      <Field Name="_tiles" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Carcassone.Core.Calculation.ObjectPart">
-    <Position X="0.5" Y="8.5" Width="1.5" />
+    <Position X="0.5" Y="7" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BAAAAAAAAAAAAAQAAAAAAACQAAQAAIAAAAAAAAAAgQA=</HashCode>
+      <HashCode>BAAAAAAAAAAAAAAAAEAAAgAAAAQAAIAAABAAgEAAgQA=</HashCode>
       <FileName>Calculation\ObjectPart.cs</FileName>
     </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="Meeple" />
-      <Property Name="Flag" />
-    </ShowAsAssociation>
   </Class>
-  <Class Name="Carcassone.Core.Players.Meeple">
-    <Position X="3" Y="8.5" Width="1.5" />
+  <Class Name="Carcassone.Core.MoveState">
+    <Position X="9.75" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
-      <FileName>Players\Meeple.cs</FileName>
+      <HashCode>AAAAOAAAoAAAAAAABAIAAIAAAAAAEAgAAAABAAAAACA=</HashCode>
+      <FileName>MoveState.cs</FileName>
     </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="GameMoves" />
+      <Property Name="Calculated" />
+    </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="Carcassone.Core.Players.Flag">
-    <Position X="3" Y="10.75" Width="1.5" />
+  <Class Name="Carcassone.Core.Calculation.BaseGameObject">
+    <Position X="11.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Players\Flag.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAEAAABAAAAAAAgAAAIAAAAAQgAAAAAA=</HashCode>
+      <FileName>Calculation\BaseGameObject.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="Carcassone.Core.Calculation.IGameRules">
@@ -141,7 +133,7 @@
   <Interface Name="Carcassone.Core.Calculation.IGameObjectsManager">
     <Position X="4.5" Y="5.75" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Calculation\IGameObjectsManager.cs</FileName>
     </TypeIdentifier>
   </Interface>

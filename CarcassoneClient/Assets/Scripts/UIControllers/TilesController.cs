@@ -16,7 +16,7 @@ namespace Assets.Scripts
     /// </summary>
     internal class TilesController
     {
-        public Dictionary<string, TileUI> TilesUI = new();
+        private Dictionary<string, TileUI> _tilesUI = new();
         private Dictionary<string, GameObject> _playerToMarkers = new();
         private SoundEffectsPlayer _soundEffectPlayer;
         private ParticleSystem placeCardEffect;
@@ -27,6 +27,14 @@ namespace Assets.Scripts
             currentCardImageGO = GameObject.Find("CurrentCardImage");
             placeCardEffect = GameObject.Find("PlaceCardEffectParticles").GetComponent<ParticleSystem>();
             _soundEffectPlayer = GameObject.FindAnyObjectByType<SoundEffectsPlayer>();
+        }
+
+        public TileUI GetTileUI(string tileId)
+        {
+            if (_tilesUI.ContainsKey(tileId))
+                return _tilesUI[tileId];
+            else
+                throw new Exception("!!!!");
         }
 
         public void PlaceTile(GameMove gameMove, Tile tile)
@@ -76,19 +84,19 @@ namespace Assets.Scripts
             }
 
             var markObject = _playerToMarkers[player.Name];
-            var cardPosition = TilesUI[tileId].GetTilePosition();
+            var cardPosition = _tilesUI[tileId].GetTilePosition();
             markObject.transform.position = cardPosition + new Vector3(0, 0, -1.3f);
         }
 
         private TileUI GetTileUI(Tile tile)
         {
-            if (TilesUI.ContainsKey(tile.Id))
-                return TilesUI[tile.Id];
+            if (_tilesUI.ContainsKey(tile.Id))
+                return _tilesUI[tile.Id];
             else
             {
                 var newTileUI = new TileUI(tile);
                 newTileUI.SetActive(false);
-                TilesUI.Add(tile.Id, newTileUI);
+                _tilesUI.Add(tile.Id, newTileUI);
                 return newTileUI;
             }
         }
