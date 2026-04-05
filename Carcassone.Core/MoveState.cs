@@ -73,24 +73,5 @@ namespace Carcassone.Core
         {
             return GameMoves.First(s => s.TileId == tileId).TileRotation;
         }
-
-        public IEnumerable<City> GetAllCities()
-        {
-            return Calculated.OfType<City>();
-        }
-        public IEnumerable<Road> GetAllRoads()
-        {
-            return Calculated.OfType<Road>();
-        }
-
-        public IEnumerable<Farm> GetAllFarms()
-        {
-            return Calculated.OfType<Farm>();
-        }
-
-        public IEnumerable<Monastery> GetAllMonastery()
-        {
-            return Calculated.OfType<Monastery>();
-        }
     }
 }

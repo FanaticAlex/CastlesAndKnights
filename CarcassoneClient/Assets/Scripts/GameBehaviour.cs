@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -69,9 +70,10 @@ namespace Assets.Scripts
         public GameObject FinalScoreUIPanel;
         public GameObject FinalScoreUIPanelText;
         public GameObject PlayerDetailScorePanel;
+        public GameObject ObjectInfoScorePanel;
         public GameObject ExitAcceptPanel;
 
-        private GameRoom _room;
+        private GameLogic _room;
         private AvailableMoves _availableMoves;
 
         private int _selectedRotation;
@@ -89,13 +91,13 @@ namespace Assets.Scripts
         void Start()
         {
             _cameraBehaviour = Camera.main.GetComponent<CameraBehaviour>();
-            _room = new GameRoom(GameParameters.Instance.Extensions, GameParameters.Instance.Players);
+            _room = new GameLogic();
 
             _fieldsController = new FieldsController();
             _tilesController = new TilesController();
 
             var players = _room.GetPlayers();
-            _scoreController = new ScoreController(players, FinalScoreUIPanel, FinalScoreUIPanelText, PlayerDetailScorePanel);
+            _scoreController = new ScoreController(players, FinalScoreUIPanel, FinalScoreUIPanelText, PlayerDetailScorePanel, ObjectInfoScorePanel);
 
             ExitAcceptPanel.SetActive(false);
             SelectPartPanel.SetActive(false);
@@ -111,8 +113,7 @@ namespace Assets.Scripts
 
             if (_room.IsFinished())
             {
-                var players = _room.GetPlayers();
-                var scores = _room.PlayersPool.GetPlayersScores(_room.State);
+                var scores = _room.GetPlayersScores();
                 _scoreController.ShowEndGameWindow(scores);
                 return;
             }
@@ -129,13 +130,13 @@ namespace Assets.Scripts
             {
                 case PlayerType.Human:
                     if (!_moveInitiated) InitiateSelectCellStage();
-                    if (Input.GetMouseButtonUp(0)) TryToSelectCell();
+                    if (Input.GetMouseButtonUp(0)) OnClick();
                     break;
                 case PlayerType.AI_Easy:
                 case PlayerType.AI_Normal:
                 case PlayerType.AI_Hard:
-                    await Task.Run(() => currentPlayer.ProcessMove(_room));
-                    VisualizeTurn(_room.State.GameMoves.Last());
+                    await Task.Run(() => _room.ProcessAIPlayerMove());
+                    VisualizeTurn(_room.GetState().GameMoves.Last());
                     break;
                 case PlayerType.NetworkPlayer:
                     // ждать сетевых игроков 
@@ -149,11 +150,11 @@ namespace Assets.Scripts
 
             var tile = _room.GetTile(gameMove.TileId);
             _tilesController.PlaceTile(gameMove, tile);
-            ShowFlagsAndChips(_room.State.Calculated);
+            ShowFlagsAndChips(_room.GetState().Calculated);
             _tilesController.UpdateRemainTilesIcon(_room.GetRemainTilesCount());
 
             var players = _room.GetPlayers();
-            var scores = _room.PlayersPool.GetPlayersScores(_room.State);
+            var scores = _room.GetPlayersScores();
             _scoreController.UpdateScore(scores);
             _scoreController.UpdateCurrentPlayerMark(_room.GetCurrentPlayer());
 
@@ -173,11 +174,11 @@ namespace Assets.Scripts
             foreach (var obj in objects)
             {
                 // Todo move this code to core. Make it part of state of object
-                var isComplete = (obj as ICompletableGameObject)?.IsComplete(_room.State); 
+                var isComplete = (obj as ICompletableGameObject)?.IsComplete(_room.GetState()); 
 
                 foreach (var part in obj.Parts)
                 {
-                    var owner = _room.PlayersPool.GetPlayer(part.GetPartOwner(_room.State));
+                    var owner = _room.GetPlayer(part.GetPartOwner(_room.GetState()));
                     if (owner != null)
                     {
                         var tileUI = _tilesController.GetTileUI(part.Tile.Id);
@@ -246,13 +247,19 @@ namespace Assets.Scripts
         public void OnShowPlayerDetailedScore(Text playerNamePanel)
         {
             var playerName = playerNamePanel.text;
-            var score = _room.PlayersPool.GetPlayersScores(_room.State).FirstOrDefault(s => s.PlayerName == playerName);
-            _scoreController.ShowDetailedScore(playerNamePanel, score);
+            var score = _room.GetPlayersScores().FirstOrDefault(s => s.PlayerName == playerName);
+            _scoreController.ShowDetailedPlayerScore(playerNamePanel, score);
         }
 
         public void OnClosePlayerDetailedScore()
         {
             _scoreController.HideDetailedScore();
+        }
+
+        public void OnCloseObjectDetails()
+        {
+            _scoreController.HideObjectInfo();
+            _tilesController.HideSelection();
         }
 
         public void OnEndGameBtn()
@@ -282,13 +289,37 @@ namespace Assets.Scripts
             _moveInitiated = true;
         }
 
-        private void TryToSelectCell()
+        private void OnClick()
         {
-            if (SelectPartPanel.activeSelf) // если мы в состоянии выбора чати то не кликам на поля
+            var hit = GetRaycastHit();
+
+            var partInfo = _tilesController.GetClickedPart(hit);
+            if (partInfo != null)
+            {
+                _tilesController.HideSelection();
+
+                // set new selection marks
+                var obj = _room.GetState().Calculated
+                    .FirstOrDefault(o => o.Parts.FirstOrDefault(p => (p.PartId == partInfo.Item1 + partInfo.Item2)) != null);
+                foreach (var part in obj.Parts)
+                {
+                    var tileUI = _tilesController.GetTileUI(part.Tile.Id);
+                    tileUI.ShowPartMark(part.PartName);
+                }
+
+                _scoreController.ShowObjectInfo(obj.GetType().Name, obj.GetScore(_room.GetState()), obj.GetObjectOwners(_room.GetState()));
+                return;
+            }
+
+            TryToSelectCell(hit.collider?.gameObject);
+        }
+
+        private void TryToSelectCell(GameObject hittedGO)
+        {
+            if (SelectPartPanel.activeSelf) // если мы в состоянии выбора чаcти то не кликам на поля
                 return;
 
             // находим поле по которому был клик
-            var hittedGO = GetHitedGameObject();
             var cellPoint = _fieldsController.GetFieldByGameObject(hittedGO);
             if (cellPoint == null)
             {
@@ -316,7 +347,7 @@ namespace Assets.Scripts
             _tilesController.PlaceTile(move, tile);
 
             var currentPlayer = _room.GetCurrentPlayer();
-            if (currentPlayer.GetMeeplesCount(_room.State) == 0)
+            if (currentPlayer.GetMeeplesCount(_room.GetState()) == 0)
             {
                 Logger.Info("Player has no chip!");
                 OnEndTurnButonClick();
@@ -378,11 +409,17 @@ namespace Assets.Scripts
             return null;
         }
 
-        private GameObject GetHitedGameObject()
+        private RaycastHit GetRaycastHit()
         {
+            // Check if the pointer is over a UI element
+            if (EventSystem.current.IsPointerOverGameObject() && (EventSystem.current.currentSelectedGameObject != null))
+            {
+                return new RaycastHit(); // Exit, don't do raycast
+            }
+
             Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
             Physics.Raycast(ray, out RaycastHit hit, 100.0F);
-            return hit.collider?.gameObject;
+            return hit;
         }
     }
 }

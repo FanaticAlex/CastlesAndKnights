@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 namespace Assets.Scripts
@@ -20,6 +21,7 @@ namespace Assets.Scripts
         public GameObject _finalScoreUIPanel;
         public GameObject _finalScoreUIPanelText;
         public GameObject _playerDetailScorePanel;
+        public GameObject _objectInfoPanel;
 
         /// <summary>
         /// Инициализирует панели игроков
@@ -29,14 +31,17 @@ namespace Assets.Scripts
             IEnumerable<GamePlayer> players,
             GameObject finalScoreUIPanel,
             GameObject finalScoreUIPanelText,
-            GameObject playerDetailScorePanel)
+            GameObject playerDetailScorePanel,
+            GameObject objectInfoPanel)
         {
             _finalScoreUIPanel = finalScoreUIPanel;
             _finalScoreUIPanelText = finalScoreUIPanelText;
             _playerDetailScorePanel = playerDetailScorePanel;
+            _objectInfoPanel = objectInfoPanel;
 
             _finalScoreUIPanel.SetActive(false);
             _playerDetailScorePanel.SetActive(false);
+            objectInfoPanel.SetActive(false);
 
             var panels = new List<GameObject>
             {
@@ -66,7 +71,7 @@ namespace Assets.Scripts
             }
         }
 
-        public void ShowDetailedScore(Text playerNamePanel, PlayerScore score)
+        public void ShowDetailedPlayerScore(Text playerNamePanel, PlayerScore score)
         {
             if (!_playerDetailScorePanel.activeSelf)
             {
@@ -74,16 +79,30 @@ namespace Assets.Scripts
                 var textComp = GameObject.Find("DetailedPlayerScore").GetComponent<TMP_Text>();
                 var playerName = playerNamePanel.text;
                 textComp.text = "Player score " + playerName + "\r\n";
-                //textComp.text += $"Castles: {score.CastlesScore}({score.CastlesCount})\r\n";
-                //textComp.text += $"Fields: {score.CornfieldsScore}({score.CornfieldsCount})\r\n";
-                //textComp.text += $"Monasteries: {score.ChurchesScore}({score.ChurchesCount})\r\n";
-                //textComp.text += $"Roads: {score.RoadsScore}({score.RoadsCount})\r\n";
+                foreach(var objInfo in score.scoreObjs)
+                {
+                    textComp.text += $"{objInfo.ObjectName}: {objInfo.ObjectScore} (count: {objInfo.ObjectCount})\r\n";
+                }
             }
         }
 
         public void HideDetailedScore()
         {
             _playerDetailScorePanel.SetActive(false);
+        }
+
+        public void ShowObjectInfo(string objType, int score, IEnumerable<string> owners)
+        {
+            _objectInfoPanel.SetActive(true);
+            var textComp = GameObject.Find("ObjectInfo").GetComponent<TMP_Text>();
+            textComp.text = "Object type: " + objType + "\r\n";
+            textComp.text += $"score: {score}\r\n";
+            textComp.text += $"owners: {string.Join(",", owners)}\r\n";
+        }
+
+        public void HideObjectInfo()
+        {
+            _objectInfoPanel.SetActive(false);
         }
 
         public void UpdateScore(IEnumerable<PlayerScore> scores)

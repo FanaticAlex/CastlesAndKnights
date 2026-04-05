@@ -29,12 +29,34 @@ namespace Assets.Scripts
             _soundEffectPlayer = GameObject.FindAnyObjectByType<SoundEffectsPlayer>();
         }
 
+        public void HideSelection()
+        {
+            // reset previous selection
+            foreach (var item in _tilesUI)
+                item.Value.HideAllCardMarks();
+        }
+
+        public Tuple<string, string> GetClickedPart(RaycastHit hit)
+        {
+            var clickedTileUI = _tilesUI.FirstOrDefault(item => item.Value.GO == hit.collider?.gameObject).Value;
+            if (clickedTileUI != null)
+            {
+                var partName = clickedTileUI._partIdToGameObject
+                    .OrderBy(item => Vector3.Distance(item.Value.transform.position, hit.point))
+                    .FirstOrDefault()
+                    .Key;
+                return new Tuple<string, string> (clickedTileUI.GO.name, partName);
+            }
+
+            return null;
+        }
+
         public TileUI GetTileUI(string tileId)
         {
             if (_tilesUI.ContainsKey(tileId))
                 return _tilesUI[tileId];
             else
-                throw new Exception("!!!!");
+                throw new Exception($"{tileId}. TileUI not found!!!!");
         }
 
         public void PlaceTile(GameMove gameMove, Tile tile)

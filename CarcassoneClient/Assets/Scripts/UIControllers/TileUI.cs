@@ -23,7 +23,8 @@ namespace Assets.Scripts
         public TileUI(Tile tile)
         {
             GO = GetTileGO(tile.TileType);
-            GO.GetComponent<BoxCollider>().enabled = false;
+            GO.name = tile.Id;
+            //GO.GetComponent<BoxCollider>().enabled = false;
 
             foreach (var part in tile.Parts)
             {

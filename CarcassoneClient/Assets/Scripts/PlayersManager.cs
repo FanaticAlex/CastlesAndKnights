@@ -23,19 +23,20 @@ namespace Assets.Scripts
 
         public static void Save(List<LocalPlayerInfo> Users)
         {
-            //var json = JsonConvert.SerializeObject(Users);
-            //File.WriteAllText(GetFilePath(), json);
+            var json = JsonUtility.ToJson(Users);
+            File.WriteAllText(GetFilePath(), json);
         }
 
         public static List<LocalPlayerInfo> Load()
         {
-            //try
-            //{
-            //    var json = File.ReadAllText(GetFilePath());
-            //    var users = JsonConvert.DeserializeObject<List<Player>>(json) ?? throw new Exception($"Can't load Local Users");
-            //    return users;
-            //}
-            //catch
+            try
+            {
+                var json = File.ReadAllText(GetFilePath());
+                var users = JsonUtility.FromJson<List<LocalPlayerInfo>>(json) ?? throw new Exception($"Can't load Local Users");
+                if (users.Count == 0) throw new Exception("No saved users");
+                return users;
+            }
+            catch
             {
                 // создаем дефолтный список
                 var dafaultUsersList = new List<LocalPlayerInfo>

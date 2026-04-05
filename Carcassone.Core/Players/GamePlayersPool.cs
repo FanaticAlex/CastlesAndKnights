@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
+using System.Numerics;
 
 namespace Carcassone.Core.Players
 {
@@ -44,24 +44,23 @@ namespace Carcassone.Core.Players
 
         public IEnumerable<PlayerScore> GetPlayersScores(MoveState state)
         {
-            var scores = new List<PlayerScore>();
+            // calculating ranks by overall score
+            var list = new List<Tuple<GamePlayer, int>>();
             foreach (var player in GamePlayers)
+                list.Add(new Tuple<GamePlayer, int>(player, player.GetPlayerOverallScore(state)));
+
+            list.Sort((x, y) => y.Item2.CompareTo(x.Item2));
+
+            // calculating scores
+            var scores = new List<PlayerScore>();
+            foreach (var item in list)
             {
-                var score = new PlayerScore(
-                    player.Info.Name,
-                    player.GetMeeplesCount(state),
-                    player.GetPlayerOverallScore(state));
+                var player = item.Item1;
+                var meeples = player.GetMeeplesCount(state);
+                var overallscore = item.Item2;
+                var rank = list.IndexOf(item);
+                var score = new PlayerScore(player.Info.Name, meeples, overallscore, rank, state);
                 scores.Add(score);
-            }
-
-            scores.Sort(delegate (PlayerScore x, PlayerScore y)
-            {
-                return y.OverallScore.CompareTo(x.OverallScore);
-            });
-
-            foreach (var score in scores)
-            {
-                score.Rank = scores.IndexOf(score);
             }
 
             return scores;

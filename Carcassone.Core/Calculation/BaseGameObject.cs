@@ -22,7 +22,7 @@ namespace Carcassone.Core.Calculation
             return GetObjectOwners(state).Any();
         }
 
-        private IEnumerable<string> GetObjectOwners(MoveState state)
+        public IEnumerable<string> GetObjectOwners(MoveState state)
         {
             // owners are players with a maximum meeples on an object's parts
 
