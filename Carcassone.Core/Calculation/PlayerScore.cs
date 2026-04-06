@@ -5,6 +5,13 @@ namespace Carcassone.Core.Calculation
 {
     public class ScoreObjDetails
     {
+        public ScoreObjDetails(string objectName, int objectCount, int objectScore)
+        {
+            ObjectName = objectName;
+            ObjectCount = objectCount;
+            ObjectScore = objectScore;
+        }
+
         public string ObjectName { get; set; }
         public int ObjectCount { get; set; }
         public int ObjectScore { get; set; }
@@ -37,12 +44,7 @@ namespace Carcassone.Core.Calculation
             var allPlayerObjects = objs.Where(obj => obj.IsPlayerOwner(PlayerName, state));
             var sorted = allPlayerObjects
                 .GroupBy(obj => obj.GetType())
-                .Select(g => new ScoreObjDetails()
-                {
-                    ObjectName = g.Key.Name,
-                    ObjectCount = g.Count(),
-                    ObjectScore = g.Select(obj => obj.GetScore(state)).Sum()
-                });
+                .Select(g => new ScoreObjDetails(g.Key.Name, g.Count(), g.Select(obj => obj.GetScore(state)).Sum()));
             return sorted.ToList();
         }
     }

@@ -59,14 +59,14 @@ namespace Carcassone.Core.Players
                 var meeples = player.GetMeeplesCount(state);
                 var overallscore = item.Item2;
                 var rank = list.IndexOf(item);
-                var score = new PlayerScore(player.Info.Name, meeples, overallscore, rank, state);
+                var score = new PlayerScore(player.Info.Name, meeples, rank, overallscore, state);
                 scores.Add(score);
             }
 
             return scores;
         }
 
-        public GamePlayer GetPlayer(string playerName)
+        public GamePlayer? GetPlayer(string playerName)
         {
             if (string.IsNullOrEmpty(playerName)) return null;
 

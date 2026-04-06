@@ -87,6 +87,9 @@ namespace Carcassone.Core.Players
 
             // where to put a card
             var currentTile = room.GetCurrentTile();
+            if (currentTile == null)
+                throw new Exception("Can't process empty tile.");
+
             List<GameMove> possibleMoves = room.GetAvailableMoves(currentTile.Id);
             GameMove bestMove = GetBestMove(room, possibleMoves);
             room.MakeMove(bestMove);

@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -15,47 +14,6 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
-    public class AvailableMoves
-    {
-        public List<GameMove> _moves = new List<GameMove>();
-
-        public AvailableMoves(List<GameMove> moves)
-        {
-            _moves = moves;
-        }
-
-        public bool CanPut(Point cell)
-        {
-            return _moves.Select(m => m.Location).Distinct().Contains(cell);
-        }
-
-        public IEnumerable<int> GetAvailableRotations(Point cell) 
-        {
-            return _moves
-                .Where(m => m.Location == cell)
-                .Select(m => m.TileRotation)
-                .Distinct();
-        }
-
-        public IEnumerable<GameMove> GetMoves(Point cell, int rotation)
-        {
-            return _moves
-                .Where(m => m.Location == cell)
-                .Where(m => m.TileRotation == rotation);
-        }
-
-        public IEnumerable<Point> GetLocations()
-        {
-            return _moves.Select(m => m.Location).Distinct();
-        }
-    }
-
-    enum GameState
-    {
-        ChoosingLocation,
-        ChoosingMeeple,
-    }
-
     /// <summary>
     /// Содержит данные об игре и управляет ходами одного игрока, а так же обновлением игры
     /// </summary>
@@ -129,7 +87,7 @@ namespace Assets.Scripts
             switch (currentPlayer.Info.PlayerType)
             {
                 case PlayerType.Human:
-                    if (!_moveInitiated) InitiateSelectCellStage();
+                    if (!_moveInitiated) InitiatePlayerMove();
                     if (Input.GetMouseButtonUp(0)) OnClick();
                     break;
                 case PlayerType.AI_Easy:
@@ -280,7 +238,7 @@ namespace Assets.Scripts
             ExitAcceptPanel.SetActive(false);
         }
 
-        private void InitiateSelectCellStage()
+        private void InitiatePlayerMove()
         {
             var tile = _room.GetCurrentTile();
             _tilesController.SetCurrentTileIcon(tile, _selectedRotation);

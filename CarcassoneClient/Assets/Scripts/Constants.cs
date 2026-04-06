@@ -6,8 +6,11 @@ namespace Assets.Scripts
 {
     public static class Constants
     {
-        public static GameObject Chip => (GameObject)Resources.Load("Meeples/Chip", typeof(GameObject));
+        public static Sprite PossibleFieldImage => (Sprite)Resources.Load("Additional/possible", typeof(Sprite));
+        public static Sprite ImpossibleFieldImage => (Sprite) Resources.Load("Additional/impossible", typeof(Sprite));
 
+        public static GameObject Field => (GameObject)Resources.Load("Additional/FieldPrefab", typeof(GameObject));
+        public static GameObject Chip => (GameObject)Resources.Load("Meeples/Chip", typeof(GameObject));
         public static GameObject Flag => (GameObject)Resources.Load("Flags/Flag", typeof(GameObject));
 
         /// <summary>

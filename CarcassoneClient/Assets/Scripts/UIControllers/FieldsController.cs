@@ -14,13 +14,11 @@ namespace Assets.Scripts
     internal class FieldsController
     {
         private Dictionary<Point, GameObject> _fieldsToGameObject = new();
-        private readonly GameObject _fieldPrefab;
         private readonly GameObject _desk;
 
 
         public FieldsController()
         {
-            _fieldPrefab = (GameObject)Resources.Load("Additional/FieldPrefab", typeof(GameObject));
             _desk = new GameObject("desk");
         }
 
@@ -75,7 +73,7 @@ namespace Assets.Scripts
 
         public void CreateLocation(Point location)
         {
-            var fieldObject = GameObject.Instantiate(_fieldPrefab, _desk.transform);
+            var fieldObject = GameObject.Instantiate(Constants.Field, _desk.transform);
             fieldObject.transform.position = new Vector3(location.X, location.Y, 0);
             fieldObject.name = $"{location.X}_{location.Y}";
             _fieldsToGameObject.Add(location, fieldObject);
@@ -83,14 +81,12 @@ namespace Assets.Scripts
 
         private void SetAvailable(Point location)
         {
-            var image = (Sprite)Resources.Load("Additional/possible", typeof(Sprite));
-            _fieldsToGameObject[location].GetComponent<SpriteRenderer>().sprite = image;
+            _fieldsToGameObject[location].GetComponent<SpriteRenderer>().sprite = Constants.PossibleFieldImage;
         }
 
         private void SetUnAvailable(Point location)
         {
-            var image = (Sprite)Resources.Load("Additional/impossible", typeof(Sprite));
-            _fieldsToGameObject[location].GetComponent<SpriteRenderer>().sprite = image;
+            _fieldsToGameObject[location].GetComponent<SpriteRenderer>().sprite = Constants.ImpossibleFieldImage;
         }
 
         private void Hide(Point location)

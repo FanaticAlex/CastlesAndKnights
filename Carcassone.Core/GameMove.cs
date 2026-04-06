@@ -34,9 +34,19 @@ namespace Carcassone.Core
             return code;
         }
     }
+
     public class GameMove
     {
-        public string? PlayerName { get; set; }
+        public GameMove(string playerName, string tileId, int tileRotation, Point tileLocation, string? partName)
+        {
+            PlayerName = playerName;
+            TileId = tileId;
+            Location = tileLocation;
+            TileRotation = tileRotation;
+            PartName = partName;
+        }
+
+        public string PlayerName { get; set; }
         public string TileId { get; set; }
 
         private int _tileRotation;

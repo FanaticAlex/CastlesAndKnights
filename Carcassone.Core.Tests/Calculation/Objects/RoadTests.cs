@@ -1,4 +1,5 @@
-﻿using Carcassone.Core.Calculation.Base.Tiles;
+﻿using Carcassone.Core.Calculation.Base.Roads;
+using Carcassone.Core.Calculation.Base.Tiles;
 using Carcassone.Core.Players;
 using Carcassone.Core.Tiles;
 using System.Drawing;
@@ -24,17 +25,17 @@ namespace Carcassone.Core.Tests.Buisness
             room.ForTests_ResetTilesStack();
             room.ForTests_CustomTile(typeof(RRRR), 1, 0);
 
-            var gameMove0 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "RRRR(0)",
-                TileRotation = 0,
-                Location = new Point(0, 0),
-                PartName = null
-            };
+            var gameMove0 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "RRRR(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, 0),
+                partName: null
+            );
             room.MakeMove(gameMove0);
 
-            var roads = room.State.GetAllRoads();
+            var roads = room.State.Calculated.OfType<Road>();
             Assert.Equal(4, roads.Count());
             foreach (var road in roads)
             {
@@ -63,47 +64,47 @@ namespace Carcassone.Core.Tests.Buisness
             room.ForTests_ResetTilesStack();
             room.ForTests_CustomTile(typeof(FFRR), 4, 0);
 
-            var gameMove0 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FFRR(0)",
-                TileRotation = 2,
-                Location = new Point(0, 0),
-                PartName = "Road_0"
-            };
+            var gameMove0 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FFRR(0)",
+                tileRotation: 2,
+                tileLocation: new Point(0, 0),
+                partName: "Road_0"
+            );
             room.MakeMove(gameMove0);
 
-            var gameMove1 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FFRR(1)",
-                TileRotation = 3,
-                Location = new Point(0, 1),
-                PartName = null
-            };
+            var gameMove1 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FFRR(1)",
+                tileRotation: 3,
+                tileLocation: new Point(0, 1),
+                partName: null
+            );
             room.MakeMove(gameMove1);
 
-            var gameMove2 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FFRR(2)",
-                TileRotation = 0,
-                Location = new Point(1, 1),
-                PartName = null
-            };
+            var gameMove2 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FFRR(2)",
+                tileRotation: 0,
+                tileLocation: new Point(1, 1),
+                partName: null
+            );
             room.MakeMove(gameMove2);
 
-            var gameMove3 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FFRR(3)",
-                TileRotation = 1,
-                Location = new Point(1, 0),
-                PartName = null
-            };
+            var gameMove3 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FFRR(3)",
+                tileRotation: 1,
+                tileLocation: new Point(1, 0),
+                partName: null
+            );
             room.MakeMove(gameMove3);
 
-            var roads = room.State.GetAllRoads();
+            var roads = room.State.Calculated.OfType<Road>();
             Assert.Single(roads);
             var road = roads.Single();
             Assert.Equal(8, road.GetScore(room.State));
@@ -132,27 +133,27 @@ namespace Carcassone.Core.Tests.Buisness
             room.ForTests_CustomTile(typeof(FFRF), 1, 0);
             room.ForTests_CustomTile(typeof(FRRR), 1, 0);
 
-            var gameMove0 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FFRF(0)",
-                TileRotation = 0,
-                Location = new Point(0, 0),
-                PartName = "Road_0"
-            };
+            var gameMove0 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FFRF(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, 0),
+                partName: "Road_0"
+            );
             room.MakeMove(gameMove0);
 
-            var gameMove1 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FRRR(0)",
-                TileRotation = 2,
-                Location = new Point(0, -1),
-                PartName = null
-            };
+            var gameMove1 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FRRR(0)",
+                tileRotation: 2,
+                tileLocation: new Point(0, -1),
+                partName: null
+            );
             room.MakeMove(gameMove1);
 
-            var roads = room.State.GetAllRoads();
+            var roads = room.State.Calculated.OfType<Road>();
             Assert.Equal(3, roads.Count());
             var road = roads.First(r => r.IsComplete(room.State));
             Assert.Equal(4, road.GetScore(room.State));

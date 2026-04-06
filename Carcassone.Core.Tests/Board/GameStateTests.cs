@@ -19,14 +19,14 @@ namespace Carcassone.Core.Tests.Board
             room.ForTests_ResetTilesStack();
             room.ForTests_CustomTile(typeof(CCCC), 2, 0);
 
-            var gameMove0 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "CCCC(0)",
-                TileRotation = 0,
-                Location = new Point(0, 0),
-                PartName = null
-            };
+            var gameMove0 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "CCCC(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, 0),
+                partName: null
+            );
             room.MakeMove(gameMove0);
 
             var move = room.State.GetMove(new Point(0, 0));
@@ -56,24 +56,24 @@ namespace Carcassone.Core.Tests.Board
             room.ForTests_ResetTilesStack();
             room.ForTests_CustomTile(typeof(CFFF), 2, 0);
 
-            var gameMove0 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "CFFF(0)",
-                TileRotation = 2,
-                Location = new Point(0, 0),
-                PartName = null
-            };
+            var gameMove0 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "CFFF(0)",
+                tileRotation: 2,
+                tileLocation: new Point(0, 0),
+                partName: null
+            );
             room.MakeMove(gameMove0);
 
-            var gameMove1 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "CFFF(1)",
-                TileRotation = 0,
-                Location = new Point(1, 1),
-                PartName = "City_0"
-            };
+            var gameMove1 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "CFFF(1)",
+                tileRotation: 0,
+                tileLocation: new Point(1, 1),
+                partName: "City_0"
+            );
             Assert.Throws<Exception>(() => room.MakeMove(gameMove1));
         }
 
@@ -107,54 +107,54 @@ namespace Carcassone.Core.Tests.Board
             room.ForTests_CustomTile(typeof(CFRR), 1, 0);
             room.ForTests_CustomTile(typeof(CFFC), 1, 0);
 
-            var gameMove0 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "CFFF(0)",
-                TileRotation = 0,
-                Location = new Point(0, 0),
-                PartName = "City_0"
-            };
+            var gameMove0 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "CFFF(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, 0),
+                partName: "City_0"
+            );
             room.MakeMove(gameMove0);
 
-            var gameMove1 = new GameMove()
-            {
-                PlayerName = TestHelper.Jack,
-                TileId = "RFRF(0)",
-                TileRotation = 0,
-                Location = new Point(1, 0),
-                PartName = null
-            };
+            var gameMove1 = new GameMove
+            (
+                playerName: TestHelper.Jack,
+                tileId: "RFRF(0)",
+                tileRotation: 0,
+                tileLocation: new Point(1, 0),
+                partName: null
+            );
             room.MakeMove(gameMove1);
 
-            var gameMove2 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FFFF(0)",
-                TileRotation = 0,
-                Location = new Point(0, -1),
-                PartName = null
-            };
+            var gameMove2 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FFFF(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, -1),
+                partName: null
+            );
             room.MakeMove(gameMove2);
 
-            var gameMove3 = new GameMove()
-            {
-                PlayerName = TestHelper.Jack,
-                TileId = "CFRR(0)",
-                TileRotation = 3,
-                Location = new Point(1, 1),
-                PartName = "City_0"
-            };
+            var gameMove3 = new GameMove
+            (
+                playerName: TestHelper.Jack,
+                tileId: "CFRR(0)",
+                tileRotation: 3,
+                tileLocation: new Point(1, 1),
+                partName: "City_0"
+            );
             room.MakeMove(gameMove3);
 
-            var gameMove4 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "CFFC(0)",
-                TileRotation = 2,
-                Location = new Point(0, 1),
-                PartName = "Farm_0"
-            };
+            var gameMove4 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "CFFC(0)",
+                tileRotation: 2,
+                tileLocation: new Point(0, 1),
+                partName: "Farm_0"
+            );
             room.MakeMove(gameMove4);
 
 
@@ -198,24 +198,24 @@ namespace Carcassone.Core.Tests.Board
             room.ForTests_CustomTile(typeof(FCFC1), 1, 0);
             room.ForTests_CustomTile(typeof(CFFF), 1, 0);
 
-            var gameMove0 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FCFC1(0)",
-                TileRotation = 1,
-                Location = new Point(0, 0),
-                PartName = "City_0"
-            };
+            var gameMove0 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FCFC1(0)",
+                tileRotation: 1,
+                tileLocation: new Point(0, 0),
+                partName: "City_0"
+            );
             room.MakeMove(gameMove0);
 
-            var gameMove2 = new GameMove()
-            {
-                PlayerName = TestHelper.Jack,
-                TileId = "CFFF(0)",
-                TileRotation = 2,
-                Location = new Point(0, 1),
-                PartName = "City_0"
-            };
+            var gameMove2 = new GameMove
+            (
+                playerName: TestHelper.Jack,
+                tileId: "CFFF(0)",
+                tileRotation: 2,
+                tileLocation: new Point(0, 1),
+                partName: "City_0"
+            );
             Assert.Throws<Exception>(() => room.MakeMove(gameMove2));
         }
     }

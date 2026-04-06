@@ -36,9 +36,9 @@ namespace Carcassone.Core
         private List<IGameRules> _rules;
         private TileStack _tileStack;
 
-        private string _availableMovesCacheTile;
-        private List<GameMove> _availableMovesCache;
-        private Tile _cuerrentTileCache;
+        private string? _availableMovesCacheTile;
+        private List<GameMove>? _availableMovesCache;
+        private Tile? _cuerrentTileCache;
 
         public string Id { get; }
 
@@ -72,16 +72,6 @@ namespace Carcassone.Core
             _tileStack.CreateTiles(type, count, priority);
         }
 
-        public List<GamePlayer> GetPlayers()
-        {
-            return PlayersPool.GamePlayers;
-        }
-
-        public GamePlayer GetCurrentPlayer()
-        {
-            return PlayersPool.GetCurrentPlayer();
-        }
-
         public bool IsFinished()
         {
             return GetCurrentTile() == null;
@@ -96,10 +86,14 @@ namespace Carcassone.Core
 
         public List<GameMove> GetAvailableMoves(string tileId)
         {
-            if (_availableMovesCacheTile == tileId) return _availableMovesCache; // optimization 
+            if (_availableMovesCacheTile == tileId && _availableMovesCache != null)
+                return _availableMovesCache; // optimization 
+
+            var tile = _tileStack.GetTile(tileId);
+            if (tile == null)
+                throw new Exception($"Tile not found: {tileId}");
 
             var gameMoves = new List<GameMove>();
-            var tile = _tileStack.GetTile(tileId);
             var locations = GetCellsToPutTile(tile);
             foreach (var location in locations)
             {
@@ -108,24 +102,28 @@ namespace Carcassone.Core
                     if (CanPutTileInCell(location, rotation, tile))
                     {
                         // without meeple
-                        var move0 = new GameMove();
-                        move0.Location = location;
-                        move0.TileId = tile.Id;
-                        move0.TileRotation = rotation;
-                        move0.PartName = null;
-                        move0.PlayerName = PlayersPool.GetCurrentPlayer().Info.Name;
+                        var move0 = new GameMove
+                        (
+                            playerName: PlayersPool.GetCurrentPlayer().Info.Name,
+                            tileId: tile.Id,
+                            tileRotation: rotation,
+                            tileLocation: location,
+                            partName: null
+                        );
                         gameMoves.Add(move0);
 
                         // with meeple
                         var parts = GetAvailableParts(move0);
                         foreach (var part in parts)
                         {
-                            var move = new GameMove();
-                            move.Location = location;
-                            move.TileId = tile.Id;
-                            move.TileRotation = rotation;
-                            move.PartName = part.PartName;
-                            move.PlayerName = PlayersPool.GetCurrentPlayer().Info.Name;
+                            var move = new GameMove
+                            (
+                                playerName: PlayersPool.GetCurrentPlayer().Info.Name,
+                                tileId: tile.Id,
+                                tileRotation: rotation,
+                                tileLocation: location,
+                                partName: part.PartName
+                            );
                             gameMoves.Add(move);
                         }
                     }
@@ -137,7 +135,7 @@ namespace Carcassone.Core
             return gameMoves;
         }
 
-        private List<Point> GetCellsToPutTile(Tile tile)
+        private List<Point> GetCellsToPutTile(Tile? tile)
         {
             var list = new List<Point>();
             if (tile == null)

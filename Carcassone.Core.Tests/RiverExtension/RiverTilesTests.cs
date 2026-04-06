@@ -35,24 +35,24 @@ namespace Carcassone.Core.Tests.RiverExtension
             room.ForTests_CustomTile(typeof(FFWF), 1, 0);
             room.ForTests_CustomTile(typeof(FWRW), 1, 0);
 
-            var gameMove0 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FFWF(0)",
-                TileRotation = 0,
-                Location = new Point(0, 0),
-                PartName = "Farm_0"
-            };
+            var gameMove0 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FFWF(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, 0),
+                partName: "Farm_0"
+            );
             room.MakeMove(gameMove0);
 
-            var gameMove1 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FWRW(0)",
-                TileRotation = 0,
-                Location = new Point(0, -1),
-                PartName = "Farm_0"
-            };
+            var gameMove1 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FWRW(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, -1),
+                partName: "Farm_0"
+            );
 
             Assert.Throws<Exception>(() => room.MakeMove(gameMove1));
         }
@@ -82,24 +82,24 @@ namespace Carcassone.Core.Tests.RiverExtension
             room.ForTests_CustomTile(typeof(FFWF), 1, 0);
             room.ForTests_CustomTile(typeof(FWRW), 1, 0);
 
-            var gameMove0 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FFWF(0)",
-                TileRotation = 0,
-                Location = new Point(0, 0),
-                PartName = "Farm_0"
-            };
+            var gameMove0 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FFWF(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, 0),
+                partName: "Farm_0"
+            );
             room.MakeMove(gameMove0);
 
-            var gameMove1 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FWRW(0)",
-                TileRotation = 1,
-                Location = new Point(0, -1),
-                PartName = null
-            };
+            var gameMove1 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FWRW(0)",
+                tileRotation: 1,
+                tileLocation: new Point(0, -1),
+                partName: null
+            );
             room.MakeMove(gameMove1);
         }
 
@@ -113,29 +113,36 @@ namespace Carcassone.Core.Tests.RiverExtension
 
             var room = TestHelper.GetRiverGame(TestHelper.Bob);
 
-            Assert.Equal("FFWF(0)", room.GetCurrentTile().Id);
+            Assert.Equal("FFWF(0)", room.GetCurrentTile()?.Id);
 
-            Tile tile = null;
-            do
+            Tile? tile;
+            while(true)
             {
                 tile = room.GetCurrentTile();
+                if (tile == null)
+                    throw new Exception("Not enough water tiles!");
+
+                if (!tile.Id.Contains("W"))
+                    break; // water tiles is no more
+
                 var moves = room.GetAvailableMoves(tile.Id);
                 room.MakeMove(moves.First());
-            }
-            while (room.GetCurrentTile().Id.Contains("W"));
+            };
 
             Assert.Equal("WFFF(0)", tile.Id);
 
-            do
+            while(true)
             {
                 tile = room.GetCurrentTile();
+                if (tile == null)
+                    break;
+
                 if (tile.Id.Contains("W"))
                     throw new Exception("Missplaced river card " + tile.Id);
 
                 var moves = room.GetAvailableMoves(tile.Id);
                 room.MakeMove(moves.First());
-            }
-            while (room.GetCurrentTile() != null) ;
+            };
         }
     }
 }

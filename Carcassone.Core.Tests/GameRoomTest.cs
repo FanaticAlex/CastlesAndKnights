@@ -14,7 +14,7 @@ namespace Carcassone.Core.Tests.Room
 
             do
             {
-                var player = room.GetCurrentPlayer();
+                var player = room.PlayersPool.GetCurrentPlayer();
                 player.ProcessMove(room);
             }
             while (!room.IsFinished());
@@ -22,8 +22,8 @@ namespace Carcassone.Core.Tests.Room
             Assert.True(room.IsFinished());
             var ai1 = room.PlayersPool.GetPlayer(TestHelper.AI_1);
             var ai2 = room.PlayersPool.GetPlayer(TestHelper.AI_2);
-            Assert.NotEqual(0, ai1.GetPlayerOverallScore(room.State));
-            Assert.NotEqual(0, ai2.GetPlayerOverallScore(room.State));
+            Assert.NotEqual(0, ai1?.GetPlayerOverallScore(room.State));
+            Assert.NotEqual(0, ai2?.GetPlayerOverallScore(room.State));
         }
 
         [Fact]

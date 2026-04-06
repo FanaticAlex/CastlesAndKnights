@@ -1,4 +1,6 @@
-﻿using Carcassone.Core.Calculation.Base.Farms;
+﻿using Carcassone.Core.Calculation.Base.Cities;
+using Carcassone.Core.Calculation.Base.Farms;
+using Carcassone.Core.Calculation.Base.Roads;
 using Carcassone.Core.Calculation.Base.Tiles;
 using Carcassone.Core.Calculation.RiverExtension.Tiles;
 using Carcassone.Core.Players;
@@ -31,36 +33,36 @@ namespace Carcassone.Core.Tests.Buisness
             room.ForTests_CustomTile(typeof(CRFR), 1, 0);
             room.ForTests_CustomTile(typeof(CFFF), 1, 0);
 
-            var gameMove1 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "CRFR(0)",
-                TileRotation = 2,
-                Location = new Point(0, 0),
-                PartName = "Farm_0"
-            };
+            var gameMove1 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "CRFR(0)",
+                tileRotation: 2,
+                tileLocation: new Point(0, 0),
+                partName: "Farm_0"
+            );
             room.MakeMove(gameMove1);
 
-            var gameMove2 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "CFFF(0)",
-                TileRotation = 0,
-                Location = new Point(0, -1),
-                PartName = "City_0"
-            };
+            var gameMove2 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "CFFF(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, -1),
+                partName: "City_0"
+            );
             room.MakeMove(gameMove2);
 
             // check castles
-            var Cities = room.State.GetAllCities();
+            var Cities = room.State.Calculated.OfType<City>();
             Assert.Single(Cities);
             var city = Cities.Single();
             Assert.True(city.IsComplete(room.State));
             Assert.Equal(4, city.GetScore(room.State));
             Assert.True(city.IsPlayerOwner(TestHelper.Bob, room.State));
-            
+
             // check farms
-            var farms = room.State.GetAllFarms();
+            var farms = room.State.Calculated.OfType<Farm>();
             Assert.Equal(3, farms.Count());
             var farm0 = farms.ElementAt(0);
             Assert.True(farm0.IsPlayerOwner(TestHelper.Bob, room.State));
@@ -75,7 +77,7 @@ namespace Carcassone.Core.Tests.Buisness
             Assert.Equal(3, farm2.GetScore(room.State));
 
             var bob = room.PlayersPool.GetPlayer(TestHelper.Bob);
-            Assert.Equal(7, bob.GetPlayerOverallScore(room.State));
+            Assert.Equal(7, bob?.GetPlayerOverallScore(room.State));
         }
 
         /// <summary>
@@ -99,33 +101,33 @@ namespace Carcassone.Core.Tests.Buisness
             room.ForTests_CustomTile(typeof(RRWW), 1, 0);
             room.ForTests_CustomTile(typeof(WCCW), 1, 0);
 
-            var gameMove1 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "RRWW(0)",
-                TileRotation = 0,
-                Location = new Point(0, 0),
-                PartName = null
-            };
+            var gameMove1 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "RRWW(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, 0),
+                partName: null
+            );
             room.MakeMove(gameMove1);
 
-            var gameMove2 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "WCCW(0)",
-                TileRotation = 0,
-                Location = new Point(0, -1),
-                PartName = "Farm_0"
-            };
+            var gameMove2 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "WCCW(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, -1),
+                partName: "Farm_0"
+            );
             room.MakeMove(gameMove2);
 
             var bob = room.PlayersPool.GetPlayer(TestHelper.Bob);
-            var score = bob.GetPlayerOverallScore(room.State);
+            var score = bob?.GetPlayerOverallScore(room.State);
             Assert.Equal(0, score);
 
-            var cities = room.State.GetAllCities();
-            var roads = room.State.GetAllRoads();
-            var farms = room.State.GetAllFarms();
+            var cities = room.State.Calculated.OfType<City>();
+            var roads = room.State.Calculated.OfType<Road>();
+            var farms = room.State.Calculated.OfType<Farm>();
             Assert.Single(cities);
             Assert.Single(roads);
             Assert.Equal(3, farms.Count());
@@ -163,37 +165,37 @@ namespace Carcassone.Core.Tests.Buisness
             room.ForTests_CustomTile(typeof(FWWF), 1, 0);
             room.ForTests_CustomTile(typeof(WFWF), 1, 0);
 
-            var gameMove0 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FFWF(0)",
-                TileRotation = 1,
-                Location = new Point(0, 0),
-                PartName = null
-            };
+            var gameMove0 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FFWF(0)",
+                tileRotation: 1,
+                tileLocation: new Point(0, 0),
+                partName: null
+            );
             room.MakeMove(gameMove0);
 
-            var gameMove1 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FWWF(0)",
-                TileRotation = 0,
-                Location = new Point(-1, 0),
-                PartName = null
-            };
+            var gameMove1 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FWWF(0)",
+                tileRotation: 0,
+                tileLocation: new Point(-1, 0),
+                partName: null
+            );
             room.MakeMove(gameMove1);
 
-            var gameMove2 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "WFWF(0)",
-                TileRotation = 0,
-                Location = new Point(-1, -1),
-                PartName = null
-            };
+            var gameMove2 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "WFWF(0)",
+                tileRotation: 0,
+                tileLocation: new Point(-1, -1),
+                partName: null
+            );
             room.MakeMove(gameMove2);
 
-            var farms = room.State.GetAllFarms();
+            var farms = room.State.Calculated.OfType<Farm>();
             Assert.Single(farms);
             Assert.Equal(9, farms.ElementAt(0).GetOpenBorders(room.State).Count);
         }
@@ -219,28 +221,28 @@ namespace Carcassone.Core.Tests.Buisness
             room.ForTests_CustomTile(typeof(FFWF), 1, 0);
             room.ForTests_CustomTile(typeof(FWRW), 1, 0);
 
-            var gameMove1 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FFWF(0)",
-                TileRotation = 0,
-                Location = new Point(0, 0),
-                PartName = null
-            };
+            var gameMove1 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FFWF(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, 0),
+                partName: null
+            );
             room.MakeMove(gameMove1);
 
 
-            var gameMove2 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FWRW(0)",
-                TileRotation = 1,
-                Location = new Point(0, -1),
-                PartName = null
-            };
+            var gameMove2 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FWRW(0)",
+                tileRotation: 1,
+                tileLocation: new Point(0, -1),
+                partName: null
+            );
             room.MakeMove(gameMove2);
 
-            var farms = room.State.GetAllFarms();
+            var farms = room.State.Calculated.OfType<Farm>();
             Assert.Equal(2, farms.Count());
 
             Assert.Equal(2, farms.ElementAt(0).GetOpenBorders(room.State).Count);
@@ -268,27 +270,27 @@ namespace Carcassone.Core.Tests.Buisness
             room.ForTests_CustomTile(typeof(FFWF), 1, 0);
             room.ForTests_CustomTile(typeof(FWWF), 1, 0);
 
-            var gameMove1 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FFWF(0)",
-                TileRotation = 0,
-                Location = new Point(0, 0),
-                PartName = null
-            };
+            var gameMove1 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FFWF(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, 0),
+                partName: null
+            );
             room.MakeMove(gameMove1);
 
-            var gameMove2 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "FWWF(0)",
-                TileRotation = 2,
-                Location = new Point(0, -1),
-                PartName = null
-            };
+            var gameMove2 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "FWWF(0)",
+                tileRotation: 2,
+                tileLocation: new Point(0, -1),
+                partName: null
+            );
             room.MakeMove(gameMove2);
 
-            var farms = room.State.GetAllFarms();
+            var farms = room.State.Calculated.OfType<Farm>();
             Assert.Single(farms);
             Assert.Equal(7, farms.ElementAt(0).GetOpenBorders(room.State).Count);
         }
@@ -314,34 +316,34 @@ namespace Carcassone.Core.Tests.Buisness
             room.ForTests_CustomTile(typeof(RRWW), 1, 0);
             room.ForTests_CustomTile(typeof(WCWR), 1, 0);
 
-            var gameMove1 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "RRWW(0)",
-                TileRotation = 0,
-                Location = new Point(0, 0),
-                PartName = "Farm_1"
-            };
+            var gameMove1 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "RRWW(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, 0),
+                partName: "Farm_1"
+            );
             room.MakeMove(gameMove1);
 
-            var gameMove2 = new GameMove()
-            {
-                PlayerName = TestHelper.Bob,
-                TileId = "WCWR(0)",
-                TileRotation = 0,
-                Location = new Point(0, -1),
-                PartName = null
-            };
+            var gameMove2 = new GameMove
+            (
+                playerName: TestHelper.Bob,
+                tileId: "WCWR(0)",
+                tileRotation: 0,
+                tileLocation: new Point(0, -1),
+                partName: null
+            );
             room.MakeMove(gameMove2);
 
             var card2 = room.GetTile("WCWR(0)");
 
-            var farms = room.State.GetAllFarms();
+            var farms = room.State.Calculated.OfType<Farm>();
             Assert.Equal(5, farms.Count());
 
             Assert.Equal(2, farms.ElementAt(0).GetOpenBorders(room.State).Count);
             Assert.Equal(3, farms.ElementAt(1).GetOpenBorders(room.State).Count);
-            Assert.Equal(1, farms.ElementAt(2).GetOpenBorders(room.State).Count);
+            Assert.Single(farms.ElementAt(2).GetOpenBorders(room.State));
             Assert.Equal(2, farms.ElementAt(3).GetOpenBorders(room.State).Count);
             Assert.Equal(2, farms.ElementAt(4).GetOpenBorders(room.State).Count);
         }
