@@ -24,8 +24,8 @@ namespace Assets.Scripts
             _room = new GameRoom(GameParameters.Instance.Extensions, GameParameters.Instance.Players);
         }
 
-        public List<GamePlayer> GetPlayers() => _room.GetPlayers();
-        public GamePlayer GetCurrentPlayer() => _room.GetCurrentPlayer();
+        public List<GamePlayer> GetPlayers() => _room.PlayersPool.GamePlayers;
+        public GamePlayer GetCurrentPlayer() => _room.PlayersPool.GetCurrentPlayer();
         public IEnumerable<PlayerScore> GetPlayersScores() => _room.PlayersPool.GetPlayersScores(_room.State);
         public GamePlayer GetPlayer(string name) => _room.PlayersPool.GetPlayer(name);
 

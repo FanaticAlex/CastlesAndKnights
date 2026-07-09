@@ -19,14 +19,15 @@ namespace Assets.Scripts
     /// </summary>
     public class GameBehaviour : MonoBehaviour
     {
+        private FinalScoreWindowsController _finalScoreWindowsController;
+
         private FieldsController _fieldsController;
         private TilesController _tilesController;
         private ScoreController _scoreController;
         private CameraBehaviour _cameraBehaviour;
 
         public GameObject SelectPartPanel;
-        public GameObject FinalScoreUIPanel;
-        public GameObject FinalScoreUIPanelText;
+
         public GameObject PlayerDetailScorePanel;
         public GameObject ObjectInfoScorePanel;
         public GameObject ExitAcceptPanel;
@@ -40,12 +41,6 @@ namespace Assets.Scripts
 
         private bool _moveInitiated;
 
-
-        /// <summary>
-        /// Инициализация сцены комнаты игры.
-        /// - создание игрового поля
-        /// - инициализация счета игроков 
-        /// </summary>
         void Start()
         {
             _cameraBehaviour = Camera.main.GetComponent<CameraBehaviour>();
@@ -53,26 +48,18 @@ namespace Assets.Scripts
 
             _fieldsController = new FieldsController();
             _tilesController = new TilesController();
-
-            var players = _room.GetPlayers();
-            _scoreController = new ScoreController(players, FinalScoreUIPanel, FinalScoreUIPanelText, PlayerDetailScorePanel, ObjectInfoScorePanel);
+            _scoreController = new ScoreController(_room.GetPlayers(), PlayerDetailScorePanel, ObjectInfoScorePanel);
 
             ExitAcceptPanel.SetActive(false);
             SelectPartPanel.SetActive(false);
         }
 
-        /// <summary>
-        /// Основоной цикл игры.
-        /// Производит ход локального игрока и обновляет UI компоненты игры.
-        /// </summary>
         async void Update()
         {
-            // TODO: клик по обьекту для просмотра владельцев
-
             if (_room.IsFinished())
             {
                 var scores = _room.GetPlayersScores();
-                _scoreController.ShowEndGameWindow(scores);
+                _finalScoreWindowsController.ShowEndGameWindow(scores);
                 return;
             }
 
@@ -80,7 +67,6 @@ namespace Assets.Scripts
 
             if (_cameraBehaviour.State == TouchState.ZoomToCard) return;
 
-            // если наш ход
             var currentPlayer = _room.GetCurrentPlayer();
             if (currentPlayer.IsAIProcessing) return;
 
@@ -185,14 +171,14 @@ namespace Assets.Scripts
 
             _selectedPart = GetSelectedPart(currentTile);
 
-            var gameMove = new GameMove()
-            {
-                PlayerName = currentPlayer.Info.Name,
-                TileId = currentTile.Id,
-                TileRotation = _selectedRotation,
-                Location = _selectedCell,
-                PartName = _selectedPart
-            };
+            var gameMove = new GameMove
+            (
+                playerName: currentPlayer.Info.Name,
+                tileId: currentTile.Id,
+                tileRotation: _selectedRotation,
+                tileLocation: _selectedCell,
+                partName: _selectedPart
+            );
             _room.MakeMove(gameMove);
             VisualizeTurn(gameMove);
 

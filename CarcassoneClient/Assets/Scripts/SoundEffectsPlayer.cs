@@ -14,7 +14,6 @@ namespace Assets.Scripts
         public AudioClip PutCard;
         public AudioSource AudioSource;
 
-
         void Start()
         {
             if (AudioSource == null)

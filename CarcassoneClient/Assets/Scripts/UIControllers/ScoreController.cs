@@ -10,16 +10,42 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
-    /// <summary>
-    /// Управляет интерфейсом игры:
-    /// Список игроков, счет, количество фишек итд
-    /// </summary>
+    public class FinalScoreWindowsController : MonoBehaviour
+    {
+        public GameObject FinalScoreUIPanel;
+        public GameObject FinalScoreUIPanelText;
+
+        public FinalScoreWindowsController()
+        {
+            FinalScoreUIPanel.SetActive(false);
+        }
+
+        public void ShowEndGameWindow(IEnumerable<PlayerScore> scores)
+        {
+            FinalScoreUIPanel.SetActive(true);
+
+            var winnerScore = scores.Max(x => x.OverallScore);
+            var winners = scores
+                .Where(x => x.OverallScore == winnerScore)
+                .Select(x => x.PlayerName)
+                .ToList();
+            FinalScoreUIPanelText.GetComponent<TMP_Text>().text = $"The winner is {string.Join(",", winners)} \r\n";
+            FinalScoreUIPanelText.GetComponent<TMP_Text>().text += "SCORE \r\n";
+
+
+            foreach (var score in scores)
+            {
+                FinalScoreUIPanelText.GetComponent<TMP_Text>().text +=
+                    $"{score.PlayerName} : {score.OverallScore} \r\n";
+            }
+        }
+    }
+
     class ScoreController
     {
         private readonly Dictionary<string, GameObject> _playersScorePanels = new();
 
-        public GameObject _finalScoreUIPanel;
-        public GameObject _finalScoreUIPanelText;
+        
         public GameObject _playerDetailScorePanel;
         public GameObject _objectInfoPanel;
 
@@ -29,17 +55,12 @@ namespace Assets.Scripts
         /// <param name="players"></param>
         public ScoreController(
             IEnumerable<GamePlayer> players,
-            GameObject finalScoreUIPanel,
-            GameObject finalScoreUIPanelText,
             GameObject playerDetailScorePanel,
             GameObject objectInfoPanel)
         {
-            _finalScoreUIPanel = finalScoreUIPanel;
-            _finalScoreUIPanelText = finalScoreUIPanelText;
             _playerDetailScorePanel = playerDetailScorePanel;
             _objectInfoPanel = objectInfoPanel;
 
-            _finalScoreUIPanel.SetActive(false);
             _playerDetailScorePanel.SetActive(false);
             objectInfoPanel.SetActive(false);
 
@@ -130,26 +151,6 @@ namespace Assets.Scripts
                     item.Value.transform.Find("SelectedBorder").gameObject.SetActive(true);
                 else
                     item.Value.transform.Find("SelectedBorder").gameObject.SetActive(false);
-            }
-        }
-
-        public void ShowEndGameWindow(IEnumerable<PlayerScore> scores)
-        {
-            _finalScoreUIPanel.SetActive(true);
-
-            var winnerScore = scores.Max(x => x.OverallScore);
-            var winners = scores
-                .Where(x => x.OverallScore == winnerScore)
-                .Select(x => x.PlayerName)
-                .ToList();
-            _finalScoreUIPanelText.GetComponent<TMP_Text>().text = $"The winner is {string.Join(",", winners)} \r\n";
-            _finalScoreUIPanelText.GetComponent<TMP_Text>().text += "SCORE \r\n";
-
-
-            foreach (var score in scores)
-            {
-                _finalScoreUIPanelText.GetComponent<TMP_Text>().text +=
-                    $"{score.PlayerName} : {score.OverallScore} \r\n";
             }
         }
     }
